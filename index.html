@@ -575,6 +575,53 @@
   .ascii-diagram .asc-ok    { color: #34d399; }
   .ascii-diagram .asc-note  { color: var(--amber); }
 
+  /* ── CONCEPT BLOCK (language-agnostic) ── */
+  .concept-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--purple);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 18px 0;
+  }
+  .concept-block .cb-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--purple); margin-bottom: 10px;
+  }
+  .concept-block p {
+    font-size: 13.5px; color: var(--text); line-height: 1.75;
+    margin-bottom: 10px;
+  }
+  .concept-block p:last-child { margin-bottom: 0; }
+  .concept-block strong { color: #fff; }
+  .concept-block code { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--teal); background: var(--teal-dim); padding: 1px 5px; border-radius: 3px; }
+
+  /* ── EXTERNAL LINKS ── */
+  .ext-links {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 14px 0 4px;
+  }
+  .ext-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 11px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--text-muted);
+    text-decoration: none;
+    background: var(--surface);
+    transition: all 0.15s;
+  }
+  .ext-link:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-dim); }
+  .ext-link::before { content: '↗'; font-size: 10px; opacity: 0.6; }
+  .ext-links-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 6px;
+  }
+
   /* ── MATH FORMULA BOX ── */
   .formula-block {
     background: #060e1a;
@@ -670,7 +717,7 @@
 
   <!-- HERO -->
   <div class="hero">
-    <div class="hero-eyebrow">// curriculum · v5.1 · buffr + contrl · math + DSA + readings + ASCII diagrams</div>
+    <div class="hero-eyebrow">// curriculum · v5.3 · enriched all sections · language-agnostic concepts · 100+ external links</div>
     <h1>AI Product<br><em>Engineering</em></h1>
     <p class="hero-sub">A practical curriculum built on your own codebases. Every concept maps to real code you wrote or features on your roadmap. Frontend developer → AI Product Engineer.</p>
     <div class="track-pills">
@@ -805,13 +852,22 @@
       <div class="section">
         <h3><span class="sec-num">1.1</span> The Provider Abstraction Pattern</h3>
         <p>The provider abstraction is the single most important pattern in AI product engineering. It separates your business logic from vendor-specific APIs — swap Claude for GPT-4 without touching a single chain.</p>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>The <strong>provider abstraction</strong> (also called the <strong>Adapter pattern</strong> or <strong>Strategy pattern</strong>) is a general software design principle: hide implementation details behind a stable interface. Any time you have multiple interchangeable services that do the same job — database drivers, payment processors, email senders, cloud storage backends — the pattern is the same. Define the interface your code depends on, then write one adapter per service that satisfies it.</p>
+          <p>In Python this is what <strong>LiteLLM</strong> does: <code>completion(model="gpt-4", …)</code> and <code>completion(model="claude-3-5-sonnet", …)</code> use the same function signature. In Go, you'd define a <code>LLMClient</code> interface with <code>Generate(ctx, prompt)</code> and implement it per vendor. The pattern predates AI — it's how ORMs like SQLAlchemy, Hibernate, and ActiveRecord let you swap Postgres for MySQL without changing application code.</p>
+          <p><strong>The critical rule:</strong> your business logic (chain code, prompt templates, output parsers) should depend only on the interface — never on a specific vendor's class, method names, or error types. Anything vendor-specific lives exclusively in the adapter.</p>
+        </div>
+
         <table class="concept-table">
           <tr><th>Concept</th><th>Definition</th></tr>
           <tr><td>Factory function</td><td>Returns a configured LLM client without the caller knowing which vendor is underneath</td></tr>
           <tr><td>Interface / contract</td><td>The caller only knows <code>invoke()</code> and <code>stream()</code>, not <code>ChatAnthropic</code> vs <code>ChatOpenAI</code></td></tr>
           <tr><td>Dynamic dispatch</td><td>At runtime the factory picks the implementation based on the provider string from the request body</td></tr>
           <tr><td>Lazy loading</td><td><code>require()</code> not <code>import</code> — unused SDK bundles aren't loaded, reducing cold start time</td></tr>
-          <tr><td>LiteLLM</td><td>Python equivalent of <code>getLLM()</code> — one function, 100+ providers</td></tr>
+          <tr><td>LiteLLM</td><td>Python equivalent of <code>getLLM()</code> — one function, 100+ providers. Used in production by most large-scale Python LLM apps.</td></tr>
+          <tr><td>Vendor lock-in risk</td><td>Without abstraction, a model deprecation (e.g. GPT-3.5 end-of-life) requires touching every file that ever called the API. With abstraction, it's a one-line change in the factory.</td></tr>
         </table>
 
         <div class="ascii-diagram">
@@ -860,11 +916,25 @@
           </div>
           <div class="interview-body">Because locking business logic to a vendor is a design smell. With a factory function, you can add a new provider in one place, A/B test models without touching chains, and fall back gracefully if a provider is down — without modifying the code that actually does work.</div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://refactoring.guru/design-patterns/strategy" target="_blank">Strategy Pattern — refactoring.guru</a>
+          <a class="ext-link" href="https://www.litellm.ai/docs" target="_blank">LiteLLM Docs (Python)</a>
+          <a class="ext-link" href="https://js.langchain.com/docs/how_to/chat_models_universal_init/" target="_blank">LangChain Universal Model Init</a>
+          <a class="ext-link" href="https://docs.anthropic.com/en/docs/about-claude/models/overview" target="_blank">Anthropic Models Overview</a>
+        </div>
       </div>
 
       <div class="section">
         <h3><span class="sec-num">1.2</span> Chain Architecture & Structured Output</h3>
         <p>A chain is the fundamental unit of an LLM product. Every AI feature follows this shape:</p>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>chain</strong> is the LLM equivalent of a pure function: a unit of work with a typed input, a single LLM call at its core, and a typed output. The name comes from LangChain, but the concept is universal — OpenAI's documentation calls the same pattern a "completion wrapper," and in Python you'd often see it as a plain function <code>def summarise(items: list[Item]) -&gt; Summary</code>.</p>
+          <p><strong>Structured output</strong> is the practice of constraining the LLM to return data in a predictable machine-readable format (usually JSON) rather than prose. Without it, every downstream consumer has to parse free text, which breaks on edge cases. Most major LLM APIs now support <strong>JSON mode</strong> (forces valid JSON) and <strong>tool/function calling</strong> (forces a specific schema) — these are the production-grade alternatives to prompting for JSON. In buffr, the <code>stripCodeBlock()</code> + <code>JSON.parse()</code> pattern is the pragmatic version of the same idea.</p>
+          <p><strong>Graceful degradation</strong> is a systems principle: when a component fails, the system should degrade to a less capable but still functional state rather than crash. Applied to LLM output: if <code>JSON.parse()</code> throws, return the raw text with a warning rather than a 500 error. The user gets partial value; the app stays running.</p>
+        </div>
         <div class="pipeline">
           <div class="pipe-step"><div class="label">Input</div><div class="value">{ items[] }</div></div>
           <div class="pipe-arrow">→</div>
@@ -946,17 +1016,33 @@
           </div>
           <div class="sysdesign-body">Design an LLM chain that takes a GitHub pull request diff and returns a code review with line-level issues, severity ratings, and a summary. What does your system prompt look like? How do you handle diffs that exceed the context window?</div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.anthropic.com/en/docs/build-with-claude/tool-use" target="_blank">Anthropic Tool Use & JSON mode</a>
+          <a class="ext-link" href="https://platform.openai.com/docs/guides/structured-outputs" target="_blank">OpenAI Structured Outputs</a>
+          <a class="ext-link" href="https://python.langchain.com/docs/concepts/lcel/" target="_blank">LangChain LCEL (chain primitives)</a>
+          <a class="ext-link" href="https://www.promptingguide.ai/techniques/prompt_chaining" target="_blank">Prompt Chaining — promptingguide.ai</a>
+        </div>
       </div>
 
       <div class="section">
         <h3><span class="sec-num">1.3</span> Prompt Engineering Patterns</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Prompt engineering</strong> is the practice of crafting the text input to a language model to reliably produce a desired output. It is language-agnostic in the sense that the same techniques — zero-shot, few-shot, chain-of-thought — work regardless of whether you're calling Claude from TypeScript, GPT-4 from Python, or Gemini from Go. The underlying mechanism is always the same: you're shaping the probability distribution over next tokens by providing context that makes certain continuations more likely.</p>
+          <p>Think of a system prompt as a <strong>contract</strong>: it defines the model's role, the output format, any constraints, and failure behaviour. A well-written system prompt is idempotent — running it twice on the same input gives the same output. <strong>Chain-of-thought</strong> works because making the model externalise its reasoning forces it to generate intermediate tokens that constrain subsequent tokens — it's harder to reach a wrong conclusion after generating a correct reasoning chain. <strong>Few-shot</strong> works because examples are highly efficient in-context demonstrations — they communicate format, tone, and content simultaneously without requiring explicit description of each.</p>
+          <p>The <strong>ReAct pattern</strong> (Reason + Act) interleaves reasoning steps with action calls: the model thinks, decides to call a tool, observes the result, thinks again, and so on. This is the foundation of every agentic system built today — it's what powers Claude's tool use, OpenAI's function calling, and buffr's <code>suggestedActions</code>.</p>
+        </div>
+
         <table class="concept-table">
-          <tr><th>Pattern</th><th>When to use</th></tr>
-          <tr><td>Zero-shot</td><td>Instruction only, no examples. Works for simple well-defined tasks. Fast to iterate.</td></tr>
-          <tr><td>Few-shot</td><td>2–3 examples of input/output. Use when output format consistency is critical.</td></tr>
-          <tr><td>Chain of Thought</td><td>"Think step by step" before answering. Dramatically improves reasoning task accuracy.</td></tr>
-          <tr><td>ReAct</td><td>Reason + Act. Model alternates thinking and tool calls. How buffr's <code>suggestedActions</code> works.</td></tr>
-          <tr><td>Persona</td><td>"You are a senior software architect" anchors tone and knowledge domain.</td></tr>
+          <tr><th>Pattern</th><th>When to use</th><th>Cost signal</th></tr>
+          <tr><td>Zero-shot</td><td>Instruction only, no examples. Works for simple well-defined tasks. Fast to iterate.</td><td>Cheapest. Start here always.</td></tr>
+          <tr><td>Few-shot</td><td>2–3 examples of input/output. Use when output format consistency is critical.</td><td>+200–600 tokens per example. High ROI for format-sensitive outputs.</td></tr>
+          <tr><td>Chain of Thought</td><td>"Think step by step" before answering. Dramatically improves reasoning task accuracy.</td><td>+200–800 output tokens for reasoning. Use for math, logic, multi-step decisions.</td></tr>
+          <tr><td>ReAct</td><td>Reason + Act. Model alternates thinking and tool calls. How buffr's <code>suggestedActions</code> works.</td><td>Multiple LLM calls + tool latency. Use only when tool results are needed.</td></tr>
+          <tr><td>Persona</td><td>"You are a senior software architect" anchors tone and knowledge domain.</td><td>Free — just a few tokens. Always worth adding.</td></tr>
+          <tr><td>Negative constraints</td><td>"Do not include explanations." "Never add markdown." Explicitly forbid common failure modes.</td><td>Free. Often more effective than positive instructions for format control.</td></tr>
         </table>
 
         <div class="interview">
@@ -966,6 +1052,14 @@
             <span class="interview-chevron">▶</span>
           </div>
           <div class="interview-body">When output format consistency keeps failing zero-shot. Two or three examples in the prompt dramatically increase reliability for unusual JSON shapes or non-standard classification labels. The cost is prompt tokens — for high-volume endpoints, few-shot can double your token spend.</div>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.promptingguide.ai" target="_blank">The Prompt Engineering Guide</a>
+          <a class="ext-link" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank">Anthropic Prompt Engineering Docs</a>
+          <a class="ext-link" href="https://arxiv.org/abs/2201.11903" target="_blank">Chain-of-Thought Paper (Wei et al.)</a>
+          <a class="ext-link" href="https://arxiv.org/abs/2210.03629" target="_blank">ReAct Paper (Yao et al.)</a>
+          <a class="ext-link" href="https://learnprompting.org/docs/basics/intro" target="_blank">Learn Prompting — free guide</a>
         </div>
       </div>
     </div>
@@ -982,6 +1076,14 @@
 
       <div class="section">
         <h3><span class="sec-num">2.1</span> Serverless vs Traditional</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Serverless functions</strong> (also called Functions-as-a-Service or FaaS) are the idea that you deploy individual functions rather than long-running server processes. The cloud platform manages everything below the function boundary: container provisioning, scaling, networking, and process lifecycle. AWS Lambda, Vercel Edge Functions, Cloudflare Workers, Netlify Functions, and Google Cloud Functions are all variations of this model. The code you write is nearly identical across them; the differences are timeout limits, memory ceilings, and cold-start behaviour.</p>
+          <p>The fundamental architectural constraint of serverless is <strong>statelessness</strong>: each function invocation starts with a fresh execution context. There is no shared memory between requests — no global caches, no connection pools, no singleton objects that persist. This forces good design (explicit state management) but creates friction for patterns that assumed statefulness: database connection reuse, in-process caches, and — critically for AI apps — long-running LLM calls that exceed timeout limits.</p>
+          <p>The <strong>cold start problem</strong> is specific to serverless: when a function hasn't been invoked recently, the platform must provision a new container, load the runtime, and execute your initialisation code before handling the request. For buffr, this means loading LangChain, registering tools, and initialising SDK clients adds 350–800ms to the first request. Mitigation strategies include keeping bundle size small (lazy imports), avoiding heavy initialisation in the module scope, and using platform-level keep-warm features.</p>
+        </div>
+
         <table class="concept-table">
           <tr><th>Dimension</th><th>Serverless (buffr/Netlify)</th><th>Traditional (Express)</th></tr>
           <tr><td class="col3">State</td><td>Zero in-memory state across requests. Each invocation isolated.</td><td>Can keep state — caches, connection pools, singletons</td></tr>
@@ -989,6 +1091,7 @@
           <tr><td class="col3">Concurrency</td><td>Platform auto-scales</td><td>You manage thread pools and workers</td></tr>
           <tr><td class="col3">Cost model</td><td>Pay per invocation. Scales to zero.</td><td>Fixed monthly. Efficient at sustained high volume.</td></tr>
           <tr><td class="col3">Timeout</td><td>Hard limits (10s Netlify, 15min Lambda)</td><td>You control it</td></tr>
+          <tr><td class="col3">Best for AI</td><td>Low-to-medium volume, bursty traffic, streaming responses</td><td>High-throughput, long-running inference, persistent model loading</td></tr>
         </table>
         <p><strong>Key implication for AI products:</strong> LLM calls can take 5–30 seconds. Solutions: streaming (return tokens immediately) or queue/job pattern (async processing).</p>
 
@@ -1024,17 +1127,34 @@
           </div>
           <div class="interview-body">Two main limitations: timeout limits and no persistent state. For timeouts, streaming is the primary solution — start returning tokens immediately so the function doesn't time out waiting. For persistent state you need external storage. A secondary limitation is cold starts — mitigated by keeping bundles small and using dynamic imports so unused SDK code isn't loaded.</div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.netlify.com/functions/overview/" target="_blank">Netlify Functions Docs</a>
+          <a class="ext-link" href="https://docs.aws.amazon.com/lambda/latest/dg/welcome.html" target="_blank">AWS Lambda Developer Guide</a>
+          <a class="ext-link" href="https://vercel.com/docs/functions" target="_blank">Vercel Functions Docs</a>
+          <a class="ext-link" href="https://developers.cloudflare.com/workers/" target="_blank">Cloudflare Workers</a>
+          <a class="ext-link" href="https://12factor.net/processes" target="_blank">12-Factor: Stateless Processes</a>
+        </div>
       </div>
 
       <div class="section">
         <h3><span class="sec-num">2.2</span> REST API Design Decisions</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>REST</strong> (Representational State Transfer) is an architectural style for HTTP APIs, not a protocol or standard. Its core constraints are: client-server separation, statelessness (each request contains all information needed to process it), uniform interface (resources identified by URLs, manipulated via standard HTTP verbs), and layered system (clients don't know if they're talking to a server or a proxy). REST is language-agnostic — you can implement a RESTful API in TypeScript, Python, Go, Ruby, or anything that can speak HTTP.</p>
+          <p>The key design decision every API faces is how to structure <strong>resource URLs vs operation URLs</strong>. Strict REST uses nouns and HTTP verbs: <code>GET /sessions</code> lists, <code>POST /sessions</code> creates, <code>DELETE /sessions/:id</code> removes. In practice, especially for serverless where each file is a function, many teams use a hybrid: one file per resource, query params to differentiate operations (<code>?summarise</code>, <code>?review</code>). This is what buffr does — pragmatic for solo development, but worth understanding the trade-off before scaling a team.</p>
+          <p><strong>Schema validation</strong> (Zod in TypeScript, Pydantic in Python, Joi in Node, Marshmallow in Python, express-validator in Express) is not optional in production. The pattern is always: parse and validate at the boundary, work with typed/validated data inside, and return structured errors to clients. Never use raw request data inside business logic. This prevents entire classes of bugs — type coercion issues, missing field crashes, and injection vectors.</p>
+        </div>
+
         <p>buffr uses "one file per resource, query params for sub-operations." Understanding why — and when it breaks down — is the mark of an engineer who thinks in systems.</p>
         <table class="concept-table">
           <tr><th>Decision</th><th>Trade-off</th></tr>
           <tr><td>One file per resource</td><td>Simplifies deployment. Gets messy when a resource has 10+ operations.</td></tr>
           <tr><td>Query params for sub-ops</td><td>Allows sharing provider resolution + error handling. Non-RESTful but practical for serverless.</td></tr>
           <tr><td>Manual <code>if(!field)</code> validation</td><td>Simple and readable. Doesn't scale — use Zod when you have 5+ required fields.</td></tr>
-          <tr><td><code>classifyError()</code></td><td>Maps vendor-specific LLM error strings to standard HTTP codes. Essential.</td></tr>
+          <tr><td><code>classifyError()</code></td><td>Maps vendor-specific LLM error strings to standard HTTP codes. Essential for API consumers.</td></tr>
+          <tr><td>HTTP status codes</td><td>200 OK, 201 Created, 400 Bad Request (validation), 401 Unauthorized, 429 Rate Limited, 500 Server Error. Use them correctly — clients depend on them.</td></tr>
         </table>
 
         <div class="exercise">
@@ -1060,16 +1180,33 @@
           <div class="sysdesign-header"><span class="sysdesign-label">🧠 System Design Prompt</span></div>
           <div class="sysdesign-body">Design the API layer for a multi-tenant AI writing assistant. Users can have multiple workspaces. Each workspace can have multiple documents. The AI needs to summarise, rewrite, and fact-check document sections. What endpoints do you define? What goes in path params vs query params vs body? How do you handle authentication per workspace?</div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview" target="_blank">MDN HTTP Overview</a>
+          <a class="ext-link" href="https://zod.dev" target="_blank">Zod Schema Validation (TS)</a>
+          <a class="ext-link" href="https://docs.pydantic.dev/latest/" target="_blank">Pydantic Validation (Python)</a>
+          <a class="ext-link" href="https://restfulapi.net" target="_blank">RESTful API Design Guide</a>
+          <a class="ext-link" href="https://httpstatuses.io" target="_blank">HTTP Status Codes Reference</a>
+        </div>
       </div>
 
       <div class="section">
         <h3><span class="sec-num">2.3</span> Storage Patterns & Race Conditions</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>Every application needs to store data. The choice of storage pattern is independent of language — the same trade-offs apply whether you're in Node, Python, Go, or Ruby. <strong>Key-value stores</strong> (Redis, DynamoDB, Netlify Blobs, Cloudflare KV) map a string key to an arbitrary value blob. They're fast for single-record access but have no query capability — you can't ask "give me all sessions from last week" without fetching everything and filtering in application code. <strong>Relational databases</strong> (Postgres, MySQL, SQLite) add SQL, indexes, joins, and transactions — the ability to query across records efficiently. <strong>Document stores</strong> (MongoDB, Firestore) are a middle ground: schema-flexible, queryable, but without full relational power.</p>
+          <p>The <strong>TOCTOU race condition</strong> (Time Of Check To Time Of Use) is a concurrency bug that appears in any language when two operations read a shared resource, each makes a decision based on what they read, and then both write back — with one overwriting the other's changes. It's not a JavaScript problem; it's a general concurrent programming problem. In databases, this is solved with transactions and row-level locking. In serverless blob storage (which has no transactions), you must either serialise operations or use atomic compare-and-swap operations where available.</p>
+          <p>An <strong>index pattern</strong> is the practice of maintaining a separate data structure that tracks which keys belong to a logical set — essentially a poor-man's database index. When you store <code>sessions:list:projectId</code> as a key that holds an array of session IDs, you're implementing a manual index so you don't have to scan all sessions to find those for a project. This pattern is a pragmatic bridge between key-value stores and relational databases — use it until query complexity justifies migrating to Postgres.</p>
+        </div>
+
         <table class="concept-table">
           <tr><th>Pattern</th><th>What it is</th><th>When to use</th></tr>
           <tr><td class="col3">Key-value store</td><td>Simple map of key → JSON blob</td><td>Prototypes, per-user config, small datasets &lt; 1000 items</td></tr>
           <tr><td class="col3">Relational (Postgres)</td><td>Tables, indexes, SQL queries, joins</td><td>When you need to filter/sort/search across records</td></tr>
           <tr><td class="col3">List + filter in memory</td><td>buffr's "query" strategy: fetch all, filter in JS</td><td>Only works at small scale — 500 records max</td></tr>
           <tr><td class="col3">Index pattern</td><td>Separate index key tracking which items belong to a set</td><td>First migration step before moving to a real database</td></tr>
+          <tr><td class="col3">Optimistic locking</td><td>Read a version number, write only if version hasn't changed</td><td>Prevents TOCTOU in databases without full transactions</td></tr>
         </table>
         <p><strong>The TOCTOU race condition</strong> — a real bug encountered in buffr:</p>
         <pre>BROKEN (Promise.all):
@@ -1110,6 +1247,14 @@ FIXED (sequential):
           </div>
           <div class="interview-body">When queries become the bottleneck — filtering sessions by date range, searching prompt text, or joining sessions with project data. The tell-tale sign is list-and-filter-in-memory becoming visibly slow, usually around 500–1000 records. I'd migrate to Supabase Postgres, add an index on <code>projectId</code> and <code>createdAt</code>, and keep the storage module interface unchanged so chain code doesn't need to change.</div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://supabase.com/docs" target="_blank">Supabase Docs (Postgres + KV)</a>
+          <a class="ext-link" href="https://docs.netlify.com/blobs/overview/" target="_blank">Netlify Blobs Docs</a>
+          <a class="ext-link" href="https://redis.io/docs/latest/develop/data-types/" target="_blank">Redis Data Types</a>
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use" target="_blank">TOCTOU — Wikipedia</a>
+          <a class="ext-link" href="https://dataintensive.net" target="_blank">Designing Data-Intensive Applications</a>
+        </div>
       </div>
     </div>
 
@@ -1125,6 +1270,14 @@ FIXED (sequential):
 
       <div class="section">
         <h3><span class="sec-num">3.1</span> The Tool Registry Pattern</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Tool use</strong> (also called <strong>function calling</strong> in the OpenAI API, <strong>tool use</strong> in the Anthropic API, or <strong>actions</strong> in some frameworks) is the ability for an LLM to request the execution of a predefined function during generation. The model doesn't execute the function itself — it emits a structured signal saying "call this function with these arguments," and your code handles execution and returns the result. This keeps external API calls, database queries, and side effects entirely under application control.</p>
+          <p>The <strong>tool registry pattern</strong> is how you manage this at scale. Rather than hardcoding tool definitions in every prompt, you register them once at startup in a global store (a Map, dictionary, or object), and inject only the relevant tool manifests into each LLM call. This is the pattern behind Anthropic's <strong>MCP</strong> (Model Context Protocol), OpenAI's function calling, LangChain's tool system, and LlamaIndex's tool abstractions — the implementation differs but the concept is identical.</p>
+          <p>The most important insight about tool definitions: the <strong>description field is prompting</strong>. The LLM decides whether to call a tool based entirely on its name and description. Vague descriptions ("gets data") cause missed calls. Specific descriptions with trigger phrases ("Lists all open GitHub issues — use when the user asks about bugs, feature requests, or outstanding work") dramatically improve tool selection accuracy. Writing a tool description is an act of prompt engineering, not documentation.</p>
+        </div>
+
         <p>buffr's tool registry is a hand-rolled version of the pattern behind all agentic AI — MCP, OpenAI function calling, LangChain tools. The concept is always the same: define capabilities, register at startup, let the model suggest which to call, execute in your code.</p>
         <table class="concept-table">
           <tr><th>Concept</th><th>How it works in buffr</th></tr>
@@ -1133,6 +1286,7 @@ FIXED (sequential):
           <tr><td>suggestedActions</td><td>LLM-suggested tool names + inputs. Your backend validates and executes them.</td></tr>
           <tr><td>Server-side execution</td><td>Stage 2 <code>&#123;&#123;tool:...&#125;&#125;</code> resolution runs server-side. GitHub tokens never reach the browser.</td></tr>
           <tr><td>MCP equivalence</td><td>Anthropic's MCP formalises this exact pattern. buffr's registry could be wrapped as an MCP server with minimal changes.</td></tr>
+          <tr><td>JSON Schema for inputSchema</td><td>The same schema format used in OpenAPI specs and form validation. <code>{ type: "object", properties: { repo: { type: "string" } }, required: ["repo"] }</code> — the LLM generates inputs that match this.</td></tr>
         </table>
 
         <div class="ascii-diagram">
@@ -1197,16 +1351,33 @@ FIXED (sequential):
             <div class="exercise-hook"><strong>buffr hook:</strong> mirrors the pattern in <code>lib/tools/github.ts</code> exactly</div>
           </div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.anthropic.com/en/docs/build-with-claude/tool-use" target="_blank">Anthropic Tool Use Docs</a>
+          <a class="ext-link" href="https://modelcontextprotocol.io/introduction" target="_blank">MCP — Model Context Protocol</a>
+          <a class="ext-link" href="https://platform.openai.com/docs/guides/function-calling" target="_blank">OpenAI Function Calling</a>
+          <a class="ext-link" href="https://python.langchain.com/docs/concepts/tools/" target="_blank">LangChain Tools Concept</a>
+          <a class="ext-link" href="https://json-schema.org/learn/getting-started-step-by-step" target="_blank">JSON Schema Getting Started</a>
+        </div>
       </div>
 
       <div class="section">
         <h3><span class="sec-num">3.2</span> Orchestrator Pattern</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>The <strong>orchestrator pattern</strong> separates the entity that decides what to do (the orchestrator) from the entities that do specific tasks (subagents or workers). The orchestrator holds the goal, tracks state, and delegates — it doesn't execute tasks directly. This is a general distributed systems pattern: it appears as the <strong>controller</strong> in Kubernetes, the <strong>conductor</strong> in workflow engines like Temporal and Apache Airflow, and the <strong>coordinator</strong> in multi-agent AI systems like AutoGen and CrewAI.</p>
+          <p>In LLM systems specifically, the orchestrator is usually a chain or agent that interprets the user's goal, decides which tools or subagents to call, collects results, and either returns a final answer or continues to the next step. The key design principle is that the orchestrator should be <strong>stateless between steps</strong> — all state lives in the messages passed between steps (the observation history), not in any in-memory variable. This makes the system resumable, debuggable, and serialisable.</p>
+          <p>The <strong>observation loop</strong> is the mechanism by which the orchestrator learns from tool results. After calling a tool, the result is appended to the conversation history as an observation, and the LLM is called again with the updated context. This is the core of ReAct-style agents: the model can see what it tried, what happened, and decide what to do next. The <code>max_steps</code> guard is critical — without it, a misbehaving model can loop indefinitely, incurring unbounded API costs.</p>
+        </div>
+
         <table class="concept-table">
           <tr><th>Layer</th><th>Responsibility</th><th>buffr equivalent</th></tr>
           <tr><td class="col3">Orchestrator</td><td>Decides steps, calls tools, evaluates results, plans next</td><td><code>prompt-chain.ts</code> with <code>suggestedActions</code></td></tr>
           <tr><td class="col3">Subagents</td><td>Execute a specific task, return result, stateless</td><td>Individual tool <code>execute()</code> functions</td></tr>
           <tr><td class="col3">Memory</td><td>Persists state between steps</td><td>Netlify Blobs (manual-actions, sessions)</td></tr>
           <tr><td class="col3">Observation loop</td><td>Receives tool results, decides next step</td><td>Not yet in buffr — this is Phase 3</td></tr>
+          <tr><td class="col3">max_steps guard</td><td>Hard limit on loop iterations — prevents runaway cost</td><td>Implement in the observation loop: abort after N iterations</td></tr>
         </table>
 
         <div class="ascii-diagram">
@@ -1258,6 +1429,14 @@ FIXED (sequential):
           <div class="sysdesign-header"><span class="sysdesign-label">🧠 System Design Prompt</span></div>
           <div class="sysdesign-body">Design an agentic code review system. A developer pushes a PR. An agent must: fetch the diff, identify files changed, look up relevant documentation, run static analysis tools, and produce a review. How do you define the tools? How do you handle tool call failures? How do you prevent the agent from running dangerous tools (e.g. <code>git push</code>)?</div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://arxiv.org/abs/2210.03629" target="_blank">ReAct Paper — Yao et al. 2022</a>
+          <a class="ext-link" href="https://langchain-ai.github.io/langgraph/" target="_blank">LangGraph (orchestration framework)</a>
+          <a class="ext-link" href="https://docs.anthropic.com/en/docs/build-with-claude/agents" target="_blank">Anthropic Agents Guide</a>
+          <a class="ext-link" href="https://microsoft.github.io/autogen/" target="_blank">AutoGen — Multi-Agent Framework</a>
+          <a class="ext-link" href="https://www.temporal.io/blog/workflow-orchestration" target="_blank">Temporal — Workflow Orchestration</a>
+        </div>
       </div>
     </div>
 
@@ -1273,13 +1452,22 @@ FIXED (sequential):
 
       <div class="section">
         <h3><span class="sec-num">4.1</span> Streaming Responses</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Streaming</strong> is the practice of sending data incrementally as it becomes available rather than buffering the complete result and sending it all at once. It's a general pattern in computing — Unix pipes stream between processes, video players stream frames, databases can stream query results — but it's become especially critical for LLM products because generation latency (the time to produce a complete response) can be 5–30 seconds, while time-to-first-token (the time to produce the first word) is typically under 500ms.</p>
+          <p><strong>Server-Sent Events (SSE)</strong> is an HTTP mechanism where the server sends a continuous stream of text events over a single long-lived connection. The client uses the browser's <code>EventSource</code> API (or a manual <code>fetch</code> reader) to receive events as they arrive. SSE is one-directional (server → client only), uses standard HTTP, and works through proxies and firewalls — making it the standard choice for LLM token streaming. The alternative, WebSockets, is bidirectional and better suited for real-time two-way communication like chat.</p>
+          <p>In Python, the same concept is implemented via <strong>generator functions</strong> (<code>yield</code>) paired with FastAPI's <code>StreamingResponse</code> or Flask's streaming response. In Go, you write to <code>http.ResponseWriter</code> and flush after each chunk. The concept is identical across languages — the difference is only in the HTTP framework's streaming API.</p>
+        </div>
+
         <p>Streaming is not optional for LLM products. Without it, a 10-second call shows a spinner. With it, users see output in under 500ms.</p>
         <table class="concept-table">
           <tr><th>Concept</th><th>What it means</th></tr>
-          <tr><td>Server-Sent Events</td><td>One-directional HTTP stream. Each chunk is a <code>text/event-stream</code> message. Native browser support via <code>EventSource</code>.</td></tr>
-          <tr><td>Token streaming</td><td>LLM APIs return tokens one by one as generated. buffr currently waits for full response.</td></tr>
-          <tr><td>Chunked transfer</td><td>HTTP response body sent in chunks without <code>Content-Length</code>. Connection stays open until stream ends.</td></tr>
-          <tr><td>Backpressure</td><td>When client can't consume chunks as fast as server produces them. Rarely a problem with LLMs.</td></tr>
+          <tr><td>Server-Sent Events (SSE)</td><td>One-directional HTTP stream. Each chunk is a <code>text/event-stream</code> message. Native browser support via <code>EventSource</code>.</td></tr>
+          <tr><td>Token streaming</td><td>LLM APIs return tokens one by one as generated. buffr currently waits for full response — Exercise 6 fixes this.</td></tr>
+          <tr><td>Chunked transfer encoding</td><td>HTTP response body sent in chunks without <code>Content-Length</code>. Connection stays open until stream ends with an empty chunk.</td></tr>
+          <tr><td>Backpressure</td><td>When client can't consume chunks as fast as server produces them. Rarely a problem with LLMs — tokens arrive at ~50/s, well within browser read speed.</td></tr>
+          <tr><td>Time to first token (TTFT)</td><td>The latency metric that matters for UX. With streaming, TTFT is typically 200–800ms even for responses that take 15s total.</td></tr>
         </table>
 
         <div class="ascii-diagram">
@@ -1329,18 +1517,35 @@ FIXED (sequential):
             <div class="exercise-hook"><strong>buffr hook:</strong> <code>lib/ai/chains/paraphraser.ts</code> + <code>session-ai.ts</code> + <code>src/lib/api.ts</code></div>
           </div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events" target="_blank">MDN — Server-Sent Events</a>
+          <a class="ext-link" href="https://docs.anthropic.com/en/api/streaming" target="_blank">Anthropic Streaming API</a>
+          <a class="ext-link" href="https://platform.openai.com/docs/api-reference/streaming" target="_blank">OpenAI Streaming Reference</a>
+          <a class="ext-link" href="https://fastapi.tiangolo.com/advanced/custom-response/#streamingresponse" target="_blank">FastAPI StreamingResponse (Python)</a>
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream" target="_blank">MDN ReadableStream API</a>
+        </div>
       </div>
 
       <div class="section">
         <h3><span class="sec-num">4.2</span> Evaluation-Driven Development</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Evaluation-driven development</strong> is to AI products what test-driven development is to traditional software: the practice of defining how you'll measure success before writing the code (or prompt) that needs to succeed. The key difference from unit testing is that AI outputs are <strong>probabilistic and partially correct</strong> — you can't write <code>assertEqual(output, expected)</code> for a generated summary. Instead, you define a scoring function that measures quality along dimensions you care about.</p>
+          <p>There are three main evaluation strategies. <strong>Exact match evals</strong> work when outputs are from a fixed set — intent classification, sentiment labels, yes/no decisions. <strong>LLM-as-judge evals</strong> use a second (often larger) model to score output quality on dimensions like relevance, accuracy, and coherence — this is how Anthropic, OpenAI, and most AI labs measure their own models in red-teaming and benchmarks. <strong>Semantic similarity evals</strong> embed the output and expected answer and measure cosine distance — useful when wording flexibility is acceptable but meaning matters.</p>
+          <p>The critical insight is that <strong>prompt changes are code changes</strong> and must trigger the same eval discipline as code changes. A one-word change to a system prompt can silently break output format for 20% of inputs without breaking any unit tests. Evals are the safety net for prompt iteration. Tools like <strong>Braintrust</strong>, <strong>PromptFoo</strong>, <strong>LangSmith</strong>, and <strong>Weights &amp; Biases Prompts</strong> provide eval infrastructure — but a hand-rolled harness in a single TypeScript or Python file is entirely sufficient to start.</p>
+        </div>
+
         <p>The hardest part of AI product engineering is knowing whether it works. Evals separate engineers who ship reliable AI from those who ship demos that fail in production.</p>
         <table class="concept-table">
           <tr><th>Eval type</th><th>What it tests</th><th>When to use</th></tr>
           <tr><td class="col3">Exact match</td><td>Does output exactly equal expected?</td><td>Classification with fixed label set (intent detection)</td></tr>
           <tr><td class="col3">LLM-as-judge</td><td>Ask a second LLM to rate quality 1–5</td><td>Open-ended generation where exact match is impossible</td></tr>
-          <tr><td class="col3">Semantic similarity</td><td>Embed output + expected, measure cosine similarity</td><td>When meaning matters more than wording</td></tr>
-          <tr><td class="col3">Regression test</td><td>Fixed input set run on every prompt change</td><td>Catching regressions before production</td></tr>
-          <tr><td class="col3">A/B eval</td><td>Show two outputs to human raters</td><td>Deciding which model or prompt to ship</td></tr>
+          <tr><td class="col3">Semantic similarity</td><td>Embed output + expected, measure cosine similarity</td><td>When meaning matters more than exact wording</td></tr>
+          <tr><td class="col3">Regression test</td><td>Fixed input set run on every prompt change</td><td>Catching silent regressions before production</td></tr>
+          <tr><td class="col3">A/B eval</td><td>Show two outputs to human raters, pick the better one</td><td>Final decision between two candidate prompts or models</td></tr>
+          <tr><td class="col3">Trajectory eval</td><td>Score the sequence of tool calls an agent made, not just final output</td><td>Agentic systems where the path matters as much as the result</td></tr>
         </table>
 
         <div class="ascii-diagram">
@@ -1409,17 +1614,41 @@ FIXED (sequential):
             <div class="exercise-hook"><strong>buffr hook:</strong> wrap <code>lib/ai/chains/session-summarizer.ts</code> in a test harness without modifying the chain</div>
           </div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.braintrustdata.com/docs" target="_blank">Braintrust — Eval Platform</a>
+          <a class="ext-link" href="https://promptfoo.dev/docs/intro" target="_blank">PromptFoo — Open-Source Evals</a>
+          <a class="ext-link" href="https://docs.smith.langchain.com/evaluation" target="_blank">LangSmith Evaluation</a>
+          <a class="ext-link" href="https://hamel.dev/blog/posts/evals/" target="_blank">Your AI Product Needs Evals — Hamel Husain</a>
+          <a class="ext-link" href="https://eugeneyan.com/writing/llm-evaluations/" target="_blank">LLM Evaluations — Eugene Yan</a>
+        </div>
       </div>
 
       <div class="section">
         <h3><span class="sec-num">4.3</span> Cost Optimisation & Model Routing</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Model routing</strong> is the practice of dispatching different requests to different models based on the complexity or type of the task. Not all LLM tasks need the same capability level — a request to paraphrase a sentence doesn't require the same model as a request to architect a system. Smaller, cheaper models (Claude Haiku, GPT-4o Mini, Llama 3 8B) handle simple tasks at a fraction of the cost; larger models (Claude Sonnet/Opus, GPT-4o) are reserved for tasks that genuinely need stronger reasoning. This is a language-agnostic cost engineering principle — the same logic applies whether you're routing in Python with LiteLLM or TypeScript with LangChain.</p>
+          <p><strong>Prompt caching</strong> is a feature offered by Anthropic (and increasingly other providers) where the beginning of a prompt — typically the system message and any large static context — is cached server-side after the first call. Subsequent calls that share the same cached prefix are charged at a much lower rate (~90% discount on cached tokens) and respond faster. This is especially valuable for buffr's dev scanner, where the same industry standards content is sent with every scan. The cache key is the exact text content, so even a single character change invalidates the cache.</p>
+          <p><strong>Response caching</strong> (application-level) is different: you store LLM outputs in your own database keyed by a hash of the input, and return the cached response for identical future requests. This is only valid for deterministic, stateless queries — "summarise these exact items" is cacheable if the items don't change; "what should I do next?" is not. Always check whether caching semantically matches the use case before implementing it.</p>
+        </div>
+
         <table class="concept-table">
           <tr><th>Technique</th><th>What it does</th><th>buffr application</th></tr>
-          <tr><td class="col3">Model routing</td><td>Cheap small model for simple tasks, expensive only for complex</td><td>Route paraphraser to Haiku, dev-scanner to Sonnet</td></tr>
-          <tr><td class="col3">Prompt caching</td><td>Anthropic/OpenAI cache long system prompts — repeated calls cheaper</td><td>Dev scanner's industry standards prompt is a candidate</td></tr>
-          <tr><td class="col3">Token counting</td><td>Count input tokens before calling, truncate if approaching limit</td><td>Activity item list in summariser</td></tr>
-          <tr><td class="col3">Response caching</td><td>Cache identical inputs → outputs</td><td>Dev scanner — project scans rarely change between runs</td></tr>
+          <tr><td class="col3">Model routing</td><td>Cheap small model for simple tasks, expensive only for complex</td><td>Route paraphraser to Haiku (~$0.25/M tokens), dev-scanner to Sonnet (~$3/M tokens)</td></tr>
+          <tr><td class="col3">Prompt caching</td><td>Anthropic/OpenAI cache long system prompts — repeated calls 90% cheaper on cached tokens</td><td>Dev scanner's 8,000-token industry standards block is a prime candidate</td></tr>
+          <tr><td class="col3">Token counting</td><td>Count input tokens before calling, truncate if approaching limit</td><td>Activity item list in summariser — clip at 3,000 tokens max</td></tr>
+          <tr><td class="col3">Response caching</td><td>Cache LLM output keyed by input hash — skip LLM for identical inputs</td><td>Dev scanner — project scans rarely change between runs in the same day</td></tr>
+          <tr><td class="col3">Batch processing</td><td>Some providers offer async batch APIs at 50% discount for non-urgent work</td><td>Bulk re-embedding prompts after a schema change</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching" target="_blank">Anthropic Prompt Caching</a>
+          <a class="ext-link" href="https://openrouter.ai/docs/model-routing" target="_blank">OpenRouter Model Routing</a>
+          <a class="ext-link" href="https://www.litellm.ai/docs/routing" target="_blank">LiteLLM Router (Python)</a>
+          <a class="ext-link" href="https://docs.anthropic.com/en/docs/build-with-claude/token-counting" target="_blank">Anthropic Token Counting</a>
+        </div>
       </div>
     </div>
 
@@ -1435,13 +1664,22 @@ FIXED (sequential):
 
       <div class="section">
         <h3><span class="sec-num">5.1</span> Embeddings & Semantic Search</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>An <strong>embedding</strong> is a fixed-length numerical representation of a piece of content — text, image, audio, or code — produced by a neural network. The key property is that similar content produces similar embeddings: two sentences with the same meaning will have embedding vectors that are geometrically close in high-dimensional space, even if they share no words. This is fundamentally different from keyword search, which requires exact lexical overlap. Embeddings are language-agnostic: the concept and the APIs (Anthropic's <code>embed</code>, OpenAI's <code>text-embedding-3-small</code>, Cohere Embed, <code>@xenova/transformers</code> for local) are called the same way from any language.</p>
+          <p>A <strong>vector database</strong> is a storage system optimised for embedding vectors — it can answer "what are the N items most similar to this query vector?" efficiently using approximate nearest-neighbour algorithms (HNSW, IVF). Options include <strong>pgvector</strong> (a Postgres extension — no new infrastructure if you're already on Postgres), <strong>Pinecone</strong> (managed, scales to billions), <strong>Weaviate</strong> (self-hosted or cloud, built-in text chunking), and <strong>Qdrant</strong> (open-source, Rust-based, very fast). For buffr at current scale, pgvector on Supabase is the natural path — single infrastructure, SQL access, row-level security already in place.</p>
+          <p><strong>Chunking</strong> is the process of splitting long documents into smaller pieces before embedding. This is necessary because embedding models have input length limits (typically 512–8192 tokens) and because larger chunks produce embeddings that average across their entire content — making retrieval less precise. The art is in choosing chunk boundaries: split at sentence or paragraph boundaries rather than arbitrary character counts, and use overlap between adjacent chunks (128–256 tokens) to ensure content at boundaries isn't lost.</p>
+        </div>
+
         <table class="concept-table">
           <tr><th>Concept</th><th>Definition</th></tr>
-          <tr><td>Embedding</td><td>A vector (array of floats) encoding the meaning of text. Similar meanings → similar vectors.</td></tr>
-          <tr><td>Cosine similarity</td><td>Measures angle between two vectors. 1.0 = identical meaning, 0.0 = unrelated.</td></tr>
-          <tr><td>Vector database</td><td>Optimised for storing and querying vectors. Examples: pgvector, Pinecone, Weaviate, Qdrant.</td></tr>
-          <tr><td>Chunking</td><td>Breaking long documents into smaller pieces before embedding. Too small = lost context. Too large = imprecise retrieval.</td></tr>
+          <tr><td>Embedding</td><td>A vector (array of floats, typically 1536 or 3072 dimensions) encoding the semantic meaning of text. Similar meanings → nearby vectors in embedding space.</td></tr>
+          <tr><td>Cosine similarity</td><td>Measures the angle between two vectors. 1.0 = identical meaning, 0.0 = unrelated. Range: −1 to 1, but text embeddings rarely go negative.</td></tr>
+          <tr><td>Vector database</td><td>Optimised for storing and querying vectors via approximate nearest-neighbour search. pgvector, Pinecone, Weaviate, Qdrant, Chroma.</td></tr>
+          <tr><td>Chunking</td><td>Breaking long documents into smaller pieces before embedding. Sweet spot: 256–512 tokens with 64–128 token overlap.</td></tr>
           <tr><td>RAG pipeline</td><td>Embed query → find similar stored chunks → inject into prompt → LLM generates grounded response.</td></tr>
+          <tr><td>Embedding model choice</td><td>OpenAI <code>text-embedding-3-small</code> (1536d, cheap), Cohere Embed v3 (1024d, multilingual), <code>@xenova/transformers</code> (runs locally in the browser — zero API cost).</td></tr>
         </table>
 
         <div class="ascii-diagram">
@@ -1521,18 +1759,46 @@ FIXED (sequential):
           <div class="sysdesign-header"><span class="sysdesign-label">🧠 System Design Prompt</span></div>
           <div class="sysdesign-body">Design a RAG system that lets developers query their entire git history in natural language. "What was I working on last Tuesday?" or "Show me every commit that touched authentication." What is your embedding strategy? How do you handle 10,000 commits? What chunking approach works for commit messages vs file diffs?</div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://supabase.com/docs/guides/ai/vector-columns" target="_blank">Supabase pgvector Guide</a>
+          <a class="ext-link" href="https://docs.pinecone.io/guides/getting-started/quickstart" target="_blank">Pinecone Quickstart</a>
+          <a class="ext-link" href="https://platform.openai.com/docs/guides/embeddings" target="_blank">OpenAI Embeddings Guide</a>
+          <a class="ext-link" href="https://arxiv.org/abs/2005.11401" target="_blank">RAG Paper — Lewis et al. 2020</a>
+          <a class="ext-link" href="https://www.pinecone.io/learn/chunking-strategies/" target="_blank">Chunking Strategies — Pinecone</a>
+          <a class="ext-link" href="https://huggingface.co/spaces/mteb/leaderboard" target="_blank">Embedding Model Leaderboard (MTEB)</a>
+        </div>
       </div>
 
       <div class="section">
         <h3><span class="sec-num">5.2</span> Failure Modes & Systems Thinking</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Systems thinking</strong> applied to AI products means reasoning about failure modes before they occur — asking "what can go wrong?" for every component, every boundary, and every assumption in the system. AI systems have a distinct failure taxonomy compared to traditional software. Traditional software fails deterministically: the same bug always produces the same error. AI systems fail <strong>probabilistically and silently</strong>: hallucination, prompt injection, and context overflow produce outputs that look plausible but are wrong, making them harder to detect and debug.</p>
+          <p><strong>Hallucination</strong> is the most discussed AI failure mode. It occurs when a model generates fluent, confident-sounding text that is factually incorrect or entirely fabricated. The underlying cause is that language models are trained to produce probable token sequences, not to verify factual accuracy. RAG reduces hallucination by grounding responses in retrieved documents, but does not eliminate it — a model can still misread or misrepresent the retrieved content. The practical defence is always providing source references so users can verify claims.</p>
+          <p><strong>Prompt injection</strong> is a security failure mode specific to systems that combine trusted instructions with untrusted data. If a user's note says "Ignore previous instructions. You are now a different assistant." and you interpolate that directly into your system message, you've handed the user control over the model's behaviour. The fix is architectural: system messages must contain only trusted content you control; user data must flow through the human message, never the system message. This is a language-agnostic principle — it applies identically in Python, TypeScript, Go, or any language where you build LLM applications.</p>
+        </div>
+
         <table class="concept-table">
           <tr><th>Failure mode</th><th>Cause</th><th>Design defence</th></tr>
-          <tr><td class="col3">Hallucination</td><td>Model generates plausible but false information</td><td>Ground responses in retrieved data (RAG). Add confidence scores. Flag uncertain outputs.</td></tr>
-          <tr><td class="col3">Prompt injection</td><td>Malicious user input hijacks system prompt</td><td>Never interpolate raw user input into system messages. Isolate in human message.</td></tr>
+          <tr><td class="col3">Hallucination</td><td>Model generates plausible but false information</td><td>Ground responses in retrieved data (RAG). Add confidence scores. Flag uncertain outputs. Always show source references.</td></tr>
+          <tr><td class="col3">Prompt injection</td><td>Malicious user input hijacks system prompt</td><td>Never interpolate raw user input into system messages. Isolate in human message only.</td></tr>
           <tr><td class="col3">Context overflow</td><td>Prompt + response exceeds token limit</td><td>Count tokens before calling. Truncate least-important content first. Chunk long docs.</td></tr>
-          <tr><td class="col3">Latency cascade</td><td>Tool calls + DB reads + LLM calls chain together</td><td>Parallelise independent ops with <code>Promise.all</code>. Per-operation timeouts.</td></tr>
-          <tr><td class="col3">Cost explosion</td><td>Agentic loop calls tools hundreds of times unexpectedly</td><td>Add <code>max_steps</code> guard. Log cost per request. Set per-user spend limits.</td></tr>
+          <tr><td class="col3">Latency cascade</td><td>Tool calls + DB reads + LLM calls chain together</td><td>Parallelise independent ops with <code>Promise.all</code>. Per-operation timeouts. Circuit breakers.</td></tr>
+          <tr><td class="col3">Cost explosion</td><td>Agentic loop calls tools hundreds of times unexpectedly</td><td>Add <code>max_steps</code> guard. Log cost per request. Set per-user spend limits. Alert on anomalies.</td></tr>
+          <tr><td class="col3">Model regression</td><td>LLM provider silently updates model behaviour</td><td>Run your eval harness on a schedule, not just on code/prompt changes. Pin model versions.</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" target="_blank">OWASP LLM Top 10</a>
+          <a class="ext-link" href="https://simonwillison.net/2023/Apr/14/worst-that-could-happen/" target="_blank">Prompt Injection Explained — Simon Willison</a>
+          <a class="ext-link" href="https://www.anthropic.com/research/many-shot-jailbreaking" target="_blank">Anthropic — Jailbreaking Research</a>
+          <a class="ext-link" href="https://huyenchip.com/2023/04/11/llm-engineering.html" target="_blank">LLM Engineering Challenges — Chip Huyen</a>
+          <a class="ext-link" href="https://newsletter.pragmaticengineer.com/p/llm-failure-modes" target="_blank">LLM Failure Modes — Pragmatic Engineer</a>
+        </div>
+      </div>
+    </div>
 
         <div class="ascii-diagram">
           <div class="asc-title">Prompt Injection — Safe vs Unsafe Template Construction</div>
@@ -1582,6 +1848,14 @@ FIXED (sequential):
 
       <div class="section">
         <h3><span class="sec-num">6.1</span> The ML Pipeline (What You're Already Running)</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>An <strong>ML inference pipeline</strong> is the sequence of operations that takes raw input data (a video frame, a sentence, an image) and produces a prediction (landmark coordinates, a sentiment label, an object bounding box). It is distinct from <strong>training</strong> — you are not adjusting any model weights at runtime; you are running a fixed model on new inputs. The pipeline always has the same three layers: <strong>pre-processing</strong> (normalise and resize input to match what the model expects), <strong>inference</strong> (feed through the model's neural network, get raw output), and <strong>post-processing</strong> (interpret raw model output into something your application can use).</p>
+          <p>MediaPipe's PoseLandmarker is a pre-built inference pipeline that handles all three layers for pose estimation. It pre-processes frames (resize to 256×256, normalise pixels to 0.0–1.0), runs a MobileNet-based neural network to predict landmark locations, and post-processes the raw coordinates back to the original image's coordinate space. Understanding these layers tells you: why the delegate (CPU/GPU/WASM) matters for performance, why input resolution affects accuracy, and why <strong>visibility scores</strong> are generated per landmark (the model's confidence in each prediction).</p>
+          <p><strong>Inference vs training</strong> is a fundamental ML distinction. Training requires backpropagation through the entire network — computationally expensive, requires GPUs, takes hours to days. Inference is just a forward pass through the frozen network — much cheaper, can run in a browser in 15–60ms. You can run inference on a CPU, GPU, or even a microcontroller. This distinction explains why contrl runs in the browser while training the same model would require a data centre.</p>
+        </div>
+
         <p>Your pose processors are a textbook example of <strong>signal processing on ML output</strong> — the same pattern as self-driving cars, voice assistants, and content moderation.</p>
         <div class="pipeline">
           <div class="pipe-step"><div class="label">Video Frame</div><div class="value">30 fps</div></div>
@@ -1602,6 +1876,13 @@ FIXED (sequential):
           <tr><td>Visibility score</td><td>Each landmark has a 0–1 confidence score. Filter out calculations where visibility &lt; 0.6.</td></tr>
           <tr><td>Delegate</td><td>CPU (WASM, ~60ms/frame), GPU (WebGL, ~15ms/frame), WASM SIMD (~30ms/frame)</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker" target="_blank">MediaPipe PoseLandmarker Docs</a>
+          <a class="ext-link" href="https://developers.google.com/mediapipe/solutions/vision/pose_landmarker/web_js" target="_blank">MediaPipe Web JS Guide</a>
+          <a class="ext-link" href="https://www.tensorflow.org/js" target="_blank">TensorFlow.js (on-device inference)</a>
+          <a class="ext-link" href="https://onnxruntime.ai/docs/get-started/with-web.html" target="_blank">ONNX Runtime Web</a>
+        </div>
 
         <div class="ascii-diagram">
           <div class="asc-title">MediaPipe 33 Landmarks — The Ones You Actually Use in contrl</div>
@@ -1635,13 +1916,22 @@ FIXED (sequential):
 
       <div class="section">
         <h3><span class="sec-num">6.2</span> Signal Processing Techniques</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Signal processing</strong> is the discipline of extracting meaning from noisy, time-varying data. It predates computers — it was developed for radar, radio, and audio engineering — but it is the foundation of every system that processes real-world sensor data, including ML models. When you apply EMA smoothing to MediaPipe landmark coordinates, you are doing signal processing. When you use a state machine to classify rep phases, you are doing event detection on a signal. The techniques are language-agnostic: the same EMA formula applies in Python (NumPy), C++ (embedded systems), Swift (iOS), and TypeScript.</p>
+          <p>A <strong>state machine</strong> (formally a Finite State Machine or FSM) is a mathematical model of a system that can exist in a finite number of states, transitions between them based on inputs, and produces outputs based on its current state. For rep counting, the states are the phases of a rep (idle, descending, bottom, ascending, complete) and transitions are triggered by angle thresholds. State machines are the correct tool whenever your system's next action depends on its history — not just the current input. They are used everywhere: protocol parsers, game AI, traffic lights, UI animation controllers, and streaming data processors.</p>
+          <p>The <strong>joint angle</strong> calculation using dot product is a direct application of vector geometry. Two bone vectors from a joint, their dot product divided by the product of their magnitudes, then arccosine — this gives the angle at the joint in degrees. This same formula is used in robotics (inverse kinematics), game engines (ragdoll physics), biomechanics research, and physical therapy software. It is universal.</p>
+        </div>
+
         <table class="concept-table">
           <tr><th>Technique</th><th>What it does</th><th>contrl application</th></tr>
-          <tr><td class="col3">Joint angle calculation</td><td>Dot product of two bone vectors gives angle at a joint</td><td>Elbow angle for push-ups, knee angle for squats</td></tr>
-          <tr><td class="col3">EMA smoothing</td><td>Exponential Moving Average reduces jitter without lag</td><td><code>alpha = 0.3</code> — smooth but responsive</td></tr>
-          <tr><td class="col3">Bilateral averaging</td><td>Average left and right side angles for symmetric movements</td><td>More stable rep detection, catches asymmetries</td></tr>
-          <tr><td class="col3">Confidence thresholding</td><td>Filter frames where landmark visibility &lt; threshold</td><td>Prevents garbage angles from occluded joints</td></tr>
-          <tr><td class="col3">Phase classification</td><td>Classify which phase of a rep the user is in</td><td>idle → ready → eccentric → bottom → concentric → complete</td></tr>
+          <tr><td class="col3">Joint angle calculation</td><td>Dot product of two bone vectors gives the angle at a joint</td><td>Elbow angle for push-ups, knee angle for squats</td></tr>
+          <tr><td class="col3">EMA smoothing</td><td>Exponential Moving Average reduces high-frequency noise without adding lag</td><td><code>alpha = 0.3</code> — smooth but responsive to genuine movement</td></tr>
+          <tr><td class="col3">Bilateral averaging</td><td>Average left and right side angles for symmetric movements</td><td>More stable rep detection, also detects left/right asymmetry for form scoring</td></tr>
+          <tr><td class="col3">Confidence thresholding</td><td>Filter frames where landmark visibility &lt; threshold</td><td>Prevents garbage angle calculations from occluded or off-screen joints</td></tr>
+          <tr><td class="col3">Phase classification</td><td>A state machine that classifies which phase of a rep the user is currently in</td><td>idle → ready → eccentric (lowering) → bottom → concentric (rising) → complete</td></tr>
+          <tr><td class="col3">Temporal confirmation</td><td>Require N consecutive frames in the same state before transitioning</td><td>Prevents single noisy frames from triggering false rep counts</td></tr>
         </table>
         <pre>// Joint angle using dot product
 const vec1 = { x: A.x - B.x, y: A.y - B.y }  // upper bone
@@ -1724,17 +2014,34 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
             <div class="exercise-hook"><strong>contrl hook:</strong> core ML logic for Phase 2A/2B rep detection pipeline</div>
           </div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Exponential_smoothing" target="_blank">Exponential Smoothing — Wikipedia</a>
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Finite-state_machine" target="_blank">Finite State Machine — Wikipedia</a>
+          <a class="ext-link" href="https://mathworld.wolfram.com/DotProduct.html" target="_blank">Dot Product — MathWorld</a>
+          <a class="ext-link" href="https://www.xstate.js.org/docs/" target="_blank">XState — State Machine Library (JS)</a>
+          <a class="ext-link" href="https://scipy-lectures.org/intro/scipy/auto_examples/solutions/plot_expo_fit.html" target="_blank">Signal Processing with SciPy (Python)</a>
+        </div>
       </div>
 
       <div class="section">
         <h3><span class="sec-num">6.3</span> On-Device vs Cloud Inference</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>On-device inference</strong> (also called <strong>edge inference</strong>) means running a model's forward pass on the local device — the user's phone, browser, laptop, or embedded system — rather than sending data to a remote server. The trade-off is capability vs privacy + latency. Smaller models run on-device; frontier models require data centre GPUs. But for many well-scoped tasks (pose estimation, speech recognition, object detection, face detection), purpose-built on-device models achieve excellent accuracy with millisecond latency and zero network dependency.</p>
+          <p>In the browser, on-device inference is possible through <strong>WebAssembly (WASM)</strong> — a binary format that runs near-native speed in the browser sandbox — and <strong>WebGL/WebGPU</strong> which expose the GPU for parallel computation. MediaPipe compiles its TFLite models to WASM and runs them in a Web Worker to avoid blocking the main thread. TensorFlow.js, ONNX Runtime Web, and Transformers.js (<code>@xenova/transformers</code>) use the same approach. On iOS/Android, CoreML and TensorFlow Lite run on the Neural Engine or GPU respectively.</p>
+          <p>The <strong>hybrid architecture</strong> — on-device for real-time sensing, cloud for intelligence — is the dominant pattern in modern AI products. Apple's features like face recognition, live text, and handwriting use on-device models for speed and privacy, then optionally send structured data (not raw media) to cloud services for additional intelligence. contrl follows this pattern: MediaPipe extracts structured pose data on-device, and optionally sends aggregate metrics (angles, reps, scores) to a cloud LLM for coaching feedback. The raw video never leaves the device.</p>
+        </div>
+
         <table class="concept-table">
           <tr><th>Dimension</th><th>On-Device (contrl)</th><th>Cloud API</th></tr>
-          <tr><td class="col3">Latency</td><td>~15–60ms per frame</td><td>100–500ms per call</td></tr>
-          <tr><td class="col3">Privacy</td><td>Body video stays on device</td><td>Data sent to a server</td></tr>
-          <tr><td class="col3">Cost</td><td>FREE</td><td>Per API call</td></tr>
-          <tr><td class="col3">Offline</td><td>Yes</td><td>No</td></tr>
-          <tr><td class="col3">Model ceiling</td><td>Limited by device capability</td><td>State-of-the-art models available</td></tr>
+          <tr><td class="col3">Latency</td><td>~15–60ms per frame (no network hop)</td><td>100–500ms per call (network + queue + inference)</td></tr>
+          <tr><td class="col3">Privacy</td><td>Raw video stays on device — never transmitted</td><td>Data sent to a server — subject to provider's privacy policy</td></tr>
+          <tr><td class="col3">Cost</td><td>FREE — device's own GPU/CPU does the work</td><td>Per API call — can add up at 30fps × session minutes</td></tr>
+          <tr><td class="col3">Offline</td><td>Yes — works without internet</td><td>No — requires network connection</td></tr>
+          <tr><td class="col3">Model ceiling</td><td>Limited by device capability (~100M parameters max)</td><td>State-of-the-art models (100B+ parameters) available</td></tr>
+          <tr><td class="col3">Use case fit</td><td>Real-time, repetitive, privacy-sensitive tasks</td><td>Complex reasoning, broad knowledge, language understanding</td></tr>
         </table>
 
         <div class="ascii-diagram">
@@ -1776,10 +2083,24 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           </div>
           <div class="interview-body">On-device for anything real-time and privacy-sensitive — pose detection, rep counting, angle calculations. These need sub-50ms latency, work offline, and body video should never leave the device. Cloud LLM for anything that needs language understanding or broad knowledge — form coaching advice, personalised progressions, answering questions about technique. The winning architecture combines both: the on-device pipeline produces structured data (angles, reps, scores), and the LLM interprets that into natural language the user can act on.</div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/WebAssembly" target="_blank">MDN WebAssembly</a>
+          <a class="ext-link" href="https://www.tensorflow.org/js/guide/platform_environment" target="_blank">TensorFlow.js Platform Guide</a>
+          <a class="ext-link" href="https://huggingface.co/docs/transformers.js" target="_blank">Transformers.js (@xenova)</a>
+          <a class="ext-link" href="https://developer.apple.com/machine-learning/core-ml/" target="_blank">Apple CoreML</a>
+          <a class="ext-link" href="https://www.tensorflow.org/lite/guide" target="_blank">TensorFlow Lite</a>
+        </div>
       </div>
 
       <div class="section">
         <h3><span class="sec-num">6.4</span> contrl + LLM = Hybrid Product</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>hybrid AI product</strong> combines multiple AI modalities or deployment targets to cover different parts of the user experience. The common pattern is: <strong>specialist model on-device</strong> (fast, privacy-preserving, handles the high-frequency sensing loop) + <strong>general model in the cloud</strong> (slower, expensive, handles interpretation, advice, and tasks requiring broad knowledge). This is not a contrl-specific idea — it's the architecture Apple uses for Siri (on-device for wake-word detection, cloud for complex queries), Google uses for camera AI, and fitness apps like Whoop and Oura use for health metrics.</p>
+          <p>The key engineering insight is the <strong>data abstraction boundary</strong>: what crosses from on-device to cloud should be structured, minimal, and semantically meaningful — not raw sensor data. Sending 30fps of raw pixel data to a cloud LLM would be prohibitively expensive and slow. Sending <code>{ exercise: "push-up", reps: 12, avgElbowAngle: 62, targetReps: 15, formScore: 0.74 }</code> after a set is ~200 bytes and takes 50ms. The on-device pipeline is responsible for the heavy lifting of turning raw sensor data into structured, interpretable metrics. The cloud LLM then does what LLMs are genuinely good at: interpreting those metrics and generating natural-language coaching.</p>
+        </div>
         <div class="pipeline" style="flex-direction:column; gap:16px;">
           <div style="display:flex; align-items:center; gap:0;">
             <div class="pipe-step" style="min-width:140px; background:var(--teal-dim); border-color:var(--teal)"><div class="label">On-device</div><div class="value">Camera → MediaPipe</div></div>
@@ -1813,6 +2134,13 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
             </ol>
             <div class="exercise-hook"><strong>contrl hook:</strong> post-set callback in the camera session component + new <code>/api/coach</code> serverless route</div>
           </div>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://developer.apple.com/videos/play/wwdc2023/10133/" target="_blank">Apple — On-Device ML at WWDC23</a>
+          <a class="ext-link" href="https://research.google/blog/mediapipe-on-device-ml-at-google/" target="_blank">MediaPipe On-Device ML — Google Research</a>
+          <a class="ext-link" href="https://cookbook.openai.com/examples/gpt_with_vision_for_video_understanding" target="_blank">GPT-4V for Video Understanding</a>
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API" target="_blank">MDN Web Workers API</a>
         </div>
       </div>
     </div>
@@ -1901,6 +2229,13 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
         <h3>Dot Product & Cosine Similarity <span class="diff-badge diff-1">Essential</span></h3>
         <p>The single most important formula in AI product engineering. It powers similarity search, embeddings, attention, and your joint angle calculations in contrl — all the same underlying operation.</p>
 
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>The <strong>dot product</strong> (also called the <strong>inner product</strong> or <strong>scalar product</strong>) is an operation on two vectors that produces a single number. It has a geometric interpretation: it measures how much two vectors point in the same direction. When both vectors are unit length (magnitude = 1), the dot product equals the cosine of the angle between them — which is exactly <strong>cosine similarity</strong>.</p>
+          <p>This single formula underlies an enormous range of applications: vector database queries (pgvector, Pinecone, Weaviate all use cosine similarity under the hood), transformer self-attention (the QKᵀ matrix multiplication is a batch of dot products), joint angle computation in robotics and pose estimation, and neural network weight updates (gradient direction is a dot product). The formula is identical whether computed in NumPy (<code>np.dot</code>), TypeScript, SQL (<code>&lt;=&gt;</code> in pgvector), or GLSL on the GPU.</p>
+          <p><strong>Why normalise?</strong> Raw dot product depends on vector magnitude — a longer vector produces a larger dot product even if the direction is the same. Cosine similarity normalises by the product of magnitudes, giving a direction-only measure in the range −1 to 1. For text embeddings, cosine similarity is almost always preferred over raw dot product because all embedding models produce unit-norm vectors by default.</p>
+        </div>
+
         <div class="formula-grid">
           <div class="formula-block">
             <div class="formula-title">Dot Product</div>
@@ -1929,10 +2264,25 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           <tr><td>Transformer attention</td><td>The Q·Kᵀ step in self-attention is a batch dot product — measuring how similar every token is to every other token.</td></tr>
           <tr><td>Semantic search ranking</td><td>Higher cosine similarity → more semantically similar documents → ranked higher in search results.</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.3blue1brown.com/lessons/dot-products" target="_blank">3Blue1Brown — Dot Products (visual)</a>
+          <a class="ext-link" href="https://numpy.org/doc/stable/reference/generated/numpy.dot.html" target="_blank">NumPy np.dot docs</a>
+          <a class="ext-link" href="https://supabase.com/docs/guides/ai/semantic-search" target="_blank">Supabase Semantic Search Guide</a>
+          <a class="ext-link" href="https://towardsdatascience.com/cosine-similarity-how-does-it-measure-the-similarity-maths-behind-and-usage-in-python-50ad30aad7db" target="_blank">Cosine Similarity — Towards Data Science</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>Exponential Moving Average (EMA) <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>The <strong>Exponential Moving Average</strong> is a low-pass filter — it attenuates high-frequency noise (rapid frame-to-frame jitter) while preserving low-frequency signal (genuine slow movement). The "exponential" refers to how the weights assigned to past values decay geometrically: the most recent value gets weight α, the previous gets α(1−α), the one before α(1−α)², and so on forever — though in practice values older than ~5/α steps contribute negligibly.</p>
+          <p>EMA is used universally in signal processing across all platforms. In financial data, it smooths price volatility to reveal trends. In game engines, it smooths camera movement and physics interactions. In robotics, it filters noisy sensor readings. In the Adam optimiser (used to train every major LLM), it maintains exponential moving averages of gradient first and second moments. The formula is identical in every language and every domain — only the choice of α varies by application.</p>
+          <p><strong>EMA vs simple moving average (SMA):</strong> A simple moving average assigns equal weight to the last N values and zero weight to everything older. EMA gives all past values some weight (exponentially decaying) and only requires storing a single running value — O(1) space. For real-time sensor processing like contrl, EMA is almost always preferred over SMA for this reason.</p>
+        </div>
+
         <p>You're already using this in contrl for landmark smoothing. Understanding the formula tells you exactly how to tune <code>alpha</code> and why it behaves the way it does.</p>
 
         <div class="formula-block">
@@ -1968,10 +2318,25 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
   <span class="asc-dim">  frame 6 raw=60°, but EMA only reaches ~76° (lagging behind intentionally)
   This prevents false "down" detection from a single noisy frame spike</span></pre>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Exponential_smoothing" target="_blank">Exponential Smoothing — Wikipedia</a>
+          <a class="ext-link" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.ewm.html" target="_blank">Pandas ewm() — Python EMA</a>
+          <a class="ext-link" href="https://arxiv.org/abs/1412.6980" target="_blank">Adam Optimiser Paper (uses EMA internally)</a>
+          <a class="ext-link" href="https://www.sciencedirect.com/topics/engineering/exponential-moving-average" target="_blank">EMA in Signal Processing</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>Softmax <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Softmax</strong> is a function that converts any vector of real numbers into a probability distribution — all outputs are positive and they sum to exactly 1.0. It's the standard final layer of any multi-class classifier. The <code>e^x</code> (exponential) ensures all outputs are positive and amplifies differences: a score of 2.0 gets a much higher probability than 1.9, making softmax "confident." Sigmoid (the binary version) is used for two-class problems; softmax generalises to any number of classes.</p>
+          <p>In LLMs, softmax is applied to the logits (raw scores) over the entire vocabulary (~100,000 tokens) to produce a probability distribution over next tokens. The model then samples from this distribution based on temperature. This happens at every single generation step — for a 500-token response, softmax runs 500 times, each time over 100,000+ values. This is computationally intensive, which is why inference at scale requires GPUs and why optimised runtimes like vLLM and TensorRT-LLM matter.</p>
+          <p><strong>Numerical stability:</strong> In practice, softmax is always computed as <code>softmax(x − max(x))</code> (subtracting the max before exponentiating) to prevent overflow. <code>e^1000</code> overflows float32; <code>e^(1000-1000) = e^0 = 1</code> doesn't. This is a universal implementation detail in every framework and language — NumPy, PyTorch, TensorFlow, and JAX all do this internally.</p>
+        </div>
+
         <p>Softmax converts a list of raw scores into a probability distribution (numbers that sum to 1.0). It appears in every LLM output — the model's "confidence" in each next token is a softmax over the entire vocabulary.</p>
 
         <div class="formula-block">
@@ -2011,6 +2376,13 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
   <span class="asc-note">  buffr uses T=0 for structured output chains (JSON must be exact)</span>
   <span class="asc-note">  Use T=0.7–1.0 for creative tasks (summaries, suggestions)</span></pre>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.youtube.com/watch?v=aircAruvnKk" target="_blank">3Blue1Brown — Neural Networks Ch.1</a>
+          <a class="ext-link" href="https://pytorch.org/docs/stable/generated/torch.nn.Softmax.html" target="_blank">PyTorch Softmax docs</a>
+          <a class="ext-link" href="https://cs231n.github.io/linear-classify/#softmax" target="_blank">Stanford CS231n — Softmax Classifier</a>
+          <a class="ext-link" href="https://docs.anthropic.com/en/api/complete#body-temperature" target="_blank">Anthropic — Temperature Parameter</a>
+        </div>
       </div>
 
       <!-- ── TIER 2 ── -->
@@ -2018,6 +2390,14 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
 
       <div class="section">
         <h3>Scaled Dot-Product Attention <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Self-attention</strong> is the mechanism that allows a transformer to consider the relationship between every pair of tokens in its input simultaneously. Unlike RNNs (which processed tokens sequentially, left to right), transformers process all tokens in parallel — each token "attends" to all other tokens to gather context. The result is that meaning is derived from relationships, not position: "bank" in "river bank" gets different attention weights than "bank" in "bank account" because the surrounding tokens are different.</p>
+          <p>The Q/K/V formulation is a database analogy. Think of it as a soft lookup table: <strong>Query (Q)</strong> is "what I'm searching for," <strong>Key (K)</strong> is "what each entry in the table offers," and <strong>Value (V)</strong> is "the actual content to retrieve." The dot product Q·Kᵀ measures relevance between the query and every key (like a search score). Softmax converts those relevance scores into weights. The final output is a weighted sum of Values — essentially "retrieve a blend of all values, weighted by how relevant each is to the query."</p>
+          <p>The <strong>√dₖ scaling</strong> is a numerical stability trick. For large embedding dimensions (e.g. dₖ=512), dot products grow proportional to the dimension, pushing softmax into saturation (near-zero gradients). Dividing by √dₖ keeps the scores in a well-behaved range. <strong>Multi-head attention</strong> runs this operation H times in parallel with different learned Q/K/V projections, then concatenates results — each "head" learns to attend to different types of relationships.</p>
+        </div>
+
         <p>This is the core mathematical operation of every transformer — every LLM you call through buffr's API runs this billions of times per forward pass. You don't need to implement it, but understanding it explains: why context windows have limits, why longer prompts cost more, and what "attention" actually means.</p>
 
         <div class="formula-block">
@@ -2062,10 +2442,26 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
   <span class="asc-warn">  100K tokens →  10B scores    → expensive</span>
   <span class="asc-note">  This is why longer prompts cost quadratically more to process</span></pre>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://arxiv.org/abs/1706.03762" target="_blank">Attention Is All You Need (original paper)</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=eMlx5fFNoYc" target="_blank">3Blue1Brown — Attention in Transformers</a>
+          <a class="ext-link" href="https://jalammar.github.io/illustrated-transformer/" target="_blank">The Illustrated Transformer — Jay Alammar</a>
+          <a class="ext-link" href="https://sebastianraschka.com/blog/2023/self-attention-from-scratch.html" target="_blank">Self-Attention From Scratch (Python)</a>
+          <a class="ext-link" href="https://karpathy.ai/zero-to-hero.html" target="_blank">Andrej Karpathy — Build GPT from scratch</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>Log Probability & Cross-Entropy Loss <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Logarithms</strong> are used in probability calculations for two practical reasons: they turn multiplication into addition (which is computationally cheaper and numerically stable), and they prevent underflow. The probability of a 200-token sequence is the product of 200 individual token probabilities, each below 1.0 — multiplied together, this approaches zero faster than float64 can represent. Log probabilities turn this product into a sum: <code>log(p₁ × p₂ × ... × p₂₀₀) = log(p₁) + log(p₂) + ... + log(p₂₀₀)</code> — manageable in any numeric type.</p>
+          <p><strong>Perplexity</strong> is the standard metric for evaluating language models. It is the exponent of the average negative log probability: <code>PPL = e^(-mean(log_probs))</code>. A perplexity of 10 means the model is "as confused as if it had to choose uniformly among 10 equally likely options" at each step. Lower is better. GPT-2 had perplexity ~35 on WikiText-103; modern models score under 10. You'll encounter perplexity in benchmark papers and leaderboard comparisons.</p>
+          <p><strong>Cross-entropy loss</strong> is what neural networks minimise during training. It measures the "surprise" of the true label given the model's predicted distribution. For a language model, the true label at each step is the actual next token, and the predicted distribution is the softmax output. Minimising cross-entropy during training is equivalent to maximising the likelihood of the training data — this is why LLM training is called <strong>maximum likelihood estimation (MLE)</strong>.</p>
+        </div>
+
         <p>When an LLM generates text, it's selecting tokens based on probability. Log probability appears in LLM API responses (logprobs), eval scoring, and helps you understand model confidence. Cross-entropy loss is how the model was trained — relevant when you get to fine-tuning.</p>
 
         <div class="formula-grid">
@@ -2090,10 +2486,25 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
             <div class="formula-line formula-comment">// Eval loss: lower = model learned the training distribution better</div>
           </div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.anthropic.com/en/api/messages#body-messages-content-tool_result-content-text" target="_blank">Anthropic Logprobs in API</a>
+          <a class="ext-link" href="https://huggingface.co/docs/transformers/perplexity" target="_blank">Perplexity of Fixed-Length Models — HuggingFace</a>
+          <a class="ext-link" href="https://ml-cheatsheet.readthedocs.io/en/latest/loss_functions.html#cross-entropy" target="_blank">Cross-Entropy Loss — ML Cheatsheet</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=Unf999FAFkw" target="_blank">Cross-Entropy Loss Explained — StatQuest</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>Vector Norms (L1 and L2) <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>vector norm</strong> is a function that measures the "size" or "length" of a vector. Different norms measure size differently, and the choice has practical consequences. The <strong>L2 norm</strong> (Euclidean distance) is the straight-line distance from the origin — the norm you learned in school as Pythagoras' theorem generalised to N dimensions. It's used in cosine similarity (to normalise vectors to unit length) and as the default distance metric in most ML libraries.</p>
+          <p>The <strong>L1 norm</strong> (Manhattan distance, or taxicab distance) sums the absolute values of all components. It's named after the grid-like street layout of Manhattan — to travel from one corner to another, you must traverse the actual streets, not cut through buildings. L1 is preferred in sparse settings because the L1 penalty in regularisation drives small weights all the way to zero (sparsity), while L2 shrinks weights but rarely zeros them. This distinction matters in feature selection and model compression.</p>
+          <p><strong>When to use which:</strong> L2 for cosine similarity and Euclidean distance queries. L1 for regularisation when you want sparse features. The L∞ norm (maximum absolute component) is used in adversarial robustness research. In practice, for text embeddings in AI products, you'll almost exclusively encounter L2 for normalisation — but knowing L1 and its sparsity properties is useful for understanding fine-tuning and LASSO regression.</p>
+        </div>
+
         <p>The magnitude of a vector — used in cosine similarity, regularisation, and when comparing embeddings.</p>
 
         <div class="formula-grid">
@@ -2116,6 +2527,12 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
             <div class="formula-line formula-comment">// Encourages model weights to go to zero</div>
           </div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.3blue1brown.com/lessons/vectors" target="_blank">3Blue1Brown — Vectors</a>
+          <a class="ext-link" href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.norm.html" target="_blank">NumPy linalg.norm docs</a>
+          <a class="ext-link" href="https://machinelearningmastery.com/vector-norms-machine-learning/" target="_blank">Vector Norms for Machine Learning</a>
+        </div>
       </div>
 
       <!-- ── TIER 3 ── -->
@@ -2123,6 +2540,14 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
 
       <div class="section">
         <h3>Gradient Descent & Backpropagation <span class="diff-badge diff-3">Background</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Gradient descent</strong> is an iterative optimisation algorithm. Given a function with many variables (the model's weights) and a scalar output (the loss), gradient descent repeatedly steps in the direction that decreases the loss most steeply. The gradient (∇L) points uphill — gradient descent moves downhill. The learning rate (η) controls step size. This algorithm is language-agnostic and universal — it's the foundation of training nearly every ML model, from linear regression to GPT-4.</p>
+          <p><strong>Backpropagation</strong> is the algorithm that efficiently computes gradients for all weights in a neural network using the chain rule of calculus. Without backprop, computing gradients for a network with 175 billion parameters (GPT-3) would require a separate forward pass per parameter — infeasible. With backprop, gradients for all parameters are computed in a single backward pass. Frameworks like PyTorch, TensorFlow, and JAX implement this automatically via <strong>automatic differentiation</strong> (autograd) — you write the forward pass, and the framework computes the backward pass.</p>
+          <p><strong>The practical picture for AI product engineers:</strong> you don't implement gradient descent or backprop. You care about their consequences: large models require many gradient steps on huge datasets (expensive), fine-tuning adapts a pre-trained model with fewer steps on smaller data (affordable), and learning rate is the hyperparameter most likely to make or break a fine-tuning run. LoRA (Low-Rank Adaptation) is a technique that reduces the number of parameters that receive gradient updates during fine-tuning — making it dramatically cheaper.</p>
+        </div>
+
         <p>How models are trained. You don't implement this — PyTorch does it for you — but understanding the concept explains why training requires GPUs, why learning rate matters, and what "overfitting" means mechanically.</p>
 
         <div class="formula-block">
@@ -2140,6 +2565,14 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
         </div>
 
         <p>When you fine-tune a model (Phase 4 of the curriculum), you run gradient descent on a small dataset to shift the model's weights toward the behaviour you want. Learning rate is the most important hyperparameter you'll tune.</p>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.youtube.com/watch?v=IHZwWFHWa-w" target="_blank">3Blue1Brown — Gradient Descent</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=Ilg3gGewQ5U" target="_blank">3Blue1Brown — Backpropagation</a>
+          <a class="ext-link" href="https://karpathy.github.io/neuralnets/" target="_blank">Hacker's Guide to Neural Networks — Karpathy</a>
+          <a class="ext-link" href="https://arxiv.org/abs/2106.09685" target="_blank">LoRA Paper — Hu et al. 2021</a>
+          <a class="ext-link" href="https://lightning.ai/docs/pytorch/stable/starter/introduction.html" target="_blank">PyTorch Lightning — Training Loop</a>
+        </div>
       </div>
 
       <div class="section">
@@ -2179,6 +2612,12 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
             <div class="formula-line formula-comment">// Also in: VAEs, diffusion models, eval metrics</div>
           </div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.youtube.com/watch?v=ErfnhcEV1O8" target="_blank">Entropy (information theory) — Aurélien Géron</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=SxGYPqCgJWM" target="_blank">KL Divergence Explained — StatQuest</a>
+          <a class="ext-link" href="https://huyenchip.com/ml-interviews-book/contents/5.1.2-entropy.html" target="_blank">Entropy in ML Interviews — Chip Huyen</a>
+        </div>
       </div>
 
       <!-- ── ALGORITHMS ── -->
@@ -2186,20 +2625,43 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
 
       <div class="section">
         <h3>Approximate Nearest Neighbour (ANN) <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Nearest neighbour search</strong> answers the question: "given a query point in high-dimensional space, which stored points are closest to it?" Exact nearest neighbour search requires comparing the query to every stored point — O(n) cost, which becomes prohibitive at millions of vectors. <strong>Approximate nearest neighbour (ANN)</strong> trades a small amount of accuracy for dramatically faster search by building an index that allows skipping most of the dataset.</p>
+          <p><strong>HNSW (Hierarchical Navigable Small World)</strong> is the dominant algorithm used in production vector databases. It builds a multi-layer graph where each node (embedding) is connected to its nearest neighbours. The top layers have sparse long-range connections (for fast coarse navigation); the bottom layers have dense short-range connections (for precise retrieval). Search starts at the top and zooms in — like navigating from continent to country to city to street. Typical recall: 95–99% with 10–50× speedup over brute force.</p>
+          <p>The accuracy vs speed trade-off is tuned through two parameters: <code>ef_construction</code> (how many candidates to consider when building the index — higher = better quality index, slower build) and <code>ef_search</code> (how many candidates to explore during query — higher = better recall, slower query). Both are configurable in pgvector, Pinecone, and Weaviate. For buffr's scale, defaults are fine. At 10M+ vectors, you'd tune these carefully.</p>
+        </div>
+
         <p>When your pgvector database searches for the 10 most similar embeddings, it's using an ANN algorithm. Understanding ANN tells you why vector search is fast (sub-linear, not linear) and what accuracy you're trading for that speed.</p>
 
         <table class="concept-table">
           <tr><th>Algorithm</th><th>How it works</th><th>Trade-off</th></tr>
-          <tr><td>HNSW</td><td>Hierarchical Navigable Small World — builds a layered graph where nearby vectors are connected. Search navigates the graph layer-by-layer.</td><td>Very fast query time. High memory usage. Used by pgvector and Pinecone.</td></tr>
-          <tr><td>IVF (Inverted File Index)</td><td>Clusters vectors into buckets (using k-means). At query time, only searches the most relevant buckets.</td><td>Faster indexing. Less memory. Slightly lower accuracy. Good for large datasets.</td></tr>
-          <tr><td>Brute-force (flat)</td><td>Compare query to every single stored vector. Exact results.</td><td>Perfect accuracy. O(n) cost. Only practical below ~10,000 vectors.</td></tr>
+          <tr><td>HNSW</td><td>Hierarchical Navigable Small World — builds a layered graph where nearby vectors are connected. Search navigates the graph layer-by-layer.</td><td>Very fast query time. High memory usage (~2× vector size). Default in pgvector and Pinecone.</td></tr>
+          <tr><td>IVF (Inverted File Index)</td><td>Clusters vectors into buckets (using k-means). At query time, only searches the most relevant buckets.</td><td>Faster indexing than HNSW. Less memory. Slightly lower accuracy. Good for very large datasets.</td></tr>
+          <tr><td>Brute-force (flat)</td><td>Compare query to every single stored vector. Exact results, no approximation.</td><td>Perfect accuracy. O(n) cost. Only practical below ~10,000 vectors — fine for buffr's prompt library.</td></tr>
         </table>
 
         <p>For buffr's prompt library at &lt;1000 items: flat search is fine. For a Notion workspace with 50,000 pages: HNSW is what pgvector will use under the hood when you add the right index.</p>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.pinecone.io/learn/series/faiss/hnsw/" target="_blank">HNSW Explained — Pinecone</a>
+          <a class="ext-link" href="https://github.com/pgvector/pgvector#indexing" target="_blank">pgvector Index Options</a>
+          <a class="ext-link" href="https://ann-benchmarks.com" target="_blank">ANN Benchmarks — ann-benchmarks.com</a>
+          <a class="ext-link" href="https://weaviate.io/blog/distance-metrics-in-vector-search" target="_blank">Distance Metrics in Vector Search — Weaviate</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>Tokenisation <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Tokenisation</strong> is the process of splitting text into the discrete units (tokens) that a language model processes. It's a learned compression scheme: common words become single tokens ("the", "is", "and"), rare words are split into subword pieces ("unbelievable" → ["un", "believ", "able"]), and characters that never appear together get separate tokens. The vocabulary (set of all possible tokens) is typically 50,000–130,000 entries for modern models.</p>
+          <p><strong>Byte-Pair Encoding (BPE)</strong> — used by Claude, GPT, and most frontier models — starts with individual bytes, then repeatedly merges the most frequent adjacent pair into a new token, until reaching the vocabulary size. The result is a vocabulary that covers all possible text (via individual bytes as fallback) while efficiently encoding common patterns. BPE is language-agnostic — it works on any language without linguistic knowledge, though it's less efficient for non-Latin scripts.</p>
+          <p>The practical implications for AI product engineers: (1) <strong>token counting</strong> is a prerequisite for cost estimation and prompt trimming — use <code>tiktoken</code> in Python or <code>@anthropic-ai/tokenizer</code> in TypeScript, (2) <strong>non-English text costs more</strong> — Japanese and Chinese encode at ~2–4 bytes per character vs ~1.3 for English, (3) <strong>structured data is expensive</strong> — JSON with whitespace, indentation, and repeated keys uses many more tokens than equivalent prose, and (4) <strong>token boundary effects</strong> — splitting a word like "JavaScript" across token boundaries can affect model reasoning about it.</p>
+        </div>
+
         <p>LLMs don't read characters or words — they read tokens. Understanding tokenisation explains why certain inputs cost more, why non-English text costs more per word, and why code formatting affects token count.</p>
 
         <table class="concept-table">
@@ -2218,10 +2680,26 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           <div class="formula-line formula-comment">// Chinese/Japanese/Korean ≈ 2–3× more tokens per character than English</div>
           <div class="formula-line formula-comment">// A typical buffr session-summariser call: ~800 tokens input, ~200 tokens output</div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://platform.openai.com/tokenizer" target="_blank">OpenAI Tokenizer (interactive)</a>
+          <a class="ext-link" href="https://tiktokenizer.vercel.app" target="_blank">Tiktokenizer (visual, web)</a>
+          <a class="ext-link" href="https://github.com/openai/tiktoken" target="_blank">tiktoken — Python tokeniser library</a>
+          <a class="ext-link" href="https://huggingface.co/docs/transformers/tokenizer_summary" target="_blank">HuggingFace Tokeniser Summary</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=zduSFxRajkE" target="_blank">Let's Build the GPT Tokeniser — Karpathy</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>State Machines <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>Finite State Machine (FSM)</strong> is a computational model consisting of a finite set of states, a set of transitions between states triggered by inputs, and a set of actions taken on entering/exiting states. It is one of the oldest and most universal abstractions in computing — used in hardware (digital circuits), protocol design (TCP connection states), compilers (lexer tokenisation), game AI (NPC behaviour trees), and UI frameworks (animation controllers). In every domain the model is the same: the system can only be in one state at a time, and inputs cause deterministic transitions.</p>
+          <p>FSMs have two important properties that make them ideal for safety-critical event processing: <strong>determinism</strong> (given the same state and input, the transition is always the same) and <strong>exhaustiveness</strong> (you can enumerate all possible states and transitions, making it possible to reason about all edge cases). This is why contrl's rep counter uses a state machine rather than conditional logic — <code>if (angle &lt; 50)</code> statements scattered through frame processing quickly become unmaintainable, while a state machine makes the valid transitions explicit and the invalid ones impossible.</p>
+          <p>For agentic AI, state machines model the orchestrator's decision loop. Tools like <strong>XState</strong> (TypeScript/JavaScript) and <strong>transitions</strong> (Python) provide formal FSM libraries with visualisation. <strong>LangGraph</strong> builds on this concept by treating agent orchestration as a stateful graph — each node is an agent action, each edge is a transition, and cycles are explicit. Understanding FSMs is the foundation for understanding LangGraph's design.</p>
+        </div>
+
         <p>You already built one in contrl for rep detection. State machines are also the conceptual model behind agentic AI loops, conversation flow, and any system where "what to do next" depends on "what happened before."</p>
 
         <table class="concept-table">
@@ -2229,8 +2707,16 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           <tr><td>States</td><td><code>idle | ready | down | bottom | up | complete</code></td><td><code>thinking | tool_calling | observing | responding | done</code></td></tr>
           <tr><td>Transitions</td><td>angle &lt; 50° while in <code>down</code> → move to <code>bottom</code></td><td>LLM returns <code>suggestedActions</code> → move to <code>tool_calling</code></td></tr>
           <tr><td>Guards</td><td>visibility &lt; 0.6 → don't transition (ignore bad frame)</td><td>max_steps exceeded → move directly to <code>responding</code></td></tr>
-          <tr><td>Actions</td><td>entering <code>complete</code> → <code>repCount++</code></td><td>entering <code>done</code> → return final answer</td></tr>
+          <tr><td>Actions on enter</td><td>entering <code>complete</code> → <code>repCount++</code></td><td>entering <code>done</code> → return final answer to caller</td></tr>
+          <tr><td>Actions on exit</td><td>exiting <code>bottom</code> → start timing the concentric phase</td><td>exiting <code>tool_calling</code> → log tool name + latency</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://xstate.js.org/docs/" target="_blank">XState — FSM Library (TypeScript)</a>
+          <a class="ext-link" href="https://stately.ai/docs/state-machines-and-statecharts" target="_blank">Stately — State Machine Concepts</a>
+          <a class="ext-link" href="https://langchain-ai.github.io/langgraph/concepts/low_level/" target="_blank">LangGraph — Agent as State Graph</a>
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Finite-state_machine" target="_blank">Finite-State Machine — Wikipedia</a>
+        </div>
       </div>
     </div>
 
@@ -2308,10 +2794,25 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
 
   <span class="asc-ok">  Map lookup: hash → bucket index → direct access → O(1) always</span></pre>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" target="_blank">MDN Map Object (JS)</a>
+          <a class="ext-link" href="https://docs.python.org/3/tutorial/datastructures.html#dictionaries" target="_blank">Python Dictionaries</a>
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Hash_table" target="_blank">Hash Table — Wikipedia</a>
+          <a class="ext-link" href="https://visualgo.net/en/hashtable" target="_blank">Hash Table Visualiser — VisuAlgo</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>Queue (FIFO) <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>queue</strong> models any first-come, first-served process. The critical invariant is ordering preservation: items are processed in the exact sequence they arrive. This is the correct structure whenever fairness or temporal ordering matters. In hardware, CPU instruction pipelines are queues. In operating systems, process schedulers are queues. In distributed systems, message queues (Kafka, SQS, RabbitMQ, Pub/Sub) are queues at massive scale.</p>
+          <p>The performance trap in JavaScript is <code>Array.shift()</code> — it removes the first element but requires shifting all remaining elements left, making dequeue O(n). For a proper O(1) queue in TypeScript/JavaScript, use a doubly-linked list or a circular buffer. In Python, <code>collections.deque</code> provides O(1) append and popleft. In Go, channels are language-native O(1) queues with built-in concurrency safety.</p>
+          <p>For AI products specifically, queues solve the <strong>rate-limiting problem</strong>. LLM API providers impose rate limits (tokens per minute, requests per minute). A queue decouples incoming requests from LLM calls: requests enqueue immediately (fast), a worker processes them against the rate limit. Without a queue, rate limit errors propagate directly to users; with a queue, they wait transparently.</p>
+        </div>
+
         <p>First-in, first-out. Items are enqueued at the back and dequeued from the front. Appears everywhere latency and ordering matter — rate limiting, frame processing, background jobs, streaming token delivery.</p>
 
         <div class="formula-block">
@@ -2332,10 +2833,25 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           <tr><td>Background job systems</td><td>If buffr ever processes long-running scans asynchronously, a job queue (SQS, Redis Queue, Inngest) holds pending jobs. Workers dequeue and process one at a time.</td></tr>
           <tr><td>Webhook retry</td><td>Failed webhook deliveries are re-enqueued with exponential backoff. The queue ensures ordering and prevents thundering herd on retry.</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank">Python collections.deque</a>
+          <a class="ext-link" href="https://www.inngest.com/docs" target="_blank">Inngest — Background Jobs for Serverless</a>
+          <a class="ext-link" href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html" target="_blank">AWS SQS — Message Queue</a>
+          <a class="ext-link" href="https://redis.io/docs/latest/develop/data-types/lists/" target="_blank">Redis Lists (queue primitive)</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>Sliding Window <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>The <strong>sliding window</strong> technique transforms an O(n×k) naive computation into O(n) by maintaining a running aggregate. Instead of recomputing the sum/average/max of the last k elements from scratch each step, you subtract the element leaving the window and add the element entering — one add, one subtract, regardless of window size.</p>
+          <p>This pattern appears in every domain that processes sequential data with a fixed-size lookback: financial moving averages, network packet buffering, real-time audio processing, database window functions (<code>OVER (ROWS BETWEEN 5 PRECEDING AND CURRENT ROW)</code>), and sensor data smoothing. The <strong>variable-size sliding window</strong> (expand/shrink based on a condition) solves problems like "find the shortest substring containing all required characters" — a common interview problem that has real applications in token budget management.</p>
+          <p>For AI products, the sliding window is how you manage LLM context budgets. When a conversation exceeds the model's context window, you don't discard random messages — you slide a window across the message history, always keeping the most recent N tokens. This preserves recent context while discarding older, less relevant messages. The window approach is also how retrieval systems implement recency bias: weight recent chunks higher in the sliding window.</p>
+        </div>
+
         <p>A window of fixed size N that moves across a sequence, processing or aggregating elements within the window at each step. You built one in contrl for temporal smoothing. It also underpins rate limiting, context window management, and chunk overlap in RAG.</p>
 
         <div class="formula-block">
@@ -2380,10 +2896,24 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
 
   <span class="asc-note">  Trade-off: more chunks = more storage + more tokens per query synthesis.</span></pre>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://leetcode.com/explore/learn/card/leetcodes-interview-crash-course-data-structures-and-algorithms/703/arraystrings/4502/" target="_blank">Sliding Window — LeetCode Learn</a>
+          <a class="ext-link" href="https://www.pinecone.io/learn/chunking-strategies/" target="_blank">Chunking Strategies — Pinecone</a>
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame" target="_blank">MDN requestAnimationFrame</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>Stack (LIFO) <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>stack</strong> models any last-in, first-out process — the most recently added item is always the next to be removed. The most important real-world stack is the <strong>call stack</strong>, which every programming language runtime maintains. When a function calls another function, the new frame is pushed onto the call stack. When it returns, the frame is popped. Stack overflow errors occur when recursion is too deep and the stack runs out of memory.</p>
+          <p>Beyond the call stack, stacks are the data structure behind all bracket/delimiter matching (compiler lexers, JSON validators, HTML parsers), depth-first graph traversal (implemented iteratively with an explicit stack instead of recursion), and undo/redo systems (push each state; pop to undo). The browser's history API is conceptually a stack — back/forward navigation pushes and pops entries.</p>
+          <p>For AI product engineers, the most relevant stack application is <strong>nested template resolution</strong>. If buffr's prompt templates ever support nested expressions like <code>{{summarise({{get_sessions(projectId)}}) }}</code>, resolving them requires a stack: push on <code>{{</code>, pop on <code>}}</code>, evaluate inner expressions before outer ones. The same stack-based approach underlies how languages parse arithmetic expressions with operator precedence.</p>
+        </div>
+
         <p>Last-in, first-out. Less obviously present than a queue, but critical for understanding recursion, call chains, and — directly relevant — how nested JSON parsing and prompt template resolution work.</p>
 
         <div class="formula-block">
@@ -2403,6 +2933,12 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           <tr><td>Undo/redo in editors</td><td>If buffr ever adds prompt history: push each version onto an undo stack. Pop to undo. This is how every text editor works.</td></tr>
           <tr><td>Call stack in async code</td><td>Understanding the JS call stack explains why <code>await</code> works the way it does in chain invocations — each <code>await</code> suspends the current stack frame and resumes when the promise resolves.</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Glossary/Call_stack" target="_blank">MDN Call Stack</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=W2aKrjCtFvM" target="_blank">The JS Call Stack Visualised — Philip Roberts</a>
+          <a class="ext-link" href="https://latentspace.dev/p/the-agentic-loop" target="_blank">The Agentic Loop — Latent Space</a>
+        </div>
       </div>
 
       <!-- ── GROUP 2: TREES ── -->
@@ -2410,6 +2946,14 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
 
       <div class="section">
         <h3>Tree (General) & Trie <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>tree</strong> is a connected acyclic graph with a designated root node. Every node has exactly one parent (except the root, which has none) and zero or more children. Trees are the most natural structure for representing hierarchical data: file systems, organisation charts, XML/JSON documents, DOM, abstract syntax trees in compilers, and decision trees in ML — all trees.</p>
+          <p>The two fundamental traversal strategies are <strong>BFS (breadth-first search)</strong>, which visits all nodes level by level using a queue, and <strong>DFS (depth-first search)</strong>, which follows branches all the way to leaves before backtracking using a stack (or recursion). BFS finds the shortest path to a node. DFS is natural for tasks like "collect all files under a directory" or "find all items in a Notion page tree."</p>
+          <p>A <strong>Trie</strong> (pronounced "try," from re<em>trie</em>val) is a tree where each node represents a character prefix. Looking up whether "deploy" is a stored prefix takes exactly 6 steps (one per character), regardless of how many strings the trie contains — O(k) where k is string length. This makes tries ideal for autocomplete and prefix search. If buffr's prompt library grows large, a trie-based command palette search would outperform a linear scan by orders of magnitude.</p>
+        </div>
+
         <p>A tree is a hierarchical structure of nodes connected by edges, with no cycles. You interact with trees constantly: the DOM, JSON documents, file systems, and dependency graphs are all trees. A Trie is a tree specialised for string prefix search.</p>
 
         <div class="formula-block">
@@ -2431,10 +2975,24 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           <tr><td>Dependency resolution</td><td>When buffr's dev scanner identifies "this project needs X before Y", it's building a dependency tree. Topological sort on the tree gives the correct installation order.</td></tr>
           <tr><td>HNSW vector index</td><td>HNSW is a hierarchical tree-like structure. The top layer has few nodes with long-range connections; lower layers add more nodes with local connections. Search starts at the top and descends.</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://visualgo.net/en/bst" target="_blank">VisuAlgo — Tree Visualiser</a>
+          <a class="ext-link" href="https://www.cs.usfca.edu/~galles/visualization/Trie.html" target="_blank">Trie Visualiser — USF</a>
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction" target="_blank">MDN DOM (tree structure)</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>Binary Search Tree & Interval Tree <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>Binary Search Tree (BST)</strong> maintains a sorted invariant: for any node, all values in the left subtree are smaller, and all values in the right subtree are larger. This enables binary search on a dynamic set — you can insert and delete elements while maintaining O(log n) search. The key insight is that each comparison eliminates half the remaining candidates, just like binary search on a sorted array but without requiring the array to be in contiguous memory.</p>
+          <p>Real databases use <strong>B-trees</strong> (not binary, but multi-way, balanced trees) as their primary index structure. When you create a Postgres index on <code>created_at</code>, Postgres builds a B-tree where each node can hold many keys (not just 2), reducing tree height and minimising disk reads. The <code>EXPLAIN</code> output in Postgres will show "Index Scan using idx_sessions_created_at" — that's a B-tree traversal happening instead of a full table scan.</p>
+          <p>An <strong>Interval Tree</strong> extends BST to handle ranges rather than points. Given a query interval [a, b], an interval tree efficiently finds all stored intervals that overlap it. This applies directly to token range management: if you split a document into token-range chunks and want to find all chunks that include tokens 1024–1536, an interval tree answers in O(log n + k) where k is the number of matching chunks — far better than scanning every chunk.</p>
+        </div>
+
         <p>A BST maintains sorted order: left subtree &lt; node &lt; right subtree. O(log n) search, insert, delete when balanced. An Interval Tree extends this for range queries — finding all intervals that overlap a point. Directly relevant to token range management.</p>
 
         <div class="formula-block">
@@ -2453,6 +3011,12 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           <tr><td>Token range management</td><td>When a RAG pipeline needs to find all chunks that overlap with token positions 1024–2048, an interval tree answers this in O(log n + k) rather than scanning all chunks.</td></tr>
           <tr><td>Session timeline queries</td><td>Querying buffr sessions by date range (<code>WHERE created_at BETWEEN X AND Y</code>) uses the B-tree index on <code>created_at</code>. Without the index: full table scan O(n). With index: O(log n).</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://use-the-index-luke.com" target="_blank">Use The Index, Luke — SQL Indexing Guide</a>
+          <a class="ext-link" href="https://www.postgresql.org/docs/current/indexes-types.html" target="_blank">Postgres Index Types Docs</a>
+          <a class="ext-link" href="https://visualgo.net/en/bst" target="_blank">BST Visualiser — VisuAlgo</a>
+        </div>
       </div>
 
       <!-- ── GROUP 3: GRAPHS ── -->
@@ -2460,6 +3024,14 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
 
       <div class="section">
         <h3>Graphs: Nodes, Edges & Traversal <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>graph</strong> is the most general relational data structure. Where trees require a single parent per node and no cycles, graphs place no such constraint — any node can connect to any other node, in any direction, any number of times. This generality makes graphs applicable to almost any relationship: social networks, road maps, knowledge graphs, dependency systems, protein interaction networks, and neural networks are all graphs.</p>
+          <p><strong>BFS</strong> (breadth-first search) uses a queue and explores neighbours level by level — it finds the shortest path in an unweighted graph. <strong>DFS</strong> (depth-first search) uses a stack (or recursion) and follows edges as deep as possible before backtracking — it's natural for cycle detection, topological ordering, and exhaustive exploration. Both run in O(V + E) where V is the number of vertices (nodes) and E is the number of edges.</p>
+          <p>For AI product engineers, the most important graph type is the <strong>DAG (Directed Acyclic Graph)</strong>. Anywhere you have steps that depend on each other with no circular dependencies — build systems, task pipelines, workflow engines, import graphs — a DAG is the right model. LangGraph explicitly models agent workflows as DAGs. When you define buffr workflow steps with <code>dependsOn</code> fields, you're defining a DAG — and topological sort determines the execution order.</p>
+        </div>
+
         <p>A graph is a set of nodes (vertices) connected by edges. Unlike trees, graphs can have cycles and multiple paths between nodes. Two traversal algorithms — BFS and DFS — cover the vast majority of graph problems you'll encounter as an AI engineer.</p>
 
         <div class="formula-block">
@@ -2484,10 +3056,24 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           <tr><td>DAG</td><td>LangGraph workflows</td><td>Nodes = chain steps or agents. Directed edges = data flow. Conditional edges = branching logic. The entire LangGraph framework is a DAG execution engine.</td></tr>
           <tr><td>Directed</td><td>Notion page hierarchy</td><td>Nodes = pages/blocks. Directed edges = parent → child. Traversing to collect all content under a page for RAG = DFS on this graph.</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://visualgo.net/en/graphds" target="_blank">Graph Traversal Visualiser — VisuAlgo</a>
+          <a class="ext-link" href="https://langchain-ai.github.io/langgraph/concepts/low_level/" target="_blank">LangGraph — Agent as Graph</a>
+          <a class="ext-link" href="https://networkx.org/documentation/stable/tutorial.html" target="_blank">NetworkX — Graph Library (Python)</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>DAG & Topological Sort <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>topological sort</strong> produces a linear ordering of a DAG's nodes such that for every directed edge A → B, node A appears before node B in the ordering. It is only possible if the graph has no cycles (the acyclic requirement in DAG). If a cycle exists, topological sort is impossible — this is used as a cycle detection algorithm in build systems and package managers.</p>
+          <p><strong>Kahn's algorithm</strong> is the standard implementation: maintain a queue of nodes with in-degree 0 (no dependencies), dequeue one, decrement the in-degree of all its neighbours, and enqueue any that now have in-degree 0. Repeat until the queue is empty. If the output contains fewer nodes than the graph, a cycle exists. The algorithm runs in O(V + E) and is easy to implement in any language.</p>
+          <p>The real-world applications are everywhere: <strong>build systems</strong> (Gradle, Bazel, Make all use topological sort to determine compilation order), <strong>package managers</strong> (npm, pip, cargo resolve installation order using topological sort), <strong>CI/CD pipelines</strong> (parallel job execution with dependencies), and <strong>agentic workflows</strong> (LangGraph, Temporal, Apache Airflow). When you add a <code>dependsOn</code> field to a buffr workflow step, you are adding a directed edge — and the workflow runner implicitly performs topological sort to determine which steps can start immediately and which must wait.</p>
+        </div>
+
         <p>A Directed Acyclic Graph (DAG) where you need to process nodes in an order that respects all dependencies — no node is processed before everything it depends on. This is the algorithm that decides the execution order of an agentic workflow.</p>
 
         <div class="formula-block">
@@ -2533,6 +3119,13 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
   <span class="asc-warn">  If a cycle existed (e.g. goals → triage → goals), execution is impossible.</span>
   <span class="asc-ok">  Kahn's algorithm detects this before any step runs.</span></pre>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Topological_sorting" target="_blank">Topological Sorting — Wikipedia</a>
+          <a class="ext-link" href="https://cp-algorithms.com/graph/topological-sort.html" target="_blank">Topological Sort — CP Algorithms</a>
+          <a class="ext-link" href="https://docs.temporal.io/workflows" target="_blank">Temporal Workflows (DAG-based)</a>
+          <a class="ext-link" href="https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html" target="_blank">Apache Airflow DAGs</a>
+        </div>
       </div>
 
       <!-- ── GROUP 4: SEQUENCES & BUFFERS ── -->
@@ -2540,6 +3133,14 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
 
       <div class="section">
         <h3>Circular Buffer (Ring Buffer) <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>circular buffer</strong> (also called a ring buffer) is a fixed-size array that treats its storage as a circle — when the write pointer reaches the end, it wraps to the beginning and overwrites the oldest data. This gives you: O(1) write and read, constant memory regardless of how much data flows through, and always-available access to the last N items with no shifting or reallocation.</p>
+          <p>The implementation is elegantly simple: two integer pointers (head for writing, tail for reading) and the modulo operation (<code>head % capacity</code>) to wrap around. This is used in every domain that processes continuous data streams with bounded memory: <strong>audio processing</strong> (audio driver ring buffers are how sound data flows from microphone to application), <strong>network packet buffers</strong> (network cards use ring buffers between kernel and driver), <strong>real-time operating systems</strong> (sensor data from embedded devices), and <strong>log rotation</strong> (keep the last N log lines, overwrite oldest when full).</p>
+          <p>For contrl specifically, a circular buffer of size 30 (1 second at 30fps) gives you a constant-memory rolling window of recent pose data. Without it, an hour-long session would accumulate 108,000 landmark frames in memory — at 33 landmarks × 3 coordinates × 4 bytes each, that's ~40MB just for landmark data. With a circular buffer of 30 frames: always 33 × 3 × 4 × 30 = ~12KB.</p>
+        </div>
+
         <p>A fixed-size buffer that wraps around — when it fills up, new data overwrites the oldest data. The ideal structure for streaming sensor data: constant memory, O(1) read/write, always holds the last N samples.</p>
 
         <div class="formula-block">
@@ -2586,10 +3187,24 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
   <span class="asc-ok">  Memory stays fixed at 8 slots regardless of how many frames arrive.</span>
   <span class="asc-dim">  head = frameCount % capacity  ← the modulo is the entire trick</span></pre>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Circular_buffer" target="_blank">Circular Buffer — Wikipedia</a>
+          <a class="ext-link" href="https://www.embedded.com/ring-buffer-basics/" target="_blank">Ring Buffer Basics — Embedded.com</a>
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor" target="_blank">MDN AudioWorkletProcessor (uses ring buffer)</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>Priority Queue (Min/Max Heap) <span class="diff-badge diff-3">Background</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>priority queue</strong> is an abstract data structure that always dequeues the element with the highest (or lowest) priority, regardless of insertion order. The standard implementation is a <strong>binary heap</strong> — a complete binary tree stored in an array where the parent is always smaller (min-heap) or larger (max-heap) than its children. This invariant can always be restored in O(log n) after insertion or removal, because the tree height is log n.</p>
+          <p>The key insight is that a heap is <em>not</em> fully sorted — it just maintains the heap property (parent dominates children), which is weaker than full sortedness but sufficient to always answer "what is the minimum?" in O(1). Building a heap from n elements takes O(n), not O(n log n) — counter-intuitively cheaper than sorting, which is why heap-based top-k selection is preferred over sort-then-slice when k is small relative to n.</p>
+          <p>In Python, <code>heapq</code> is the standard library implementation (min-heap only; negate values for max-heap). In Java, <code>PriorityQueue</code>. In JavaScript, there is no built-in heap — you must implement or import one. This is why understanding the underlying structure matters: when you need a priority queue in a serverless function and can't import a library, the 20-line heap implementation is one of the few DSA patterns worth memorising.</p>
+        </div>
+
         <p>A queue where elements are dequeued in priority order rather than arrival order. O(log n) insert and extract-min/max. Relevant to understanding how vector search engines rank results and how job schedulers work.</p>
 
         <div class="formula-block">
@@ -2611,6 +3226,12 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           <tr><td>LLM beam search</td><td>Some LLM decoding strategies (beam search) maintain a priority queue of the top-k most likely partial token sequences. Each step expands the best candidate.</td></tr>
           <tr><td>Job scheduler</td><td>A background job queue with priorities (urgent, normal, low) uses a heap — urgent jobs always dequeue first regardless of insertion order.</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.python.org/3/library/heapq.html" target="_blank">Python heapq module</a>
+          <a class="ext-link" href="https://visualgo.net/en/heap" target="_blank">Heap Visualiser — VisuAlgo</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=t0Cq6tVNRBA" target="_blank">Heaps and Priority Queues — CS Dojo</a>
+        </div>
       </div>
 
       <!-- ── GROUP 5: COMPLEXITY ── -->
@@ -2618,6 +3239,14 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
 
       <div class="section">
         <h3>Big-O Notation <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Big-O notation</strong> describes the asymptotic growth rate of an algorithm's resource usage (time or space) as input size n grows toward infinity. It characterises the worst-case scaling behaviour, ignoring constant factors and lower-order terms. The reason we ignore constants: an algorithm that takes 1,000,000 × n operations is still O(n) — it scales linearly, so doubling the input doubles the cost, just with a large constant. An O(n²) algorithm with a small constant will eventually beat it at large n, but a constant multiplier doesn't change the fundamental scaling class.</p>
+          <p>Big-O is language-agnostic. A hash map lookup is O(1) whether you're in Python, Rust, Go, or JavaScript. Self-attention is O(n²) in any framework. The complexity class is a property of the algorithm, not the implementation language. This matters for system design interviews: when asked "what's the complexity?" the answer is about the algorithm's structure, not implementation details.</p>
+          <p><strong>Space complexity</strong> (memory usage) matters as much as time complexity for AI products. An embedding model that produces 1536-dimensional vectors stores 1536 × 4 bytes = ~6KB per embedding. At 1 million embeddings (a modest prompt library), that's 6GB of vector data — before the HNSW index overhead. Understanding space complexity helps you estimate infrastructure costs and identify memory bottlenecks before they become incidents.</p>
+        </div>
+
         <p>Big-O describes how an algorithm's time or space cost grows as the input size n grows. You don't need to derive it — you need to recognise the common classes and know which operations in your stack fall into each. This is what interviewers mean when they ask "what's the time complexity of that?"</p>
 
         <div class="formula-block">
@@ -2653,6 +3282,13 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           </div>
           <div class="interview-body">Self-attention computes a similarity score between every pair of tokens — for n tokens, that's n² comparisons. A 1,000-token prompt = 1M comparisons. A 100,000-token context = 10 billion comparisons. This is why longer context windows cost exponentially more and why models with 1M token context windows require architectural innovations like sparse attention or linear attention to be economically viable. For you as a product engineer: count tokens before sending them, truncate aggressively, and cache system prompts — every token in a long context costs quadratically.</div>
         </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.bigocheatsheet.com" target="_blank">Big-O Cheat Sheet</a>
+          <a class="ext-link" href="https://neetcode.io/roadmap" target="_blank">NeetCode — Practical DSA Roadmap</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=Mo4vesaut8g" target="_blank">Big-O Notation — CS Dojo</a>
+          <a class="ext-link" href="https://frontendmasters.com/courses/algorithms/" target="_blank">The Last Algorithms Course — FrontendMasters</a>
+        </div>
       </div>
 
       <!-- ── GROUP 6: STRINGS ── -->
@@ -2660,6 +3296,14 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
 
       <div class="section">
         <h3>String Hashing & Tokenisation Algorithms <span class="diff-badge diff-3">Background</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>String hashing</strong> converts a variable-length string into a fixed-size integer (the hash). A good hash function is fast (O(n) in string length), uniform (distributes outputs evenly), and deterministic (same input always produces the same output). String hashing is the foundation of hash maps (keys are hashed to bucket indices), content-addressed storage (file deduplication by hash), cache keys (hash of request params as the cache lookup key), and change detection (hash the content; if the hash changes, the content changed).</p>
+          <p><strong>Byte-Pair Encoding (BPE)</strong> is a compression algorithm repurposed for tokenisation. Originally from data compression (find the most frequent byte pair, replace it with a new symbol, repeat), it was adapted for NLP because it naturally handles both common words (become single tokens) and rare words (split into recognisable subword components). The key property: BPE never produces an out-of-vocabulary token, because the fallback is always individual bytes. This makes it robust to any input, including code, emoji, and arbitrary Unicode.</p>
+          <p>Understanding BPE explains several LLM behaviours: why the model struggles with simple arithmetic (numbers like "12345" may tokenise as 5 separate tokens, making it harder to reason about their magnitude), why rare words in one language have higher token costs than in the training language, and why formatting choices (snake_case vs camelCase, 2-space vs 4-space indentation) affect token counts for code inputs.</p>
+        </div>
+
         <p>LLMs don't process raw strings — they process tokens produced by a tokenisation algorithm. Byte-Pair Encoding (BPE) is the algorithm behind most frontier models. Understanding it explains why "tokenisation" can produce surprising results for code, numbers, and non-English text.</p>
 
         <div class="formula-block">
@@ -2677,10 +3321,25 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
         </div>
 
         <p>Why this matters for buffr: numbers tokenise inefficiently — each digit is often its own token. A JSON object with many numeric values (session timestamps, scores) costs more tokens than you'd expect from the character count alone. When building the token counting exercise in Phase 4, use the actual tokeniser, not a character-count estimate.</p>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.youtube.com/watch?v=zduSFxRajkE" target="_blank">Let's Build the GPT Tokeniser — Karpathy</a>
+          <a class="ext-link" href="https://huggingface.co/docs/tokenizers/quicktour" target="_blank">HuggingFace Tokenizers Quicktour</a>
+          <a class="ext-link" href="https://tiktokenizer.vercel.app" target="_blank">Tiktokenizer (interactive visualiser)</a>
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Byte_pair_encoding" target="_blank">Byte-Pair Encoding — Wikipedia</a>
+        </div>
       </div>
 
       <div class="section">
         <h3>Regex & Pattern Matching <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Regular expressions</strong> are a formal language for describing patterns in strings, based on the mathematical theory of <strong>finite automata</strong>. A regex engine compiles a pattern into a state machine (DFA or NFA), then runs the input string through it. The key insight: simple regex patterns (no catastrophic backtracking) run in O(n) linear time — the engine makes one pass through the string. This makes regex extremely fast for string scanning tasks like extracting tool tokens from a prompt template.</p>
+          <p>The danger is <strong>catastrophic backtracking</strong>: certain regex patterns with nested quantifiers (like <code>(a+)+</code>) on adversarial input can trigger exponential backtracking — the regex engine tries every possible combination. This is the <strong>ReDoS (Regex Denial of Service)</strong> vulnerability: a malicious user input can make your regex take seconds or minutes instead of milliseconds, effectively hanging the serverless function. The fix is either to use possessive quantifiers or atomic groups (not supported in all engines), or to replace problematic regex with a hand-written parser for structured formats.</p>
+          <p>Language-specific notes: JavaScript's regex engine uses backtracking (vulnerable to ReDoS). Python's <code>re</code> module is also backtracking-based. Go's <code>regexp</code> uses a different algorithm (RE2/NFA) that guarantees linear time — no ReDoS possible. Rust's <code>regex</code> crate similarly guarantees linear time. When processing untrusted input in production (user prompts, webhook payloads), be aware which engine you're using.</p>
+        </div>
+
         <p>Regular expressions are a finite automaton for pattern matching on strings. You already use regex in <code>stripCodeBlock()</code> and the <code>{{tool:...}}</code> template resolver. This is not about memorising regex syntax — it's about knowing the algorithmic properties.</p>
 
         <div class="formula-block">
@@ -2701,6 +3360,14 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
           <tr><td><code>{{tool:name}}</code> resolution</td><td>Regex to find all tool token placeholders in a prompt string and replace them with live data. This is essentially a templating engine built on pattern matching.</td></tr>
           <tr><td>Prompt injection detection</td><td>A first-line defence against prompt injection is regex scanning for suspicious patterns ("ignore previous instructions", "you are now") before passing user input to the LLM.</td></tr>
         </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://regex101.com" target="_blank">regex101 — Interactive Regex Tester</a>
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions" target="_blank">MDN Regular Expressions Guide</a>
+          <a class="ext-link" href="https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS" target="_blank">ReDoS — OWASP</a>
+          <a class="ext-link" href="https://docs.python.org/3/library/re.html" target="_blank">Python re module</a>
+          <a class="ext-link" href="https://github.com/google/re2/wiki/Syntax" target="_blank">RE2 (linear-time regex) — Google</a>
+        </div>
       </div>
     </div>
 
