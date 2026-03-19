@@ -732,7 +732,7 @@
 
   <!-- HERO -->
   <div class="hero">
-    <div class="hero-eyebrow">// curriculum · v5.3 · enriched all sections · language-agnostic concepts · 100+ external links</div>
+    <div class="hero-eyebrow">// curriculum · v5.4 · updated for buffr 2026-03-18 · 13 functions · 8 blob stores · 5 chains · 6 adapters</div>
     <h1>AI Product<br><em>Engineering</em></h1>
     <p class="hero-sub">A practical curriculum built on your own codebases. Every concept maps to real code you wrote or features on your roadmap. Frontend developer → AI Product Engineer.</p>
     <div class="track-pills">
@@ -886,17 +886,21 @@
         </table>
 
         <div class="ascii-diagram">
-          <div class="asc-title">Provider Abstraction Pattern</div>
+          <div class="asc-title">Provider Abstraction Pattern — buffr's 4 Providers</div>
           <pre><span class="asc-dim">   chain code (never changes)         factory          vendor SDKs</span>
 
    summarizer.ts                    getLLM()
-   ┌──────────────────┐             ┌──────────────────────────────────┐
-   │                  │  provider:  │                                  │
-   │  llm.invoke(…)   │────────────▶│  "anthropic"  ──▶  ChatAnthropic │
-   │                  │  "anthropic" │  "openai"     ──▶  ChatOpenAI   │
-   │  llm.stream(…)   │             │  "ollama"     ──▶  ChatOllama    │
-   │                  │             │  "groq"       ──▶  ChatGroq      │
-   └──────────────────┘             └──────────────────────────────────┘
+   ┌──────────────────┐             ┌──────────────────────────────────────────┐
+   │                  │  provider:  │                                          │
+   │  llm.invoke(…)   │────────────▶│  "anthropic"  ──▶  ChatAnthropic         │
+   │                  │             │                    claude-sonnet-4-...    │
+   │  llm.stream(…)   │             │  "openai"     ──▶  ChatOpenAI            │
+   │                  │             │                    gpt-4o                │
+   └──────────────────┘             │  "google"     ──▶  ChatGoogleGenerativeAI│
+                                    │                    gemini-1.5-pro        │
+                                    │  "ollama"     ──▶  ChatOllama            │
+                                    │                    llama3 (local)        │
+                                    └──────────────────────────────────────────┘
           │                                  │
           │  same interface                  │  different implementations
           │  .invoke() / .stream()           │  loaded lazily via require()
@@ -1005,6 +1009,17 @@
   <span class="asc-note">Rule: system = instructions.  human = data.  Never mix them.</span></pre>
         </div>
 
+        <p><strong>buffr's 5 chains</strong> — all in <code>netlify/functions/lib/ai/chains/</code>, all follow the same pattern:</p>
+        <table class="concept-table">
+          <tr><th>Chain</th><th>Input</th><th>Output</th><th>Triggered by</th></tr>
+          <tr><td><code>session-summarizer</code></td><td>Activity items[]</td><td><code>{ goal, bullets[] }</code></td><td><code>POST /session-ai?summarize</code></td></tr>
+          <tr><td><code>intent-detector</code></td><td>Goal + changes + phase</td><td>2–5 word intent label</td><td><code>POST /session-ai?intent</code></td></tr>
+          <tr><td><code>next-step-suggester</code></td><td>Full session context</td><td>Single next-step string</td><td><code>POST /session-ai?suggest</code></td></tr>
+          <tr><td><code>paraphraser</code></td><td>Raw text</td><td>Cleaner rewritten text</td><td><code>POST /session-ai?paraphrase</code></td></tr>
+          <tr><td><code>prompt-chain</code></td><td>Resolved prompt string</td><td><code>{ text, actions[], artifact }</code></td><td><code>POST /run-prompt.ts</code></td></tr>
+        </table>
+        <p>The <code>session-ai.ts</code> function dispatches to the first four chains based on query params. <code>prompt-chain</code> lives in <code>run-prompt.ts</code> — a separate function dedicated to running user-authored prompts with variable and tool resolution.</p>
+
         <div class="exercise">
           <div class="exercise-header" onclick="toggleAccordion(this)">
             <span class="exercise-label">Exercise 2</span>
@@ -1018,10 +1033,10 @@
               <li>Input: <code>{ code: string, language: string, context?: string }</code></li>
               <li>Output: <code>{ issues: [{ line: number, severity: "error"|"warning"|"suggestion", message: string }], summary: string }</code></li>
               <li>Write a system prompt constraining output to valid JSON matching that schema</li>
-              <li>Add <code>stripCodeBlock()</code> + try/catch with fallback to raw text</li>
-              <li>Wire to a new <code>?review</code> query param in <code>session-ai.ts</code></li>
+              <li>Add <code>stripCodeBlock()</code> from <code>lib/ai/parse-utils.ts</code> + try/catch with fallback to raw text</li>
+              <li>Wire to a new <code>?review</code> query param in <code>session-ai.ts</code> — follow the same dispatch pattern as <code>?summarize</code></li>
             </ol>
-            <div class="exercise-hook"><strong>buffr hook:</strong> mirrors the exact pattern of <code>session-summarizer.ts</code></div>
+            <div class="exercise-hook"><strong>buffr hook:</strong> mirrors the exact pattern of <code>netlify/functions/lib/ai/chains/session-summarizer.ts</code> — read that file first, then replicate it</div>
           </div>
         </div>
 
@@ -1163,6 +1178,32 @@
         </div>
 
         <p>buffr uses "one file per resource, query params for sub-operations." Understanding why — and when it breaks down — is the mark of an engineer who thinks in systems.</p>
+
+        <p><strong>buffr's 13 serverless functions</strong> — each is a self-contained handler in <code>netlify/functions/</code>:</p>
+        <table class="concept-table">
+          <tr><th>Function</th><th>Purpose</th><th>Methods</th></tr>
+          <tr><td><code>projects.ts</code></td><td>Project CRUD</td><td>GET, POST, PUT, DELETE</td></tr>
+          <tr><td><code>sessions.ts</code></td><td>Session history</td><td>GET, POST, DELETE</td></tr>
+          <tr><td><code>prompts.ts</code></td><td>Prompt library CRUD</td><td>GET, POST, PUT, DELETE</td></tr>
+          <tr><td><code>dev-items.ts</code></td><td>.dev files + push to GitHub + adapter compile</td><td>GET, POST, PUT, DELETE, POST?push</td></tr>
+          <tr><td><code>manual-actions.ts</code></td><td>Task list with reordering</td><td>GET, POST, PUT, PATCH, DELETE</td></tr>
+          <tr><td><code>action-notes.ts</code></td><td>Notes on action items</td><td>GET, PUT</td></tr>
+          <tr><td><code>session-ai.ts</code></td><td>LLM chains dispatcher (4 sub-actions)</td><td>POST?summarize / ?intent / ?suggest / ?paraphrase</td></tr>
+          <tr><td><code>run-prompt.ts</code></td><td>Resolve variables + tools, run user prompts</td><td>POST</td></tr>
+          <tr><td><code>tools.ts</code></td><td>Tool execution gateway</td><td>GET, POST?execute</td></tr>
+          <tr><td><code>providers.ts</code></td><td>LLM provider config</td><td>GET, PUT</td></tr>
+          <tr><td><code>auth-check.ts</code></td><td>Auth verification</td><td>GET</td></tr>
+          <tr><td><code>login.ts / logout.ts</code></td><td>Authentication</td><td>POST</td></tr>
+        </table>
+
+        <p><strong>The query param dispatch pattern</strong> — buffr uses this when a single endpoint handles multiple related AI operations:</p>
+        <pre>POST /session-ai?summarize   → session-summarizer chain
+POST /session-ai?intent      → intent-detector chain
+POST /session-ai?suggest     → next-step-suggester chain
+POST /session-ai?paraphrase  → paraphraser chain
+POST /dev-items?push         → build adapter files → push to GitHub via Trees API</pre>
+        <p>This is a pragmatic RPC-style hybrid. <code>session-ai.ts</code> checks <code>url.searchParams.has("summarize")</code> etc. and routes accordingly. The client mirrors this in <code>src/lib/api.ts</code> — every endpoint has a typed wrapper function.</p>
+
         <table class="concept-table">
           <tr><th>Decision</th><th>Trade-off</th></tr>
           <tr><td>One file per resource</td><td>Simplifies deployment. Gets messy when a resource has 10+ operations.</td></tr>
@@ -1223,6 +1264,20 @@
           <tr><td class="col3">Index pattern</td><td>Separate index key tracking which items belong to a set</td><td>First migration step before moving to a real database</td></tr>
           <tr><td class="col3">Optimistic locking</td><td>Read a version number, write only if version hasn't changed</td><td>Prevents TOCTOU in databases without full transactions</td></tr>
         </table>
+
+        <p><strong>buffr's 8 Blob stores</strong> — each is a separate namespace in Netlify Blobs:</p>
+        <table class="concept-table">
+          <tr><th>Store</th><th>Key strategy</th><th>What's stored</th></tr>
+          <tr><td><code>projects</code></td><td>One blob per project (project ID)</td><td>Project metadata, settings, provider config</td></tr>
+          <tr><td><code>sessions</code></td><td>One blob per session (session ID)</td><td>Goal, whatChanged, blockers, AI summary, intent</td></tr>
+          <tr><td><code>prompt-library</code></td><td>One blob per prompt (prompt ID)</td><td>Title, body, tags, scope</td></tr>
+          <tr><td><code>dev-items</code></td><td>One blob per dev item (item ID)</td><td>AI rules, skills, community skills — the .dev/ content</td></tr>
+          <tr><td><code>manual-actions</code></td><td>One blob per project (contains array)</td><td>Ordered task list for a project — whole array in one blob</td></tr>
+          <tr><td><code>action-notes</code></td><td>One blob per project (contains record)</td><td>Notes keyed by action ID — all notes for a project together</td></tr>
+          <tr><td><code>tool-config</code></td><td>One blob per integration</td><td>GitHub/Notion credentials and connection state</td></tr>
+          <tr><td><code>settings</code></td><td>Single blob</td><td>App-wide settings (provider, preferences)</td></tr>
+        </table>
+        <p>Two key patterns: <strong>one-blob-per-record</strong> (prompts, dev-items, sessions) — each item independent, listing requires fetching all. <strong>One-blob-per-project-as-collection</strong> (manual-actions, action-notes) — faster to list, but concurrent writes can hit the TOCTOU bug.</p>
         <p><strong>The TOCTOU race condition</strong> — a real bug encountered in buffr:</p>
         <pre>BROKEN (Promise.all):
   Delete A: read [A,B,C] → remove A → write [B,C]
@@ -1339,13 +1394,21 @@ FIXED (sequential):
   result injected as context → second LLM call → final response</pre>
         </div>
 
+        <p><strong>The two ways buffr uses tools</strong> — understand the distinction:</p>
+        <table class="concept-table">
+          <tr><th>Pattern</th><th>How it works</th><th>buffr file</th></tr>
+          <tr><td><code>&#123;&#123;tool:name&#125;&#125;</code> tokens (pre-fetch RAG)</td><td>Tool is called <em>before</em> the LLM — result injected as context. The model sees resolved data, not the template. Used in user-authored prompts in the prompt library.</td><td><code>lib/resolve-tools.ts</code></td></tr>
+          <tr><td><code>suggestedActions</code> (LLM-directed tool use)</td><td>LLM decides at inference time which tool to call based on the prompt context. Returns tool name + params; backend executes and optionally calls LLM again with result.</td><td><code>lib/ai/chains/prompt-chain.ts</code></td></tr>
+        </table>
+        <p>The <code>&#123;&#123;tool:github_list_issues&#125;&#125;</code> regex pattern in <code>resolve-tools.ts</code> finds all tool tokens in a prompt string, calls each registered tool, and replaces the token with the result — all before the LLM sees the prompt. The LLM gets live data without having to request it.</p>
+
         <div class="interview">
           <div class="interview-header" onclick="toggleAccordion(this)">
             <span class="interview-icon">🎯</span>
             <span class="interview-q">Explain the difference between tool use and RAG. When would you use each?</span>
             <span class="interview-chevron">▶</span>
           </div>
-          <div class="interview-body">RAG pre-fetches data and injects it into the prompt before the LLM call — the model sees the data but can't decide whether to fetch it. Tool use lets the model decide at inference time what actions to take — it's dynamic and can chain. Use RAG when you always need context (e.g. always include user's recent sessions). Use tools when the action depends on the model's reasoning. buffr uses both: <code>&#123;&#123;tool:...&#125;&#125;</code> tokens are RAG; <code>suggestedActions</code> are tool use.</div>
+          <div class="interview-body">RAG pre-fetches data and injects it into the prompt before the LLM call — the model sees the data but can't decide whether to fetch it. Tool use lets the model decide at inference time what actions to take — it's dynamic and can chain. Use RAG when you always need context (e.g. always include user's recent sessions). Use tools when the action depends on the model's reasoning. buffr uses both: <code>&#123;&#123;tool:...&#125;&#125;</code> tokens are pre-fetch RAG via <code>resolve-tools.ts</code>; <code>suggestedActions</code> in <code>prompt-chain.ts</code> are LLM-directed tool use.</div>
         </div>
 
         <div class="exercise">
@@ -1358,12 +1421,13 @@ FIXED (sequential):
           <div class="exercise-body">
             <ol class="exercise-steps">
               <li>Create <code>netlify/functions/lib/linear.ts</code> — minimal API client using the Linear GraphQL API</li>
-              <li>Create <code>netlify/functions/lib/tools/linear.ts</code> — register <code>linear_list_issues</code> and <code>linear_create_issue</code></li>
-              <li>Add <code>registerLinearTools()</code> call in <code>register-all.ts</code></li>
+              <li>Create <code>netlify/functions/lib/tools/linear.ts</code> — register <code>linear_list_issues</code> and <code>linear_create_issue</code> using <code>registerTool()</code> from <code>lib/tools/registry.ts</code></li>
+              <li>Add <code>registerLinearTools()</code> call in <code>lib/tools/register-all.ts</code> — this runs at cold start</li>
               <li>Add a <code>&#123;&#123;tool:linear_list_issues&#125;&#125;</code> token to a test prompt in the prompt library</li>
-              <li>Run the prompt and verify Linear data appears in the LLM response</li>
+              <li>Run the prompt via <code>run-prompt.ts</code> — <code>resolve-tools.ts</code> will find the token and call your tool before the LLM sees the prompt</li>
+              <li>Verify Linear data appears in the resolved prompt and then in the LLM response</li>
             </ol>
-            <div class="exercise-hook"><strong>buffr hook:</strong> mirrors the pattern in <code>lib/tools/github.ts</code> exactly</div>
+            <div class="exercise-hook"><strong>buffr hook:</strong> read <code>lib/tools/github.ts</code> (10+ registered GitHub tools) as the reference, then read <code>lib/tools/register-all.ts</code> to see how tools are booted at startup</div>
           </div>
         </div>
         <div class="ext-links-label">Read more</div>
@@ -1451,6 +1515,84 @@ FIXED (sequential):
           <a class="ext-link" href="https://docs.anthropic.com/en/docs/build-with-claude/agents" target="_blank">Anthropic Agents Guide</a>
           <a class="ext-link" href="https://microsoft.github.io/autogen/" target="_blank">AutoGen — Multi-Agent Framework</a>
           <a class="ext-link" href="https://www.temporal.io/blog/workflow-orchestration" target="_blank">Temporal — Workflow Orchestration</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3><span class="sec-num">3.3</span> The .dev Adapter Compilation Pattern</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>The <strong>adapter compilation pattern</strong> is the practice of taking a single source of truth (AI rules, skills, context) and transforming it into multiple target formats — one for each tool or consumer that needs it. This is the same idea as build systems that compile source code into multiple targets (iOS, Android, web) or CSS preprocessors that compile a single SCSS file to vendor-prefixed CSS. The source is canonical; the outputs are derived and regenerated on demand.</p>
+          <p>In buffr, the source of truth is the <code>dev-items</code> Blob store — AI rules and skills created in the UI. The adapter compilation step (triggered by <code>POST /dev-items?push</code>) reads all items, combines them, formats each combination for a specific AI coding tool, and pushes the resulting files to GitHub via the Trees API. Adding support for a new tool means adding one new formatter function — the source data and push mechanism don't change.</p>
+          <p>The <strong>GitHub Trees API</strong> is the correct approach for committing multiple files atomically. Unlike making individual file PUT requests, the Trees API lets you: (1) create blobs for each file's content, (2) create a tree that references all blobs with their target paths, (3) create a commit pointing to the tree, (4) update the branch ref to the new commit. All files appear in a single commit — no intermediate states, no partial pushes.</p>
+        </div>
+
+        <p>buffr's <code>dev-items.ts</code> compiles AI rules + skills into adapter files for 6 AI coding tools, then commits them to GitHub in a single atomic operation:</p>
+        <table class="concept-table">
+          <tr><th>Adapter</th><th>Output file</th><th>Target tool</th></tr>
+          <tr><td>Claude Code</td><td><code>CLAUDE.md</code></td><td>Anthropic Claude Code</td></tr>
+          <tr><td>Cursor</td><td><code>.cursorrules</code></td><td>Cursor editor</td></tr>
+          <tr><td>Copilot</td><td><code>.github/copilot-instructions.md</code></td><td>GitHub Copilot</td></tr>
+          <tr><td>Windsurf</td><td><code>.windsurfrules</code></td><td>Windsurf editor</td></tr>
+          <tr><td>Aider</td><td><code>.aider.conf.yml</code></td><td>Aider CLI</td></tr>
+          <tr><td>Continue</td><td><code>.continuerules</code></td><td>Continue extension</td></tr>
+        </table>
+
+        <div class="ascii-diagram">
+          <div class="asc-title">.dev Push Flow — From UI to GitHub Commit</div>
+          <pre><span class="asc-dim">  User clicks "Push to repo" in the .dev tab</span>
+            │
+            ▼
+  POST /dev-items?push  { projectId, repo, adapterIds }
+            │
+            ▼
+  1. Fetch all dev-items from Blobs (ai-rules, skills, community-skills)
+            │
+            ▼
+  2. Build adapter content:
+     .dev/ai-rules/strict-types.md  ─┐
+     .dev/ai-rules/no-any.md        ─┤
+     .dev/skills/code-review.md     ─┼──▶  CLAUDE.md  (combined)
+     .dev/community-skills/audit.md ─┘     .cursorrules  (combined)
+                                            copilot-instructions.md
+                                            .windsurfrules
+            │
+            ▼
+  3. GitHub Trees API (lib/github.ts → pushFiles()):
+     a. GET /repos/{owner}/{repo}/git/refs/heads/main  → HEAD SHA
+     b. POST /git/blobs  ×N  (one per file)            → blob SHAs
+     c. POST /git/trees  (all blobs + paths in one tree)
+     d. POST /git/commits  (tree SHA + parent SHA)
+     e. PATCH /git/refs/heads/main  (move branch to new commit)
+            │
+            ▼
+  <span class="asc-ok">  All adapter files committed atomically in a single git commit</span></pre>
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header" onclick="toggleAccordion(this)">
+            <span class="exercise-label">Exercise 5b</span>
+            <span class="exercise-title">Add a New Adapter to the .dev Push</span>
+            <span class="exercise-tag">buffr · dev-items.ts</span>
+            <span class="exercise-chevron">▶</span>
+          </div>
+          <div class="exercise-body">
+            <ol class="exercise-steps">
+              <li>Open <code>netlify/functions/dev-items.ts</code> and find the <code>buildAdapterContent()</code> function</li>
+              <li>Add a new adapter entry for a tool of your choice (e.g., Tabnine: <code>.tabnine</code>, Cody: <code>cody-instructions.md</code>)</li>
+              <li>Define the formatter: combine the same ai-rules + skills content, formatted for your target tool's expected file structure</li>
+              <li>Add the new file path to the files array passed to <code>pushFiles()</code> in <code>lib/github.ts</code></li>
+              <li>Test by triggering a push — verify the new file appears in the GitHub repo alongside the existing adapters</li>
+            </ol>
+            <div class="exercise-hook"><strong>buffr hook:</strong> <code>netlify/functions/dev-items.ts</code> — the <code>buildAdapterContent()</code> and <code>?push</code> handler. Read <code>netlify/functions/lib/github.ts</code> <code>pushFiles()</code> to understand the Trees API calls.</div>
+          </div>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.github.com/en/rest/git/trees" target="_blank">GitHub Git Trees API</a>
+          <a class="ext-link" href="https://docs.github.com/en/rest/git/commits" target="_blank">GitHub Git Commits API</a>
+          <a class="ext-link" href="https://docs.github.com/en/rest/git/blobs" target="_blank">GitHub Git Blobs API</a>
         </div>
       </div>
     </div>
@@ -1882,13 +2024,25 @@ FIXED (sequential):
           <div class="pipe-step"><div class="label">Business Logic</div><div class="value">repCount++</div></div>
         </div>
         <table class="concept-table">
-          <tr><th>Concept</th><th>contrl application</th></tr>
-          <tr><td>Inference</td><td>Running <code>PoseLandmarker</code> on each video frame — not training, just predicting</td></tr>
+          <tr><th>Concept</th><th>contrl / poselab application</th></tr>
+          <tr><td>Inference</td><td>Running <code>PoseLandmarker</code> on each video frame — not training, just predicting. contrl uses one model; poselab runs 5 models simultaneously.</td></tr>
           <tr><td>Pre-processing</td><td>MediaPipe resizes each frame to 256×256 and normalises to 0.0–1.0 before inference</td></tr>
           <tr><td>Landmark indices</td><td>33 keypoints: 0=nose, 11/12=shoulders, 13/14=elbows, 15/16=wrists, 23/24=hips, 25/26=knees</td></tr>
           <tr><td>Visibility score</td><td>Each landmark has a 0–1 confidence score. Filter out calculations where visibility &lt; 0.6.</td></tr>
           <tr><td>Delegate</td><td>CPU (WASM, ~60ms/frame), GPU (WebGL, ~15ms/frame), WASM SIMD (~30ms/frame)</td></tr>
+          <tr><td>WASM singleton pattern</td><td>poselab caches the WASM fileset — multiple detectors share one initialised runtime, avoiding redundant downloads and init time</td></tr>
         </table>
+
+        <p><strong>poselab runs 5 detectors on staggered frames</strong> — frame skipping prevents GPU saturation while keeping visual quality smooth:</p>
+        <table class="concept-table">
+          <tr><th>Detector</th><th>Model</th><th>Landmarks</th><th>Frame cadence</th></tr>
+          <tr><td>Pose</td><td><code>pose_landmarker</code> (lite / full / heavy)</td><td>33 body points</td><td>Every frame (highest priority)</td></tr>
+          <tr><td>Face</td><td><code>face_landmarker</code> (with blendshapes)</td><td>468 mesh points</td><td>Every 2nd frame</td></tr>
+          <tr><td>Hand</td><td><code>hand_landmarker</code></td><td>21 per hand × 2</td><td>Every 2nd frame</td></tr>
+          <tr><td>Gesture</td><td><code>gesture_recognizer</code></td><td>Gesture classification label</td><td>Every 2nd frame</td></tr>
+          <tr><td>Segmentation</td><td><code>selfie_segmenter</code></td><td>Per-pixel mask (Float32Array)</td><td>Every 3rd frame</td></tr>
+        </table>
+        <p>The loop in <code>src/lib/hooks/useDetectionLoop.ts</code> uses <code>requestAnimationFrame</code> with a frame counter: <code>if (frameCount % 2 === 0)</code> for face/hand/gesture, <code>if (frameCount % 3 === 0)</code> for segmentation. Pose always runs. This is a real-time systems scheduling pattern: assign frame budgets by priority.</p>
         <div class="ext-links-label">Read more</div>
         <div class="ext-links">
           <a class="ext-link" href="https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker" target="_blank">MediaPipe PoseLandmarker Docs</a>
@@ -2171,16 +2325,20 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
       <div class="section">
         <h3>Core concepts to articulate fluently</h3>
         <ul class="plain">
-          <li><strong>Provider abstraction:</strong> why it matters, how <code>getLLM()</code> implements it, what LiteLLM is in Python</li>
-          <li><strong>Chain pattern:</strong> input → messages → LLM → parse → output, why output sanitisation is required</li>
+          <li><strong>Provider abstraction:</strong> why it matters, how <code>getLLM()</code> dispatches across 4 providers (Anthropic, OpenAI, Google, Ollama), what LiteLLM is in Python</li>
+          <li><strong>Chain pattern:</strong> input → messages → LLM → parse → output, the 5 chains in buffr, why <code>stripCodeBlock()</code> is always needed</li>
+          <li><strong>Query param dispatch:</strong> why buffr uses <code>?summarize / ?intent / ?suggest / ?paraphrase</code> on a single endpoint, trade-offs vs separate endpoints</li>
+          <li><strong>Tool token resolution vs LLM-directed tool use:</strong> <code>&#123;&#123;tool:name&#125;&#125;</code> pre-fetch in <code>resolve-tools.ts</code> vs <code>suggestedActions</code> in <code>prompt-chain.ts</code> — when to use each</li>
+          <li><strong>Adapter compilation pattern:</strong> single source of truth (dev-items) compiled into 6 tool-specific output formats, pushed atomically via GitHub Trees API</li>
+          <li><strong>8 Blob stores:</strong> one-blob-per-record vs one-blob-per-project-as-collection, when each pattern breaks down</li>
           <li><strong>RAG vs fine-tuning:</strong> when to use each, cost/accuracy trade-offs</li>
-          <li><strong>Tool use / function calling:</strong> definition schema, execution model, security boundary</li>
-          <li><strong>Streaming:</strong> SSE, chunked encoding, why it matters for LLM latency UX</li>
+          <li><strong>Streaming:</strong> SSE, chunked encoding, why it matters for LLM latency UX, time-to-first-token</li>
           <li><strong>Embeddings + vector search:</strong> cosine similarity, chunking strategy, pgvector vs Pinecone</li>
           <li><strong>Evals:</strong> LLM-as-judge, regression tests, semantic similarity scoring</li>
           <li><strong>On-device ML vs cloud:</strong> latency, privacy, cost trade-offs — when each is right</li>
-          <li><strong>Signal processing on ML output:</strong> EMA smoothing, joint angles, phase classification</li>
-          <li><strong>TOCTOU:</strong> what it is, the specific bug in buffr, the sequential fix</li>
+          <li><strong>poselab's 5 detectors:</strong> staggered frame cadence, WASM singleton, why frame skipping prevents GPU saturation</li>
+          <li><strong>Signal processing on ML output:</strong> EMA smoothing, joint angles, phase classification state machine</li>
+          <li><strong>TOCTOU:</strong> what it is, the specific bug in buffr's one-blob-per-project stores, the sequential fix</li>
         </ul>
       </div>
 
@@ -2212,13 +2370,15 @@ const angle = Math.acos(dot / mag) * (180 / Math.PI)</pre>
         <h3>Your code as interview evidence</h3>
         <table class="concept-table">
           <tr><th>Topic</th><th>What you can say</th></tr>
-          <tr><td>Provider abstraction</td><td>"I built <code>getLLM()</code> which lets buffr swap between Claude, GPT-4, and local Ollama without changing chain code"</td></tr>
-          <tr><td>Chain architecture</td><td>"buffr has six chains ordered by complexity — I can walk through how the dev scanner uses structured output to produce a full .dev/ folder"</td></tr>
-          <tr><td>Tool registry</td><td>"I built a registry pattern where GitHub and Notion tools are registered at cold start, and the LLM can suggest which to call via <code>suggestedActions</code>"</td></tr>
-          <tr><td>RAG pattern</td><td>"buffr resolves <code>&#123;&#123;tool:...&#125;&#125;</code> tokens server-side before the LLM call — retrieval augmentation where the prompt is enriched with live API data"</td></tr>
-          <tr><td>On-device ML</td><td>"contrl runs MediaPipe PoseLandmarker entirely in the browser at 30fps — no server, no API costs, body video never leaves the device"</td></tr>
-          <tr><td>Signal processing</td><td>"I built rep counting as a signal processing pipeline — EMA smoothing, joint angle calculation, phase state machine — on top of MediaPipe's landmark output"</td></tr>
-          <tr><td>Concurrency bug</td><td>"I debugged a TOCTOU race condition where concurrent <code>Promise.all</code> deletes were losing data — fixed with sequential writes"</td></tr>
+          <tr><td>Provider abstraction</td><td>"I built <code>getLLM()</code> in <code>lib/ai/provider.ts</code> which dispatches to 4 providers — Anthropic Claude, OpenAI GPT-4o, Google Gemini, and local Ollama — without any chain code changing"</td></tr>
+          <tr><td>Chain architecture</td><td>"buffr has 5 chains in <code>lib/ai/chains/</code> — summarizer, intent detector, next-step suggester, paraphraser, and prompt-chain. All follow the same pattern: system message + human message + <code>stripCodeBlock()</code> + <code>JSON.parse()</code>"</td></tr>
+          <tr><td>Query param dispatch</td><td>"<code>session-ai.ts</code> dispatches to 4 chains via <code>?summarize / ?intent / ?suggest / ?paraphrase</code>. One file, one provider setup, four AI operations — practical for serverless."</td></tr>
+          <tr><td>Tool token resolution</td><td>"buffr resolves <code>&#123;&#123;tool:github_list_issues&#125;&#125;</code> tokens in <code>resolve-tools.ts</code> before the LLM call. The model sees live API data, not template syntax."</td></tr>
+          <tr><td>Adapter compilation</td><td>"The .dev tab compiles AI rules and skills into 6 adapter files (CLAUDE.md, .cursorrules, copilot-instructions, etc.) and commits them atomically via GitHub's Trees API in a single commit."</td></tr>
+          <tr><td>8 Blob stores</td><td>"buffr uses 8 Netlify Blobs namespaces. Prompts use one-blob-per-record (each prompt is its own key). Manual actions use one-blob-per-project-as-array — that's where the TOCTOU bug appeared."</td></tr>
+          <tr><td>On-device ML</td><td>"poselab runs 5 MediaPipe detectors simultaneously with staggered frame cadences — pose every frame, face/hand/gesture every 2nd, segmentation every 3rd. contrl uses pose-only at 30fps."</td></tr>
+          <tr><td>Signal processing</td><td>"I built rep counting as a signal processing pipeline — EMA smoothing, joint angle via dot product, phase state machine (idle→down→bottom→up) — on top of MediaPipe landmark output."</td></tr>
+          <tr><td>Concurrency bug</td><td>"I debugged a TOCTOU race condition in the manual-actions Blob store where concurrent <code>Promise.all</code> deletes caused stale reads — fixed by switching to sequential <code>for...of</code> writes."</td></tr>
         </table>
       </div>
     </div>
