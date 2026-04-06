@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Tools Ecosystem — AI Product Engineering</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><a href="index.html" style="text-decoration:none;"><span>AI Curriculum v6</span></a></div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Overview</div>
+    <a class="nav-item" href="index.html">Introduction</a>
+    <a class="nav-item active" href="tooling.html">Claude Tools Ecosystem</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Applied AI Track</div>
+    <a class="nav-item" href="phase-0.html">Phase 0 · Applied AI Tools</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">LLM Track — buffr</div>
+    <a class="nav-item" href="phase-1.html">Phase 1 · LLM Integration</a>
+    <a class="nav-item" href="phase-2.html">Phase 2 · Backend &amp; API</a>
+    <a class="nav-item" href="phase-3.html">Phase 3 · Agentic Systems</a>
+    <a class="nav-item" href="phase-4.html">Phase 4 · Production</a>
+    <a class="nav-item" href="phase-5.html">Phase 5 · RAG &amp; Embeddings</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">ML Track — contrl</div>
+    <a class="nav-item" href="phase-6.html">Phase 6 · MediaPipe &amp; ML</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Projects &amp; Revenue</div>
+    <a class="nav-item" href="projects.html">Project Ideas &amp; Revenue</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Foundations</div>
+    <a class="nav-item" href="math.html">Math &amp; Algorithms</a>
+    <a class="nav-item" href="dsa.html">Data Structures &amp; Algorithms</a>
+    <a class="nav-item" href="reading.html">Reading List</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Prep</div>
+    <a class="nav-item" href="interview.html">Interview Prep</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Resources</div>
+    <a class="nav-item" href="prompting-cheatsheet.html">Prompting Cheatsheet ↗</a>
+  </div>
+</nav>
+
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">// curriculum · v6.0 · updated 2026-03-20 · 3 tracks · 8 phases · 5 projects · passive income path</div>
+    <h1>AI Product<br><em>Engineering</em></h1>
+    <p class="hero-sub">A practical curriculum built on your own codebases. Three concentric tracks: Applied AI tools (outermost, highest leverage), LLM Engineering (middle), Applied ML (core). Frontend developer → AI Product Engineer → passive income.</p>
+    <div class="track-pills">
+      <span class="pill pill-orange"><span class="pill-dot"></span>Applied AI · Tools & Automation</span>
+      <span class="pill pill-teal"><span class="pill-dot"></span>buffr · LLM Engineering</span>
+      <span class="pill pill-purple"><span class="pill-dot"></span>contrl · Applied ML</span>
+    </div>
+  </div>
+
+    <!-- PROGRESS BAR -->
+  <div class="progress-bar">
+    <a class="pb-phase p0" href="phase-0.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">00</div><span class="pb-label">Applied AI</span>
+    </a>
+    <a class="pb-phase p1" href="phase-1.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">01</div><span class="pb-label">LLM Integration</span>
+    </a>
+    <a class="pb-phase p2" href="phase-2.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">02</div><span class="pb-label">Backend &amp; API</span>
+    </a>
+    <a class="pb-phase p3" href="phase-3.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">03</div><span class="pb-label">Agentic Systems</span>
+    </a>
+    <a class="pb-phase p4" href="phase-4.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">04</div><span class="pb-label">Production</span>
+    </a>
+    <a class="pb-phase p5" href="phase-5.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">05</div><span class="pb-label">RAG + Embeddings</span>
+    </a>
+    <a class="pb-phase p6" href="phase-6.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">06</div><span class="pb-label">MediaPipe + ML</span>
+    </a>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="phase-block visible" id="phase-tooling">
+      <div class="phase-header">
+        <div class="phase-num label-orange" style="border-color:var(--orange);">Tools</div>
+        <div class="phase-title-block">
+          <h2>Claude Tools Ecosystem</h2>
+          <div class="phase-meta">The full map · Industry adoption March 2026 · What to use when</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3><span class="sec-num">T.1</span> Industry Standard — March 2026</h3>
+        <p>95% of surveyed developers use AI tools weekly. 75% use AI for half+ their work. Claude Code overtook Copilot as #1 in 8 months. 70% use 2–4 tools simultaneously. This is the baseline — not early adopter territory.</p>
+        <table class="concept-table">
+          <tr><th>Tool</th><th>What it does</th><th>Adoption</th></tr>
+          <tr><td>Claude Code</td><td>Terminal-native agentic coding. Full codebase access, file editing, test running, git.</td><td>#1 most-used. 46% favorite.</td></tr>
+          <tr><td>Claude.ai</td><td>Chat + web search + file creation + artifacts + MCP integrations + memory.</td><td>220M+ monthly visits.</td></tr>
+          <tr><td>Claude API</td><td>Messages, function calling, streaming, structured output, batch, vision, MCP.</td><td>Opus/Sonnet dominate coding.</td></tr>
+          <tr><td>Cursor</td><td>IDE AI. Autocomplete, chat, multi-file context.</td><td>#2 most-loved. 35% growth in 9mo.</td></tr>
+          <tr><td>GitHub Copilot</td><td>IDE extension. Autocomplete, chat, PR summaries.</td><td>Leads routine autocomplete (51%).</td></tr>
+          <tr><td>Codex (OpenAI)</td><td>Cloud coding agent. Sandbox execution.</td><td>60% of Cursor usage despite newer.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h3><span class="sec-num">T.2</span> Claude Code — Power User Stack</h3>
+        <table class="concept-table">
+          <tr><th>Feature</th><th>What it does</th><th>Action</th></tr>
+          <tr><td class="orange">CLAUDE.md</td><td>Project memory. Build commands, conventions, architecture. Read every session.</td><td>Create for buffr + contrl now.</td></tr>
+          <tr><td class="orange">Slash Commands</td><td>Reusable prompts in <code>.claude/commands/</code>. Parameterised with <code>$ARGUMENTS</code>.</td><td>Build /code-review, /deploy.</td></tr>
+          <tr><td class="orange">Skills</td><td>Auto-invoked knowledge in <code>.claude/skills/</code> with YAML frontmatter.</td><td>Next.js + Netlify skill.</td></tr>
+          <tr><td class="orange">Hooks</td><td>Pre/post edit scripts (format, lint, typecheck). Auto-run on changes.</td><td>Prettier + ESLint hooks.</td></tr>
+          <tr><td class="orange">Subagents</td><td>Specialised agents in <code>.claude/agents/</code>. Scoped tool access. Plan mode.</td><td>PR reviewer, deploy agent.</td></tr>
+          <tr><td class="orange">MCP Servers</td><td>Connect to GitHub, DBs, Playwright, internal APIs. Stdio/SSE transport.</td><td>Add GitHub MCP. Build custom.</td></tr>
+          <tr><td class="orange">Agent Teams</td><td>Multi-agent orchestration. Parallel instances. Git worktrees.</td><td><code>--worktree</code> for parallel work.</td></tr>
+          <tr><td class="orange">/compact</td><td>Compress context. Specify what to retain. Use at 80% context usage.</td><td>Learn compaction workflow.</td></tr>
+          <tr><td class="orange">Fast Mode</td><td>Same Opus 4.6, speed-optimised settings. Ideal for rapid iteration.</td><td>On for debug, off for cost.</td></tr>
+        </table>
+        <div class="ascii-diagram">
+          <div class="asc-title">.claude/ Directory — The New Project Standard</div>
+          <pre>  your-project/
+  ├── CLAUDE.md                      ← <span class="asc-label">project constitution</span>
+  ├── .claude/
+  │   ├── settings.json              ← permissions, allowed tools
+  │   ├── settings.local.json        ← personal (gitignored)
+  │   ├── commands/                  ← <span class="asc-label">slash commands</span>
+  │   │   ├── code-review.md
+  │   │   └── fix-issue.md           ← /fix-issue $ARGUMENTS
+  │   ├── skills/                    ← <span class="asc-label">auto-invoked knowledge</span>
+  │   │   └── nextjs-patterns/SKILL.md
+  │   ├── agents/                    ← <span class="asc-label">subagents</span>
+  │   │   └── pr-reviewer.md
+  │   └── rules/                     ← <span class="asc-label">conditional rules</span>
+  │       └── typescript.md
+  └── .mcp.json                      ← <span class="asc-label">MCP connections</span>
+
+  <span class="asc-note">Commit .claude/ + CLAUDE.md to git. Personal in settings.local.json.</span></pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3><span class="sec-num">T.3</span> Claude.ai Features (This Interface)</h3>
+        <table class="concept-table">
+          <tr><th>Feature</th><th>What</th><th>Track</th></tr>
+          <tr><td>Web Search</td><td>Real-time search with citations.</td><td>Applied AI</td></tr>
+          <tr><td>Deep Research</td><td>Multi-step, 20+ sources.</td><td>Applied AI</td></tr>
+          <tr><td>Artifacts</td><td>Interactive React/HTML/SVG. Persistent storage API.</td><td>LLM Eng</td></tr>
+          <tr><td>Code Execution</td><td>Sandboxed Linux. Bash, file creation.</td><td>All</td></tr>
+          <tr><td>File Creation</td><td>.docx, .pptx, .xlsx, .pdf generation.</td><td>Applied AI</td></tr>
+          <tr><td>MCP Integrations</td><td>Calendar, Gmail, Figma, Asana, Slack, Salesforce.</td><td>Applied AI</td></tr>
+          <tr><td>Visualiser</td><td>Inline SVG/HTML diagrams and charts.</td><td>All</td></tr>
+          <tr><td>Memory</td><td>Persistent across conversations.</td><td>Applied AI</td></tr>
+          <tr><td>Claude in Chrome</td><td>Browsing agent (beta).</td><td>Applied AI</td></tr>
+          <tr><td>Cowork</td><td>Desktop GUI agent for non-devs.</td><td>Applied AI</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h3><span class="sec-num">T.4</span> Claude API — For Building Products</h3>
+        <table class="concept-table">
+          <tr><th>Capability</th><th>What</th><th>Your projects</th></tr>
+          <tr><td>Messages API</td><td>Core completion endpoint. Multi-turn.</td><td>Every buffr chain.</td></tr>
+          <tr><td>Function Calling</td><td>LLM requests typed function execution.</td><td>buffr suggestedActions.</td></tr>
+          <tr><td>Streaming</td><td>SSE token-by-token delivery.</td><td>Phase 4 exercise.</td></tr>
+          <tr><td>Structured Output</td><td>Force JSON schema. JSON mode.</td><td>Replace stripCodeBlock.</td></tr>
+          <tr><td>Batch API</td><td>Async at 50% discount.</td><td>Bulk re-embedding.</td></tr>
+          <tr><td>Vision</td><td>Image + PDF input.</td><td>Design review, form parsing.</td></tr>
+          <tr><td>Prompt Caching</td><td>90% discount on cached prefix.</td><td>Dev scanner standards block.</td></tr>
+          <tr><td>MCP in API</td><td>MCP servers in API calls.</td><td>Build buffr MCP server.</td></tr>
+          <tr><td>Extended Thinking</td><td>Visible chain-of-thought.</td><td>Complex analysis in scanner.</td></tr>
+        </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.anthropic.com/en/docs/claude-code/overview" target="_blank">Claude Code Docs</a>
+          <a class="ext-link" href="https://code.claude.com/docs/en/slash-commands" target="_blank">Skills & Commands</a>
+          <a class="ext-link" href="https://modelcontextprotocol.io/introduction" target="_blank">MCP Protocol</a>
+          <a class="ext-link" href="https://docs.anthropic.com/en/api/messages" target="_blank">Claude API Ref</a>
+          <a class="ext-link" href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank">Awesome Claude Code</a>
+        </div>
+      </div>
+    </div>
+
+
+  </div><!-- /content -->
+</main>
+
+<script>
+  function toggleAccordion(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.exercise-chevron, .interview-chevron');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (chevron) chevron.classList.toggle('open', !isOpen);
+    header.classList.toggle('open', !isOpen);
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const pct = window.scrollY / (doc.scrollHeight - doc.clientHeight);
+    document.getElementById('scrollProgress').style.transform = `scaleX(${pct})`;
+  });
+</script>
+
+</body>
+</html>

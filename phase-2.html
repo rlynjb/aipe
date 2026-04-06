@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 2 · Backend & API — AI Product Engineering</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><a href="index.html" style="text-decoration:none;"><span>AI Curriculum v6</span></a></div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Overview</div>
+    <a class="nav-item" href="index.html">Introduction</a>
+    <a class="nav-item" href="tooling.html">Claude Tools Ecosystem</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Applied AI Track</div>
+    <a class="nav-item" href="phase-0.html">Phase 0 · Applied AI Tools</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">LLM Track — buffr</div>
+    <a class="nav-item" href="phase-1.html">Phase 1 · LLM Integration</a>
+    <a class="nav-item active" href="phase-2.html">Phase 2 · Backend &amp; API</a>
+    <a class="nav-item" href="phase-3.html">Phase 3 · Agentic Systems</a>
+    <a class="nav-item" href="phase-4.html">Phase 4 · Production</a>
+    <a class="nav-item" href="phase-5.html">Phase 5 · RAG &amp; Embeddings</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">ML Track — contrl</div>
+    <a class="nav-item" href="phase-6.html">Phase 6 · MediaPipe &amp; ML</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Projects &amp; Revenue</div>
+    <a class="nav-item" href="projects.html">Project Ideas &amp; Revenue</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Foundations</div>
+    <a class="nav-item" href="math.html">Math &amp; Algorithms</a>
+    <a class="nav-item" href="dsa.html">Data Structures &amp; Algorithms</a>
+    <a class="nav-item" href="reading.html">Reading List</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Prep</div>
+    <a class="nav-item" href="interview.html">Interview Prep</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Resources</div>
+    <a class="nav-item" href="prompting-cheatsheet.html">Prompting Cheatsheet ↗</a>
+  </div>
+</nav>
+
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">// curriculum · v6.0 · updated 2026-03-20 · 3 tracks · 8 phases · 5 projects · passive income path</div>
+    <h1>AI Product<br><em>Engineering</em></h1>
+    <p class="hero-sub">A practical curriculum built on your own codebases. Three concentric tracks: Applied AI tools (outermost, highest leverage), LLM Engineering (middle), Applied ML (core). Frontend developer → AI Product Engineer → passive income.</p>
+    <div class="track-pills">
+      <span class="pill pill-orange"><span class="pill-dot"></span>Applied AI · Tools & Automation</span>
+      <span class="pill pill-teal"><span class="pill-dot"></span>buffr · LLM Engineering</span>
+      <span class="pill pill-purple"><span class="pill-dot"></span>contrl · Applied ML</span>
+    </div>
+  </div>
+
+    <!-- PROGRESS BAR -->
+  <div class="progress-bar">
+    <a class="pb-phase p0" href="phase-0.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">00</div><span class="pb-label">Applied AI</span>
+    </a>
+    <a class="pb-phase p1" href="phase-1.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">01</div><span class="pb-label">LLM Integration</span>
+    </a>
+    <a class="pb-phase p2 active" href="phase-2.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">02</div><span class="pb-label">Backend &amp; API</span>
+    </a>
+    <a class="pb-phase p3" href="phase-3.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">03</div><span class="pb-label">Agentic Systems</span>
+    </a>
+    <a class="pb-phase p4" href="phase-4.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">04</div><span class="pb-label">Production</span>
+    </a>
+    <a class="pb-phase p5" href="phase-5.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">05</div><span class="pb-label">RAG + Embeddings</span>
+    </a>
+    <a class="pb-phase p6" href="phase-6.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">06</div><span class="pb-label">MediaPipe + ML</span>
+    </a>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="phase-block visible" id="phase-p2">
+      <div class="phase-header">
+        <div class="phase-num label-blue" style="border-color:var(--blue);">Phase 2</div>
+        <div class="phase-title-block">
+          <h2>Backend Architecture & API Design</h2>
+          <div class="phase-meta">Months 2–3 · Think like a backend engineer · Design for production · buffr</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3><span class="sec-num">2.1</span> Serverless vs Traditional</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Serverless functions</strong> (also called Functions-as-a-Service or FaaS) are the idea that you deploy individual functions rather than long-running server processes. The cloud platform manages everything below the function boundary: container provisioning, scaling, networking, and process lifecycle. AWS Lambda, Vercel Edge Functions, Cloudflare Workers, Netlify Functions, and Google Cloud Functions are all variations of this model. The code you write is nearly identical across them; the differences are timeout limits, memory ceilings, and cold-start behaviour.</p>
+          <p>The fundamental architectural constraint of serverless is <strong>statelessness</strong>: each function invocation starts with a fresh execution context. There is no shared memory between requests — no global caches, no connection pools, no singleton objects that persist. This forces good design (explicit state management) but creates friction for patterns that assumed statefulness: database connection reuse, in-process caches, and — critically for AI apps — long-running LLM calls that exceed timeout limits.</p>
+          <p>The <strong>cold start problem</strong> is specific to serverless: when a function hasn't been invoked recently, the platform must provision a new container, load the runtime, and execute your initialisation code before handling the request. For buffr, this means loading LangChain, registering tools, and initialising SDK clients adds 350–800ms to the first request. Mitigation strategies include keeping bundle size small (lazy imports), avoiding heavy initialisation in the module scope, and using platform-level keep-warm features.</p>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Dimension</th><th>Serverless (buffr/Netlify)</th><th>Traditional (Express)</th></tr>
+          <tr><td class="col3">State</td><td>Zero in-memory state across requests. Each invocation isolated.</td><td>Can keep state — caches, connection pools, singletons</td></tr>
+          <tr><td class="col3">Cold starts</td><td>First request after idle: +200–800ms</td><td>Always warm, consistent latency</td></tr>
+          <tr><td class="col3">Concurrency</td><td>Platform auto-scales</td><td>You manage thread pools and workers</td></tr>
+          <tr><td class="col3">Cost model</td><td>Pay per invocation. Scales to zero.</td><td>Fixed monthly. Efficient at sustained high volume.</td></tr>
+          <tr><td class="col3">Timeout</td><td>Hard limits (10s Netlify, 15min Lambda)</td><td>You control it</td></tr>
+          <tr><td class="col3">Best for AI</td><td>Low-to-medium volume, bursty traffic, streaming responses</td><td>High-throughput, long-running inference, persistent model loading</td></tr>
+        </table>
+        <p><strong>Key implication for AI products:</strong> LLM calls can take 5–30 seconds. Solutions: streaming (return tokens immediately) or queue/job pattern (async processing).</p>
+
+        <div class="ascii-diagram">
+          <div class="asc-title">Serverless Request Lifecycle — buffr on Netlify</div>
+          <pre><span class="asc-dim">  COLD START  (first request after idle — happens once)</span>
+
+  Request ──▶ [ spin up container ]──▶ [ load bundle ]──▶ [ register tools ]──▶ handler()
+                   ~200ms                  ~100ms              ~50ms            ~LLM time
+              └─────────────────────────── total: +350–800ms extra ───────────────────────┘
+
+<span class="asc-dim">  WARM REQUEST  (subsequent requests — the normal case)</span>
+
+  Request ──────────────────────────────────────────────────────────────────▶ handler()
+                                                                               ~LLM time only
+
+<span class="asc-dim">  LLM CALL TIMEOUT PROBLEM</span>
+
+  Client ──▶ Netlify function ──▶ Anthropic API
+                │                      │
+                │  10s hard limit       │  may take 5–30s for long prompts
+                │◀──────── timeout ─────┘  ← function killed before LLM responds
+
+  <span class="asc-warn">✗ Non-streaming:  client waits, function times out, user sees error</span>
+  <span class="asc-ok">✓ Streaming:      first token arrives in &lt;1s, connection stays alive</span></pre>
+        </div>
+
+        <div class="interview">
+          <div class="interview-header" onclick="toggleAccordion(this)">
+            <span class="interview-icon">🎯</span>
+            <span class="interview-q">What are the limitations of serverless for AI applications?</span>
+            <span class="interview-chevron">▶</span>
+          </div>
+          <div class="interview-body">Two main limitations: timeout limits and no persistent state. For timeouts, streaming is the primary solution — start returning tokens immediately so the function doesn't time out waiting. For persistent state you need external storage. A secondary limitation is cold starts — mitigated by keeping bundles small and using dynamic imports so unused SDK code isn't loaded.</div>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.netlify.com/functions/overview/" target="_blank">Netlify Functions Docs</a>
+          <a class="ext-link" href="https://docs.aws.amazon.com/lambda/latest/dg/welcome.html" target="_blank">AWS Lambda Developer Guide</a>
+          <a class="ext-link" href="https://vercel.com/docs/functions" target="_blank">Vercel Functions Docs</a>
+          <a class="ext-link" href="https://developers.cloudflare.com/workers/" target="_blank">Cloudflare Workers</a>
+          <a class="ext-link" href="https://12factor.net/processes" target="_blank">12-Factor: Stateless Processes</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3><span class="sec-num">2.2</span> REST API Design Decisions</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>REST</strong> (Representational State Transfer) is an architectural style for HTTP APIs, not a protocol or standard. Its core constraints are: client-server separation, statelessness (each request contains all information needed to process it), uniform interface (resources identified by URLs, manipulated via standard HTTP verbs), and layered system (clients don't know if they're talking to a server or a proxy). REST is language-agnostic — you can implement a RESTful API in TypeScript, Python, Go, Ruby, or anything that can speak HTTP.</p>
+          <p>The key design decision every API faces is how to structure <strong>resource URLs vs operation URLs</strong>. Strict REST uses nouns and HTTP verbs: <code>GET /sessions</code> lists, <code>POST /sessions</code> creates, <code>DELETE /sessions/:id</code> removes. In practice, especially for serverless where each file is a function, many teams use a hybrid: one file per resource, query params to differentiate operations (<code>?summarise</code>, <code>?review</code>). This is what buffr does — pragmatic for solo development, but worth understanding the trade-off before scaling a team.</p>
+          <p><strong>Schema validation</strong> (Zod in TypeScript, Pydantic in Python, Joi in Node, Marshmallow in Python, express-validator in Express) is not optional in production. The pattern is always: parse and validate at the boundary, work with typed/validated data inside, and return structured errors to clients. Never use raw request data inside business logic. This prevents entire classes of bugs — type coercion issues, missing field crashes, and injection vectors.</p>
+        </div>
+
+        <p>buffr uses "one file per resource, query params for sub-operations." Understanding why — and when it breaks down — is the mark of an engineer who thinks in systems.</p>
+
+        <p><strong>buffr's 13 serverless functions</strong> — each is a self-contained handler in <code>netlify/functions/</code>:</p>
+        <table class="concept-table">
+          <tr><th>Function</th><th>Purpose</th><th>Methods</th></tr>
+          <tr><td><code>projects.ts</code></td><td>Project CRUD</td><td>GET, POST, PUT, DELETE</td></tr>
+          <tr><td><code>sessions.ts</code></td><td>Session history</td><td>GET, POST, DELETE</td></tr>
+          <tr><td><code>prompts.ts</code></td><td>Prompt library CRUD</td><td>GET, POST, PUT, DELETE</td></tr>
+          <tr><td><code>dev-items.ts</code></td><td>.dev files + push to GitHub + adapter compile</td><td>GET, POST, PUT, DELETE, POST?push</td></tr>
+          <tr><td><code>manual-actions.ts</code></td><td>Task list with reordering</td><td>GET, POST, PUT, PATCH, DELETE</td></tr>
+          <tr><td><code>action-notes.ts</code></td><td>Notes on action items</td><td>GET, PUT</td></tr>
+          <tr><td><code>session-ai.ts</code></td><td>LLM chains dispatcher (4 sub-actions)</td><td>POST?summarize / ?intent / ?suggest / ?paraphrase</td></tr>
+          <tr><td><code>run-prompt.ts</code></td><td>Resolve variables + tools, run user prompts</td><td>POST</td></tr>
+          <tr><td><code>tools.ts</code></td><td>Tool execution gateway</td><td>GET, POST?execute</td></tr>
+          <tr><td><code>providers.ts</code></td><td>LLM provider config</td><td>GET, PUT</td></tr>
+          <tr><td><code>auth-check.ts</code></td><td>Auth verification</td><td>GET</td></tr>
+          <tr><td><code>login.ts / logout.ts</code></td><td>Authentication</td><td>POST</td></tr>
+        </table>
+
+        <p><strong>The query param dispatch pattern</strong> — buffr uses this when a single endpoint handles multiple related AI operations:</p>
+        <pre>POST /session-ai?summarize   → session-summarizer chain
+POST /session-ai?intent      → intent-detector chain
+POST /session-ai?suggest     → next-step-suggester chain
+POST /session-ai?paraphrase  → paraphraser chain
+POST /dev-items?push         → build adapter files → push to GitHub via Trees API</pre>
+        <p>This is a pragmatic RPC-style hybrid. <code>session-ai.ts</code> checks <code>url.searchParams.has("summarize")</code> etc. and routes accordingly. The client mirrors this in <code>src/lib/api.ts</code> — every endpoint has a typed wrapper function.</p>
+
+        <table class="concept-table">
+          <tr><th>Decision</th><th>Trade-off</th></tr>
+          <tr><td>One file per resource</td><td>Simplifies deployment. Gets messy when a resource has 10+ operations.</td></tr>
+          <tr><td>Query params for sub-ops</td><td>Allows sharing provider resolution + error handling. Non-RESTful but practical for serverless.</td></tr>
+          <tr><td>Manual <code>if(!field)</code> validation</td><td>Simple and readable. Doesn't scale — use Zod when you have 5+ required fields.</td></tr>
+          <tr><td><code>classifyError()</code></td><td>Maps vendor-specific LLM error strings to standard HTTP codes. Essential for API consumers.</td></tr>
+          <tr><td>HTTP status codes</td><td>200 OK, 201 Created, 400 Bad Request (validation), 401 Unauthorized, 429 Rate Limited, 500 Server Error. Use them correctly — clients depend on them.</td></tr>
+        </table>
+
+        <div class="exercise">
+          <div class="exercise-header" onclick="toggleAccordion(this)">
+            <span class="exercise-label">Exercise 3</span>
+            <span class="exercise-title">Add Zod Validation to session-ai.ts</span>
+            <span class="exercise-tag">buffr</span>
+            <span class="exercise-chevron">▶</span>
+          </div>
+          <div class="exercise-body">
+            <ol class="exercise-steps">
+              <li>Check if Zod is in <code>package.json</code>; if not, <code>npm install zod</code></li>
+              <li>Define a Zod schema for the summarize request body: <code>activityItems</code> array, each with <code>title</code>, <code>source</code>, <code>timestamp</code></li>
+              <li>Replace the manual <code>if(!body.activityItems)</code> check with <code>schema.safeParse(body)</code></li>
+              <li>Return a structured 400 error with validation details if parsing fails</li>
+              <li>Write a test: send a request with a missing field and verify the response shape</li>
+            </ol>
+            <div class="exercise-hook"><strong>buffr hook:</strong> <code>netlify/functions/session-ai.ts</code> — the validation section before chain invocation</div>
+          </div>
+        </div>
+
+        <div class="sysdesign">
+          <div class="sysdesign-header"><span class="sysdesign-label">🧠 System Design Prompt</span></div>
+          <div class="sysdesign-body">Design the API layer for a multi-tenant AI writing assistant. Users can have multiple workspaces. Each workspace can have multiple documents. The AI needs to summarise, rewrite, and fact-check document sections. What endpoints do you define? What goes in path params vs query params vs body? How do you handle authentication per workspace?</div>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview" target="_blank">MDN HTTP Overview</a>
+          <a class="ext-link" href="https://zod.dev" target="_blank">Zod Schema Validation (TS)</a>
+          <a class="ext-link" href="https://docs.pydantic.dev/latest/" target="_blank">Pydantic Validation (Python)</a>
+          <a class="ext-link" href="https://restfulapi.net" target="_blank">RESTful API Design Guide</a>
+          <a class="ext-link" href="https://httpstatuses.io" target="_blank">HTTP Status Codes Reference</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3><span class="sec-num">2.3</span> Storage Patterns & Race Conditions</h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>Every application needs to store data. The choice of storage pattern is independent of language — the same trade-offs apply whether you're in Node, Python, Go, or Ruby. <strong>Key-value stores</strong> (Redis, DynamoDB, Netlify Blobs, Cloudflare KV) map a string key to an arbitrary value blob. They're fast for single-record access but have no query capability — you can't ask "give me all sessions from last week" without fetching everything and filtering in application code. <strong>Relational databases</strong> (Postgres, MySQL, SQLite) add SQL, indexes, joins, and transactions — the ability to query across records efficiently. <strong>Document stores</strong> (MongoDB, Firestore) are a middle ground: schema-flexible, queryable, but without full relational power.</p>
+          <p>The <strong>TOCTOU race condition</strong> (Time Of Check To Time Of Use) is a concurrency bug that appears in any language when two operations read a shared resource, each makes a decision based on what they read, and then both write back — with one overwriting the other's changes. It's not a JavaScript problem; it's a general concurrent programming problem. In databases, this is solved with transactions and row-level locking. In serverless blob storage (which has no transactions), you must either serialise operations or use atomic compare-and-swap operations where available.</p>
+          <p>An <strong>index pattern</strong> is the practice of maintaining a separate data structure that tracks which keys belong to a logical set — essentially a poor-man's database index. When you store <code>sessions:list:projectId</code> as a key that holds an array of session IDs, you're implementing a manual index so you don't have to scan all sessions to find those for a project. This pattern is a pragmatic bridge between key-value stores and relational databases — use it until query complexity justifies migrating to Postgres.</p>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Pattern</th><th>What it is</th><th>When to use</th></tr>
+          <tr><td class="col3">Key-value store</td><td>Simple map of key → JSON blob</td><td>Prototypes, per-user config, small datasets &lt; 1000 items</td></tr>
+          <tr><td class="col3">Relational (Postgres)</td><td>Tables, indexes, SQL queries, joins</td><td>When you need to filter/sort/search across records</td></tr>
+          <tr><td class="col3">List + filter in memory</td><td>buffr's "query" strategy: fetch all, filter in JS</td><td>Only works at small scale — 500 records max</td></tr>
+          <tr><td class="col3">Index pattern</td><td>Separate index key tracking which items belong to a set</td><td>First migration step before moving to a real database</td></tr>
+          <tr><td class="col3">Optimistic locking</td><td>Read a version number, write only if version hasn't changed</td><td>Prevents TOCTOU in databases without full transactions</td></tr>
+        </table>
+
+        <p><strong>buffr's 8 Blob stores</strong> — each is a separate namespace in Netlify Blobs:</p>
+        <table class="concept-table">
+          <tr><th>Store</th><th>Key strategy</th><th>What's stored</th></tr>
+          <tr><td><code>projects</code></td><td>One blob per project (project ID)</td><td>Project metadata, settings, provider config</td></tr>
+          <tr><td><code>sessions</code></td><td>One blob per session (session ID)</td><td>Goal, whatChanged, blockers, AI summary, intent</td></tr>
+          <tr><td><code>prompt-library</code></td><td>One blob per prompt (prompt ID)</td><td>Title, body, tags, scope</td></tr>
+          <tr><td><code>dev-items</code></td><td>One blob per dev item (item ID)</td><td>AI rules, skills, community skills — the .dev/ content</td></tr>
+          <tr><td><code>manual-actions</code></td><td>One blob per project (contains array)</td><td>Ordered task list for a project — whole array in one blob</td></tr>
+          <tr><td><code>action-notes</code></td><td>One blob per project (contains record)</td><td>Notes keyed by action ID — all notes for a project together</td></tr>
+          <tr><td><code>tool-config</code></td><td>One blob per integration</td><td>GitHub/Notion credentials and connection state</td></tr>
+          <tr><td><code>settings</code></td><td>Single blob</td><td>App-wide settings (provider, preferences)</td></tr>
+        </table>
+        <p>Two key patterns: <strong>one-blob-per-record</strong> (prompts, dev-items, sessions) — each item independent, listing requires fetching all. <strong>One-blob-per-project-as-collection</strong> (manual-actions, action-notes) — faster to list, but concurrent writes can hit the TOCTOU bug.</p>
+        <p><strong>The TOCTOU race condition</strong> — a real bug encountered in buffr:</p>
+        <pre>BROKEN (Promise.all):
+  Delete A: read [A,B,C] → remove A → write [B,C]
+  Delete B: read [A,B,C] → remove B → write [A,C]  ← stale read!
+  Result: A is back. Last write wins.
+
+FIXED (sequential):
+  Delete A: read [A,B,C] → remove A → write [B,C]
+  Delete B: read [B,C]   → remove B → write [C]    ← reads fresh state</pre>
+
+        <div class="ascii-diagram">
+          <div class="asc-title">TOCTOU — Timeline of the Race Condition</div>
+          <pre><span class="asc-dim">  T (ms)  deleteA thread               deleteB thread            Blob store</span>
+  <span class="asc-dim">  ──────  ─────────────────────────   ──────────────────────   ──────────────</span>
+    0     read()  ◀────────────────────────────────────────────── [A, B, C]
+    0                                  read()  ◀─────────────────── [A, B, C]
+    1     filter([A,B,C], A) = [B,C]
+    1                                  filter([A,B,C], B) = [A,C]
+    2     write([B,C])  ────────────────────────────────────────▶  [B, C]  ✓
+    3                                  write([A,C])  ─────────────▶  <span class="asc-warn">[A, C]  ✗</span>
+          <span class="asc-dim">(deleteA's write is overwritten — A is back)</span>
+
+  <span class="asc-dim">  ──────────────────────────────────────────────────────────────────────────</span>
+  <span class="asc-dim">  FIXED: sequential for...of</span>
+
+    0     read()  ◀────────────────────────────────────────────── [A, B, C]
+    2     write([B,C])  ────────────────────────────────────────▶  [B, C]
+    3                                  read()  ◀─────────────────── [B, C]  ← fresh
+    5                                  write([C])  ───────────────▶  <span class="asc-ok">[C]     ✓</span></pre>
+        </div>
+
+        <div class="interview">
+          <div class="interview-header" onclick="toggleAccordion(this)">
+            <span class="interview-icon">🎯</span>
+            <span class="interview-q">When would you migrate buffr from Netlify Blobs to Postgres?</span>
+            <span class="interview-chevron">▶</span>
+          </div>
+          <div class="interview-body">When queries become the bottleneck — filtering sessions by date range, searching prompt text, or joining sessions with project data. The tell-tale sign is list-and-filter-in-memory becoming visibly slow, usually around 500–1000 records. I'd migrate to Supabase Postgres, add an index on <code>projectId</code> and <code>createdAt</code>, and keep the storage module interface unchanged so chain code doesn't need to change.</div>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://supabase.com/docs" target="_blank">Supabase Docs (Postgres + KV)</a>
+          <a class="ext-link" href="https://docs.netlify.com/blobs/overview/" target="_blank">Netlify Blobs Docs</a>
+          <a class="ext-link" href="https://redis.io/docs/latest/develop/data-types/" target="_blank">Redis Data Types</a>
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use" target="_blank">TOCTOU — Wikipedia</a>
+          <a class="ext-link" href="https://dataintensive.net" target="_blank">Designing Data-Intensive Applications</a>
+        </div>
+      </div>
+    </div>
+
+
+  </div><!-- /content -->
+</main>
+
+<script>
+  function toggleAccordion(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.exercise-chevron, .interview-chevron');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (chevron) chevron.classList.toggle('open', !isOpen);
+    header.classList.toggle('open', !isOpen);
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const pct = window.scrollY / (doc.scrollHeight - doc.clientHeight);
+    document.getElementById('scrollProgress').style.transform = `scaleX(${pct})`;
+  });
+</script>
+
+</body>
+</html>

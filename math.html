@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math & Algorithms — AI Product Engineering</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><a href="index.html" style="text-decoration:none;"><span>AI Curriculum v6</span></a></div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Overview</div>
+    <a class="nav-item" href="index.html">Introduction</a>
+    <a class="nav-item" href="tooling.html">Claude Tools Ecosystem</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Applied AI Track</div>
+    <a class="nav-item" href="phase-0.html">Phase 0 · Applied AI Tools</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">LLM Track — buffr</div>
+    <a class="nav-item" href="phase-1.html">Phase 1 · LLM Integration</a>
+    <a class="nav-item" href="phase-2.html">Phase 2 · Backend &amp; API</a>
+    <a class="nav-item" href="phase-3.html">Phase 3 · Agentic Systems</a>
+    <a class="nav-item" href="phase-4.html">Phase 4 · Production</a>
+    <a class="nav-item" href="phase-5.html">Phase 5 · RAG &amp; Embeddings</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">ML Track — contrl</div>
+    <a class="nav-item" href="phase-6.html">Phase 6 · MediaPipe &amp; ML</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Projects &amp; Revenue</div>
+    <a class="nav-item" href="projects.html">Project Ideas &amp; Revenue</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Foundations</div>
+    <a class="nav-item active" href="math.html">Math &amp; Algorithms</a>
+    <a class="nav-item" href="dsa.html">Data Structures &amp; Algorithms</a>
+    <a class="nav-item" href="reading.html">Reading List</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Prep</div>
+    <a class="nav-item" href="interview.html">Interview Prep</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Resources</div>
+    <a class="nav-item" href="prompting-cheatsheet.html">Prompting Cheatsheet ↗</a>
+  </div>
+</nav>
+
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">// curriculum · v6.0 · updated 2026-03-20 · 3 tracks · 8 phases · 5 projects · passive income path</div>
+    <h1>AI Product<br><em>Engineering</em></h1>
+    <p class="hero-sub">A practical curriculum built on your own codebases. Three concentric tracks: Applied AI tools (outermost, highest leverage), LLM Engineering (middle), Applied ML (core). Frontend developer → AI Product Engineer → passive income.</p>
+    <div class="track-pills">
+      <span class="pill pill-orange"><span class="pill-dot"></span>Applied AI · Tools & Automation</span>
+      <span class="pill pill-teal"><span class="pill-dot"></span>buffr · LLM Engineering</span>
+      <span class="pill pill-purple"><span class="pill-dot"></span>contrl · Applied ML</span>
+    </div>
+  </div>
+
+    <!-- PROGRESS BAR -->
+  <div class="progress-bar">
+    <a class="pb-phase p0" href="phase-0.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">00</div><span class="pb-label">Applied AI</span>
+    </a>
+    <a class="pb-phase p1" href="phase-1.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">01</div><span class="pb-label">LLM Integration</span>
+    </a>
+    <a class="pb-phase p2" href="phase-2.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">02</div><span class="pb-label">Backend &amp; API</span>
+    </a>
+    <a class="pb-phase p3" href="phase-3.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">03</div><span class="pb-label">Agentic Systems</span>
+    </a>
+    <a class="pb-phase p4" href="phase-4.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">04</div><span class="pb-label">Production</span>
+    </a>
+    <a class="pb-phase p5" href="phase-5.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">05</div><span class="pb-label">RAG + Embeddings</span>
+    </a>
+    <a class="pb-phase p6" href="phase-6.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">06</div><span class="pb-label">MediaPipe + ML</span>
+    </a>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="phase-block visible" id="phase-math">
+      <div class="phase-header">
+        <div class="phase-num" style="border-color:#60a5fa;color:#60a5fa;">Math</div>
+        <div class="phase-title-block">
+          <h2>Math & Algorithms</h2>
+          <div class="phase-meta">Language-agnostic foundations · Formulas you'll actually use · Ordered by relevance to your work</div>
+        </div>
+      </div>
+
+      <p>You don't need a PhD. You need enough math to <em>read</em> what your systems are doing, <em>debug</em> when they behave unexpectedly, and <em>talk fluently</em> in interviews. These are the formulas and concepts that appear directly in code you're already writing or will write — each one is annotated with where it shows up in buffr or contrl.</p>
+
+      <!-- ── TIER 1 ── -->
+      <div class="topic-label">Tier 1 — You need this now (already in your code)</div>
+
+      <div class="section">
+        <h3>Dot Product & Cosine Similarity <span class="diff-badge diff-1">Essential</span></h3>
+        <p>The single most important formula in AI product engineering. It powers similarity search, embeddings, attention, and your joint angle calculations in contrl — all the same underlying operation.</p>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>The <strong>dot product</strong> (also called the <strong>inner product</strong> or <strong>scalar product</strong>) is an operation on two vectors that produces a single number. It has a geometric interpretation: it measures how much two vectors point in the same direction. When both vectors are unit length (magnitude = 1), the dot product equals the cosine of the angle between them — which is exactly <strong>cosine similarity</strong>.</p>
+          <p>This single formula underlies an enormous range of applications: vector database queries (pgvector, Pinecone, Weaviate all use cosine similarity under the hood), transformer self-attention (the QKᵀ matrix multiplication is a batch of dot products), joint angle computation in robotics and pose estimation, and neural network weight updates (gradient direction is a dot product). The formula is identical whether computed in NumPy (<code>np.dot</code>), TypeScript, SQL (<code>&lt;=&gt;</code> in pgvector), or GLSL on the GPU.</p>
+          <p><strong>Why normalise?</strong> Raw dot product depends on vector magnitude — a longer vector produces a larger dot product even if the direction is the same. Cosine similarity normalises by the product of magnitudes, giving a direction-only measure in the range −1 to 1. For text embeddings, cosine similarity is almost always preferred over raw dot product because all embedding models produce unit-norm vectors by default.</p>
+        </div>
+
+        <div class="formula-grid">
+          <div class="formula-block">
+            <div class="formula-title">Dot Product</div>
+            <div class="formula-line"><span class="formula-name">a · b</span> = a₁b₁ + a₂b₂ + ... + aₙbₙ</div>
+            <div class="formula-line formula-comment">// Sum of element-wise products</div>
+            <div class="formula-line formula-comment">// Result: a single number (scalar)</div>
+            <div class="formula-line formula-comment">// Large positive = vectors point same way</div>
+            <div class="formula-line formula-comment">// Near zero = perpendicular (unrelated)</div>
+            <div class="formula-line formula-comment">// Negative = opposite directions</div>
+          </div>
+          <div class="formula-block">
+            <div class="formula-title">Cosine Similarity</div>
+            <div class="formula-line"><span class="formula-name">cos(θ)</span> = (a · b) / (‖a‖ × ‖b‖)</div>
+            <div class="formula-line formula-comment">// Normalised dot product → range [-1, 1]</div>
+            <div class="formula-line formula-comment">// 1.0  = identical meaning</div>
+            <div class="formula-line formula-comment">// 0.0  = unrelated</div>
+            <div class="formula-line formula-comment">// -1.0 = opposite</div>
+            <div class="formula-line formula-comment">// ‖a‖ = magnitude = √(a₁²+ a₂²+ ...)</div>
+          </div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Where it appears</th><th>What it's doing</th></tr>
+          <tr><td>contrl joint angles</td><td>Dot product of two bone vectors → angle at a joint. The <code>Math.acos(dot/mag)</code> in your exercise code IS this formula.</td></tr>
+          <tr><td>Vector database query</td><td>When you do <code>ORDER BY embedding &lt;=&gt; query_embedding</code> in pgvector, the database is computing cosine similarity between every stored vector and your query.</td></tr>
+          <tr><td>Transformer attention</td><td>The Q·Kᵀ step in self-attention is a batch dot product — measuring how similar every token is to every other token.</td></tr>
+          <tr><td>Semantic search ranking</td><td>Higher cosine similarity → more semantically similar documents → ranked higher in search results.</td></tr>
+        </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.3blue1brown.com/lessons/dot-products" target="_blank">3Blue1Brown — Dot Products (visual)</a>
+          <a class="ext-link" href="https://numpy.org/doc/stable/reference/generated/numpy.dot.html" target="_blank">NumPy np.dot docs</a>
+          <a class="ext-link" href="https://supabase.com/docs/guides/ai/semantic-search" target="_blank">Supabase Semantic Search Guide</a>
+          <a class="ext-link" href="https://towardsdatascience.com/cosine-similarity-how-does-it-measure-the-similarity-maths-behind-and-usage-in-python-50ad30aad7db" target="_blank">Cosine Similarity — Towards Data Science</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Exponential Moving Average (EMA) <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>The <strong>Exponential Moving Average</strong> is a low-pass filter — it attenuates high-frequency noise (rapid frame-to-frame jitter) while preserving low-frequency signal (genuine slow movement). The "exponential" refers to how the weights assigned to past values decay geometrically: the most recent value gets weight α, the previous gets α(1−α), the one before α(1−α)², and so on forever — though in practice values older than ~5/α steps contribute negligibly.</p>
+          <p>EMA is used universally in signal processing across all platforms. In financial data, it smooths price volatility to reveal trends. In game engines, it smooths camera movement and physics interactions. In robotics, it filters noisy sensor readings. In the Adam optimiser (used to train every major LLM), it maintains exponential moving averages of gradient first and second moments. The formula is identical in every language and every domain — only the choice of α varies by application.</p>
+          <p><strong>EMA vs simple moving average (SMA):</strong> A simple moving average assigns equal weight to the last N values and zero weight to everything older. EMA gives all past values some weight (exponentially decaying) and only requires storing a single running value — O(1) space. For real-time sensor processing like contrl, EMA is almost always preferred over SMA for this reason.</p>
+        </div>
+
+        <p>You're already using this in contrl for landmark smoothing. Understanding the formula tells you exactly how to tune <code>alpha</code> and why it behaves the way it does.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">EMA Formula</div>
+          <div class="formula-line"><span class="formula-name">EMA_t</span> = α × value_t + (1 − α) × EMA_(t−1)</div>
+          <div class="formula-line formula-comment">// α (alpha) = smoothing factor, range (0, 1)</div>
+          <div class="formula-line formula-comment">// α = 0.1  → very smooth, slow to react (good for noisy sensors)</div>
+          <div class="formula-line formula-comment">// α = 0.3  → balanced (contrl default)</div>
+          <div class="formula-line formula-comment">// α = 0.9  → almost no smoothing, reacts immediately</div>
+          <div class="formula-line formula-comment">// Higher α = more weight on current value = less smoothing</div>
+          <div class="formula-line formula-comment">// The "exponential" part: older values decay by (1-α)^n each step</div>
+        </div>
+        <p>Intuition: at <code>α=0.3</code>, the current frame contributes 30% of the output. The previous EMA (which itself was a blend of all prior frames) contributes 70%. Each prior frame's influence decays geometrically — the frame 5 steps ago contributes roughly <code>0.7⁵ ≈ 17%</code> of the EMA value.</p>
+
+        <div class="ascii-diagram">
+          <div class="asc-title">EMA Effect — Raw Sensor vs Smoothed Signal (α = 0.3)</div>
+          <pre><span class="asc-dim">  angle (°)</span>
+   170 │                                            <span class="asc-ok">·</span> ← EMA (smoothed)
+   160 │                                     <span class="asc-warn">*</span>   <span class="asc-ok">·</span>
+   150 │                              <span class="asc-warn">*</span>   <span class="asc-warn">*</span>   <span class="asc-ok">·</span> <span class="asc-ok">·</span>
+   140 │                       <span class="asc-warn">*</span>   <span class="asc-warn">*</span>           <span class="asc-ok">·</span>
+   120 │                  <span class="asc-warn">*</span>   <span class="asc-warn">*</span>          <span class="asc-ok">·</span> <span class="asc-ok">·</span>
+   100 │             <span class="asc-warn">*</span>   <span class="asc-warn">*</span>      <span class="asc-ok">·</span> <span class="asc-ok">·</span> <span class="asc-ok">·</span>
+    80 │        <span class="asc-warn">* *</span> <span class="asc-warn">*</span> <span class="asc-ok">·</span> <span class="asc-ok">·</span>
+    60 │   <span class="asc-warn">* *</span> <span class="asc-warn">*</span> <span class="asc-ok">·</span>
+    50 │ <span class="asc-warn">*</span> <span class="asc-ok">·</span>
+       └────────────────────────────────────────── frame
+         1  2  3  4  5  6  7  8  9  10  11  12
+
+  <span class="asc-warn">* raw angle</span>  (jittery — MediaPipe landmark noise)
+  <span class="asc-ok">· EMA angle</span>  (smooth — α=0.3 blends with prior frames)
+
+  <span class="asc-dim">  frame 6 raw=60°, but EMA only reaches ~76° (lagging behind intentionally)
+  This prevents false "down" detection from a single noisy frame spike</span></pre>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Exponential_smoothing" target="_blank">Exponential Smoothing — Wikipedia</a>
+          <a class="ext-link" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.ewm.html" target="_blank">Pandas ewm() — Python EMA</a>
+          <a class="ext-link" href="https://arxiv.org/abs/1412.6980" target="_blank">Adam Optimiser Paper (uses EMA internally)</a>
+          <a class="ext-link" href="https://www.sciencedirect.com/topics/engineering/exponential-moving-average" target="_blank">EMA in Signal Processing</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Softmax <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Softmax</strong> is a function that converts any vector of real numbers into a probability distribution — all outputs are positive and they sum to exactly 1.0. It's the standard final layer of any multi-class classifier. The <code>e^x</code> (exponential) ensures all outputs are positive and amplifies differences: a score of 2.0 gets a much higher probability than 1.9, making softmax "confident." Sigmoid (the binary version) is used for two-class problems; softmax generalises to any number of classes.</p>
+          <p>In LLMs, softmax is applied to the logits (raw scores) over the entire vocabulary (~100,000 tokens) to produce a probability distribution over next tokens. The model then samples from this distribution based on temperature. This happens at every single generation step — for a 500-token response, softmax runs 500 times, each time over 100,000+ values. This is computationally intensive, which is why inference at scale requires GPUs and why optimised runtimes like vLLM and TensorRT-LLM matter.</p>
+          <p><strong>Numerical stability:</strong> In practice, softmax is always computed as <code>softmax(x − max(x))</code> (subtracting the max before exponentiating) to prevent overflow. <code>e^1000</code> overflows float32; <code>e^(1000-1000) = e^0 = 1</code> doesn't. This is a universal implementation detail in every framework and language — NumPy, PyTorch, TensorFlow, and JAX all do this internally.</p>
+        </div>
+
+        <p>Softmax converts a list of raw scores into a probability distribution (numbers that sum to 1.0). It appears in every LLM output — the model's "confidence" in each next token is a softmax over the entire vocabulary.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Softmax</div>
+          <div class="formula-line"><span class="formula-name">softmax(xᵢ)</span> = e^xᵢ / Σⱼ e^xⱼ</div>
+          <div class="formula-line formula-comment">// Input: raw scores (logits) — any real numbers</div>
+          <div class="formula-line formula-comment">// Output: probabilities that sum to exactly 1.0</div>
+          <div class="formula-line formula-comment"></div>
+          <div class="formula-line formula-comment">// Example: scores = [2.0, 1.0, 0.1]</div>
+          <div class="formula-line formula-comment">// e^2.0 = 7.39, e^1.0 = 2.72, e^0.1 = 1.10  → sum = 11.21</div>
+          <div class="formula-line formula-comment">// softmax = [0.659, 0.242, 0.098]  → sums to 1.0</div>
+          <div class="formula-line formula-comment"></div>
+          <div class="formula-line formula-comment">// Temperature T scales the logits before softmax:</div>
+          <div class="formula-line"><span class="formula-name">softmax_T(xᵢ)</span> = e^(xᵢ/T) / Σⱼ e^(xⱼ/T)</div>
+          <div class="formula-line formula-comment">// T=0.1  → near-deterministic (picks the highest score almost always)</div>
+          <div class="formula-line formula-comment">// T=1.0  → standard softmax</div>
+          <div class="formula-line formula-comment">// T=2.0  → flatter distribution (more creative/random)</div>
+          <div class="formula-line formula-comment">// This is exactly what the "temperature" parameter does in getLLM()</div>
+        </div>
+
+        <p>When you set <code>temperature: 0</code> in buffr's <code>getLLM()</code>, you're asking for near-deterministic selection — the model almost always picks the highest-probability token. At <code>temperature: 1</code>, it samples from the raw distribution. This is softmax with temperature scaling.</p>
+
+        <div class="ascii-diagram">
+          <div class="asc-title">Temperature Effect on Token Probability Distribution</div>
+          <pre><span class="asc-dim">  Raw logits for next token: ["good": 2.0,  "great": 1.5,  "fine": 0.8,  "bad": -1.0]</span>
+
+  T = 0.1  (near-deterministic)        T = 1.0  (standard)           T = 2.0  (creative)
+  ┌─────────────────────────┐         ┌────────────────────────┐    ┌────────────────────────┐
+  │ good  ████████████ 0.98 │         │ good  █████████  0.56  │    │ good  ███████    0.40  │
+  │ great █            0.02 │         │ great ██████     0.34  │    │ great █████      0.31  │
+  │ fine  ·            0.00 │         │ fine  ███        0.10  │    │ fine  ████       0.22  │
+  │ bad   ·            0.00 │         │ bad   ·          0.00  │    │ bad   ██         0.07  │
+  └─────────────────────────┘         └────────────────────────┘    └────────────────────────┘
+  <span class="asc-dim">  Always picks "good"</span>                <span class="asc-dim">  Usually "good",               </span><span class="asc-dim">  More variety —</span>
+  <span class="asc-dim">  Deterministic, predictable</span>         <span class="asc-dim">  sometimes "great"            </span><span class="asc-dim">  occasionally surprising</span>
+
+  <span class="asc-note">  buffr uses T=0 for structured output chains (JSON must be exact)</span>
+  <span class="asc-note">  Use T=0.7–1.0 for creative tasks (summaries, suggestions)</span></pre>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.youtube.com/watch?v=aircAruvnKk" target="_blank">3Blue1Brown — Neural Networks Ch.1</a>
+          <a class="ext-link" href="https://pytorch.org/docs/stable/generated/torch.nn.Softmax.html" target="_blank">PyTorch Softmax docs</a>
+          <a class="ext-link" href="https://cs231n.github.io/linear-classify/#softmax" target="_blank">Stanford CS231n — Softmax Classifier</a>
+          <a class="ext-link" href="https://docs.anthropic.com/en/api/complete#body-temperature" target="_blank">Anthropic — Temperature Parameter</a>
+        </div>
+      </div>
+
+      <!-- ── TIER 2 ── -->
+      <div class="topic-label">Tier 2 — You need this for the ML track &amp; deeper LLM understanding</div>
+
+      <div class="section">
+        <h3>Scaled Dot-Product Attention <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Self-attention</strong> is the mechanism that allows a transformer to consider the relationship between every pair of tokens in its input simultaneously. Unlike RNNs (which processed tokens sequentially, left to right), transformers process all tokens in parallel — each token "attends" to all other tokens to gather context. The result is that meaning is derived from relationships, not position: "bank" in "river bank" gets different attention weights than "bank" in "bank account" because the surrounding tokens are different.</p>
+          <p>The Q/K/V formulation is a database analogy. Think of it as a soft lookup table: <strong>Query (Q)</strong> is "what I'm searching for," <strong>Key (K)</strong> is "what each entry in the table offers," and <strong>Value (V)</strong> is "the actual content to retrieve." The dot product Q·Kᵀ measures relevance between the query and every key (like a search score). Softmax converts those relevance scores into weights. The final output is a weighted sum of Values — essentially "retrieve a blend of all values, weighted by how relevant each is to the query."</p>
+          <p>The <strong>√dₖ scaling</strong> is a numerical stability trick. For large embedding dimensions (e.g. dₖ=512), dot products grow proportional to the dimension, pushing softmax into saturation (near-zero gradients). Dividing by √dₖ keeps the scores in a well-behaved range. <strong>Multi-head attention</strong> runs this operation H times in parallel with different learned Q/K/V projections, then concatenates results — each "head" learns to attend to different types of relationships.</p>
+        </div>
+
+        <p>This is the core mathematical operation of every transformer — every LLM you call through buffr's API runs this billions of times per forward pass. You don't need to implement it, but understanding it explains: why context windows have limits, why longer prompts cost more, and what "attention" actually means.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Self-Attention</div>
+          <div class="formula-line"><span class="formula-name">Attention(Q, K, V)</span> = softmax(QKᵀ / √dₖ) × V</div>
+          <div class="formula-line formula-comment">// Q = Query matrix  (what am I looking for?)</div>
+          <div class="formula-line formula-comment">// K = Key matrix    (what does each token offer?)</div>
+          <div class="formula-line formula-comment">// V = Value matrix  (what information does each token contain?)</div>
+          <div class="formula-line formula-comment">// dₖ = dimension of key vectors (square root stabilises gradients)</div>
+          <div class="formula-line formula-comment"></div>
+          <div class="formula-line formula-comment">// Step 1: QKᵀ → attention scores matrix (how relevant is each token to each other?)</div>
+          <div class="formula-line formula-comment">// Step 2: / √dₖ → scale to prevent vanishing gradients</div>
+          <div class="formula-line formula-comment">// Step 3: softmax → convert scores to probabilities (attention weights)</div>
+          <div class="formula-line formula-comment">// Step 4: × V → weighted sum of value vectors = context-aware output</div>
+          <div class="formula-line formula-comment"></div>
+          <div class="formula-line formula-comment">// Why quadratic cost? QKᵀ is an (n×n) matrix for n tokens</div>
+          <div class="formula-line formula-comment">// 1000 tokens → 1M operations. 100K tokens → 10B operations</div>
+          <div class="formula-line formula-comment">// This is why context windows have limits and longer prompts cost more</div>
+        </div>
+
+        <p>Practical implication for buffr: the cost of an API call scales roughly quadratically with prompt length. A 4000-token prompt costs ~4× more compute than a 2000-token prompt. This is why token counting and prompt compression matter at scale.</p>
+
+        <div class="ascii-diagram">
+          <div class="asc-title">Self-Attention — What "Every Token Attends to Every Other Token" Means</div>
+          <pre><span class="asc-dim">  Input sentence: "The cat sat on the mat"  (6 tokens)</span>
+
+  Q matrix (queries)         K matrix (keys)             Attention scores QKᵀ
+  ┌──────────────────┐       ┌──────────────────┐        ┌───────────────────────────┐
+  │ "The"    [q₁]   │  ···  │ "The"    [k₁]   │        │      The  cat  sat  on    │
+  │ "cat"    [q₂]   │  ···  │ "cat"    [k₂]   │   →    │ The [ 0.8  0.6  0.1  0.1]│
+  │ "sat"    [q₃]   │  ···  │ "sat"    [k₃]   │        │ cat [ 0.3  0.9  0.4  0.1]│
+  │ "on"     [q₄]   │  ···  │ "on"     [k₄]   │        │ sat [ 0.2  0.7  0.8  0.3]│
+  │ "the"    [q₅]   │       │ "the"    [k₅]   │        │  …                        │
+  │ "mat"    [q₆]   │       │ "mat"    [k₆]   │        └───────────────────────────┘
+  └──────────────────┘       └──────────────────┘             ↑ softmax → weights
+
+  Each row = one token's "attention" to all other tokens
+  "cat" attends most to itself (0.9) and "sat" (0.4) — makes semantic sense
+
+  <span class="asc-dim">  n tokens → n×n scores matrix → O(n²) cost</span>
+  <span class="asc-warn">  1K tokens  →    1M scores     → fast</span>
+  <span class="asc-warn">  100K tokens →  10B scores    → expensive</span>
+  <span class="asc-note">  This is why longer prompts cost quadratically more to process</span></pre>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://arxiv.org/abs/1706.03762" target="_blank">Attention Is All You Need (original paper)</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=eMlx5fFNoYc" target="_blank">3Blue1Brown — Attention in Transformers</a>
+          <a class="ext-link" href="https://jalammar.github.io/illustrated-transformer/" target="_blank">The Illustrated Transformer — Jay Alammar</a>
+          <a class="ext-link" href="https://sebastianraschka.com/blog/2023/self-attention-from-scratch.html" target="_blank">Self-Attention From Scratch (Python)</a>
+          <a class="ext-link" href="https://karpathy.ai/zero-to-hero.html" target="_blank">Andrej Karpathy — Build GPT from scratch</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Log Probability & Cross-Entropy Loss <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Logarithms</strong> are used in probability calculations for two practical reasons: they turn multiplication into addition (which is computationally cheaper and numerically stable), and they prevent underflow. The probability of a 200-token sequence is the product of 200 individual token probabilities, each below 1.0 — multiplied together, this approaches zero faster than float64 can represent. Log probabilities turn this product into a sum: <code>log(p₁ × p₂ × ... × p₂₀₀) = log(p₁) + log(p₂) + ... + log(p₂₀₀)</code> — manageable in any numeric type.</p>
+          <p><strong>Perplexity</strong> is the standard metric for evaluating language models. It is the exponent of the average negative log probability: <code>PPL = e^(-mean(log_probs))</code>. A perplexity of 10 means the model is "as confused as if it had to choose uniformly among 10 equally likely options" at each step. Lower is better. GPT-2 had perplexity ~35 on WikiText-103; modern models score under 10. You'll encounter perplexity in benchmark papers and leaderboard comparisons.</p>
+          <p><strong>Cross-entropy loss</strong> is what neural networks minimise during training. It measures the "surprise" of the true label given the model's predicted distribution. For a language model, the true label at each step is the actual next token, and the predicted distribution is the softmax output. Minimising cross-entropy during training is equivalent to maximising the likelihood of the training data — this is why LLM training is called <strong>maximum likelihood estimation (MLE)</strong>.</p>
+        </div>
+
+        <p>When an LLM generates text, it's selecting tokens based on probability. Log probability appears in LLM API responses (logprobs), eval scoring, and helps you understand model confidence. Cross-entropy loss is how the model was trained — relevant when you get to fine-tuning.</p>
+
+        <div class="formula-grid">
+          <div class="formula-block">
+            <div class="formula-title">Log Probability</div>
+            <div class="formula-line"><span class="formula-name">log_prob</span> = log(P(token))</div>
+            <div class="formula-line formula-comment">// P("cat") = 0.8 → log_prob = log(0.8) ≈ -0.22</div>
+            <div class="formula-line formula-comment">// P("xyz") = 0.01 → log_prob = log(0.01) ≈ -4.6</div>
+            <div class="formula-line formula-comment">// Always negative (log of number < 1)</div>
+            <div class="formula-line formula-comment">// Closer to 0 = higher confidence</div>
+            <div class="formula-line formula-comment">// Perplexity = e^(-avg log_prob)</div>
+            <div class="formula-line formula-comment">// Lower perplexity = model is less "surprised"</div>
+          </div>
+          <div class="formula-block">
+            <div class="formula-title">Cross-Entropy Loss</div>
+            <div class="formula-line"><span class="formula-name">L</span> = -Σᵢ yᵢ × log(p̂ᵢ)</div>
+            <div class="formula-line formula-comment">// y = true label (one-hot vector)</div>
+            <div class="formula-line formula-comment">// p̂ = model's predicted probability</div>
+            <div class="formula-line formula-comment">// Measures: how surprised is the model by the truth?</div>
+            <div class="formula-line formula-comment">// For LLMs: how wrong was the model's token prediction?</div>
+            <div class="formula-line formula-comment">// Training minimises this across all tokens in the dataset</div>
+            <div class="formula-line formula-comment">// Eval loss: lower = model learned the training distribution better</div>
+          </div>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.anthropic.com/en/api/messages#body-messages-content-tool_result-content-text" target="_blank">Anthropic Logprobs in API</a>
+          <a class="ext-link" href="https://huggingface.co/docs/transformers/perplexity" target="_blank">Perplexity of Fixed-Length Models — HuggingFace</a>
+          <a class="ext-link" href="https://ml-cheatsheet.readthedocs.io/en/latest/loss_functions.html#cross-entropy" target="_blank">Cross-Entropy Loss — ML Cheatsheet</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=Unf999FAFkw" target="_blank">Cross-Entropy Loss Explained — StatQuest</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Vector Norms (L1 and L2) <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>vector norm</strong> is a function that measures the "size" or "length" of a vector. Different norms measure size differently, and the choice has practical consequences. The <strong>L2 norm</strong> (Euclidean distance) is the straight-line distance from the origin — the norm you learned in school as Pythagoras' theorem generalised to N dimensions. It's used in cosine similarity (to normalise vectors to unit length) and as the default distance metric in most ML libraries.</p>
+          <p>The <strong>L1 norm</strong> (Manhattan distance, or taxicab distance) sums the absolute values of all components. It's named after the grid-like street layout of Manhattan — to travel from one corner to another, you must traverse the actual streets, not cut through buildings. L1 is preferred in sparse settings because the L1 penalty in regularisation drives small weights all the way to zero (sparsity), while L2 shrinks weights but rarely zeros them. This distinction matters in feature selection and model compression.</p>
+          <p><strong>When to use which:</strong> L2 for cosine similarity and Euclidean distance queries. L1 for regularisation when you want sparse features. The L∞ norm (maximum absolute component) is used in adversarial robustness research. In practice, for text embeddings in AI products, you'll almost exclusively encounter L2 for normalisation — but knowing L1 and its sparsity properties is useful for understanding fine-tuning and LASSO regression.</p>
+        </div>
+
+        <p>The magnitude of a vector — used in cosine similarity, regularisation, and when comparing embeddings.</p>
+
+        <div class="formula-grid">
+          <div class="formula-block">
+            <div class="formula-title">L2 Norm (Euclidean Distance)</div>
+            <div class="formula-line"><span class="formula-name">‖a‖₂</span> = √(a₁² + a₂² + ... + aₙ²)</div>
+            <div class="formula-line formula-comment">// "Straight-line" distance from origin</div>
+            <div class="formula-line formula-comment">// Used in: cosine similarity denominator</div>
+            <div class="formula-line formula-comment">// Normalised vector: a / ‖a‖₂</div>
+            <div class="formula-line formula-comment">// Normalised vectors all live on unit sphere</div>
+            <div class="formula-line formula-comment">// For normalised vectors: dot product = cosine similarity</div>
+          </div>
+          <div class="formula-block">
+            <div class="formula-title">L1 Norm (Manhattan Distance)</div>
+            <div class="formula-line"><span class="formula-name">‖a‖₁</span> = |a₁| + |a₂| + ... + |aₙ|</div>
+            <div class="formula-line formula-comment">// Sum of absolute values</div>
+            <div class="formula-line formula-comment">// "Taxi cab" distance</div>
+            <div class="formula-line formula-comment">// Less sensitive to outliers than L2</div>
+            <div class="formula-line formula-comment">// Used in: sparse regularisation (L1 penalty)</div>
+            <div class="formula-line formula-comment">// Encourages model weights to go to zero</div>
+          </div>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.3blue1brown.com/lessons/vectors" target="_blank">3Blue1Brown — Vectors</a>
+          <a class="ext-link" href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.norm.html" target="_blank">NumPy linalg.norm docs</a>
+          <a class="ext-link" href="https://machinelearningmastery.com/vector-norms-machine-learning/" target="_blank">Vector Norms for Machine Learning</a>
+        </div>
+      </div>
+
+      <!-- ── TIER 3 ── -->
+      <div class="topic-label">Tier 3 — Background knowledge (understand the concepts, not the derivations)</div>
+
+      <div class="section">
+        <h3>Gradient Descent & Backpropagation <span class="diff-badge diff-3">Background</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Gradient descent</strong> is an iterative optimisation algorithm. Given a function with many variables (the model's weights) and a scalar output (the loss), gradient descent repeatedly steps in the direction that decreases the loss most steeply. The gradient (∇L) points uphill — gradient descent moves downhill. The learning rate (η) controls step size. This algorithm is language-agnostic and universal — it's the foundation of training nearly every ML model, from linear regression to GPT-4.</p>
+          <p><strong>Backpropagation</strong> is the algorithm that efficiently computes gradients for all weights in a neural network using the chain rule of calculus. Without backprop, computing gradients for a network with 175 billion parameters (GPT-3) would require a separate forward pass per parameter — infeasible. With backprop, gradients for all parameters are computed in a single backward pass. Frameworks like PyTorch, TensorFlow, and JAX implement this automatically via <strong>automatic differentiation</strong> (autograd) — you write the forward pass, and the framework computes the backward pass.</p>
+          <p><strong>The practical picture for AI product engineers:</strong> you don't implement gradient descent or backprop. You care about their consequences: large models require many gradient steps on huge datasets (expensive), fine-tuning adapts a pre-trained model with fewer steps on smaller data (affordable), and learning rate is the hyperparameter most likely to make or break a fine-tuning run. LoRA (Low-Rank Adaptation) is a technique that reduces the number of parameters that receive gradient updates during fine-tuning — making it dramatically cheaper.</p>
+        </div>
+
+        <p>How models are trained. You don't implement this — PyTorch does it for you — but understanding the concept explains why training requires GPUs, why learning rate matters, and what "overfitting" means mechanically.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Gradient Descent Update Rule</div>
+          <div class="formula-line"><span class="formula-name">θ_new</span> = θ_old − η × ∇L(θ)</div>
+          <div class="formula-line formula-comment">// θ (theta) = model weights (the numbers being learned)</div>
+          <div class="formula-line formula-comment">// η (eta) = learning rate (how big a step to take)</div>
+          <div class="formula-line formula-comment">// ∇L(θ) = gradient of the loss (which direction makes loss go up?)</div>
+          <div class="formula-line formula-comment">// We move in the OPPOSITE direction of the gradient</div>
+          <div class="formula-line formula-comment">// Repeat until loss stops decreasing (convergence)</div>
+          <div class="formula-line formula-comment"></div>
+          <div class="formula-line formula-comment">// Too high η → overshoot minimum, training diverges</div>
+          <div class="formula-line formula-comment">// Too low η → very slow convergence, risk of local minima</div>
+          <div class="formula-line formula-comment">// Backprop computes ∇L(θ) efficiently using chain rule</div>
+        </div>
+
+        <p>When you fine-tune a model (Phase 4 of the curriculum), you run gradient descent on a small dataset to shift the model's weights toward the behaviour you want. Learning rate is the most important hyperparameter you'll tune.</p>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.youtube.com/watch?v=IHZwWFHWa-w" target="_blank">3Blue1Brown — Gradient Descent</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=Ilg3gGewQ5U" target="_blank">3Blue1Brown — Backpropagation</a>
+          <a class="ext-link" href="https://karpathy.github.io/neuralnets/" target="_blank">Hacker's Guide to Neural Networks — Karpathy</a>
+          <a class="ext-link" href="https://arxiv.org/abs/2106.09685" target="_blank">LoRA Paper — Hu et al. 2021</a>
+          <a class="ext-link" href="https://lightning.ai/docs/pytorch/stable/starter/introduction.html" target="_blank">PyTorch Lightning — Training Loop</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Probability Distributions <span class="diff-badge diff-3">Background</span></h3>
+        <p>Relevant for understanding model outputs, eval metrics, and confidence scoring. You don't need to derive these — you need to recognise what they represent.</p>
+
+        <table class="concept-table">
+          <tr><th>Distribution</th><th>What it models</th><th>Where it appears</th></tr>
+          <tr><td>Gaussian (Normal)</td><td>Bell curve — values cluster around a mean with standard deviation σ</td><td>Embedding space geometry, model weight initialisation, noise in landmark data</td></tr>
+          <tr><td>Bernoulli</td><td>Binary outcome: success with probability p, failure with 1-p</td><td>Classification confidence: "is this a push-up? p=0.87"</td></tr>
+          <tr><td>Categorical</td><td>Outcome is one of K categories, each with a probability</td><td>LLM next-token prediction: softmax over vocabulary is a categorical distribution</td></tr>
+          <tr><td>Uniform</td><td>Every outcome equally likely</td><td>Random initialisation of model weights before training</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h3>Information Theory: Entropy & KL Divergence <span class="diff-badge diff-4">Deep Dive</span></h3>
+        <p>These appear in eval metrics, fine-tuning loss functions, and are essential vocabulary when reading ML papers. Understand the intuition — the formula comes later.</p>
+
+        <div class="formula-grid">
+          <div class="formula-block">
+            <div class="formula-title">Shannon Entropy</div>
+            <div class="formula-line"><span class="formula-name">H(p)</span> = -Σᵢ p(xᵢ) × log₂ p(xᵢ)</div>
+            <div class="formula-line formula-comment">// Measures: how uncertain is a probability distribution?</div>
+            <div class="formula-line formula-comment">// H = 0 → certain (one outcome has probability 1)</div>
+            <div class="formula-line formula-comment">// H = max → completely uniform distribution</div>
+            <div class="formula-line formula-comment">// High entropy LLM output = creative/random</div>
+            <div class="formula-line formula-comment">// Low entropy LLM output = deterministic/confident</div>
+          </div>
+          <div class="formula-block">
+            <div class="formula-title">KL Divergence</div>
+            <div class="formula-line"><span class="formula-name">KL(p‖q)</span> = Σᵢ p(xᵢ) × log(p(xᵢ)/q(xᵢ))</div>
+            <div class="formula-line formula-comment">// Measures: how different is distribution q from distribution p?</div>
+            <div class="formula-line formula-comment">// KL = 0 → distributions are identical</div>
+            <div class="formula-line formula-comment">// Not symmetric: KL(p‖q) ≠ KL(q‖p)</div>
+            <div class="formula-line formula-comment">// Used in: RLHF (aligning LLMs to human preferences)</div>
+            <div class="formula-line formula-comment">// Also in: VAEs, diffusion models, eval metrics</div>
+          </div>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.youtube.com/watch?v=ErfnhcEV1O8" target="_blank">Entropy (information theory) — Aurélien Géron</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=SxGYPqCgJWM" target="_blank">KL Divergence Explained — StatQuest</a>
+          <a class="ext-link" href="https://huyenchip.com/ml-interviews-book/contents/5.1.2-entropy.html" target="_blank">Entropy in ML Interviews — Chip Huyen</a>
+        </div>
+      </div>
+
+      <!-- ── ALGORITHMS ── -->
+      <div class="topic-label">Algorithms — not math but equally important</div>
+
+      <div class="section">
+        <h3>Approximate Nearest Neighbour (ANN) <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Nearest neighbour search</strong> answers the question: "given a query point in high-dimensional space, which stored points are closest to it?" Exact nearest neighbour search requires comparing the query to every stored point — O(n) cost, which becomes prohibitive at millions of vectors. <strong>Approximate nearest neighbour (ANN)</strong> trades a small amount of accuracy for dramatically faster search by building an index that allows skipping most of the dataset.</p>
+          <p><strong>HNSW (Hierarchical Navigable Small World)</strong> is the dominant algorithm used in production vector databases. It builds a multi-layer graph where each node (embedding) is connected to its nearest neighbours. The top layers have sparse long-range connections (for fast coarse navigation); the bottom layers have dense short-range connections (for precise retrieval). Search starts at the top and zooms in — like navigating from continent to country to city to street. Typical recall: 95–99% with 10–50× speedup over brute force.</p>
+          <p>The accuracy vs speed trade-off is tuned through two parameters: <code>ef_construction</code> (how many candidates to consider when building the index — higher = better quality index, slower build) and <code>ef_search</code> (how many candidates to explore during query — higher = better recall, slower query). Both are configurable in pgvector, Pinecone, and Weaviate. For buffr's scale, defaults are fine. At 10M+ vectors, you'd tune these carefully.</p>
+        </div>
+
+        <p>When your pgvector database searches for the 10 most similar embeddings, it's using an ANN algorithm. Understanding ANN tells you why vector search is fast (sub-linear, not linear) and what accuracy you're trading for that speed.</p>
+
+        <table class="concept-table">
+          <tr><th>Algorithm</th><th>How it works</th><th>Trade-off</th></tr>
+          <tr><td>HNSW</td><td>Hierarchical Navigable Small World — builds a layered graph where nearby vectors are connected. Search navigates the graph layer-by-layer.</td><td>Very fast query time. High memory usage (~2× vector size). Default in pgvector and Pinecone.</td></tr>
+          <tr><td>IVF (Inverted File Index)</td><td>Clusters vectors into buckets (using k-means). At query time, only searches the most relevant buckets.</td><td>Faster indexing than HNSW. Less memory. Slightly lower accuracy. Good for very large datasets.</td></tr>
+          <tr><td>Brute-force (flat)</td><td>Compare query to every single stored vector. Exact results, no approximation.</td><td>Perfect accuracy. O(n) cost. Only practical below ~10,000 vectors — fine for buffr's prompt library.</td></tr>
+        </table>
+
+        <p>For buffr's prompt library at &lt;1000 items: flat search is fine. For a Notion workspace with 50,000 pages: HNSW is what pgvector will use under the hood when you add the right index.</p>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.pinecone.io/learn/series/faiss/hnsw/" target="_blank">HNSW Explained — Pinecone</a>
+          <a class="ext-link" href="https://github.com/pgvector/pgvector#indexing" target="_blank">pgvector Index Options</a>
+          <a class="ext-link" href="https://ann-benchmarks.com" target="_blank">ANN Benchmarks — ann-benchmarks.com</a>
+          <a class="ext-link" href="https://weaviate.io/blog/distance-metrics-in-vector-search" target="_blank">Distance Metrics in Vector Search — Weaviate</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Tokenisation <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Tokenisation</strong> is the process of splitting text into the discrete units (tokens) that a language model processes. It's a learned compression scheme: common words become single tokens ("the", "is", "and"), rare words are split into subword pieces ("unbelievable" → ["un", "believ", "able"]), and characters that never appear together get separate tokens. The vocabulary (set of all possible tokens) is typically 50,000–130,000 entries for modern models.</p>
+          <p><strong>Byte-Pair Encoding (BPE)</strong> — used by Claude, GPT, and most frontier models — starts with individual bytes, then repeatedly merges the most frequent adjacent pair into a new token, until reaching the vocabulary size. The result is a vocabulary that covers all possible text (via individual bytes as fallback) while efficiently encoding common patterns. BPE is language-agnostic — it works on any language without linguistic knowledge, though it's less efficient for non-Latin scripts.</p>
+          <p>The practical implications for AI product engineers: (1) <strong>token counting</strong> is a prerequisite for cost estimation and prompt trimming — use <code>tiktoken</code> in Python or <code>@anthropic-ai/tokenizer</code> in TypeScript, (2) <strong>non-English text costs more</strong> — Japanese and Chinese encode at ~2–4 bytes per character vs ~1.3 for English, (3) <strong>structured data is expensive</strong> — JSON with whitespace, indentation, and repeated keys uses many more tokens than equivalent prose, and (4) <strong>token boundary effects</strong> — splitting a word like "JavaScript" across token boundaries can affect model reasoning about it.</p>
+        </div>
+
+        <p>LLMs don't read characters or words — they read tokens. Understanding tokenisation explains why certain inputs cost more, why non-English text costs more per word, and why code formatting affects token count.</p>
+
+        <table class="concept-table">
+          <tr><th>Tokeniser</th><th>Used by</th><th>Avg tokens per word (English)</th></tr>
+          <tr><td>BPE (Byte-Pair Encoding)</td><td>GPT series, Claude, most frontier models</td><td>~1.3 tokens per word</td></tr>
+          <tr><td>WordPiece</td><td>BERT, some Hugging Face models</td><td>~1.3 tokens per word</td></tr>
+          <tr><td>SentencePiece</td><td>LLaMA, Gemini, multilingual models</td><td>~1.3 tokens per word (more for non-Latin scripts)</td></tr>
+        </table>
+
+        <div class="formula-block">
+          <div class="formula-title">Token cost estimates (approximate)</div>
+          <div class="formula-line formula-comment">// 1 token ≈ 4 characters of English text</div>
+          <div class="formula-line formula-comment">// 1 token ≈ ¾ of a word</div>
+          <div class="formula-line formula-comment">// 100 tokens ≈ 75 words ≈ a short paragraph</div>
+          <div class="formula-line formula-comment">// Code has ~1.5× more tokens than equivalent prose (whitespace, symbols)</div>
+          <div class="formula-line formula-comment">// Chinese/Japanese/Korean ≈ 2–3× more tokens per character than English</div>
+          <div class="formula-line formula-comment">// A typical buffr session-summariser call: ~800 tokens input, ~200 tokens output</div>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://platform.openai.com/tokenizer" target="_blank">OpenAI Tokenizer (interactive)</a>
+          <a class="ext-link" href="https://tiktokenizer.vercel.app" target="_blank">Tiktokenizer (visual, web)</a>
+          <a class="ext-link" href="https://github.com/openai/tiktoken" target="_blank">tiktoken — Python tokeniser library</a>
+          <a class="ext-link" href="https://huggingface.co/docs/transformers/tokenizer_summary" target="_blank">HuggingFace Tokeniser Summary</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=zduSFxRajkE" target="_blank">Let's Build the GPT Tokeniser — Karpathy</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>State Machines <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>Finite State Machine (FSM)</strong> is a computational model consisting of a finite set of states, a set of transitions between states triggered by inputs, and a set of actions taken on entering/exiting states. It is one of the oldest and most universal abstractions in computing — used in hardware (digital circuits), protocol design (TCP connection states), compilers (lexer tokenisation), game AI (NPC behaviour trees), and UI frameworks (animation controllers). In every domain the model is the same: the system can only be in one state at a time, and inputs cause deterministic transitions.</p>
+          <p>FSMs have two important properties that make them ideal for safety-critical event processing: <strong>determinism</strong> (given the same state and input, the transition is always the same) and <strong>exhaustiveness</strong> (you can enumerate all possible states and transitions, making it possible to reason about all edge cases). This is why contrl's rep counter uses a state machine rather than conditional logic — <code>if (angle &lt; 50)</code> statements scattered through frame processing quickly become unmaintainable, while a state machine makes the valid transitions explicit and the invalid ones impossible.</p>
+          <p>For agentic AI, state machines model the orchestrator's decision loop. Tools like <strong>XState</strong> (TypeScript/JavaScript) and <strong>transitions</strong> (Python) provide formal FSM libraries with visualisation. <strong>LangGraph</strong> builds on this concept by treating agent orchestration as a stateful graph — each node is an agent action, each edge is a transition, and cycles are explicit. Understanding FSMs is the foundation for understanding LangGraph's design.</p>
+        </div>
+
+        <p>You already built one in contrl for rep detection. State machines are also the conceptual model behind agentic AI loops, conversation flow, and any system where "what to do next" depends on "what happened before."</p>
+
+        <table class="concept-table">
+          <tr><th>Concept</th><th>contrl example</th><th>Agent loop example</th></tr>
+          <tr><td>States</td><td><code>idle | ready | down | bottom | up | complete</code></td><td><code>thinking | tool_calling | observing | responding | done</code></td></tr>
+          <tr><td>Transitions</td><td>angle &lt; 50° while in <code>down</code> → move to <code>bottom</code></td><td>LLM returns <code>suggestedActions</code> → move to <code>tool_calling</code></td></tr>
+          <tr><td>Guards</td><td>visibility &lt; 0.6 → don't transition (ignore bad frame)</td><td>max_steps exceeded → move directly to <code>responding</code></td></tr>
+          <tr><td>Actions on enter</td><td>entering <code>complete</code> → <code>repCount++</code></td><td>entering <code>done</code> → return final answer to caller</td></tr>
+          <tr><td>Actions on exit</td><td>exiting <code>bottom</code> → start timing the concentric phase</td><td>exiting <code>tool_calling</code> → log tool name + latency</td></tr>
+        </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://xstate.js.org/docs/" target="_blank">XState — FSM Library (TypeScript)</a>
+          <a class="ext-link" href="https://stately.ai/docs/state-machines-and-statecharts" target="_blank">Stately — State Machine Concepts</a>
+          <a class="ext-link" href="https://langchain-ai.github.io/langgraph/concepts/low_level/" target="_blank">LangGraph — Agent as State Graph</a>
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Finite-state_machine" target="_blank">Finite-State Machine — Wikipedia</a>
+        </div>
+      </div>
+    </div>
+
+
+  </div><!-- /content -->
+</main>
+
+<script>
+  function toggleAccordion(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.exercise-chevron, .interview-chevron');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (chevron) chevron.classList.toggle('open', !isOpen);
+    header.classList.toggle('open', !isOpen);
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const pct = window.scrollY / (doc.scrollHeight - doc.clientHeight);
+    document.getElementById('scrollProgress').style.transform = `scaleX(${pct})`;
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading List — AI Product Engineering</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><a href="index.html" style="text-decoration:none;"><span>AI Curriculum v6</span></a></div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Overview</div>
+    <a class="nav-item" href="index.html">Introduction</a>
+    <a class="nav-item" href="tooling.html">Claude Tools Ecosystem</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Applied AI Track</div>
+    <a class="nav-item" href="phase-0.html">Phase 0 · Applied AI Tools</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">LLM Track — buffr</div>
+    <a class="nav-item" href="phase-1.html">Phase 1 · LLM Integration</a>
+    <a class="nav-item" href="phase-2.html">Phase 2 · Backend &amp; API</a>
+    <a class="nav-item" href="phase-3.html">Phase 3 · Agentic Systems</a>
+    <a class="nav-item" href="phase-4.html">Phase 4 · Production</a>
+    <a class="nav-item" href="phase-5.html">Phase 5 · RAG &amp; Embeddings</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">ML Track — contrl</div>
+    <a class="nav-item" href="phase-6.html">Phase 6 · MediaPipe &amp; ML</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Projects &amp; Revenue</div>
+    <a class="nav-item" href="projects.html">Project Ideas &amp; Revenue</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Foundations</div>
+    <a class="nav-item" href="math.html">Math &amp; Algorithms</a>
+    <a class="nav-item" href="dsa.html">Data Structures &amp; Algorithms</a>
+    <a class="nav-item active" href="reading.html">Reading List</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Prep</div>
+    <a class="nav-item" href="interview.html">Interview Prep</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Resources</div>
+    <a class="nav-item" href="prompting-cheatsheet.html">Prompting Cheatsheet ↗</a>
+  </div>
+</nav>
+
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">// curriculum · v6.0 · updated 2026-03-20 · 3 tracks · 8 phases · 5 projects · passive income path</div>
+    <h1>AI Product<br><em>Engineering</em></h1>
+    <p class="hero-sub">A practical curriculum built on your own codebases. Three concentric tracks: Applied AI tools (outermost, highest leverage), LLM Engineering (middle), Applied ML (core). Frontend developer → AI Product Engineer → passive income.</p>
+    <div class="track-pills">
+      <span class="pill pill-orange"><span class="pill-dot"></span>Applied AI · Tools & Automation</span>
+      <span class="pill pill-teal"><span class="pill-dot"></span>buffr · LLM Engineering</span>
+      <span class="pill pill-purple"><span class="pill-dot"></span>contrl · Applied ML</span>
+    </div>
+  </div>
+
+    <!-- PROGRESS BAR -->
+  <div class="progress-bar">
+    <a class="pb-phase p0" href="phase-0.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">00</div><span class="pb-label">Applied AI</span>
+    </a>
+    <a class="pb-phase p1" href="phase-1.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">01</div><span class="pb-label">LLM Integration</span>
+    </a>
+    <a class="pb-phase p2" href="phase-2.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">02</div><span class="pb-label">Backend &amp; API</span>
+    </a>
+    <a class="pb-phase p3" href="phase-3.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">03</div><span class="pb-label">Agentic Systems</span>
+    </a>
+    <a class="pb-phase p4" href="phase-4.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">04</div><span class="pb-label">Production</span>
+    </a>
+    <a class="pb-phase p5" href="phase-5.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">05</div><span class="pb-label">RAG + Embeddings</span>
+    </a>
+    <a class="pb-phase p6" href="phase-6.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">06</div><span class="pb-label">MediaPipe + ML</span>
+    </a>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="phase-block visible" id="phase-reading">
+      <div class="phase-header">
+        <div class="phase-num" style="border-color:#818cf8;color:#818cf8;">Reads</div>
+        <div class="phase-title-block">
+          <h2>Reading List</h2>
+          <div class="phase-meta">Ordered by phase · Free resources first · Links verified as of 2025–2026</div>
+        </div>
+      </div>
+
+      <p>These are the actual resources worth your time — curated for someone who learns by building, not by reading textbooks cover-to-cover. Everything free is marked. The paid resources are ones where there's no adequate free equivalent.</p>
+
+      <div class="topic-label">Phase 1–3 · LLM Engineering &amp; Agents</div>
+      <div class="reading-grid">
+        <a class="reading-card" href="https://github.com/mlabonne/llm-course" target="_blank">
+          <div class="rc-tag label-teal">GitHub · Free</div>
+          <div class="rc-title">LLM Course — Maxime Labonne</div>
+          <div class="rc-author">Maxime Labonne (Meta AI)</div>
+          <div class="rc-desc">Two roadmaps: LLM Scientist (building models) and LLM Engineer (building products). Start with the Engineer track. Colab notebooks included. The best single free structured resource for your track.</div>
+          <span class="rc-free">Free · GitHub</span>
+        </a>
+        <a class="reading-card" href="https://www.deeplearning.ai/short-courses/" target="_blank">
+          <div class="rc-tag label-teal">Courses · Free</div>
+          <div class="rc-title">DeepLearning.AI Short Courses</div>
+          <div class="rc-author">Andrew Ng + OpenAI, Anthropic, LangChain</div>
+          <div class="rc-desc">1–2 hour modules taught by the people who built the tools. Take: Prompt Engineering for Devs (OpenAI), Building with Claude (Anthropic), LangChain for LLM Development, Building Agentic RAG with LlamaIndex. Pick 5–6 and work through them in sequence.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank">
+          <div class="rc-tag label-teal">Docs · Free</div>
+          <div class="rc-title">Anthropic Prompt Engineering Guide</div>
+          <div class="rc-author">Anthropic</div>
+          <div class="rc-desc">You're already using Claude Code daily — going deep on this pays off immediately. System prompts, tool use, context management, structured outputs, extended thinking. The most applicable doc you can read right now.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://www.anthropic.com/research/building-effective-agents" target="_blank">
+          <div class="rc-tag label-purple">Article · Free</div>
+          <div class="rc-title">Building Effective Agents</div>
+          <div class="rc-author">Anthropic Research</div>
+          <div class="rc-desc">The most practical agentic architecture guide available. Covers orchestrator/subagent patterns, tool design, failure modes, and when NOT to use agents. Read this before building buffr's Phase 3 features. Short but dense.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://github.com/anthropics/anthropic-cookbook" target="_blank">
+          <div class="rc-tag label-teal">GitHub · Free</div>
+          <div class="rc-title">Anthropic Cookbook</div>
+          <div class="rc-author">Anthropic</div>
+          <div class="rc-desc">Practical prompt patterns with working code. Structured output, tool use, multi-turn conversations, retrieval, embeddings. Start with the "tool_use" and "embeddings" sections — directly applicable to buffr.</div>
+          <span class="rc-free">Free · GitHub</span>
+        </a>
+        <a class="reading-card" href="https://js.langchain.com/docs/concepts/" target="_blank">
+          <div class="rc-tag label-blue">Docs · Free</div>
+          <div class="rc-title">LangChain.js Concepts</div>
+          <div class="rc-author">LangChain</div>
+          <div class="rc-desc">Language-agnostic concepts behind chains, agents, tools, memory, and retrievers. buffr implements most of these patterns manually — reading LangChain's terminology connects your code to industry vocabulary.</div>
+          <span class="rc-free">Free</span>
+        </a>
+      </div>
+
+      <div class="topic-label">Phase 4–5 · Production, RAG &amp; Evals</div>
+      <div class="reading-grid">
+        <a class="reading-card" href="https://huyenchip.com/2023/04/11/llm-engineering.html" target="_blank">
+          <div class="rc-tag label-amber">Article · Free</div>
+          <div class="rc-title">Building LLM Apps (Production Patterns)</div>
+          <div class="rc-author">Chip Huyen</div>
+          <div class="rc-desc">The canonical article on production LLM engineering. Cost, latency, fallbacks, evaluation, prompt versioning, streaming. Required reading before shipping any AI feature to users. Dense and practical.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://www.promptingguide.ai/" target="_blank">
+          <div class="rc-tag label-teal">Reference · Free</div>
+          <div class="rc-title">Prompt Engineering Guide</div>
+          <div class="rc-author">DAIR.AI</div>
+          <div class="rc-desc">Comprehensive reference covering every prompting pattern: zero-shot, few-shot, CoT, ReAct, RAG, and more. Language-agnostic. Works across Claude, GPT, Gemini, and open-source models. Use as a reference when a chain isn't behaving.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://www.oreilly.com/library/view/ai-engineering/9781098166298/" target="_blank">
+          <div class="rc-tag label-coral">Book · Paid</div>
+          <div class="rc-title">AI Engineering</div>
+          <div class="rc-author">Chip Huyen · O'Reilly 2024</div>
+          <div class="rc-desc">From prototype to production. The most up-to-date book on the full AI product engineering stack: model selection, prompt engineering, RAG, fine-tuning, evaluation, deployment, monitoring. Buy this when you're in Phase 4–5. No free equivalent exists.</div>
+          <span class="rc-paid">~$60 · O'Reilly</span>
+        </a>
+        <a class="reading-card" href="https://github.com/mlabonne/llm-course" target="_blank">
+          <div class="rc-tag label-amber">Book · Paid</div>
+          <div class="rc-title">LLM Engineer's Handbook</div>
+          <div class="rc-author">Paul Iusztin + Maxime Labonne · 2024</div>
+          <div class="rc-desc">End-to-end: design → training data → fine-tuning → RAG → deployment → evaluation. The only book covering the full production LLM stack. Buy it when you reach Phase 4 and fine-tuning. Pairs perfectly with the free GitHub course above.</div>
+          <span class="rc-paid">~$40 · Packt</span>
+        </a>
+      </div>
+
+      <div class="topic-label">Phase 6 · ML, MediaPipe &amp; Computer Vision</div>
+      <div class="reading-grid">
+        <a class="reading-card" href="https://course.fast.ai/" target="_blank">
+          <div class="rc-tag label-green">Course · Free</div>
+          <div class="rc-title">Practical Deep Learning for Coders</div>
+          <div class="rc-author">Jeremy Howard · fast.ai</div>
+          <div class="rc-desc">The best free ML course available, period. Top-down, code-first — starts with working models and drills into theory later. Exactly your learning style. Uses PyTorch + Hugging Face. Save for Phase 4 (ML depth track). ~20 hours of lessons.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://ai.google.dev/edge/mediapipe/solutions/guide" target="_blank">
+          <div class="rc-tag label-green">Docs · Free</div>
+          <div class="rc-title">MediaPipe Solutions Guide</div>
+          <div class="rc-author">Google AI Edge</div>
+          <div class="rc-desc">Official documentation covering every MediaPipe task — Pose, Hand, Face, Object Detection, Segmentation. Essential reference for contrl. Read the model card for PoseLandmarker to understand accuracy limitations and what "lite" vs "heavy" actually means.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://huggingface.co/learn" target="_blank">
+          <div class="rc-tag label-green">Course · Free</div>
+          <div class="rc-title">Hugging Face Courses</div>
+          <div class="rc-author">Hugging Face</div>
+          <div class="rc-desc">Official HF curriculum: transformers, NLP, fine-tuning with LoRA/QLoRA, computer vision, audio. The industry-standard toolkit for working with open-source models. Take the NLP course, then the fine-tuning modules when you're ready for Phase 4.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" target="_blank">
+          <div class="rc-tag label-green">Video · Free</div>
+          <div class="rc-title">Neural Networks — 3Blue1Brown</div>
+          <div class="rc-author">3Blue1Brown (Grant Sanderson)</div>
+          <div class="rc-desc">Visual intuition for neural networks. No code — just stunning animations explaining what weights, layers, backprop, and gradient descent actually mean geometrically. 4 videos, ~1 hour total. Watch this before starting fast.ai to build mental models.</div>
+          <span class="rc-free">Free · YouTube</span>
+        </a>
+        <a class="reading-card" href="https://karpathy.ai/zero-to-hero.html" target="_blank">
+          <div class="rc-tag label-coral">Video · Free</div>
+          <div class="rc-title">Neural Networks: Zero to Hero</div>
+          <div class="rc-author">Andrej Karpathy (ex-OpenAI)</div>
+          <div class="rc-desc">Build a GPT from scratch, line by line. The deepest free resource on how LLMs actually work — backprop, tokenisation, transformers, attention. Not a beginner resource. Save for Phase 4–5 when you want to understand exactly what Claude is doing under the hood.</div>
+          <span class="rc-free">Free · YouTube</span>
+        </a>
+      </div>
+
+      <div class="topic-label">Math Foundations</div>
+      <div class="reading-grid">
+        <a class="reading-card" href="https://maths4ml.com/" target="_blank">
+          <div class="rc-tag label-blue">Site · Free</div>
+          <div class="rc-title">Maths4ML</div>
+          <div class="rc-author">maths4ml.com</div>
+          <div class="rc-desc">Free visual platform covering linear algebra, calculus, probability, and optimisation with ML-focused modules and interactive tools. Covers Tier 1–2 of the Math section. Start here when you want to go deeper on the formulas in this curriculum.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab" target="_blank">
+          <div class="rc-tag label-blue">Video · Free</div>
+          <div class="rc-title">Essence of Linear Algebra — 3Blue1Brown</div>
+          <div class="rc-author">3Blue1Brown</div>
+          <div class="rc-desc">Visual intuition for vectors, matrices, dot products, eigenvectors. 15 short videos. The best introduction to linear algebra for people who learn visually. Watch this before the DeepLearning.AI math specialisation. It rewires how you think about vectors.</div>
+          <span class="rc-free">Free · YouTube</span>
+        </a>
+        <a class="reading-card" href="https://www.deeplearning.ai/courses/mathematics-for-machine-learning-and-data-science-specialization/" target="_blank">
+          <div class="rc-tag label-blue">Course · Free to audit</div>
+          <div class="rc-title">Mathematics for ML &amp; Data Science</div>
+          <div class="rc-author">DeepLearning.AI · Luis Serrano</div>
+          <div class="rc-desc">3-course specialisation: linear algebra, calculus, probability + statistics. Taught with Python and ML applications throughout — not abstract math. Free to audit on Coursera. Take this for Tier 2–3 of the math section (attention, gradient descent).</div>
+          <span class="rc-free">Free to audit · Coursera</span>
+        </a>
+        <a class="reading-card" href="https://pabloinsente.github.io/intro-linear-algebra" target="_blank">
+          <div class="rc-tag label-blue">Article · Free</div>
+          <div class="rc-title">Linear Algebra for Applied ML (with Python)</div>
+          <div class="rc-author">Pablo Caceres</div>
+          <div class="rc-desc">Comprehensive written guide with Python code for every concept — vectors, matrices, dot products, norms, eigenvalues. GitHub-hosted, no signup. Use as a reference when you encounter a linear algebra concept in a paper or library and want to see it in code.</div>
+          <span class="rc-free">Free</span>
+        </a>
+      </div>
+
+      <div class="topic-label">Language-Agnostic Backend &amp; Systems</div>
+      <div class="reading-grid">
+        <a class="reading-card" href="https://12factor.net/" target="_blank">
+          <div class="rc-tag label-gray">Reference · Free</div>
+          <div class="rc-title">The Twelve-Factor App</div>
+          <div class="rc-author">Adam Wiggins (Heroku)</div>
+          <div class="rc-desc">12 language-agnostic principles for building production-grade web services. Config, dependencies, processes, logs, concurrency. buffr follows most of these already. Read it once to formalise your intuitions about serverless app design.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview" target="_blank">
+          <div class="rc-tag label-gray">Docs · Free</div>
+          <div class="rc-title">HTTP Overview — MDN</div>
+          <div class="rc-author">Mozilla Developer Network</div>
+          <div class="rc-desc">The definitive reference for HTTP methods, status codes, headers, streaming, and the request-response cycle. Every backend concept in Phase 2 maps to something in this document. The source of truth when interviewer asks about REST fundamentals.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://supabase.com/docs" target="_blank">
+          <div class="rc-tag label-green">Docs · Free</div>
+          <div class="rc-title">Supabase Documentation</div>
+          <div class="rc-author">Supabase</div>
+          <div class="rc-desc">Postgres + Auth + Realtime for JavaScript developers. The natural upgrade path from Netlify Blobs. Covers pgvector for semantic search, row-level security for auth, and SQL through a JS/TS lens. Read the pgvector section when you hit Phase 5 exercises.</div>
+          <span class="rc-free">Free</span>
+        </a>
+        <a class="reading-card" href="https://dataintensive.net/" target="_blank">
+          <div class="rc-tag label-coral">Book · Paid</div>
+          <div class="rc-title">Designing Data-Intensive Applications</div>
+          <div class="rc-author">Martin Kleppmann · O'Reilly</div>
+          <div class="rc-desc">The backend engineering bible. Storage, caching, replication, consistency, stream processing. You don't need to read it cover-to-cover — read chapters 1–3 (data models, storage engines) and chapter 7 (transactions/race conditions like TOCTOU). Long-term reference.</div>
+          <span class="rc-paid">~$50 · O'Reilly</span>
+        </a>
+      </div>
+
+      <div class="topic-label">Papers worth knowing (read the abstract + conclusion, not necessarily everything)</div>
+      <div class="reading-grid">
+        <a class="reading-card" href="https://arxiv.org/abs/1706.03762" target="_blank">
+          <div class="rc-tag label-purple">Paper · Free</div>
+          <div class="rc-title">Attention Is All You Need</div>
+          <div class="rc-author">Vaswani et al · Google Brain 2017</div>
+          <div class="rc-desc">The paper that introduced the transformer architecture powering every LLM you use. Read the abstract, the attention formula (Section 3.2), and Figure 2. Skip the machine translation results. Understanding this formula explains why context windows cost quadratically.</div>
+          <span class="rc-free">Free · arXiv</span>
+        </a>
+        <a class="reading-card" href="https://arxiv.org/abs/2005.11401" target="_blank">
+          <div class="rc-tag label-purple">Paper · Free</div>
+          <div class="rc-title">Retrieval-Augmented Generation (RAG)</div>
+          <div class="rc-author">Lewis et al · Meta AI 2020</div>
+          <div class="rc-desc">The original RAG paper. Short and readable. Explains the core concept of combining parametric knowledge (model weights) with non-parametric retrieval (vector search). Read when you're building Phase 5 exercises — it contextualises everything you're building.</div>
+          <span class="rc-free">Free · arXiv</span>
+        </a>
+        <a class="reading-card" href="https://arxiv.org/abs/2210.03629" target="_blank">
+          <div class="rc-tag label-purple">Paper · Free</div>
+          <div class="rc-title">ReAct: Reasoning + Acting in LLMs</div>
+          <div class="rc-author">Yao et al · Princeton 2022</div>
+          <div class="rc-desc">The paper behind buffr's suggestedActions pattern and the ReAct prompt engineering technique. Shows how interleaving reasoning and tool calls dramatically improves agent accuracy. Read it when building the observation loop exercise in Phase 3.</div>
+          <span class="rc-free">Free · arXiv</span>
+        </a>
+        <a class="reading-card" href="https://arxiv.org/abs/2106.09685" target="_blank">
+          <div class="rc-tag label-purple">Paper · Free</div>
+          <div class="rc-title">LoRA: Low-Rank Adaptation</div>
+          <div class="rc-author">Hu et al · Microsoft 2021</div>
+          <div class="rc-desc">The technique behind efficient fine-tuning of large models. Instead of updating all weights (expensive), LoRA adds small trainable matrices. Read the abstract and Section 2 — enough to understand what "LoRA fine-tuning" means when you see it in Hugging Face tutorials.</div>
+          <span class="rc-free">Free · arXiv</span>
+        </a>
+      </div>
+    </div>
+
+
+  </div><!-- /content -->
+</main>
+
+<script>
+  function toggleAccordion(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.exercise-chevron, .interview-chevron');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (chevron) chevron.classList.toggle('open', !isOpen);
+    header.classList.toggle('open', !isOpen);
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const pct = window.scrollY / (doc.scrollHeight - doc.clientHeight);
+    document.getElementById('scrollProgress').style.transform = `scaleX(${pct})`;
+  });
+</script>
+
+</body>
+</html>

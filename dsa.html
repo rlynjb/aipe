@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Structures & Algorithms — AI Product Engineering</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><a href="index.html" style="text-decoration:none;"><span>AI Curriculum v6</span></a></div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Overview</div>
+    <a class="nav-item" href="index.html">Introduction</a>
+    <a class="nav-item" href="tooling.html">Claude Tools Ecosystem</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Applied AI Track</div>
+    <a class="nav-item" href="phase-0.html">Phase 0 · Applied AI Tools</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">LLM Track — buffr</div>
+    <a class="nav-item" href="phase-1.html">Phase 1 · LLM Integration</a>
+    <a class="nav-item" href="phase-2.html">Phase 2 · Backend &amp; API</a>
+    <a class="nav-item" href="phase-3.html">Phase 3 · Agentic Systems</a>
+    <a class="nav-item" href="phase-4.html">Phase 4 · Production</a>
+    <a class="nav-item" href="phase-5.html">Phase 5 · RAG &amp; Embeddings</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">ML Track — contrl</div>
+    <a class="nav-item" href="phase-6.html">Phase 6 · MediaPipe &amp; ML</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Projects &amp; Revenue</div>
+    <a class="nav-item" href="projects.html">Project Ideas &amp; Revenue</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Foundations</div>
+    <a class="nav-item" href="math.html">Math &amp; Algorithms</a>
+    <a class="nav-item active" href="dsa.html">Data Structures &amp; Algorithms</a>
+    <a class="nav-item" href="reading.html">Reading List</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Prep</div>
+    <a class="nav-item" href="interview.html">Interview Prep</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Resources</div>
+    <a class="nav-item" href="prompting-cheatsheet.html">Prompting Cheatsheet ↗</a>
+  </div>
+</nav>
+
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">// curriculum · v6.0 · updated 2026-03-20 · 3 tracks · 8 phases · 5 projects · passive income path</div>
+    <h1>AI Product<br><em>Engineering</em></h1>
+    <p class="hero-sub">A practical curriculum built on your own codebases. Three concentric tracks: Applied AI tools (outermost, highest leverage), LLM Engineering (middle), Applied ML (core). Frontend developer → AI Product Engineer → passive income.</p>
+    <div class="track-pills">
+      <span class="pill pill-orange"><span class="pill-dot"></span>Applied AI · Tools & Automation</span>
+      <span class="pill pill-teal"><span class="pill-dot"></span>buffr · LLM Engineering</span>
+      <span class="pill pill-purple"><span class="pill-dot"></span>contrl · Applied ML</span>
+    </div>
+  </div>
+
+    <!-- PROGRESS BAR -->
+  <div class="progress-bar">
+    <a class="pb-phase p0" href="phase-0.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">00</div><span class="pb-label">Applied AI</span>
+    </a>
+    <a class="pb-phase p1" href="phase-1.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">01</div><span class="pb-label">LLM Integration</span>
+    </a>
+    <a class="pb-phase p2" href="phase-2.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">02</div><span class="pb-label">Backend &amp; API</span>
+    </a>
+    <a class="pb-phase p3" href="phase-3.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">03</div><span class="pb-label">Agentic Systems</span>
+    </a>
+    <a class="pb-phase p4" href="phase-4.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">04</div><span class="pb-label">Production</span>
+    </a>
+    <a class="pb-phase p5" href="phase-5.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">05</div><span class="pb-label">RAG + Embeddings</span>
+    </a>
+    <a class="pb-phase p6" href="phase-6.html" style="text-decoration:none;color:inherit;">
+      <div class="pb-num">06</div><span class="pb-label">MediaPipe + ML</span>
+    </a>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="phase-block visible" id="phase-dsa">
+      <div class="phase-header">
+        <div class="phase-num" style="border-color:#34d399;color:#34d399;">DSA</div>
+        <div class="phase-title-block">
+          <h2>Data Structures & Algorithms</h2>
+          <div class="phase-meta">Only the ones that appear in your actual stack · buffr + contrl + RAG · No LeetCode grinding required</div>
+        </div>
+      </div>
+
+      <p>This is not a general DSA course. Every structure and algorithm here appears directly in buffr, contrl, or the infrastructure they run on. Each entry answers: <em>what is it</em>, <em>where does it live in your code</em>, and <em>why does knowing it make you a better AI product engineer</em>.</p>
+      <p>Skipped intentionally: sorting algorithms (handled by libraries), dynamic programming (research territory), advanced tree balancing (database internals you won't implement), most of LeetCode hard. If an interviewer asks you to invert a binary tree, that's a different job.</p>
+
+      <!-- ── GROUP 1: YOU'VE ALREADY BUILT THESE ── -->
+      <div class="topic-label">Group 1 — You've already built these (formalise what you know)</div>
+
+      <div class="section">
+        <h3>Hash Map (Dictionary) <span class="diff-badge diff-1">Essential</span></h3>
+        <p>The most important data structure in software. O(1) average lookup, insert, and delete. You use it constantly without thinking — formalising it makes you faster at spotting when you're not using it and should be.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Complexity</div>
+          <div class="formula-line"><span class="formula-name">Lookup</span>   O(1) average · O(n) worst case (hash collision)</div>
+          <div class="formula-line"><span class="formula-name">Insert</span>   O(1) average</div>
+          <div class="formula-line"><span class="formula-name">Delete</span>   O(1) average</div>
+          <div class="formula-line"><span class="formula-name">Space</span>    O(n)</div>
+          <div class="formula-line formula-comment">// A hash function maps key → bucket index</div>
+          <div class="formula-line formula-comment">// Collisions handled by chaining or open addressing</div>
+          <div class="formula-line formula-comment">// JS Objects and Maps are hash maps under the hood</div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Where it appears</th><th>What it's doing</th></tr>
+          <tr><td>buffr tool registry</td><td><code>Map&lt;string, Tool&gt;</code> — tool name → handler. O(1) lookup by name at request time. This is why you can add 50 tools without slowing down the <code>executeTool()</code> call.</td></tr>
+          <tr><td>buffr provider factory</td><td>The <code>switch(provider)</code> block is effectively a hash map lookup — provider string → SDK constructor. Some implementations use a plain object as the map directly.</td></tr>
+          <tr><td>LLM token caches</td><td>Anthropic's prompt caching uses a hash of the system prompt as the cache key. Identical system prompt = cache hit = O(1) cost reduction.</td></tr>
+          <tr><td>Embedding indexes</td><td>Before vector search, most pipelines maintain a metadata map: <code>vector_id → { source, chunk_index, page_title }</code> for fast retrieval of context after the similarity search.</td></tr>
+          <tr><td>Rate limiting</td><td>Tracking requests per user per minute: <code>Map&lt;userId, RequestCount&gt;</code>. O(1) check and increment per request.</td></tr>
+        </table>
+
+        <div class="interview">
+          <div class="interview-header" onclick="toggleAccordion(this)">
+            <span class="interview-icon">🎯</span>
+            <span class="interview-q">Why does buffr's tool registry use a Map instead of an array?</span>
+            <span class="interview-chevron">▶</span>
+          </div>
+          <div class="interview-body">An array lookup by tool name would be O(n) — scan every element until you find a match. With 20 tools that's fine; with 200 tools you're doing 100 comparisons on average per request. A Map gives O(1) lookup regardless of how many tools are registered. The pattern also separates registration (write once at cold start) from execution (read-only at request time), which is the right design for a hot path.</div>
+        </div>
+
+        <div class="ascii-diagram">
+          <div class="asc-title">Hash Map — How O(1) Lookup Works</div>
+          <pre>  toolRegistry.get("github_list_issues")
+
+  key: "github_list_issues"
+         │
+         ▼
+  hash("github_list_issues") = 42   ← hash function maps string → bucket index
+         │
+         ▼
+  buckets array:
+  ┌───┬───────────────────────────────────────────────────┐
+  │ 0 │ null                                              │
+  │ 1 │ { key: "notion_list_tasks",  value: Tool }        │
+  │ … │ …                                                 │
+  │42 │ { key: "github_list_issues", value: Tool } ◀──── O(1) access
+  │ … │ …                                                 │
+  │99 │ { key: "jira_list_issues",   value: Tool }        │
+  └───┴───────────────────────────────────────────────────┘
+
+  <span class="asc-dim">  Array lookup (if tools were stored in an array):</span>
+  <span class="asc-warn">  tools[0] === "github_list_issues"? No.  tools[1]? No. ... tools[42]? Yes! → O(n)</span>
+
+  <span class="asc-ok">  Map lookup: hash → bucket index → direct access → O(1) always</span></pre>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" target="_blank">MDN Map Object (JS)</a>
+          <a class="ext-link" href="https://docs.python.org/3/tutorial/datastructures.html#dictionaries" target="_blank">Python Dictionaries</a>
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Hash_table" target="_blank">Hash Table — Wikipedia</a>
+          <a class="ext-link" href="https://visualgo.net/en/hashtable" target="_blank">Hash Table Visualiser — VisuAlgo</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Queue (FIFO) <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>queue</strong> models any first-come, first-served process. The critical invariant is ordering preservation: items are processed in the exact sequence they arrive. This is the correct structure whenever fairness or temporal ordering matters. In hardware, CPU instruction pipelines are queues. In operating systems, process schedulers are queues. In distributed systems, message queues (Kafka, SQS, RabbitMQ, Pub/Sub) are queues at massive scale.</p>
+          <p>The performance trap in JavaScript is <code>Array.shift()</code> — it removes the first element but requires shifting all remaining elements left, making dequeue O(n). For a proper O(1) queue in TypeScript/JavaScript, use a doubly-linked list or a circular buffer. In Python, <code>collections.deque</code> provides O(1) append and popleft. In Go, channels are language-native O(1) queues with built-in concurrency safety.</p>
+          <p>For AI products specifically, queues solve the <strong>rate-limiting problem</strong>. LLM API providers impose rate limits (tokens per minute, requests per minute). A queue decouples incoming requests from LLM calls: requests enqueue immediately (fast), a worker processes them against the rate limit. Without a queue, rate limit errors propagate directly to users; with a queue, they wait transparently.</p>
+        </div>
+
+        <p>First-in, first-out. Items are enqueued at the back and dequeued from the front. Appears everywhere latency and ordering matter — rate limiting, frame processing, background jobs, streaming token delivery.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Complexity</div>
+          <div class="formula-line"><span class="formula-name">Enqueue</span>  O(1)</div>
+          <div class="formula-line"><span class="formula-name">Dequeue</span>  O(1)</div>
+          <div class="formula-line"><span class="formula-name">Peek</span>     O(1)   <span class="formula-comment">// look at front without removing</span></div>
+          <div class="formula-line"><span class="formula-name">Space</span>    O(n)</div>
+          <div class="formula-line formula-comment">// In JS: Array.push() + Array.shift() is a queue (but O(n) shift!)</div>
+          <div class="formula-line formula-comment">// Better: use a linked list or circular buffer for O(1) dequeue</div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Where it appears</th><th>What it's doing</th></tr>
+          <tr><td>contrl frame pipeline</td><td>MediaPipe processes frames one at a time. The browser's requestAnimationFrame is effectively a queue — frames arrive at 30fps, each waits its turn to be processed by PoseLandmarker.</td></tr>
+          <tr><td>SSE streaming</td><td>When you stream LLM tokens to the client, each token chunk is enqueued in the response stream and dequeued by the browser as it arrives. The <code>ReadableStream</code> API is a queue.</td></tr>
+          <tr><td>Rate limiter</td><td>Sliding window rate limiting tracks request timestamps in a queue. Dequeue timestamps older than the window; count what remains; if count ≥ limit, reject.</td></tr>
+          <tr><td>Background job systems</td><td>If buffr ever processes long-running scans asynchronously, a job queue (SQS, Redis Queue, Inngest) holds pending jobs. Workers dequeue and process one at a time.</td></tr>
+          <tr><td>Webhook retry</td><td>Failed webhook deliveries are re-enqueued with exponential backoff. The queue ensures ordering and prevents thundering herd on retry.</td></tr>
+        </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank">Python collections.deque</a>
+          <a class="ext-link" href="https://www.inngest.com/docs" target="_blank">Inngest — Background Jobs for Serverless</a>
+          <a class="ext-link" href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html" target="_blank">AWS SQS — Message Queue</a>
+          <a class="ext-link" href="https://redis.io/docs/latest/develop/data-types/lists/" target="_blank">Redis Lists (queue primitive)</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Sliding Window <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>The <strong>sliding window</strong> technique transforms an O(n×k) naive computation into O(n) by maintaining a running aggregate. Instead of recomputing the sum/average/max of the last k elements from scratch each step, you subtract the element leaving the window and add the element entering — one add, one subtract, regardless of window size.</p>
+          <p>This pattern appears in every domain that processes sequential data with a fixed-size lookback: financial moving averages, network packet buffering, real-time audio processing, database window functions (<code>OVER (ROWS BETWEEN 5 PRECEDING AND CURRENT ROW)</code>), and sensor data smoothing. The <strong>variable-size sliding window</strong> (expand/shrink based on a condition) solves problems like "find the shortest substring containing all required characters" — a common interview problem that has real applications in token budget management.</p>
+          <p>For AI products, the sliding window is how you manage LLM context budgets. When a conversation exceeds the model's context window, you don't discard random messages — you slide a window across the message history, always keeping the most recent N tokens. This preserves recent context while discarding older, less relevant messages. The window approach is also how retrieval systems implement recency bias: weight recent chunks higher in the sliding window.</p>
+        </div>
+
+        <p>A window of fixed size N that moves across a sequence, processing or aggregating elements within the window at each step. You built one in contrl for temporal smoothing. It also underpins rate limiting, context window management, and chunk overlap in RAG.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Pattern</div>
+          <div class="formula-line formula-comment">// Naive approach: recompute the whole window each step → O(n×k)</div>
+          <div class="formula-line formula-comment">// Sliding window: add new element, remove old element → O(n)</div>
+          <div class="formula-line"></div>
+          <div class="formula-line"><span class="formula-name">window</span> = frames[i - k .. i]   <span class="formula-comment">// k = window size</span></div>
+          <div class="formula-line"><span class="formula-name">new_avg</span> = old_avg + (frames[i] - frames[i-k]) / k</div>
+          <div class="formula-line formula-comment">// One add, one subtract — constant time regardless of k</div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Where it appears</th><th>What it's doing</th></tr>
+          <tr><td>contrl rep detection</td><td>The phase state machine looks at the last N frames to confirm a transition — prevents false positives from a single noisy frame. Window size N controls sensitivity vs. lag.</td></tr>
+          <tr><td>RAG chunking with overlap</td><td>When splitting documents into chunks, a sliding window with overlap ensures context isn't lost at chunk boundaries: chunk 1 = tokens 0–512, chunk 2 = tokens 256–768, etc.</td></tr>
+          <tr><td>Rate limiting</td><td>Sliding window rate limiter: maintain a queue of request timestamps. Slide the window forward to current time; count requests inside the window; compare to limit.</td></tr>
+          <tr><td>Context window trimming</td><td>When a conversation exceeds token limits, trim from the oldest messages first — a sliding window over the message array, keeping the most recent N tokens.</td></tr>
+        </table>
+
+        <div class="ascii-diagram">
+          <div class="asc-title">Sliding Window — RAG Chunking with Overlap</div>
+          <pre><span class="asc-dim">  Document: 1,500 tokens. Chunk size: 512. Overlap: 128.</span>
+
+  tokens:  0────────────────────────512
+  chunk 1: [████████████████████████████████]
+                             overlap │
+                        384──────────────────────896
+  chunk 2:              [████████████████████████████████]
+                                         overlap │
+                                   768──────────────────────1280
+  chunk 3:                         [████████████████████████████]
+                                                    overlap │
+                                          1152────────────────1500
+  chunk 4:                                [████████████████████]
+
+  <span class="asc-dim">  Without overlap: content at chunk boundaries gets split mid-sentence.
+  A query matching that content fails to retrieve it.</span>
+
+  <span class="asc-ok">  With 128-token overlap: boundary content appears in 2 adjacent chunks.
+  Either chunk retrieval brings the full context into the LLM response.</span>
+
+  <span class="asc-note">  Trade-off: more chunks = more storage + more tokens per query synthesis.</span></pre>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://leetcode.com/explore/learn/card/leetcodes-interview-crash-course-data-structures-and-algorithms/703/arraystrings/4502/" target="_blank">Sliding Window — LeetCode Learn</a>
+          <a class="ext-link" href="https://www.pinecone.io/learn/chunking-strategies/" target="_blank">Chunking Strategies — Pinecone</a>
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame" target="_blank">MDN requestAnimationFrame</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Stack (LIFO) <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>stack</strong> models any last-in, first-out process — the most recently added item is always the next to be removed. The most important real-world stack is the <strong>call stack</strong>, which every programming language runtime maintains. When a function calls another function, the new frame is pushed onto the call stack. When it returns, the frame is popped. Stack overflow errors occur when recursion is too deep and the stack runs out of memory.</p>
+          <p>Beyond the call stack, stacks are the data structure behind all bracket/delimiter matching (compiler lexers, JSON validators, HTML parsers), depth-first graph traversal (implemented iteratively with an explicit stack instead of recursion), and undo/redo systems (push each state; pop to undo). The browser's history API is conceptually a stack — back/forward navigation pushes and pops entries.</p>
+          <p>For AI product engineers, the most relevant stack application is <strong>nested template resolution</strong>. If buffr's prompt templates ever support nested expressions like <code>{{summarise({{get_sessions(projectId)}}) }}</code>, resolving them requires a stack: push on <code>{{</code>, pop on <code>}}</code>, evaluate inner expressions before outer ones. The same stack-based approach underlies how languages parse arithmetic expressions with operator precedence.</p>
+        </div>
+
+        <p>Last-in, first-out. Less obviously present than a queue, but critical for understanding recursion, call chains, and — directly relevant — how nested JSON parsing and prompt template resolution work.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Complexity</div>
+          <div class="formula-line"><span class="formula-name">Push</span>   O(1)</div>
+          <div class="formula-line"><span class="formula-name">Pop</span>    O(1)</div>
+          <div class="formula-line"><span class="formula-name">Peek</span>   O(1)</div>
+          <div class="formula-line formula-comment">// JS arrays are stacks: Array.push() + Array.pop()</div>
+          <div class="formula-line formula-comment">// The call stack IS a stack — each function call pushes a frame</div>
+          <div class="formula-line formula-comment">// Stack overflow = recursion too deep = stack ran out of memory</div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Where it appears</th><th>What it's doing</th></tr>
+          <tr><td>JSON parsing / nested templates</td><td>When <code>stripCodeBlock()</code> scans for matching <code>```</code> fences, it's implicitly doing stack-based delimiter matching — push on open, pop on close.</td></tr>
+          <tr><td>Agent observation loop</td><td>Multi-step agents maintain a stack of pending sub-tasks. The orchestrator pops the top task, executes it, and may push new sub-tasks based on the result. Depth-first task execution.</td></tr>
+          <tr><td>Undo/redo in editors</td><td>If buffr ever adds prompt history: push each version onto an undo stack. Pop to undo. This is how every text editor works.</td></tr>
+          <tr><td>Call stack in async code</td><td>Understanding the JS call stack explains why <code>await</code> works the way it does in chain invocations — each <code>await</code> suspends the current stack frame and resumes when the promise resolves.</td></tr>
+        </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Glossary/Call_stack" target="_blank">MDN Call Stack</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=W2aKrjCtFvM" target="_blank">The JS Call Stack Visualised — Philip Roberts</a>
+          <a class="ext-link" href="https://latentspace.dev/p/the-agentic-loop" target="_blank">The Agentic Loop — Latent Space</a>
+        </div>
+      </div>
+
+      <!-- ── GROUP 2: TREES ── -->
+      <div class="topic-label">Group 2 — Trees (the shape of search, storage, and decision-making)</div>
+
+      <div class="section">
+        <h3>Tree (General) & Trie <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>tree</strong> is a connected acyclic graph with a designated root node. Every node has exactly one parent (except the root, which has none) and zero or more children. Trees are the most natural structure for representing hierarchical data: file systems, organisation charts, XML/JSON documents, DOM, abstract syntax trees in compilers, and decision trees in ML — all trees.</p>
+          <p>The two fundamental traversal strategies are <strong>BFS (breadth-first search)</strong>, which visits all nodes level by level using a queue, and <strong>DFS (depth-first search)</strong>, which follows branches all the way to leaves before backtracking using a stack (or recursion). BFS finds the shortest path to a node. DFS is natural for tasks like "collect all files under a directory" or "find all items in a Notion page tree."</p>
+          <p>A <strong>Trie</strong> (pronounced "try," from re<em>trie</em>val) is a tree where each node represents a character prefix. Looking up whether "deploy" is a stored prefix takes exactly 6 steps (one per character), regardless of how many strings the trie contains — O(k) where k is string length. This makes tries ideal for autocomplete and prefix search. If buffr's prompt library grows large, a trie-based command palette search would outperform a linear scan by orders of magnitude.</p>
+        </div>
+
+        <p>A tree is a hierarchical structure of nodes connected by edges, with no cycles. You interact with trees constantly: the DOM, JSON documents, file systems, and dependency graphs are all trees. A Trie is a tree specialised for string prefix search.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Key tree properties</div>
+          <div class="formula-line"><span class="formula-name">Root</span>      The single top node (no parent)</div>
+          <div class="formula-line"><span class="formula-name">Leaf</span>      A node with no children</div>
+          <div class="formula-line"><span class="formula-name">Depth</span>     Distance from root to a node</div>
+          <div class="formula-line"><span class="formula-name">Height</span>    Distance from root to the deepest leaf</div>
+          <div class="formula-line"><span class="formula-name">BFS</span>       Breadth-first: visit level by level (uses a queue)</div>
+          <div class="formula-line"><span class="formula-name">DFS</span>       Depth-first: go deep before going wide (uses a stack)</div>
+          <div class="formula-line formula-comment">// BFS finds shortest path. DFS explores full branches first.</div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Where it appears</th><th>What it's doing</th></tr>
+          <tr><td>buffr .dev/ folder structure</td><td>The generated <code>.dev/</code> folder is a tree: root → subdirectories → files. When the dev scanner traverses it to build context, it's doing a DFS.</td></tr>
+          <tr><td>JSON / Notion page structure</td><td>Notion pages contain blocks, which contain child blocks. This is a tree. Traversing a page's content to build a RAG chunk requires tree traversal.</td></tr>
+          <tr><td>Prompt library prefix search</td><td>A Trie can index all prompt titles by prefix: typing "deploy" immediately surfaces all prompts starting with those characters — O(k) where k = characters typed, regardless of total prompt count.</td></tr>
+          <tr><td>Dependency resolution</td><td>When buffr's dev scanner identifies "this project needs X before Y", it's building a dependency tree. Topological sort on the tree gives the correct installation order.</td></tr>
+          <tr><td>HNSW vector index</td><td>HNSW is a hierarchical tree-like structure. The top layer has few nodes with long-range connections; lower layers add more nodes with local connections. Search starts at the top and descends.</td></tr>
+        </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://visualgo.net/en/bst" target="_blank">VisuAlgo — Tree Visualiser</a>
+          <a class="ext-link" href="https://www.cs.usfca.edu/~galles/visualization/Trie.html" target="_blank">Trie Visualiser — USF</a>
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction" target="_blank">MDN DOM (tree structure)</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Binary Search Tree & Interval Tree <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>Binary Search Tree (BST)</strong> maintains a sorted invariant: for any node, all values in the left subtree are smaller, and all values in the right subtree are larger. This enables binary search on a dynamic set — you can insert and delete elements while maintaining O(log n) search. The key insight is that each comparison eliminates half the remaining candidates, just like binary search on a sorted array but without requiring the array to be in contiguous memory.</p>
+          <p>Real databases use <strong>B-trees</strong> (not binary, but multi-way, balanced trees) as their primary index structure. When you create a Postgres index on <code>created_at</code>, Postgres builds a B-tree where each node can hold many keys (not just 2), reducing tree height and minimising disk reads. The <code>EXPLAIN</code> output in Postgres will show "Index Scan using idx_sessions_created_at" — that's a B-tree traversal happening instead of a full table scan.</p>
+          <p>An <strong>Interval Tree</strong> extends BST to handle ranges rather than points. Given a query interval [a, b], an interval tree efficiently finds all stored intervals that overlap it. This applies directly to token range management: if you split a document into token-range chunks and want to find all chunks that include tokens 1024–1536, an interval tree answers in O(log n + k) where k is the number of matching chunks — far better than scanning every chunk.</p>
+        </div>
+
+        <p>A BST maintains sorted order: left subtree &lt; node &lt; right subtree. O(log n) search, insert, delete when balanced. An Interval Tree extends this for range queries — finding all intervals that overlap a point. Directly relevant to token range management.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">BST Search Complexity</div>
+          <div class="formula-line"><span class="formula-name">Balanced BST</span>   O(log n) search/insert/delete</div>
+          <div class="formula-line"><span class="formula-name">Unbalanced BST</span>  O(n) worst case (degenerates to linked list)</div>
+          <div class="formula-line formula-comment">// log₂(1,000,000) ≈ 20 — search 1M sorted items in 20 comparisons</div>
+          <div class="formula-line formula-comment">// This is why sorted indexes are so powerful vs. linear scan</div>
+          <div class="formula-line formula-comment">// Postgres B-tree index = balanced multi-way search tree</div>
+          <div class="formula-line formula-comment">// When you add an index on projectId, Postgres builds a B-tree</div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Where it appears</th><th>What it's doing</th></tr>
+          <tr><td>Supabase / Postgres indexes</td><td>When Phase 5 exercise adds an index on <code>embedding &lt;=&gt; query_embedding</code>, pgvector builds an HNSW or IVF-Flat index — both tree variants. Queries that would scan 50,000 rows now scan ~20 nodes.</td></tr>
+          <tr><td>Token range management</td><td>When a RAG pipeline needs to find all chunks that overlap with token positions 1024–2048, an interval tree answers this in O(log n + k) rather than scanning all chunks.</td></tr>
+          <tr><td>Session timeline queries</td><td>Querying buffr sessions by date range (<code>WHERE created_at BETWEEN X AND Y</code>) uses the B-tree index on <code>created_at</code>. Without the index: full table scan O(n). With index: O(log n).</td></tr>
+        </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://use-the-index-luke.com" target="_blank">Use The Index, Luke — SQL Indexing Guide</a>
+          <a class="ext-link" href="https://www.postgresql.org/docs/current/indexes-types.html" target="_blank">Postgres Index Types Docs</a>
+          <a class="ext-link" href="https://visualgo.net/en/bst" target="_blank">BST Visualiser — VisuAlgo</a>
+        </div>
+      </div>
+
+      <!-- ── GROUP 3: GRAPHS ── -->
+      <div class="topic-label">Group 3 — Graphs (your instinct was right)</div>
+
+      <div class="section">
+        <h3>Graphs: Nodes, Edges & Traversal <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>graph</strong> is the most general relational data structure. Where trees require a single parent per node and no cycles, graphs place no such constraint — any node can connect to any other node, in any direction, any number of times. This generality makes graphs applicable to almost any relationship: social networks, road maps, knowledge graphs, dependency systems, protein interaction networks, and neural networks are all graphs.</p>
+          <p><strong>BFS</strong> (breadth-first search) uses a queue and explores neighbours level by level — it finds the shortest path in an unweighted graph. <strong>DFS</strong> (depth-first search) uses a stack (or recursion) and follows edges as deep as possible before backtracking — it's natural for cycle detection, topological ordering, and exhaustive exploration. Both run in O(V + E) where V is the number of vertices (nodes) and E is the number of edges.</p>
+          <p>For AI product engineers, the most important graph type is the <strong>DAG (Directed Acyclic Graph)</strong>. Anywhere you have steps that depend on each other with no circular dependencies — build systems, task pipelines, workflow engines, import graphs — a DAG is the right model. LangGraph explicitly models agent workflows as DAGs. When you define buffr workflow steps with <code>dependsOn</code> fields, you're defining a DAG — and topological sort determines the execution order.</p>
+        </div>
+
+        <p>A graph is a set of nodes (vertices) connected by edges. Unlike trees, graphs can have cycles and multiple paths between nodes. Two traversal algorithms — BFS and DFS — cover the vast majority of graph problems you'll encounter as an AI engineer.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Graph types</div>
+          <div class="formula-line"><span class="formula-name">Undirected</span>   Edges have no direction: A — B means A→B and B→A</div>
+          <div class="formula-line"><span class="formula-name">Directed</span>     Edges have direction: A → B (A depends on B, not vice versa)</div>
+          <div class="formula-line"><span class="formula-name">Weighted</span>     Each edge has a cost/distance/similarity score</div>
+          <div class="formula-line"><span class="formula-name">DAG</span>          Directed Acyclic Graph — directed with no cycles</div>
+          <div class="formula-line formula-comment">// DAGs are the most important variant for AI product engineers</div>
+          <div class="formula-line formula-comment">// They model: task dependencies, pipeline stages, agent workflows</div>
+          <div class="formula-line"></div>
+          <div class="formula-line"><span class="formula-name">BFS</span>   O(V + E)  <span class="formula-comment">// V = nodes, E = edges</span></div>
+          <div class="formula-line"><span class="formula-name">DFS</span>   O(V + E)</div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Graph type</th><th>Where it appears</th><th>What the nodes and edges represent</th></tr>
+          <tr><td>Undirected, weighted</td><td>HNSW vector index</td><td>Nodes = stored embeddings. Edges = "similar enough to connect". Edge weight = cosine similarity. Search = graph traversal.</td></tr>
+          <tr><td>Undirected</td><td>contrl pose skeleton</td><td>Nodes = 33 body landmarks. Edges = <code>SKELETON_CONNECTIONS</code>. Drawing the skeleton = traversing this graph. Rep counting traverses specific paths (shoulder → elbow → wrist).</td></tr>
+          <tr><td>Directed, weighted</td><td>Token attention map</td><td>Nodes = tokens. Edges = attention weights. High-weight edge = token A strongly attends to token B. The attention matrix IS a weighted directed graph.</td></tr>
+          <tr><td>DAG</td><td>Agent task planning</td><td>Nodes = sub-tasks. Directed edges = "must complete before". Topological sort gives the valid execution order. Parallel edges = tasks that can run concurrently.</td></tr>
+          <tr><td>DAG</td><td>LangGraph workflows</td><td>Nodes = chain steps or agents. Directed edges = data flow. Conditional edges = branching logic. The entire LangGraph framework is a DAG execution engine.</td></tr>
+          <tr><td>Directed</td><td>Notion page hierarchy</td><td>Nodes = pages/blocks. Directed edges = parent → child. Traversing to collect all content under a page for RAG = DFS on this graph.</td></tr>
+        </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://visualgo.net/en/graphds" target="_blank">Graph Traversal Visualiser — VisuAlgo</a>
+          <a class="ext-link" href="https://langchain-ai.github.io/langgraph/concepts/low_level/" target="_blank">LangGraph — Agent as Graph</a>
+          <a class="ext-link" href="https://networkx.org/documentation/stable/tutorial.html" target="_blank">NetworkX — Graph Library (Python)</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>DAG & Topological Sort <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>topological sort</strong> produces a linear ordering of a DAG's nodes such that for every directed edge A → B, node A appears before node B in the ordering. It is only possible if the graph has no cycles (the acyclic requirement in DAG). If a cycle exists, topological sort is impossible — this is used as a cycle detection algorithm in build systems and package managers.</p>
+          <p><strong>Kahn's algorithm</strong> is the standard implementation: maintain a queue of nodes with in-degree 0 (no dependencies), dequeue one, decrement the in-degree of all its neighbours, and enqueue any that now have in-degree 0. Repeat until the queue is empty. If the output contains fewer nodes than the graph, a cycle exists. The algorithm runs in O(V + E) and is easy to implement in any language.</p>
+          <p>The real-world applications are everywhere: <strong>build systems</strong> (Gradle, Bazel, Make all use topological sort to determine compilation order), <strong>package managers</strong> (npm, pip, cargo resolve installation order using topological sort), <strong>CI/CD pipelines</strong> (parallel job execution with dependencies), and <strong>agentic workflows</strong> (LangGraph, Temporal, Apache Airflow). When you add a <code>dependsOn</code> field to a buffr workflow step, you are adding a directed edge — and the workflow runner implicitly performs topological sort to determine which steps can start immediately and which must wait.</p>
+        </div>
+
+        <p>A Directed Acyclic Graph (DAG) where you need to process nodes in an order that respects all dependencies — no node is processed before everything it depends on. This is the algorithm that decides the execution order of an agentic workflow.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Kahn's Algorithm (topological sort)</div>
+          <div class="formula-line formula-comment">// 1. Find all nodes with in-degree 0 (no dependencies) → add to queue</div>
+          <div class="formula-line formula-comment">// 2. Dequeue a node, add to result order</div>
+          <div class="formula-line formula-comment">// 3. For each neighbour, reduce in-degree by 1</div>
+          <div class="formula-line formula-comment">// 4. If neighbour's in-degree hits 0, add to queue</div>
+          <div class="formula-line formula-comment">// 5. Repeat until queue is empty</div>
+          <div class="formula-line formula-comment">// 6. If result order has fewer nodes than the graph → cycle detected!</div>
+          <div class="formula-line formula-comment"></div>
+          <div class="formula-line"><span class="formula-name">Complexity</span>   O(V + E)</div>
+          <div class="formula-line formula-comment">// Cycle detection is free — a cycle means an agent workflow is impossible</div>
+        </div>
+
+        <p>Practical implication: when you build buffr's Phase 3 observation loop with chained tool calls, each step potentially depends on the output of a previous step. If you ever let the orchestrator plan a multi-step workflow, you're implicitly building a DAG and executing it in topological order. LangGraph makes this explicit.</p>
+
+        <div class="ascii-diagram">
+          <div class="asc-title">DAG Topological Sort — buffr Sprint Prep Workflow</div>
+          <pre>  Nodes = workflow steps. Directed edges = "must complete before."
+
+  ┌─────────────┐     ┌─────────────────┐
+  │  Re-scan    │────▶│  Tech debt scan  │
+  │  .dev/      │     │                 │
+  └─────────────┘     └────────┬────────┘
+         │                     │
+         ▼                     ▼
+  ┌─────────────┐     ┌─────────────────┐
+  │   Triage    │◀────│  Goal generator │
+  │  open items │     │  (from gaps)    │
+  └─────────────┘     └─────────────────┘
+         │
+         ▼
+  ┌─────────────────┐
+  │  Create GitHub  │
+  │  issues (3×)    │
+  └─────────────────┘
+
+  <span class="asc-dim">  Topological order: re-scan → debt scan → triage → goals → create issues</span>
+  <span class="asc-dim">  "re-scan" and "debt scan" have in-degree 0 → start here, can run in parallel</span>
+  <span class="asc-dim">  "triage" has in-degree 2 → must wait for both predecessors to complete</span>
+
+  <span class="asc-warn">  If a cycle existed (e.g. goals → triage → goals), execution is impossible.</span>
+  <span class="asc-ok">  Kahn's algorithm detects this before any step runs.</span></pre>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Topological_sorting" target="_blank">Topological Sorting — Wikipedia</a>
+          <a class="ext-link" href="https://cp-algorithms.com/graph/topological-sort.html" target="_blank">Topological Sort — CP Algorithms</a>
+          <a class="ext-link" href="https://docs.temporal.io/workflows" target="_blank">Temporal Workflows (DAG-based)</a>
+          <a class="ext-link" href="https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html" target="_blank">Apache Airflow DAGs</a>
+        </div>
+      </div>
+
+      <!-- ── GROUP 4: SEQUENCES & BUFFERS ── -->
+      <div class="topic-label">Group 4 — Sequences & Buffers (real-time data in contrl)</div>
+
+      <div class="section">
+        <h3>Circular Buffer (Ring Buffer) <span class="diff-badge diff-2">Important</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>circular buffer</strong> (also called a ring buffer) is a fixed-size array that treats its storage as a circle — when the write pointer reaches the end, it wraps to the beginning and overwrites the oldest data. This gives you: O(1) write and read, constant memory regardless of how much data flows through, and always-available access to the last N items with no shifting or reallocation.</p>
+          <p>The implementation is elegantly simple: two integer pointers (head for writing, tail for reading) and the modulo operation (<code>head % capacity</code>) to wrap around. This is used in every domain that processes continuous data streams with bounded memory: <strong>audio processing</strong> (audio driver ring buffers are how sound data flows from microphone to application), <strong>network packet buffers</strong> (network cards use ring buffers between kernel and driver), <strong>real-time operating systems</strong> (sensor data from embedded devices), and <strong>log rotation</strong> (keep the last N log lines, overwrite oldest when full).</p>
+          <p>For contrl specifically, a circular buffer of size 30 (1 second at 30fps) gives you a constant-memory rolling window of recent pose data. Without it, an hour-long session would accumulate 108,000 landmark frames in memory — at 33 landmarks × 3 coordinates × 4 bytes each, that's ~40MB just for landmark data. With a circular buffer of 30 frames: always 33 × 3 × 4 × 30 = ~12KB.</p>
+        </div>
+
+        <p>A fixed-size buffer that wraps around — when it fills up, new data overwrites the oldest data. The ideal structure for streaming sensor data: constant memory, O(1) read/write, always holds the last N samples.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Circular buffer mechanics</div>
+          <div class="formula-line"><span class="formula-name">Write</span>   buffer[head % capacity] = value; head++</div>
+          <div class="formula-line"><span class="formula-name">Read</span>    buffer[tail % capacity]; tail++</div>
+          <div class="formula-line formula-comment">// % (modulo) is the key — it wraps the index back to 0 at capacity</div>
+          <div class="formula-line formula-comment">// Fixed memory: capacity never grows regardless of how many frames arrive</div>
+          <div class="formula-line formula-comment">// O(1) write and read</div>
+          <div class="formula-line formula-comment">// Always contains the last `capacity` frames</div>
+          <div class="formula-line formula-comment"></div>
+          <div class="formula-line formula-comment">// Example: capacity=30 (1 second of frames at 30fps)</div>
+          <div class="formula-line formula-comment">// Frame 31 overwrites frame 1, frame 32 overwrites frame 2, etc.</div>
+          <div class="formula-line formula-comment">// You always have the last 30 frames, using 30 slots of memory</div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Where it appears</th><th>What it's doing</th></tr>
+          <tr><td>contrl frame smoothing</td><td>Instead of keeping an ever-growing array of landmark frames, a circular buffer of size N holds only the last N frames for EMA and phase detection. Memory stays constant at 30fps × session hours.</td></tr>
+          <tr><td>LLM token streaming buffer</td><td>When streaming tokens from the LLM to the browser, a ring buffer in the server-side stream accumulates partial chunks and flushes complete JSON objects — avoids accumulating unbounded memory.</td></tr>
+          <tr><td>MediaPipe frame queue</td><td>Under the hood, MediaPipe's video processing uses a ring buffer between the camera feed and the inference engine. Frames that arrive faster than inference can process are dropped (overwritten) rather than queued indefinitely.</td></tr>
+        </table>
+
+        <div class="ascii-diagram">
+          <div class="asc-title">Circular Buffer — Last 8 Frames at 30fps (capacity = 8)</div>
+          <pre><span class="asc-dim">  After frame 8 arrives: buffer is full</span>
+
+  index:  [0]    [1]    [2]    [3]    [4]    [5]    [6]    [7]
+          [f1]   [f2]   [f3]   [f4]   [f5]   [f6]   [f7]   [f8]
+           ↑ tail                                            ↑ head
+
+<span class="asc-dim">  Frame 9 arrives: head wraps to index 0, overwrites f1</span>
+
+  index:  [0]    [1]    [2]    [3]    [4]    [5]    [6]    [7]
+          [f9]   [f2]   [f3]   [f4]   [f5]   [f6]   [f7]   [f8]
+                  ↑ tail                                     ↑ head
+
+<span class="asc-dim">  Frame 10 arrives: head moves to index 1, overwrites f2</span>
+
+  index:  [0]    [1]    [2]    [3]    [4]    [5]    [6]    [7]
+          [f9]   [f10]  [f3]   [f4]   [f5]   [f6]   [f7]   [f8]
+                         ↑ tail                              ↑ head
+
+  <span class="asc-ok">  Memory stays fixed at 8 slots regardless of how many frames arrive.</span>
+  <span class="asc-dim">  head = frameCount % capacity  ← the modulo is the entire trick</span></pre>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Circular_buffer" target="_blank">Circular Buffer — Wikipedia</a>
+          <a class="ext-link" href="https://www.embedded.com/ring-buffer-basics/" target="_blank">Ring Buffer Basics — Embedded.com</a>
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor" target="_blank">MDN AudioWorkletProcessor (uses ring buffer)</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Priority Queue (Min/Max Heap) <span class="diff-badge diff-3">Background</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p>A <strong>priority queue</strong> is an abstract data structure that always dequeues the element with the highest (or lowest) priority, regardless of insertion order. The standard implementation is a <strong>binary heap</strong> — a complete binary tree stored in an array where the parent is always smaller (min-heap) or larger (max-heap) than its children. This invariant can always be restored in O(log n) after insertion or removal, because the tree height is log n.</p>
+          <p>The key insight is that a heap is <em>not</em> fully sorted — it just maintains the heap property (parent dominates children), which is weaker than full sortedness but sufficient to always answer "what is the minimum?" in O(1). Building a heap from n elements takes O(n), not O(n log n) — counter-intuitively cheaper than sorting, which is why heap-based top-k selection is preferred over sort-then-slice when k is small relative to n.</p>
+          <p>In Python, <code>heapq</code> is the standard library implementation (min-heap only; negate values for max-heap). In Java, <code>PriorityQueue</code>. In JavaScript, there is no built-in heap — you must implement or import one. This is why understanding the underlying structure matters: when you need a priority queue in a serverless function and can't import a library, the 20-line heap implementation is one of the few DSA patterns worth memorising.</p>
+        </div>
+
+        <p>A queue where elements are dequeued in priority order rather than arrival order. O(log n) insert and extract-min/max. Relevant to understanding how vector search engines rank results and how job schedulers work.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Heap complexity</div>
+          <div class="formula-line"><span class="formula-name">Insert</span>       O(log n)    <span class="formula-comment">// "bubble up" to maintain heap property</span></div>
+          <div class="formula-line"><span class="formula-name">Extract-min</span>  O(log n)    <span class="formula-comment">// remove root, "bubble down" replacement</span></div>
+          <div class="formula-line"><span class="formula-name">Peek-min</span>     O(1)        <span class="formula-comment">// root is always the minimum</span></div>
+          <div class="formula-line formula-comment"></div>
+          <div class="formula-line formula-comment">// Min-heap: parent always ≤ children</div>
+          <div class="formula-line formula-comment">// Max-heap: parent always ≥ children</div>
+          <div class="formula-line formula-comment">// Top-k results from ANN search: keep a min-heap of size k</div>
+          <div class="formula-line formula-comment">// When new candidate arrives: if similarity > heap.min, swap in</div>
+          <div class="formula-line formula-comment">// After scanning all candidates: heap contains the top-k results</div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Where it appears</th><th>What it's doing</th></tr>
+          <tr><td>Vector search top-k results</td><td>When pgvector returns the 10 most similar embeddings, internally it maintains a min-heap of size k during the search. New candidates replace the current minimum if they score higher.</td></tr>
+          <tr><td>LLM beam search</td><td>Some LLM decoding strategies (beam search) maintain a priority queue of the top-k most likely partial token sequences. Each step expands the best candidate.</td></tr>
+          <tr><td>Job scheduler</td><td>A background job queue with priorities (urgent, normal, low) uses a heap — urgent jobs always dequeue first regardless of insertion order.</td></tr>
+        </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://docs.python.org/3/library/heapq.html" target="_blank">Python heapq module</a>
+          <a class="ext-link" href="https://visualgo.net/en/heap" target="_blank">Heap Visualiser — VisuAlgo</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=t0Cq6tVNRBA" target="_blank">Heaps and Priority Queues — CS Dojo</a>
+        </div>
+      </div>
+
+      <!-- ── GROUP 5: COMPLEXITY ── -->
+      <div class="topic-label">Group 5 — Big-O: the vocabulary of performance</div>
+
+      <div class="section">
+        <h3>Big-O Notation <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Big-O notation</strong> describes the asymptotic growth rate of an algorithm's resource usage (time or space) as input size n grows toward infinity. It characterises the worst-case scaling behaviour, ignoring constant factors and lower-order terms. The reason we ignore constants: an algorithm that takes 1,000,000 × n operations is still O(n) — it scales linearly, so doubling the input doubles the cost, just with a large constant. An O(n²) algorithm with a small constant will eventually beat it at large n, but a constant multiplier doesn't change the fundamental scaling class.</p>
+          <p>Big-O is language-agnostic. A hash map lookup is O(1) whether you're in Python, Rust, Go, or JavaScript. Self-attention is O(n²) in any framework. The complexity class is a property of the algorithm, not the implementation language. This matters for system design interviews: when asked "what's the complexity?" the answer is about the algorithm's structure, not implementation details.</p>
+          <p><strong>Space complexity</strong> (memory usage) matters as much as time complexity for AI products. An embedding model that produces 1536-dimensional vectors stores 1536 × 4 bytes = ~6KB per embedding. At 1 million embeddings (a modest prompt library), that's 6GB of vector data — before the HNSW index overhead. Understanding space complexity helps you estimate infrastructure costs and identify memory bottlenecks before they become incidents.</p>
+        </div>
+
+        <p>Big-O describes how an algorithm's time or space cost grows as the input size n grows. You don't need to derive it — you need to recognise the common classes and know which operations in your stack fall into each. This is what interviewers mean when they ask "what's the time complexity of that?"</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Common complexity classes (slowest to fastest growth)</div>
+          <div class="formula-line"><span class="formula-name">O(n²)</span>   Quadratic    <span class="formula-comment">// attention mechanism: n tokens → n² comparisons</span></div>
+          <div class="formula-line"><span class="formula-name">O(n log n)</span> Linearithmic <span class="formula-comment">// merge sort, building a balanced BST</span></div>
+          <div class="formula-line"><span class="formula-name">O(n)</span>    Linear       <span class="formula-comment">// buffr's list-and-filter-in-memory pattern</span></div>
+          <div class="formula-line"><span class="formula-name">O(log n)</span> Logarithmic  <span class="formula-comment">// BST / B-tree index query (Postgres with index)</span></div>
+          <div class="formula-line"><span class="formula-name">O(1)</span>    Constant     <span class="formula-comment">// hash map lookup, circular buffer write</span></div>
+          <div class="formula-line formula-comment"></div>
+          <div class="formula-line formula-comment">// Practical example: n = 100,000 records</div>
+          <div class="formula-line formula-comment">// O(n²) → 10 billion operations     ← avoid</div>
+          <div class="formula-line formula-comment">// O(n)  → 100,000 operations         ← buffr's current blob pattern</div>
+          <div class="formula-line formula-comment">// O(log n) → 17 operations           ← Postgres with index</div>
+          <div class="formula-line formula-comment">// O(1)  → 1 operation                ← hash map lookup</div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Operation</th><th>Complexity</th><th>Why it matters</th></tr>
+          <tr><td>buffr list-and-filter-in-memory</td><td>O(n) per query</td><td>Fine at 100 sessions. Noticeable at 10,000. Broken at 1M. Migration trigger: when queries feel slow.</td></tr>
+          <tr><td>Tool registry lookup</td><td>O(1)</td><td>Map lookup is constant regardless of how many tools are registered. Zero performance concern even with 500 tools.</td></tr>
+          <tr><td>Postgres query without index</td><td>O(n) full table scan</td><td>Every row read. Adding an index converts this to O(log n). This is what the storage index exercise in Phase 2 achieves.</td></tr>
+          <tr><td>Transformer self-attention</td><td>O(n²) in sequence length</td><td>2× the context length = 4× the compute cost. Explains why GPT-4 with 128K context costs dramatically more than 4K context.</td></tr>
+          <tr><td>HNSW vector search</td><td>O(log n)</td><td>Approximate nearest neighbour avoids the O(n) brute-force scan across all stored embeddings. The trade-off is a small accuracy loss.</td></tr>
+          <tr><td>EMA update (contrl)</td><td>O(1)</td><td>One multiply, one add, one subtract per frame. No matter how long the session runs, each frame update is the same cost.</td></tr>
+        </table>
+
+        <div class="interview">
+          <div class="interview-header" onclick="toggleAccordion(this)">
+            <span class="interview-icon">🎯</span>
+            <span class="interview-q">Why is the attention mechanism O(n²) and why does that matter in practice?</span>
+            <span class="interview-chevron">▶</span>
+          </div>
+          <div class="interview-body">Self-attention computes a similarity score between every pair of tokens — for n tokens, that's n² comparisons. A 1,000-token prompt = 1M comparisons. A 100,000-token context = 10 billion comparisons. This is why longer context windows cost exponentially more and why models with 1M token context windows require architectural innovations like sparse attention or linear attention to be economically viable. For you as a product engineer: count tokens before sending them, truncate aggressively, and cache system prompts — every token in a long context costs quadratically.</div>
+        </div>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.bigocheatsheet.com" target="_blank">Big-O Cheat Sheet</a>
+          <a class="ext-link" href="https://neetcode.io/roadmap" target="_blank">NeetCode — Practical DSA Roadmap</a>
+          <a class="ext-link" href="https://www.youtube.com/watch?v=Mo4vesaut8g" target="_blank">Big-O Notation — CS Dojo</a>
+          <a class="ext-link" href="https://frontendmasters.com/courses/algorithms/" target="_blank">The Last Algorithms Course — FrontendMasters</a>
+        </div>
+      </div>
+
+      <!-- ── GROUP 6: STRINGS ── -->
+      <div class="topic-label">Group 6 — String processing (in LLM output and prompt pipelines)</div>
+
+      <div class="section">
+        <h3>String Hashing & Tokenisation Algorithms <span class="diff-badge diff-3">Background</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>String hashing</strong> converts a variable-length string into a fixed-size integer (the hash). A good hash function is fast (O(n) in string length), uniform (distributes outputs evenly), and deterministic (same input always produces the same output). String hashing is the foundation of hash maps (keys are hashed to bucket indices), content-addressed storage (file deduplication by hash), cache keys (hash of request params as the cache lookup key), and change detection (hash the content; if the hash changes, the content changed).</p>
+          <p><strong>Byte-Pair Encoding (BPE)</strong> is a compression algorithm repurposed for tokenisation. Originally from data compression (find the most frequent byte pair, replace it with a new symbol, repeat), it was adapted for NLP because it naturally handles both common words (become single tokens) and rare words (split into recognisable subword components). The key property: BPE never produces an out-of-vocabulary token, because the fallback is always individual bytes. This makes it robust to any input, including code, emoji, and arbitrary Unicode.</p>
+          <p>Understanding BPE explains several LLM behaviours: why the model struggles with simple arithmetic (numbers like "12345" may tokenise as 5 separate tokens, making it harder to reason about their magnitude), why rare words in one language have higher token costs than in the training language, and why formatting choices (snake_case vs camelCase, 2-space vs 4-space indentation) affect token counts for code inputs.</p>
+        </div>
+
+        <p>LLMs don't process raw strings — they process tokens produced by a tokenisation algorithm. Byte-Pair Encoding (BPE) is the algorithm behind most frontier models. Understanding it explains why "tokenisation" can produce surprising results for code, numbers, and non-English text.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Byte-Pair Encoding (BPE) — simplified</div>
+          <div class="formula-line formula-comment">// 1. Start: vocabulary = all individual characters</div>
+          <div class="formula-line formula-comment">// 2. Count: find the most frequent pair of adjacent tokens in the corpus</div>
+          <div class="formula-line formula-comment">// 3. Merge: add the pair as a new token to the vocabulary</div>
+          <div class="formula-line formula-comment">// 4. Replace: replace all occurrences of the pair with the new token</div>
+          <div class="formula-line formula-comment">// 5. Repeat until vocabulary reaches target size (e.g. 50,000 tokens)</div>
+          <div class="formula-line formula-comment"></div>
+          <div class="formula-line formula-comment">// "the cat sat" → frequent pairs: "th","he","ca","at" → "the","cat","sat"</div>
+          <div class="formula-line formula-comment">// Common words become single tokens. Rare words split into subwords.</div>
+          <div class="formula-line formula-comment">// "unbelievable" → ["un", "believ", "able"] (3 tokens, not 13 chars)</div>
+          <div class="formula-line formula-comment">// "12345" → ["1", "2", "3", "4", "5"] (often 5 tokens — why math is hard)</div>
+        </div>
+
+        <p>Why this matters for buffr: numbers tokenise inefficiently — each digit is often its own token. A JSON object with many numeric values (session timestamps, scores) costs more tokens than you'd expect from the character count alone. When building the token counting exercise in Phase 4, use the actual tokeniser, not a character-count estimate.</p>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://www.youtube.com/watch?v=zduSFxRajkE" target="_blank">Let's Build the GPT Tokeniser — Karpathy</a>
+          <a class="ext-link" href="https://huggingface.co/docs/tokenizers/quicktour" target="_blank">HuggingFace Tokenizers Quicktour</a>
+          <a class="ext-link" href="https://tiktokenizer.vercel.app" target="_blank">Tiktokenizer (interactive visualiser)</a>
+          <a class="ext-link" href="https://en.wikipedia.org/wiki/Byte_pair_encoding" target="_blank">Byte-Pair Encoding — Wikipedia</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Regex & Pattern Matching <span class="diff-badge diff-1">Essential</span></h3>
+
+        <div class="concept-block">
+          <div class="cb-label">Language-Agnostic Concept</div>
+          <p><strong>Regular expressions</strong> are a formal language for describing patterns in strings, based on the mathematical theory of <strong>finite automata</strong>. A regex engine compiles a pattern into a state machine (DFA or NFA), then runs the input string through it. The key insight: simple regex patterns (no catastrophic backtracking) run in O(n) linear time — the engine makes one pass through the string. This makes regex extremely fast for string scanning tasks like extracting tool tokens from a prompt template.</p>
+          <p>The danger is <strong>catastrophic backtracking</strong>: certain regex patterns with nested quantifiers (like <code>(a+)+</code>) on adversarial input can trigger exponential backtracking — the regex engine tries every possible combination. This is the <strong>ReDoS (Regex Denial of Service)</strong> vulnerability: a malicious user input can make your regex take seconds or minutes instead of milliseconds, effectively hanging the serverless function. The fix is either to use possessive quantifiers or atomic groups (not supported in all engines), or to replace problematic regex with a hand-written parser for structured formats.</p>
+          <p>Language-specific notes: JavaScript's regex engine uses backtracking (vulnerable to ReDoS). Python's <code>re</code> module is also backtracking-based. Go's <code>regexp</code> uses a different algorithm (RE2/NFA) that guarantees linear time — no ReDoS possible. Rust's <code>regex</code> crate similarly guarantees linear time. When processing untrusted input in production (user prompts, webhook payloads), be aware which engine you're using.</p>
+        </div>
+
+        <p>Regular expressions are a finite automaton for pattern matching on strings. You already use regex in <code>stripCodeBlock()</code> and the <code>{{tool:...}}</code> template resolver. This is not about memorising regex syntax — it's about knowing the algorithmic properties.</p>
+
+        <div class="formula-block">
+          <div class="formula-title">Complexity</div>
+          <div class="formula-line"><span class="formula-name">Simple regex</span>    O(n × m)  <span class="formula-comment">// n = string length, m = pattern length</span></div>
+          <div class="formula-line"><span class="formula-name">Catastrophic backtrack</span>  O(2ⁿ)  <span class="formula-comment">// nested quantifiers on ambiguous input</span></div>
+          <div class="formula-line formula-comment">// ReDoS (Regex Denial of Service): a malicious prompt can trigger</div>
+          <div class="formula-line formula-comment">// catastrophic backtracking in your stripCodeBlock() regex</div>
+          <div class="formula-line formula-comment">// if the pattern has nested quantifiers like (a+)+ applied to long strings</div>
+          <div class="formula-line formula-comment"></div>
+          <div class="formula-line formula-comment">// Mitigation: test regex with a 10,000-char adversarial input</div>
+          <div class="formula-line formula-comment">// Or use a dedicated parser instead of regex for structured formats</div>
+        </div>
+
+        <table class="concept-table">
+          <tr><th>Where it appears in buffr/contrl</th><th>What it's doing</th></tr>
+          <tr><td><code>stripCodeBlock()</code></td><td>Regex to detect and remove <code>```json ... ```</code> fences from LLM output. The pattern <code>/```(?:json)?\n?([\s\S]*?)```/</code> is a simple bounded match — no backtracking risk.</td></tr>
+          <tr><td><code>{{tool:name}}</code> resolution</td><td>Regex to find all tool token placeholders in a prompt string and replace them with live data. This is essentially a templating engine built on pattern matching.</td></tr>
+          <tr><td>Prompt injection detection</td><td>A first-line defence against prompt injection is regex scanning for suspicious patterns ("ignore previous instructions", "you are now") before passing user input to the LLM.</td></tr>
+        </table>
+        <div class="ext-links-label">Read more</div>
+        <div class="ext-links">
+          <a class="ext-link" href="https://regex101.com" target="_blank">regex101 — Interactive Regex Tester</a>
+          <a class="ext-link" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions" target="_blank">MDN Regular Expressions Guide</a>
+          <a class="ext-link" href="https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS" target="_blank">ReDoS — OWASP</a>
+          <a class="ext-link" href="https://docs.python.org/3/library/re.html" target="_blank">Python re module</a>
+          <a class="ext-link" href="https://github.com/google/re2/wiki/Syntax" target="_blank">RE2 (linear-time regex) — Google</a>
+        </div>
+      </div>
+    </div>
+
+
+  </div><!-- /content -->
+</main>
+
+<script>
+  function toggleAccordion(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.exercise-chevron, .interview-chevron');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (chevron) chevron.classList.toggle('open', !isOpen);
+    header.classList.toggle('open', !isOpen);
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const pct = window.scrollY / (doc.scrollHeight - doc.clientHeight);
+    document.getElementById('scrollProgress').style.transform = `scaleX(${pct})`;
+  });
+</script>
+
+</body>
+</html>
