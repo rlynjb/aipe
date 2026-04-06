@@ -528,9 +528,9 @@ pre code { background: none; padding: 0; color: inherit; }
 .mobile-nav-toggle {
   display: none;
   position: fixed;
-  top: 12px; left: 12px;
+  top: 14px; left: 14px;
   z-index: 200;
-  width: 40px; height: 40px;
+  width: 44px; height: 44px;
   background: var(--navy2);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -538,9 +538,12 @@ pre code { background: none; padding: 0; color: inherit; }
   align-items: center;
   justify-content: center;
   color: var(--teal);
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1;
+  padding: 0;
   -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  appearance: none;
 }
 .mobile-overlay {
   display: none;
