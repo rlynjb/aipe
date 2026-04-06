@@ -429,6 +429,87 @@
       transition: color .15s;
     }
 
+    /* ── Mapping table ── */
+    .map-table { width: 100%; border-collapse: collapse; margin-bottom: .875rem; }
+
+    .map-table thead tr {
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .map-table thead th {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      text-align: left;
+      font-weight: 400;
+    }
+
+    .map-table thead th:first-child { padding-left: 0; }
+
+    .map-table tbody tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .map-table tbody tr:last-child { border-bottom: none; }
+
+    .map-table tbody tr:hover { background: var(--bg3); }
+
+    .map-table td {
+      padding: 10px 10px;
+      vertical-align: top;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .map-table td:first-child { padding-left: 0; }
+
+    .map-table .col-technique {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--gold2);
+      white-space: nowrap;
+    }
+
+    .map-table .col-cheatsheet {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .map-table .col-desc {
+      color: var(--muted);
+    }
+
+    .map-table .col-where {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+
+    .map-table .sec-ref {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--info);
+      background: rgba(91,156,246,.08);
+      border: 1px solid rgba(91,156,246,.15);
+      padding: 1px 6px;
+      text-decoration: none;
+      margin: 1px 2px 1px 0;
+    }
+    .map-table .sec-ref:hover { background: rgba(91,156,246,.15); }
+
+    @media (max-width: 640px) {
+      .map-table thead { display: none; }
+      .map-table tbody tr { display: block; padding: .75rem 0; }
+      .map-table td { display: block; padding: 2px 0; }
+      .map-table .col-technique { margin-bottom: 4px; }
+      .map-table .col-where { margin-top: 4px; }
+    }
+
     /* ── Footer ── */
     footer {
       border-top: 1px solid var(--border);
@@ -466,6 +547,8 @@
       <li><a href="#s06"><span class="toc-num">06</span><span class="toc-text">Interaction flow template</span></a></li>
       <li><a href="#s07"><span class="toc-num">07</span><span class="toc-text">Always describe these three states</span></a></li>
       <li><a href="#s08"><span class="toc-num">08</span><span class="toc-text">Workflow</span></a></li>
+      <li><a href="#s09"><span class="toc-num">09</span><span class="toc-text">Analysing an application</span></a></li>
+      <li><a href="#s10"><span class="toc-num">10</span><span class="toc-text">Mapping to prompting techniques</span></a></li>
     </ul>
   </div>
 
@@ -895,6 +978,231 @@ Data model + flow defined there</span></div>
       </div>
     </div>
     <div class="callout">The better your spec coming out of Claude.ai, the fewer correction cycles in Claude Code. Time spent designing is always faster than time spent debugging.</div>
+  </div>
+
+
+  <!-- 09 -->
+  <p class="section-label" id="s09">09 — Analysing an application</p>
+
+  <div class="card">
+    <p class="card-title">Questions to ask before writing any prompt</p>
+    <p class="body-text">Before you can write a detailed prompt, you need a clear picture of the application you're working in. Without this, the AI fills gaps with assumptions — inventing data shapes, putting files in the wrong place, and missing constraints that already exist in the codebase. These are the questions to answer first, grouped by when you need them.</p>
+    <div class="why">
+      <p class="why-label">Why it matters</p>
+      <p>A prompt is only as good as the context behind it. The questions below are exactly what the AI would need to ask you if it could — answering them upfront eliminates the most common source of wrong output: missing context.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Before designing anything</p>
+
+    <div class="state-block">
+      <span class="tag">Data model</span>
+      <p class="state-desc">What are the core entities? What shape is each one? What are the relationships between them? What fields are required vs optional?</p>
+      <p class="state-eg">How to ask: "List every entity in the app, its fields and types, and how it relates to other entities. Include any Notion page/block schemas if applicable."</p>
+    </div>
+
+    <div class="state-block">
+      <span class="tag">Backend architecture</span>
+      <p class="state-desc">Where does data live? What handles API logic — serverless functions, edge functions, a dedicated server? What does each endpoint do and what does it return?</p>
+      <p class="state-eg">How to ask: "Describe the backend: where data is stored, how API routes are structured, what each route reads or writes, and what external services are called."</p>
+    </div>
+
+    <div class="state-block">
+      <span class="tag">Frontend architecture</span>
+      <p class="state-desc">What framework and routing pattern? Server components vs client components? How are pages and layouts composed? What rendering strategy — SSR, SSG, CSR?</p>
+      <p class="state-eg">How to ask: "Describe the frontend: framework, router, rendering strategy, how pages are structured, and the distinction between server and client components."</p>
+    </div>
+
+    <div class="state-block">
+      <span class="tag">State management</span>
+      <p class="state-desc">Where does UI state live — local component, global store, server state, URL params? How does shared state get passed between components? What triggers a re-render or refetch?</p>
+      <p class="state-eg">How to ask: "Where does state live in this app? What's local, what's global, what's server-synced? How is shared state passed between components?"</p>
+    </div>
+
+    <div class="state-block">
+      <span class="tag">Data flow</span>
+      <p class="state-desc">How does data move from the database to the screen? REST, tRPC, server components, realtime subscription? Where is data fetched, cached, and invalidated?</p>
+      <p class="state-eg">How to ask: "Trace data from database to UI. How is it fetched, where is it cached, what triggers a refresh, and what format does it arrive in at the component level?"</p>
+    </div>
+
+    <div class="state-block">
+      <span class="tag">Auth &amp; permissions</span>
+      <p class="state-desc">Who can do what? Are there roles or tiers? What's gated behind login? What happens when an unauthenticated user hits a protected route or action?</p>
+      <p class="state-eg">How to ask: "Describe the auth model: who are the user types, what can each do, what is gated, and what happens when permissions are missing?"</p>
+    </div>
+
+    <div class="state-block">
+      <span class="tag">External dependencies</span>
+      <p class="state-desc">What third-party APIs, SDKs, or services does the app rely on? What do they handle — payments, storage, AI, analytics, notifications? What are their constraints?</p>
+      <p class="state-eg">How to ask: "List every external service the app calls, what it handles, and any constraints (rate limits, data shape, auth requirements)."</p>
+    </div>
+
+    <div class="state-block">
+      <span class="tag">File &amp; folder structure</span>
+      <p class="state-desc">How is the codebase organised — feature-first or layer-first? Where do components, hooks, utils, types, and API routes live? What naming conventions exist?</p>
+      <p class="state-eg">How to ask: "Describe the folder structure: how is code organised, where do different file types live, and what naming conventions should new files follow?"</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Before writing any feature prompt</p>
+
+    <div class="state-block">
+      <span class="tag">User stories</span>
+      <p class="state-desc">Who is the user, what do they want to do, and why? What does success look like from their perspective — not the system's? Stories should be written as: "As a [user], I want to [action] so that [outcome]."</p>
+      <p class="state-eg">How to ask: "Write user stories for this feature. For each: who is doing it, what they're trying to accomplish, and what a successful outcome looks like."</p>
+    </div>
+
+    <div class="state-block">
+      <span class="tag">Error &amp; loading states</span>
+      <p class="state-desc">What is the app's contract for failure? What shows during slow loads — skeleton, spinner, placeholder? What shows on error — inline message, toast, full-page fallback? What can be retried?</p>
+      <p class="state-eg">How to ask: "For this feature, describe every loading and error state: what the UI shows, whether the user can retry, and whether partial data should be preserved."</p>
+    </div>
+
+    <div class="state-block">
+      <span class="tag">Constraints &amp; non-negotiables</span>
+      <p class="state-desc">What cannot change? Performance budgets, accessibility requirements, browser targets, existing patterns that must be followed, APIs that are fixed. The AI must know these before it suggests anything.</p>
+      <p class="state-eg">How to ask: "What are the hard constraints for this feature? What existing patterns must be followed? What must not change under any circumstances?"</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Before handing to Claude Code</p>
+
+    <div class="state-block">
+      <span class="tag">Existing patterns to follow</span>
+      <p class="state-desc">Point to specific files or components that represent the pattern the new code should match. This is more reliable than describing the pattern in words.</p>
+      <p class="state-eg">e.g. "Follow the pattern in <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">components/EntryCard.tsx</code> for component structure and <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">app/api/entries/route.ts</code> for API route shape."</p>
+    </div>
+
+    <div class="state-block">
+      <span class="tag">Where new code should live</span>
+      <p class="state-desc">Tell the AI exactly where to put new files. Without this it places things in plausible but wrong locations, and refactoring later costs more time than specifying upfront.</p>
+      <p class="state-eg">e.g. "New component goes in <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">components/journal/</code>. New API route goes in <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">app/api/journal/</code>. Types go in <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">types/journal.ts</code>."</p>
+    </div>
+
+    <div class="state-block">
+      <span class="tag">What must NOT change</span>
+      <p class="state-desc">Explicitly list files, functions, schemas, or behaviours the AI must leave untouched. AI optimises aggressively — without this guardrail it will refactor things you didn't ask it to touch.</p>
+      <p class="state-eg">e.g. "Do not modify the Notion schema, the auth middleware, or any existing API routes. Only add new files — do not edit existing ones unless specified."</p>
+    </div>
+
+    <div class="callout warn">The three most skipped questions that cause the most bugs: <strong>state management</strong>, <strong>error &amp; loading states</strong>, and <strong>file structure</strong>. The AI invents answers for all three if you don't provide them.</div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Full question checklist</p>
+    <p class="body-text">Use this ordered list as a pre-prompt audit before starting any new feature or session.</p>
+<div class="code-block"><span class="hl">Before designing anything</span>
+  <span class="arr">→</span> Data model         <span class="cm">entities, fields, relationships</span>
+  <span class="arr">→</span> Backend arch        <span class="cm">storage, API shape, endpoints</span>
+  <span class="arr">→</span> Frontend arch       <span class="cm">framework, routing, render strategy</span>
+  <span class="arr">→</span> State management    <span class="cm">local vs global vs server vs URL</span>
+  <span class="arr">→</span> Data flow           <span class="cm">fetch → cache → invalidate path</span>
+  <span class="arr">→</span> Auth &amp; permissions  <span class="cm">roles, gates, failure behaviour</span>
+  <span class="arr">→</span> External deps       <span class="cm">APIs, SDKs, constraints</span>
+  <span class="arr">→</span> File structure      <span class="cm">org pattern, naming conventions</span>
+
+<span class="hl">Before writing any feature prompt</span>
+  <span class="arr">→</span> User stories        <span class="cm">who / what / why</span>
+  <span class="arr">→</span> Error &amp; loading     <span class="cm">app's contract for failure</span>
+  <span class="arr">→</span> Constraints         <span class="cm">what cannot change</span>
+
+<span class="hl">Before handing to Claude Code</span>
+  <span class="arr">→</span> Patterns to follow  <span class="cm">point to specific files</span>
+  <span class="arr">→</span> Where code goes     <span class="cm">exact folder/file targets</span>
+  <span class="arr">→</span> What not to touch   <span class="cm">explicit do-not-modify list</span></div>
+  </div>
+
+  <!-- 10 -->
+  <p class="section-label" id="s10">10 — Mapping to prompting techniques</p>
+
+  <div class="card">
+    <p class="card-title">How this cheatsheet connects to formal techniques</p>
+    <p class="body-text">Prompting techniques are usually taught as abstract patterns with toy examples. The concepts in this cheatsheet are those same techniques — applied to a specific context: building apps as a solo developer. The reason bugs happen isn't that developers don't know about chain of thought — it's that they don't know chain of thought applies to <em>feature design order</em>, not just math problems.</p>
+    <div class="why">
+      <p class="why-label">Why it matters</p>
+      <p>Understanding the formal technique behind each practice lets you generalise it. Once you see that "system → behaviour → UI" is chain of thought, you can apply that same reasoning order to any multi-step problem — not just feature design.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Technique → cheatsheet mapping</p>
+    <table class="map-table">
+      <thead>
+        <tr>
+          <th>Formal technique</th>
+          <th>What we called it</th>
+          <th>How it applies in practice</th>
+          <th>Section</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-technique">Role + context setting</td>
+          <td class="col-cheatsheet">Analysing an application</td>
+          <td class="col-desc">Instead of "you are a senior engineer", you give the AI the actual context a senior engineer would already have — data model, architecture, file structure, constraints.</td>
+          <td class="col-where"><a href="#s09" class="sec-ref">09</a></td>
+        </tr>
+        <tr>
+          <td class="col-technique">Chain of thought</td>
+          <td class="col-cheatsheet">Feature implementation order</td>
+          <td class="col-desc">System → behaviour → UI forces a reasoning order that prevents the AI from jumping to UI conclusions before the data model is defined. The order you describe things determines the order the AI thinks about them.</td>
+          <td class="col-where"><a href="#s03" class="sec-ref">03</a></td>
+        </tr>
+        <tr>
+          <td class="col-technique">Few-shot examples</td>
+          <td class="col-cheatsheet">Do / don't comparisons</td>
+          <td class="col-desc">Showing the AI a bad example and a good example before asking for output is few-shot prompting. The do/don't blocks throughout the cheatsheet prime the model on the pattern before it generates.</td>
+          <td class="col-where"><a href="#s02" class="sec-ref">02</a><a href="#s03" class="sec-ref">03</a><a href="#s04" class="sec-ref">04</a></td>
+        </tr>
+        <tr>
+          <td class="col-technique">Constraint specification</td>
+          <td class="col-cheatsheet">Two-layer prompt / what must not change</td>
+          <td class="col-desc">Explicitly telling the AI what the output must and must not do. Covers both positive constraints (must do X) and negative constraints (do not touch Y). The more specific, the less the AI improvises.</td>
+          <td class="col-where"><a href="#s04" class="sec-ref">04</a><a href="#s09" class="sec-ref">09</a></td>
+        </tr>
+        <tr>
+          <td class="col-technique">Task decomposition</td>
+          <td class="col-cheatsheet">Pre-prompt question checklist</td>
+          <td class="col-desc">Breaking a complex task into ordered sub-tasks so each prompt has a narrower, cleaner scope. The three phases in section 09 (before designing / before prompting / before Claude Code) decompose the whole process.</td>
+          <td class="col-where"><a href="#s09" class="sec-ref">09</a></td>
+        </tr>
+        <tr>
+          <td class="col-technique">Negative prompting</td>
+          <td class="col-cheatsheet">Unhappy path / what not to touch</td>
+          <td class="col-desc">Explicitly stating what you don't want — "do not modify existing routes", "must not clear input on error", "UI last". Negative prompts are as important as positive ones because AI optimises aggressively without guardrails.</td>
+          <td class="col-where"><a href="#s05" class="sec-ref">05</a><a href="#s09" class="sec-ref">09</a></td>
+        </tr>
+        <tr>
+          <td class="col-technique">Output format specification</td>
+          <td class="col-cheatsheet">Feature prompt structure template</td>
+          <td class="col-desc">Giving the AI a scaffold it must fill — ## Data model, ## Behaviour, ## UI, ## Constraints. The structure of the prompt shapes the structure of the output. No template = AI chooses its own format, which changes every time.</td>
+          <td class="col-where"><a href="#s03" class="sec-ref">03</a></td>
+        </tr>
+        <tr>
+          <td class="col-technique">Persona priming</td>
+          <td class="col-cheatsheet">Workflow (Claude.ai phase)</td>
+          <td class="col-desc">Using Claude.ai for design before Claude Code for implementation implicitly puts the model in a "thinking" mode vs a "building" mode. The phase you're in shapes the kind of output you need — and telling the AI which phase you're in helps it calibrate.</td>
+          <td class="col-where"><a href="#s08" class="sec-ref">08</a></td>
+        </tr>
+        <tr>
+          <td class="col-technique">Prompt chaining</td>
+          <td class="col-cheatsheet">Claude.ai → .dev/ → Claude Code</td>
+          <td class="col-desc">Using the output of one prompt as the input to the next. The spec produced in Claude.ai becomes the context fed into Claude Code via the .dev/ folder. Each prompt in the chain is narrower and more reliable than trying to do everything in one shot.</td>
+          <td class="col-where"><a href="#s08" class="sec-ref">08</a><a href="#s09" class="sec-ref">09</a></td>
+        </tr>
+        <tr>
+          <td class="col-technique">State injection</td>
+          <td class="col-cheatsheet">Always describe these three states</td>
+          <td class="col-desc">Explicitly injecting the empty, error, and re-entry states into the prompt. AI imagines a fully-loaded happy-path screen by default — injecting the other states forces it to reason about the full surface area of the feature.</td>
+          <td class="col-where"><a href="#s07" class="sec-ref">07</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">Every concept in this cheatsheet is a prompting technique in disguise. Learning the formal name lets you apply the pattern to problems outside app development — research, writing, analysis, system design.</div>
   </div>
 
 </main>
