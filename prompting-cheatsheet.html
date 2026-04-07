@@ -478,6 +478,18 @@
       font-weight: 500;
     }
 
+    .map-table .col-cheatsheet a {
+      color: var(--text);
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .map-table .col-cheatsheet a:hover {
+      color: var(--gold);
+      border-bottom-color: var(--gold2);
+    }
+
     .map-table .col-desc {
       color: var(--muted);
     }
@@ -586,6 +598,69 @@
       line-height: 1.4;
     }
 
+    /* ── Tabs ── */
+    .tabs-shell {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+    }
+
+    .tab-bar {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--dim);
+      background: none;
+      border: none;
+      border-right: 1px solid var(--border);
+      padding: 12px 18px;
+      cursor: pointer;
+      transition: color .15s, background .15s;
+      white-space: nowrap;
+    }
+
+    .tab-btn:last-child { border-right: none; }
+
+    .tab-btn:hover { color: var(--muted); background: var(--bg3); }
+
+    .tab-btn.active {
+      color: var(--gold);
+      background: var(--bg3);
+      border-bottom: 2px solid var(--gold);
+      margin-bottom: -1px;
+    }
+
+    .tab-panel { display: none; padding: 1.25rem 1.5rem; }
+    .tab-panel.active { display: block; }
+
+    .tab-intro {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-group-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--gold2);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin: 1.25rem 0 .625rem;
+    }
+
+    .tab-group-label:first-of-type { margin-top: 0; }
+
+    /* map table inside tab needs no outer border */
+    .tab-panel .map-table { margin-top: .5rem; }
+
     /* ── Footer ── */
     footer {
       border-top: 1px solid var(--border);
@@ -611,186 +686,262 @@
 
 <main>
 
-  <!-- TOC -->
-  <div class="toc">
-    <p class="toc-title">Contents</p>
-    <ul class="toc-list">
-      <li><a href="#s11"><span class="toc-num">↗</span><span class="toc-text">Use case quick picker</span></a></li>
-      <li><a href="#s01"><span class="toc-num">01</span><span class="toc-text">What prompt engineering actually is</span></a></li>
-      <li><a href="#s02"><span class="toc-num">02</span><span class="toc-text">Detail vs high-level</span></a></li>
-      <li><a href="#s03"><span class="toc-num">03</span><span class="toc-text">Feature implementation order</span></a></li>
-      <li><a href="#s04"><span class="toc-num">04</span><span class="toc-text">Two-layer prompt structure</span></a></li>
-      <li><a href="#s05"><span class="toc-num">05</span><span class="toc-text">The three user paths</span></a></li>
-      <li><a href="#s06"><span class="toc-num">06</span><span class="toc-text">Interaction flow template</span></a></li>
-      <li><a href="#s07"><span class="toc-num">07</span><span class="toc-text">Always describe these three states</span></a></li>
-      <li><a href="#s08"><span class="toc-num">08</span><span class="toc-text">Workflow</span></a></li>
-      <li><a href="#s09"><span class="toc-num">09</span><span class="toc-text">Analysing an application</span></a></li>
-      <li><a href="#s10"><span class="toc-num">10</span><span class="toc-text">Mapping to prompting techniques</span></a></li>
-    </ul>
-  </div>
+  <!-- tabs: 11 + 10 -->
+  <p class="section-label" id="s11" style="padding-top:1.5rem;margin-top:0;border-top:none;">Quick reference</p>
 
-  <!-- 11 — Quick picker (pinned top) -->
-  <p class="section-label" id="s11" style="padding-top:1.5rem;margin-top:0;border-top:none;">Use case quick picker</p>
+  <div class="tabs-shell">
+    <!-- tab bar -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="picker">Use case quick picker</button>
+      <button class="tab-btn" data-tab="mapping">Mapping to techniques</button>
+    </div>
 
-  <div class="card">
-    <p class="card-title">What to use and when</p>
-    <p class="body-text">Find your situation, apply the techniques listed. Each technique links to the full section for detail. Start here, then drill into the section you need.</p>
-  </div>
+    <!-- ── TAB: Quick picker ── -->
+    <div class="tab-panel active" id="tab-picker">
+      <div class="tab-intro">
+        <p>Find your situation, apply the techniques listed. Each technique links to the full section for detail.</p>
+      </div>
 
-  <div class="card">
-    <p class="card-title">Starting a new feature</p>
-    <div class="picker-grid">
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Brand new feature, blank slate</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">App analysis</a><span class="picker-note">answer all 09 questions first</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Feature template</a><span class="picker-note">data model → behaviour → UI</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Three paths</a><span class="picker-note">happy / unhappy / weird</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Three states</a><span class="picker-note">empty / error / re-entry</span></div>
+      <div class="tab-group-label">Starting a new feature</div>
+      <div class="picker-grid">
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Brand new feature, blank slate</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">App analysis</a><span class="picker-note">answer all 09 questions first</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Feature template</a><span class="picker-note">data model → behaviour → UI</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Three paths</a><span class="picker-note">happy / unhappy / weird</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Three states</a><span class="picker-note">empty / error / re-entry</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Adding to an existing feature</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Patterns to follow</a><span class="picker-note">point to existing files</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">What not to touch</a><span class="picker-note">explicit do-not-modify list</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Constraint spec</a><span class="picker-note">what must / must not change</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Two-layer prompt</a><span class="picker-note">intent + delta constraints only</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Exploring or prototyping</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s02" class="picker-tech">High-level prompt</a><span class="picker-note">describe goal, not steps</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Intent only</a><span class="picker-note">skip constraints — let AI decide</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s08" class="picker-tech">Claude.ai phase</a><span class="picker-note">design thinking before building</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>AI keeps guessing wrong</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">App analysis</a><span class="picker-note">missing context is the root cause</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s02" class="picker-tech">Few-shot examples</a><span class="picker-note">show do/don't before asking</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">add "must not" constraints</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Output format spec</a><span class="picker-note">give the AI a template to fill</span></div>
+          </div>
         </div>
       </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Adding to an existing feature</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Patterns to follow</a><span class="picker-note">point to existing files</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">What not to touch</a><span class="picker-note">explicit do-not-modify list</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Constraint spec</a><span class="picker-note">what must / must not change</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Two-layer prompt</a><span class="picker-note">intent + delta constraints only</span></div>
+
+      <div class="tab-group-label">Fixing bugs and edge cases</div>
+      <div class="picker-grid">
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Bug appears on first load</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Empty / zero state</a><span class="picker-note">describe what shows before data exists</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Re-entry behaviour</a><span class="picker-note">what persists, what resets</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">State management Q</a><span class="picker-note">clarify who owns the state</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Bug appears on network failure</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Unhappy path</a><span class="picker-note">specify failure behaviour explicitly</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Error state</a><span class="picker-note">what shows, can user retry?</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">"must not clear data on failure"</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Bug with real data (not mocks)</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Data model Q</a><span class="picker-note">confirm actual shape vs assumed shape</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Data flow Q</a><span class="picker-note">trace fetch → transform → render</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">External deps Q</a><span class="picker-note">check API constraints and response shape</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Weird user behaviour breaks UI</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Weird path</a><span class="picker-note">describe the unintended-but-valid case</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s06" class="picker-tech">Interaction flow</a><span class="picker-note">narrate full sequence including re-taps</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Constraint spec</a><span class="picker-note">debounce / idempotent requirements</span></div>
+          </div>
         </div>
       </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Exploring or prototyping</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s02" class="picker-tech">High-level prompt</a><span class="picker-note">describe goal, not steps</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Intent only</a><span class="picker-note">skip constraints — let AI decide</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s08" class="picker-tech">Claude.ai phase</a><span class="picker-note">design thinking before building</span></div>
+
+      <div class="tab-group-label">Designing UI and interactions</div>
+      <div class="picker-grid">
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Designing a new screen</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">User stories</a><span class="picker-note">who / what / why before any layout</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">UI last</a><span class="picker-note">data model and behaviour first</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Three states</a><span class="picker-note">empty / error / re-entry per component</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Designing a tap / gesture</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s06" class="picker-tech">Interaction flow</a><span class="picker-note">narrate every tap target and its states</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Three paths</a><span class="picker-note">what if already active / loading / failed</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">"tapping X must not trigger Y"</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Specifying a form</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Two-layer prompt</a><span class="picker-note">intent + constraints (validation rules)</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Unhappy path</a><span class="picker-note">invalid input / submit failure / partial fill</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Error state</a><span class="picker-note">inline vs toast, preserve input on failure</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Specifying a list or feed</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Three states</a><span class="picker-note">empty list / load error / re-entry cache</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Weird path</a><span class="picker-note">1 item / 1000 items / very long strings</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Data flow Q</a><span class="picker-note">pagination, infinite scroll, or full fetch?</span></div>
+          </div>
         </div>
       </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>AI keeps guessing wrong</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">App analysis</a><span class="picker-note">missing context is the root cause</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s02" class="picker-tech">Few-shot examples</a><span class="picker-note">show do/don't before asking</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">add "must not" constraints</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Output format spec</a><span class="picker-note">give the AI a template to fill</span></div>
+
+      <div class="tab-group-label">Working with Claude Code</div>
+      <div class="picker-grid">
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Starting a new Claude Code session</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Role + context</a><span class="picker-note">load .dev/ folder as first message</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">File structure Q</a><span class="picker-note">confirm where new files should go</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">What not to touch</a><span class="picker-note">state explicitly before any task</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>AI refactored things uninvited</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">"only add new files, do not edit existing"</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Constraint spec</a><span class="picker-note">list every file that must not change</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s01" class="picker-tech">Task decomposition</a><span class="picker-note">smaller prompts = less drift</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Prompt chain across sessions</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s08" class="picker-tech">Prompt chaining</a><span class="picker-note">Claude.ai spec → .dev/ → Claude Code</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Output format spec</a><span class="picker-note">ask Claude.ai to output a structured .md</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Role + context</a><span class="picker-note">re-inject .dev/ at start of each session</span></div>
+          </div>
+        </div>
+        <div class="picker-card">
+          <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Implementation drifted from spec</p>
+          <div class="picker-techniques">
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s02" class="picker-tech">Few-shot examples</a><span class="picker-note">show correct pattern from existing file</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Constraint spec</a><span class="picker-note">re-state the spec as explicit constraints</span></div>
+            <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Chain of thought</a><span class="picker-note">ask AI to explain approach before coding</span></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="card">
-    <p class="card-title">Fixing bugs and edge cases</p>
-    <div class="picker-grid">
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Bug appears on first load</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Empty / zero state</a><span class="picker-note">describe what shows before data exists</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Re-entry behaviour</a><span class="picker-note">what persists, what resets</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">State management Q</a><span class="picker-note">clarify who owns the state</span></div>
-        </div>
+    <!-- ── TAB: Mapping ── -->
+    <div class="tab-panel" id="tab-mapping">
+      <div class="tab-intro">
+        <p>Prompting techniques are abstract patterns. The concepts in this cheatsheet are those same techniques applied to building apps. Once you see the formal name, you can apply the pattern to any context — not just app development.</p>
       </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Bug appears on network failure</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Unhappy path</a><span class="picker-note">specify failure behaviour explicitly</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Error state</a><span class="picker-note">what shows, can user retry?</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">"must not clear data on failure"</span></div>
-        </div>
-      </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Bug appears with real data (not mocks)</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Data model Q</a><span class="picker-note">confirm actual shape vs assumed shape</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Data flow Q</a><span class="picker-note">trace fetch → transform → render</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">External deps Q</a><span class="picker-note">check API constraints and response shape</span></div>
-        </div>
-      </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Weird user behaviour breaks UI</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Weird path</a><span class="picker-note">describe the unintended-but-valid case</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s06" class="picker-tech">Interaction flow</a><span class="picker-note">narrate the full sequence including re-taps</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Constraint spec</a><span class="picker-note">debounce / idempotent requirements</span></div>
-        </div>
-      </div>
+      <table class="map-table">
+        <thead>
+          <tr>
+            <th>Formal technique</th>
+            <th>What we called it</th>
+            <th>How it applies in practice</th>
+            <th>Section</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-technique">Role + context setting</td>
+            <td class="col-cheatsheet"><a href="#s09">Analysing an application</a></td>
+            <td class="col-desc">Instead of "you are a senior engineer", you give the AI the actual context a senior engineer would already have — data model, architecture, file structure, constraints.</td>
+            <td class="col-where"><a href="#s09" class="sec-ref">09</a></td>
+          </tr>
+          <tr>
+            <td class="col-technique">Chain of thought</td>
+            <td class="col-cheatsheet"><a href="#s03">Feature implementation order</a></td>
+            <td class="col-desc">System → behaviour → UI forces a reasoning order that prevents the AI from jumping to UI conclusions before the data model is defined. The order you describe things determines the order the AI thinks about them.</td>
+            <td class="col-where"><a href="#s03" class="sec-ref">03</a></td>
+          </tr>
+          <tr>
+            <td class="col-technique">Few-shot examples</td>
+            <td class="col-cheatsheet"><a href="#s02">Do / don't comparisons</a></td>
+            <td class="col-desc">Showing the AI a bad example and a good example before asking for output is few-shot prompting. The do/don't blocks throughout the cheatsheet prime the model on the pattern before it generates.</td>
+            <td class="col-where"><a href="#s02" class="sec-ref">02</a><a href="#s03" class="sec-ref">03</a><a href="#s04" class="sec-ref">04</a></td>
+          </tr>
+          <tr>
+            <td class="col-technique">Constraint specification</td>
+            <td class="col-cheatsheet"><a href="#s04">Two-layer prompt / what must not change</a></td>
+            <td class="col-desc">Explicitly telling the AI what the output must and must not do. Covers both positive constraints (must do X) and negative constraints (do not touch Y). The more specific, the less the AI improvises.</td>
+            <td class="col-where"><a href="#s04" class="sec-ref">04</a><a href="#s09" class="sec-ref">09</a></td>
+          </tr>
+          <tr>
+            <td class="col-technique">Task decomposition</td>
+            <td class="col-cheatsheet"><a href="#s09">Pre-prompt question checklist</a></td>
+            <td class="col-desc">Breaking a complex task into ordered sub-tasks so each prompt has a narrower, cleaner scope. The three phases in section 09 decompose the whole process.</td>
+            <td class="col-where"><a href="#s09" class="sec-ref">09</a></td>
+          </tr>
+          <tr>
+            <td class="col-technique">Negative prompting</td>
+            <td class="col-cheatsheet"><a href="#s05">Unhappy path / what not to touch</a></td>
+            <td class="col-desc">Explicitly stating what you don't want — "do not modify existing routes", "must not clear input on error", "UI last". Negative prompts are as important as positive ones because AI optimises aggressively without guardrails.</td>
+            <td class="col-where"><a href="#s05" class="sec-ref">05</a><a href="#s09" class="sec-ref">09</a></td>
+          </tr>
+          <tr>
+            <td class="col-technique">Output format specification</td>
+            <td class="col-cheatsheet"><a href="#s03">Feature prompt structure template</a></td>
+            <td class="col-desc">Giving the AI a scaffold it must fill — ## Data model, ## Behaviour, ## UI, ## Constraints. The structure of the prompt shapes the structure of the output. No template = AI chooses its own format, which changes every time.</td>
+            <td class="col-where"><a href="#s03" class="sec-ref">03</a></td>
+          </tr>
+          <tr>
+            <td class="col-technique">Persona priming</td>
+            <td class="col-cheatsheet"><a href="#s08">Workflow (Claude.ai phase)</a></td>
+            <td class="col-desc">Using Claude.ai for design before Claude Code for implementation puts the model in "thinking" mode vs "building" mode. The phase shapes the kind of output you need.</td>
+            <td class="col-where"><a href="#s08" class="sec-ref">08</a></td>
+          </tr>
+          <tr>
+            <td class="col-technique">Prompt chaining</td>
+            <td class="col-cheatsheet"><a href="#s08">Claude.ai → .dev/ → Claude Code</a></td>
+            <td class="col-desc">Using the output of one prompt as the input to the next. The spec produced in Claude.ai becomes the context fed into Claude Code via the .dev/ folder. Each prompt in the chain is narrower and more reliable than trying to do everything in one shot.</td>
+            <td class="col-where"><a href="#s08" class="sec-ref">08</a><a href="#s09" class="sec-ref">09</a></td>
+          </tr>
+          <tr>
+            <td class="col-technique">State injection</td>
+            <td class="col-cheatsheet"><a href="#s07">Always describe these three states</a></td>
+            <td class="col-desc">Explicitly injecting the empty, error, and re-entry states into the prompt. AI imagines a fully-loaded happy-path screen by default — injecting the other states forces it to reason about the full surface area.</td>
+            <td class="col-where"><a href="#s07" class="sec-ref">07</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout info" style="margin-top:.875rem">Every concept in this cheatsheet is a prompting technique in disguise. Learning the formal name lets you apply the pattern to problems outside app development — research, writing, analysis, system design.</div>
     </div>
   </div>
 
-  <div class="card">
-    <p class="card-title">Designing UI and interactions</p>
-    <div class="picker-grid">
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Designing a new screen</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">User stories</a><span class="picker-note">who / what / why before any layout</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">UI last</a><span class="picker-note">data model and behaviour first</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Three states</a><span class="picker-note">empty / error / re-entry per component</span></div>
-        </div>
-      </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Designing a tap / gesture interaction</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s06" class="picker-tech">Interaction flow</a><span class="picker-note">narrate every tap target and its states</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Three paths</a><span class="picker-note">what if already active / loading / failed</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">"tapping X must not trigger Y"</span></div>
-        </div>
-      </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Specifying a form</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Two-layer prompt</a><span class="picker-note">intent (what it collects) + constraints (validation)</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Unhappy path</a><span class="picker-note">invalid input / submit failure / partial fill</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Error state</a><span class="picker-note">inline vs toast, preserve input on failure</span></div>
-        </div>
-      </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Specifying a list or feed</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Three states</a><span class="picker-note">empty list / load error / re-entry cache</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Weird path</a><span class="picker-note">1 item / 1000 items / very long strings</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Data flow Q</a><span class="picker-note">pagination, infinite scroll, or full fetch?</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">Working with Claude Code</p>
-    <div class="picker-grid">
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Starting a new Claude Code session</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Role + context</a><span class="picker-note">load .dev/ folder as first message</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">File structure Q</a><span class="picker-note">confirm where new files should go</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">What not to touch</a><span class="picker-note">state explicitly before any task</span></div>
-        </div>
-      </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>AI refactored things you didn't ask it to</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">"only add new files, do not edit existing"</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Constraint spec</a><span class="picker-note">list every file that must not change</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s01" class="picker-tech">Task decomposition</a><span class="picker-note">smaller prompts = less surface area for drift</span></div>
-        </div>
-      </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Prompt chain across sessions</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s08" class="picker-tech">Prompt chaining</a><span class="picker-note">Claude.ai spec → .dev/ file → Claude Code</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Output format spec</a><span class="picker-note">ask Claude.ai to output a structured .md file</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Role + context</a><span class="picker-note">re-inject .dev/ at start of each session</span></div>
-        </div>
-      </div>
-      <div class="picker-card">
-        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Implementation drifted from spec</p>
-        <div class="picker-techniques">
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s02" class="picker-tech">Few-shot examples</a><span class="picker-note">show the correct pattern from an existing file</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Constraint spec</a><span class="picker-note">re-state the spec as explicit constraints</span></div>
-          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Chain of thought</a><span class="picker-note">ask AI to explain approach before coding</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <script>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + target).classList.add('active');
+      });
+    });
+  </script>
 
   <!-- 01 -->
   <p class="section-label" id="s01">01 — What prompt engineering actually is</p>
@@ -1354,97 +1505,6 @@ Data model + flow defined there</span></div>
   <span class="arr">→</span> Where code goes     <span class="cm">exact folder/file targets</span>
   <span class="arr">→</span> What not to touch   <span class="cm">explicit do-not-modify list</span></div>
   </div>
-
-  <!-- 10 -->
-  <p class="section-label" id="s10">10 — Mapping to prompting techniques</p>
-
-  <div class="card">
-    <p class="card-title">How this cheatsheet connects to formal techniques</p>
-    <p class="body-text">Prompting techniques are usually taught as abstract patterns with toy examples. The concepts in this cheatsheet are those same techniques — applied to a specific context: building apps as a solo developer. The reason bugs happen isn't that developers don't know about chain of thought — it's that they don't know chain of thought applies to <em>feature design order</em>, not just math problems.</p>
-    <div class="why">
-      <p class="why-label">Why it matters</p>
-      <p>Understanding the formal technique behind each practice lets you generalise it. Once you see that "system → behaviour → UI" is chain of thought, you can apply that same reasoning order to any multi-step problem — not just feature design.</p>
-    </div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">Technique → cheatsheet mapping</p>
-    <table class="map-table">
-      <thead>
-        <tr>
-          <th>Formal technique</th>
-          <th>What we called it</th>
-          <th>How it applies in practice</th>
-          <th>Section</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="col-technique">Role + context setting</td>
-          <td class="col-cheatsheet">Analysing an application</td>
-          <td class="col-desc">Instead of "you are a senior engineer", you give the AI the actual context a senior engineer would already have — data model, architecture, file structure, constraints.</td>
-          <td class="col-where"><a href="#s09" class="sec-ref">09</a></td>
-        </tr>
-        <tr>
-          <td class="col-technique">Chain of thought</td>
-          <td class="col-cheatsheet">Feature implementation order</td>
-          <td class="col-desc">System → behaviour → UI forces a reasoning order that prevents the AI from jumping to UI conclusions before the data model is defined. The order you describe things determines the order the AI thinks about them.</td>
-          <td class="col-where"><a href="#s03" class="sec-ref">03</a></td>
-        </tr>
-        <tr>
-          <td class="col-technique">Few-shot examples</td>
-          <td class="col-cheatsheet">Do / don't comparisons</td>
-          <td class="col-desc">Showing the AI a bad example and a good example before asking for output is few-shot prompting. The do/don't blocks throughout the cheatsheet prime the model on the pattern before it generates.</td>
-          <td class="col-where"><a href="#s02" class="sec-ref">02</a><a href="#s03" class="sec-ref">03</a><a href="#s04" class="sec-ref">04</a></td>
-        </tr>
-        <tr>
-          <td class="col-technique">Constraint specification</td>
-          <td class="col-cheatsheet">Two-layer prompt / what must not change</td>
-          <td class="col-desc">Explicitly telling the AI what the output must and must not do. Covers both positive constraints (must do X) and negative constraints (do not touch Y). The more specific, the less the AI improvises.</td>
-          <td class="col-where"><a href="#s04" class="sec-ref">04</a><a href="#s09" class="sec-ref">09</a></td>
-        </tr>
-        <tr>
-          <td class="col-technique">Task decomposition</td>
-          <td class="col-cheatsheet">Pre-prompt question checklist</td>
-          <td class="col-desc">Breaking a complex task into ordered sub-tasks so each prompt has a narrower, cleaner scope. The three phases in section 09 (before designing / before prompting / before Claude Code) decompose the whole process.</td>
-          <td class="col-where"><a href="#s09" class="sec-ref">09</a></td>
-        </tr>
-        <tr>
-          <td class="col-technique">Negative prompting</td>
-          <td class="col-cheatsheet">Unhappy path / what not to touch</td>
-          <td class="col-desc">Explicitly stating what you don't want — "do not modify existing routes", "must not clear input on error", "UI last". Negative prompts are as important as positive ones because AI optimises aggressively without guardrails.</td>
-          <td class="col-where"><a href="#s05" class="sec-ref">05</a><a href="#s09" class="sec-ref">09</a></td>
-        </tr>
-        <tr>
-          <td class="col-technique">Output format specification</td>
-          <td class="col-cheatsheet">Feature prompt structure template</td>
-          <td class="col-desc">Giving the AI a scaffold it must fill — ## Data model, ## Behaviour, ## UI, ## Constraints. The structure of the prompt shapes the structure of the output. No template = AI chooses its own format, which changes every time.</td>
-          <td class="col-where"><a href="#s03" class="sec-ref">03</a></td>
-        </tr>
-        <tr>
-          <td class="col-technique">Persona priming</td>
-          <td class="col-cheatsheet">Workflow (Claude.ai phase)</td>
-          <td class="col-desc">Using Claude.ai for design before Claude Code for implementation implicitly puts the model in a "thinking" mode vs a "building" mode. The phase you're in shapes the kind of output you need — and telling the AI which phase you're in helps it calibrate.</td>
-          <td class="col-where"><a href="#s08" class="sec-ref">08</a></td>
-        </tr>
-        <tr>
-          <td class="col-technique">Prompt chaining</td>
-          <td class="col-cheatsheet">Claude.ai → .dev/ → Claude Code</td>
-          <td class="col-desc">Using the output of one prompt as the input to the next. The spec produced in Claude.ai becomes the context fed into Claude Code via the .dev/ folder. Each prompt in the chain is narrower and more reliable than trying to do everything in one shot.</td>
-          <td class="col-where"><a href="#s08" class="sec-ref">08</a><a href="#s09" class="sec-ref">09</a></td>
-        </tr>
-        <tr>
-          <td class="col-technique">State injection</td>
-          <td class="col-cheatsheet">Always describe these three states</td>
-          <td class="col-desc">Explicitly injecting the empty, error, and re-entry states into the prompt. AI imagines a fully-loaded happy-path screen by default — injecting the other states forces it to reason about the full surface area of the feature.</td>
-          <td class="col-where"><a href="#s07" class="sec-ref">07</a></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="callout info">Every concept in this cheatsheet is a prompting technique in disguise. Learning the formal name lets you apply the pattern to problems outside app development — research, writing, analysis, system design.</div>
-  </div>
-
 
 
 <footer>
