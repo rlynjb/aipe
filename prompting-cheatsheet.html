@@ -510,6 +510,82 @@
       .map-table .col-where { margin-top: 4px; }
     }
 
+    /* ── Quick picker ── */
+    .picker-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      margin-bottom: .875rem;
+    }
+
+    @media (max-width: 560px) {
+      .picker-grid { grid-template-columns: 1fr; }
+    }
+
+    .picker-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+    }
+
+    .picker-usecase {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .picker-icon {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--gold);
+      background: rgba(232,213,176,.08);
+      border: 1px solid rgba(232,213,176,.12);
+      padding: 1px 6px;
+      flex-shrink: 0;
+    }
+
+    .picker-techniques {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .picker-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .picker-arrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--gold2);
+      flex-shrink: 0;
+    }
+
+    .picker-tech {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--info);
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+
+    .picker-tech:hover {
+      color: var(--gold);
+      text-decoration: underline;
+    }
+
+    .picker-note {
+      font-size: 11px;
+      color: var(--dim);
+      line-height: 1.4;
+    }
+
     /* ── Footer ── */
     footer {
       border-top: 1px solid var(--border);
@@ -539,6 +615,7 @@
   <div class="toc">
     <p class="toc-title">Contents</p>
     <ul class="toc-list">
+      <li><a href="#s11"><span class="toc-num">↗</span><span class="toc-text">Use case quick picker</span></a></li>
       <li><a href="#s01"><span class="toc-num">01</span><span class="toc-text">What prompt engineering actually is</span></a></li>
       <li><a href="#s02"><span class="toc-num">02</span><span class="toc-text">Detail vs high-level</span></a></li>
       <li><a href="#s03"><span class="toc-num">03</span><span class="toc-text">Feature implementation order</span></a></li>
@@ -550,6 +627,169 @@
       <li><a href="#s09"><span class="toc-num">09</span><span class="toc-text">Analysing an application</span></a></li>
       <li><a href="#s10"><span class="toc-num">10</span><span class="toc-text">Mapping to prompting techniques</span></a></li>
     </ul>
+  </div>
+
+  <!-- 11 — Quick picker (pinned top) -->
+  <p class="section-label" id="s11" style="padding-top:1.5rem;margin-top:0;border-top:none;">Use case quick picker</p>
+
+  <div class="card">
+    <p class="card-title">What to use and when</p>
+    <p class="body-text">Find your situation, apply the techniques listed. Each technique links to the full section for detail. Start here, then drill into the section you need.</p>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Starting a new feature</p>
+    <div class="picker-grid">
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Brand new feature, blank slate</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">App analysis</a><span class="picker-note">answer all 09 questions first</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Feature template</a><span class="picker-note">data model → behaviour → UI</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Three paths</a><span class="picker-note">happy / unhappy / weird</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Three states</a><span class="picker-note">empty / error / re-entry</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Adding to an existing feature</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Patterns to follow</a><span class="picker-note">point to existing files</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">What not to touch</a><span class="picker-note">explicit do-not-modify list</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Constraint spec</a><span class="picker-note">what must / must not change</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Two-layer prompt</a><span class="picker-note">intent + delta constraints only</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Exploring or prototyping</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s02" class="picker-tech">High-level prompt</a><span class="picker-note">describe goal, not steps</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Intent only</a><span class="picker-note">skip constraints — let AI decide</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s08" class="picker-tech">Claude.ai phase</a><span class="picker-note">design thinking before building</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>AI keeps guessing wrong</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">App analysis</a><span class="picker-note">missing context is the root cause</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s02" class="picker-tech">Few-shot examples</a><span class="picker-note">show do/don't before asking</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">add "must not" constraints</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Output format spec</a><span class="picker-note">give the AI a template to fill</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Fixing bugs and edge cases</p>
+    <div class="picker-grid">
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Bug appears on first load</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Empty / zero state</a><span class="picker-note">describe what shows before data exists</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Re-entry behaviour</a><span class="picker-note">what persists, what resets</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">State management Q</a><span class="picker-note">clarify who owns the state</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Bug appears on network failure</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Unhappy path</a><span class="picker-note">specify failure behaviour explicitly</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Error state</a><span class="picker-note">what shows, can user retry?</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">"must not clear data on failure"</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Bug appears with real data (not mocks)</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Data model Q</a><span class="picker-note">confirm actual shape vs assumed shape</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Data flow Q</a><span class="picker-note">trace fetch → transform → render</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">External deps Q</a><span class="picker-note">check API constraints and response shape</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Weird user behaviour breaks UI</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Weird path</a><span class="picker-note">describe the unintended-but-valid case</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s06" class="picker-tech">Interaction flow</a><span class="picker-note">narrate the full sequence including re-taps</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Constraint spec</a><span class="picker-note">debounce / idempotent requirements</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Designing UI and interactions</p>
+    <div class="picker-grid">
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Designing a new screen</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">User stories</a><span class="picker-note">who / what / why before any layout</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">UI last</a><span class="picker-note">data model and behaviour first</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Three states</a><span class="picker-note">empty / error / re-entry per component</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Designing a tap / gesture interaction</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s06" class="picker-tech">Interaction flow</a><span class="picker-note">narrate every tap target and its states</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Three paths</a><span class="picker-note">what if already active / loading / failed</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">"tapping X must not trigger Y"</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Specifying a form</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Two-layer prompt</a><span class="picker-note">intent (what it collects) + constraints (validation)</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Unhappy path</a><span class="picker-note">invalid input / submit failure / partial fill</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Error state</a><span class="picker-note">inline vs toast, preserve input on failure</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Specifying a list or feed</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s07" class="picker-tech">Three states</a><span class="picker-note">empty list / load error / re-entry cache</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s05" class="picker-tech">Weird path</a><span class="picker-note">1 item / 1000 items / very long strings</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Data flow Q</a><span class="picker-note">pagination, infinite scroll, or full fetch?</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Working with Claude Code</p>
+    <div class="picker-grid">
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Starting a new Claude Code session</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Role + context</a><span class="picker-note">load .dev/ folder as first message</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">File structure Q</a><span class="picker-note">confirm where new files should go</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">What not to touch</a><span class="picker-note">state explicitly before any task</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>AI refactored things you didn't ask it to</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Negative prompting</a><span class="picker-note">"only add new files, do not edit existing"</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Constraint spec</a><span class="picker-note">list every file that must not change</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s01" class="picker-tech">Task decomposition</a><span class="picker-note">smaller prompts = less surface area for drift</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Prompt chain across sessions</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s08" class="picker-tech">Prompt chaining</a><span class="picker-note">Claude.ai spec → .dev/ file → Claude Code</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Output format spec</a><span class="picker-note">ask Claude.ai to output a structured .md file</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s09" class="picker-tech">Role + context</a><span class="picker-note">re-inject .dev/ at start of each session</span></div>
+        </div>
+      </div>
+      <div class="picker-card">
+        <p class="picker-usecase"><span class="picker-icon">USE CASE</span>Implementation drifted from spec</p>
+        <div class="picker-techniques">
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s02" class="picker-tech">Few-shot examples</a><span class="picker-note">show the correct pattern from an existing file</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s04" class="picker-tech">Constraint spec</a><span class="picker-note">re-state the spec as explicit constraints</span></div>
+          <div class="picker-row"><span class="picker-arrow">→</span><a href="#s03" class="picker-tech">Chain of thought</a><span class="picker-note">ask AI to explain approach before coding</span></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 01 -->
@@ -1205,7 +1445,7 @@ Data model + flow defined there</span></div>
     <div class="callout info">Every concept in this cheatsheet is a prompting technique in disguise. Learning the formal name lets you apply the pattern to problems outside app development — research, writing, analysis, system design.</div>
   </div>
 
-</main>
+
 
 <footer>
   <p>aipe — AI Product Engineering curriculum</p>
