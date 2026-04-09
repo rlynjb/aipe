@@ -748,7 +748,7 @@
     </div>
 
     <!-- ── TAB: Quick picker ── -->
-    <div class="tab-panel active" id="tab-picker">
+    <div class="tab-panel active" data-panel="picker">
       <div class="tab-intro">
         <p>Find your situation, apply the techniques listed. Each technique links to the full section for detail.</p>
       </div>
@@ -902,7 +902,7 @@
     </div>
 
     <!-- ── TAB: Mapping ── -->
-    <div class="tab-panel" id="tab-mapping">
+    <div class="tab-panel" data-panel="mapping">
       <div class="tab-intro">
         <p>Prompting techniques are abstract patterns. The concepts in this cheatsheet are those same techniques applied to building apps. Once you see the formal name, you can apply the pattern to any context — not just app development.</p>
       </div>
@@ -981,20 +981,6 @@
       <div class="callout info" style="margin-top:.875rem">Every concept in this cheatsheet is a prompting technique in disguise. Learning the formal name lets you apply the pattern to problems outside app development — research, writing, analysis, system design.</div>
     </div>
   </div>
-
-  <script>
-    document.querySelectorAll('.tabs-shell').forEach(shell => {
-      shell.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const target = btn.dataset.tab;
-          shell.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-          shell.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-          btn.classList.add('active');
-          shell.querySelector('#tab-' + target).classList.add('active');
-        });
-      });
-    });
-  </script>
 
   <!-- 01 -->
   <p class="section-label" id="s01">01 — What prompt engineering actually is</p>
@@ -1596,7 +1582,7 @@ Data model + flow defined there</span></div>
     </div>
 
     <!-- ── TAB: Implementing ── -->
-    <div class="tab-panel active" id="tab-implementing">
+    <div class="tab-panel active" data-panel="implementing">
       <div class="tab-intro">
         <p>Use this when building something new. You're answering: <em>what are we building?</em> The goal is a spec that removes every decision Claude Code would otherwise guess on.</p>
       </div>
@@ -1654,7 +1640,7 @@ then implement the [feature]."</span></div>
     </div>
 
     <!-- ── TAB: Refining ── -->
-    <div class="tab-panel" id="tab-refining">
+    <div class="tab-panel" data-panel="refining">
       <div class="tab-intro">
         <p>Use this at the end of a phase before starting the next one. You're answering: <em>what is the current state, what's incomplete, and what must be true before we move forward?</em> This is subtractive — you're closing gaps, not adding features.</p>
       </div>
@@ -1745,5 +1731,20 @@ App is ready for phase [N+1]."</span></div>
   <p><a href="index.html">← back to index</a></p>
 </footer>
 
+<script>
+  document.querySelectorAll('.tabs-shell').forEach(shell => {
+    shell.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        shell.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        shell.querySelectorAll('.tab-panel').forEach(p => {
+          p.classList.remove('active');
+          if (p.dataset.panel === target) p.classList.add('active');
+        });
+        btn.classList.add('active');
+      });
+    });
+  });
+</script>
 </body>
 </html>
