@@ -661,6 +661,57 @@
     /* map table inside tab needs no outer border */
     .tab-panel .map-table { margin-top: .5rem; }
 
+    /* ── Spec steps ── */
+    .spec-step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: .875rem 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .spec-step:first-of-type { border-top: none; }
+
+    .spec-tool {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .spec-tool-chat {
+      color: var(--info);
+      background: rgba(91,156,246,.08);
+      border: 1px solid rgba(91,156,246,.2);
+    }
+
+    .spec-tool-code {
+      color: var(--success);
+      background: rgba(78,202,139,.08);
+      border: 1px solid rgba(78,202,139,.2);
+    }
+
+    .spec-body { flex: 1; }
+
+    .spec-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: .625rem;
+    }
+
+    .spec-save {
+      font-size: 11px;
+      color: var(--dim);
+      font-family: 'DM Mono', monospace;
+      margin-top: .5rem;
+    }
+
     /* ── Footer ── */
     footer {
       border-top: 1px solid var(--border);
@@ -932,13 +983,15 @@
   </div>
 
   <script>
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const target = btn.dataset.tab;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('tab-' + target).classList.add('active');
+    document.querySelectorAll('.tabs-shell').forEach(shell => {
+      shell.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.dataset.tab;
+          shell.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          shell.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          shell.querySelector('#tab-' + target).classList.add('active');
+        });
       });
     });
   </script>
@@ -1504,6 +1557,186 @@ Data model + flow defined there</span></div>
   <span class="arr">→</span> Patterns to follow  <span class="cm">point to specific files</span>
   <span class="arr">→</span> Where code goes     <span class="cm">exact folder/file targets</span>
   <span class="arr">→</span> What not to touch   <span class="cm">explicit do-not-modify list</span></div>
+  </div>
+
+  <!-- 12 -->
+  <p class="section-label" id="s12">12 — Writing specs for your app</p>
+
+  <div class="card">
+    <p class="card-title">Specs are the techniques applied in order</p>
+    <p class="body-text">A spec isn't a separate document type — it's what you get when you run through the cheatsheet sections in sequence. The sections aren't isolated tools, they're stages of the same process. Which stages you run depends on whether you're implementing something new or closing gaps before a phase transition.</p>
+    <div class="why">
+      <p class="why-label">Why it matters</p>
+      <p>Without a spec, every prompt starts from scratch. With a spec saved to <code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold2)">.dev/</code>, Claude Code always has full context — across sessions, across phases, across tools.</p>
+    </div>
+    <div class="callout info">Use Claude.ai to write the spec. Use Claude Code to implement it. Never design and build in the same session — context fills up and the AI loses track of earlier decisions.</div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">The .dev/ and .docs/ folder structure</p>
+    <p class="body-text"><code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold2)">.dev/</code> holds persistent project knowledge the AI reads at the start of every session — what the codebase is and how to work in it. <code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold2)">.docs/</code> holds specs and planning documents — what you're building or fixing, referenced per task.</p>
+<div class="code-block"><span class="hl">.dev/</span>                  <span class="cm">loaded globally — AI reads on every session</span>
+  <span class="arr">→</span> context.md          <span class="cm">codebase snapshot — stack, structure, entities</span>
+  <span class="arr">→</span> rules.md            <span class="cm">coding conventions, do-not-touch list</span>
+  <span class="arr">→</span> skills.md           <span class="cm">reusable patterns and snippets</span>
+  <span class="arr">→</span> stack.md            <span class="cm">tech stack details</span>
+
+<span class="hl">.docs/</span>                 <span class="cm">referenced per task — not loaded globally</span>
+  <span class="arr">→</span> features/
+      [feature-name].md  <span class="cm">one spec file per feature</span>
+  <span class="arr">→</span> phases/
+      phase-N-audit.md   <span class="cm">phase audit before each transition</span></div>
+  </div>
+
+  <!-- tab: implementing vs refining -->
+  <div class="tabs-shell">
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="implementing">Implementing a feature</button>
+      <button class="tab-btn" data-tab="refining">Refining before next phase</button>
+    </div>
+
+    <!-- ── TAB: Implementing ── -->
+    <div class="tab-panel active" id="tab-implementing">
+      <div class="tab-intro">
+        <p>Use this when building something new. You're answering: <em>what are we building?</em> The goal is a spec that removes every decision Claude Code would otherwise guess on.</p>
+      </div>
+
+      <div class="tab-group-label">Step 1 — App analysis <a href="#s09" class="sec-ref">09</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">Ask Claude.ai to extract the current state of your codebase. You do this once per project, then update it when the codebase changes significantly.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Analyse my [app] codebase and answer:
+data model, state management, file structure,
+external deps, what must not change.
+Output as context.md for my .dev/ folder."</span></div>
+          </div>
+          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.dev/context.md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Steps 2–5 — Feature spec <a href="#s03" class="sec-ref">03</a><a href="#s06" class="sec-ref">06</a><a href="#s05" class="sec-ref">05</a><a href="#s07" class="sec-ref">07</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">One conversation. You describe the feature, Claude.ai applies the template and fills in the gaps. Review and lock it before moving on.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Help me write a spec for [feature]
+using my prompting cheatsheet structure.
+Here's what I want it to do: [description]"</span></div>
+          </div>
+          <div class="code-block"><span class="hl">## Data model</span>       <span class="cm">entities, shape, relationships</span>
+<span class="hl">## What changes</span>     <span class="cm">reads, writes, mutations</span>
+<span class="hl">## Behaviour</span>        <span class="cm">interaction flow — all three paths</span>
+<span class="hl">## UI</span>               <span class="cm">visual treatment, only after above</span>
+<span class="hl">## Constraints</span>      <span class="cm">must / must not</span></div>
+          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/features/[name].md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Step 6 — Implement <a href="#s04" class="sec-ref">04</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-code">Claude Code</div>
+        <div class="spec-body">
+          <p class="spec-desc">Open a new Claude Code session. Feed it the spec files. This is the only step that goes to Claude Code — everything before this was design.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Read .dev/context.md and
+.docs/features/[name].md
+then implement the [feature]."</span></div>
+          </div>
+          <div class="callout good" style="margin-top:.75rem">The spec removes every decision Claude Code would otherwise guess on. What's left is just the implementation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Refining ── -->
+    <div class="tab-panel" id="tab-refining">
+      <div class="tab-intro">
+        <p>Use this at the end of a phase before starting the next one. You're answering: <em>what is the current state, what's incomplete, and what must be true before we move forward?</em> This is subtractive — you're closing gaps, not adding features.</p>
+      </div>
+
+      <div class="tab-group-label">Step 1 — Update app analysis <a href="#s09" class="sec-ref">09</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">Re-run app analysis with a focus on what has changed since the last phase. More important here than during feature work — the codebase has grown and assumptions may have shifted.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Update context.md to reflect the current
+state of [app]. What has changed since phase N?
+What's stable, what's still rough?"</span></div>
+          </div>
+          <p class="spec-save">Update → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.dev/context.md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Step 2 — Phase audit</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">Instead of a feature spec, write a phase audit. What's complete, what's half-done, what's blocking the next phase, and what's explicitly deferred. Document deferred items — otherwise you accidentally build on top of them.</p>
+<div class="code-block"><span class="hl">## What's complete</span>
+<span class="cm">features that are stable and tested</span>
+
+<span class="hl">## What's incomplete</span>
+<span class="cm">exists but has gaps — missing states,
+unhappy paths deferred, known edge cases</span>
+
+<span class="hl">## What's blocking next phase</span>
+<span class="cm">must be resolved before building anything new</span>
+
+<span class="hl">## What's explicitly deferred</span>
+<span class="cm">choosing not to fix now — documented so you
+don't build on top of it unknowingly</span></div>
+          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/phases/phase-N-audit.md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Steps 3–5 — Mini specs per blocker <a href="#s06" class="sec-ref">06</a><a href="#s05" class="sec-ref">05</a><a href="#s07" class="sec-ref">07</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">For each item in "incomplete" or "blocking", write a mini spec — same technique as feature specs but smaller in scope. Interaction flow and three paths for each gap.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Write a mini spec to fix [incomplete item].
+Cover the interaction flow, unhappy path,
+and the three states. Keep it tight."</span></div>
+          </div>
+          <p class="spec-save">Save each → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/features/fix-[name].md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Step 6 — Fix in Claude Code <a href="#s04" class="sec-ref">04</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-code">Claude Code</div>
+        <div class="spec-body">
+          <p class="spec-desc">Same as implementing a feature — one spec file per fix, one Claude Code session per fix. Keep sessions narrow so context stays clean.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Read .dev/context.md and
+.docs/features/fix-[name].md
+then fix [item]."</span></div>
+          </div>
+          <div class="callout warn" style="margin-top:.75rem">Fix blockers before starting the next phase. Building new features on top of half-finished ones compounds bugs in ways that become very hard to trace.</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">After all fixes — update context</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">Once all blockers are resolved, update context.md to reflect the clean state. The next phase starts from accurate, stable ground.</p>
+<div class="code-block"><span class="ok">"Update .dev/context.md — phase N blockers
+are resolved. Mark those features as stable.
+App is ready for phase [N+1]."</span></div>
+        </div>
+      </div>
+    </div>
   </div>
 
 
