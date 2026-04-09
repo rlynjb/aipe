@@ -1571,7 +1571,9 @@ Data model + flow defined there</span></div>
   <span class="arr">→</span> features/
       [feature-name].md  <span class="cm">one spec file per feature</span>
   <span class="arr">→</span> phases/
-      phase-N-audit.md   <span class="cm">phase audit before each transition</span></div>
+      phase-N-audit.md   <span class="cm">phase audit before each transition</span>
+  <span class="arr">→</span> tests/
+      [feature-name].md  <span class="cm">manual test cases per feature</span></div>
   </div>
 
   <!-- tab: implementing vs refining -->
@@ -1579,6 +1581,7 @@ Data model + flow defined there</span></div>
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="implementing">Implementing a feature</button>
       <button class="tab-btn" data-tab="refining">Refining before next phase</button>
+      <button class="tab-btn" data-tab="testing">Testing a feature</button>
     </div>
 
     <!-- ── TAB: Implementing ── -->
@@ -1720,6 +1723,145 @@ then fix [item]."</span></div>
 <div class="code-block"><span class="ok">"Update .dev/context.md — phase N blockers
 are resolved. Mark those features as stable.
 App is ready for phase [N+1]."</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Testing ── -->
+    <div class="tab-panel" data-panel="testing">
+      <div class="tab-intro">
+        <p>Use this after implementation to manually verify a feature before shipping. Each test case is a path with numbered steps and a clear expected result per step. Define "done when" before you start testing, not after.</p>
+      </div>
+
+      <div class="tab-group-label">Test case format</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## Feature</span>
+<span class="cm">[name of the feature being tested]</span>
+
+<span class="hl">## Setup</span>
+<span class="cm">[app state required before testing begins]</span>
+
+<span class="hl">## Happy path</span>
+<span class="cm">Steps:</span>
+<span class="cm">  1. [action]</span>
+<span class="cm">  2. [action]</span>
+<span class="cm">  3. [action]</span>
+<span class="cm">Expect:</span>
+<span class="cm">  [ ] [what you should see after step N]</span>
+<span class="cm">  [ ] [what you should see after step N]</span>
+
+<span class="hl">## Unhappy path</span>
+<span class="cm">Steps:</span>
+<span class="cm">  1. [action that triggers failure]</span>
+<span class="cm">  2. [e.g. disconnect network then submit]</span>
+<span class="cm">Expect:</span>
+<span class="cm">  [ ] [error state shown correctly]</span>
+<span class="cm">  [ ] [data not lost]</span>
+<span class="cm">  [ ] [retry available if needed]</span>
+
+<span class="hl">## Weird path</span>
+<span class="cm">Steps:</span>
+<span class="cm">  1. [edge case setup]</span>
+<span class="cm">  2. [action]</span>
+<span class="cm">Expect:</span>
+<span class="cm">  [ ] [boundary condition handled correctly]</span>
+<span class="cm">  [ ] [no crash or visual break]</span>
+
+<span class="hl">## States</span>
+<span class="cm">  [ ] empty state — correct before any data</span>
+<span class="cm">  [ ] error state — correct on failure</span>
+<span class="cm">  [ ] re-entry — correct after close + reopen</span>
+
+<span class="hl">## Done when</span>
+<span class="cm">[the specific condition that means this feature is shippable]</span></div>
+          <p class="spec-save">Save as → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/tests/[feature-name].md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Filled example — DailyRecap</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Example</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## Feature</span>
+DailyRecap — end of day summary
+
+<span class="hl">## Setup</span>
+Today screen open. At least 1 entry with mixed
+block types (text + habit + clip) logged today.
+
+<span class="hl">## Happy path</span>
+Steps:
+  1. Open Today screen
+  2. Scroll past journal entries to bottom
+  3. Observe the recap section
+Expect:
+  <span class="ok">[ ]</span> Recap section is visible below entries
+  <span class="ok">[ ]</span> Clips section shows thumbnails
+  <span class="ok">[ ]</span> Habits section shows checked / total count
+  <span class="ok">[ ]</span> Notes section shows truncated text blocks
+
+<span class="hl">## Unhappy path</span>
+Steps:
+  1. Disconnect network
+  2. Force-close and reopen the app
+  3. Navigate to Today screen
+Expect:
+  <span class="ok">[ ]</span> Recap section is hidden — no broken UI
+  <span class="ok">[ ]</span> No crash or white screen
+  <span class="ok">[ ]</span> Journal entries show their own error state
+
+Steps:
+  1. Log only clips today (no text or habits)
+  2. Open Today screen
+Expect:
+  <span class="ok">[ ]</span> Only clips section renders in recap
+  <span class="ok">[ ]</span> No empty habit or notes sections shown
+
+<span class="hl">## Weird path</span>
+Steps:
+  1. Log 50 clips today
+  2. Scroll to recap
+Expect:
+  <span class="ok">[ ]</span> Shows 4 thumbnails + "+46" overflow label
+  <span class="ok">[ ]</span> No layout overflow or clipping
+
+Steps:
+  1. Log exactly 1 entry with 1 text block
+  2. Scroll to recap
+Expect:
+  <span class="ok">[ ]</span> Only notes section renders
+  <span class="ok">[ ]</span> No empty clips or habits sections shown
+
+<span class="hl">## States</span>
+  <span class="ok">[ ]</span> No entries today → recap not shown at all
+  <span class="ok">[ ]</span> Entries loading → skeleton shown, not blank
+  <span class="ok">[ ]</span> Close + reopen app → recap reloads correctly
+
+<span class="hl">## Done when</span>
+All checkboxes pass on device, not just browser</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">What each path covers</div>
+      <div class="spec-step" style="padding-top:0;border-top:none;">
+        <div class="spec-body">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div>
+              <span class="pill pill-happy" style="margin-bottom:4px;">Happy path</span>
+              <p class="spec-desc" style="margin:0">The ideal flow — user does everything correctly. Steps verify the core feature works as designed.</p>
+            </div>
+            <div>
+              <span class="pill pill-unhappy" style="margin-bottom:4px;">Unhappy path</span>
+              <p class="spec-desc" style="margin:0">Things that go wrong — bad input, network failure, repeated actions. Steps verify the app handles failure without crashing or losing data.</p>
+            </div>
+            <div>
+              <span class="pill pill-weird" style="margin-bottom:4px;">Weird path</span>
+              <p class="spec-desc" style="margin:0">Technically valid but unintended — extreme data, timing edge cases, boundary conditions. Steps verify nothing breaks unexpectedly.</p>
+            </div>
+          </div>
+          <div class="callout warn" style="margin-top:.875rem">Always test on device, not just browser. Layout, touch targets, scroll behaviour, and timing differ enough that browser-only testing misses real bugs.</div>
         </div>
       </div>
     </div>
