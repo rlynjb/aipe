@@ -94,8 +94,8 @@
 
     /* ── Layout ── */
     main {
-      max-width: 960px;
-      margin: 0 auto;
+      max-width: 100%;
+      margin: 0;
       padding: 2rem;
       display: grid;
       gap: 1px;
@@ -607,7 +607,11 @@
     .tab-bar {
       display: flex;
       border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
     }
+
+    .tab-bar::-webkit-scrollbar { display: none; }
 
     .tab-btn {
       font-family: 'DM Mono', monospace;
