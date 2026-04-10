@@ -1582,6 +1582,7 @@ Data model + flow defined there</span></div>
       <button class="tab-btn active" data-tab="implementing">Implementing a feature</button>
       <button class="tab-btn" data-tab="refining">Refining before next phase</button>
       <button class="tab-btn" data-tab="testing">Testing a feature</button>
+      <button class="tab-btn" data-tab="userstories">User stories for existing app</button>
     </div>
 
     <!-- ── TAB: Implementing ── -->
@@ -1865,10 +1866,115 @@ All checkboxes pass on device, not just browser</div>
         </div>
       </div>
     </div>
+
+    <!-- ── TAB: User stories ── -->
+    <div class="tab-panel" data-panel="userstories">
+      <div class="tab-intro">
+        <p>Use this to generate user stories with all three paths for an existing app or feature. The more context you provide — data model, stack, constraints — the more accurate the paths. Without the data model, Claude invents plausible but possibly wrong failure modes.</p>
+      </div>
+
+      <div class="tab-group-label">Prompt template</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">I have an existing app called [app name].</span>
+
+[2–3 sentences describing what it does]
+
+<span class="hl">For the [feature or screen] feature, write user stories</span>
+<span class="hl">with all three paths for each story.</span>
+
+<span class="hl">Data model:</span>
+<span class="cm">  [Entity]: { field, field, field }</span>
+<span class="cm">  [Entity]: { field, field, field }</span>
+
+<span class="hl">Stack:</span> <span class="cm">[framework, database, relevant services]</span>
+
+<span class="hl">Constraints:</span>
+<span class="cm">  - [must do X]</span>
+<span class="cm">  - [must not do Y]</span>
+
+<span class="hl">Format each story as:</span>
+
+## Story
+As a [user], I want to [action] so that [outcome].
+
+## Happy path
+Steps:
+  1. [action]
+  2. [action]
+Expect:
+  [ ] [result]
+
+## Unhappy path
+Steps:
+  1. [action that triggers failure]
+Expect:
+  [ ] [result]
+
+## Weird path
+Steps:
+  1. [edge case setup]
+  2. [action]
+Expect:
+  [ ] [result]</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">What to include for better output</div>
+      <div class="spec-step">
+        <div class="spec-body">
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:.875rem;">
+            <div class="state-block" style="padding:.5rem 0">
+              <span class="tag">Data model</span>
+              <p class="state-desc">Entity names, field shapes, relationships. Without this, Claude guesses at what can go wrong — with it, unhappy paths reflect real failure modes in your stack.</p>
+            </div>
+            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Screen or flow name</span>
+              <p class="state-desc">Which specific screen or user flow you're targeting. Keeps stories scoped and prevents Claude from writing generic stories that could apply to any app.</p>
+            </div>
+            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Tech stack</span>
+              <p class="state-desc">Framework, database, external services. Unhappy paths differ significantly — Notion API timeouts behave differently to REST API failures or local state errors.</p>
+            </div>
+            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Constraints</span>
+              <p class="state-desc">Things it must or must not do. Prevents Claude from writing stories that conflict with existing behaviour or architecture decisions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Filled example — loopd journal entry</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Example</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">I have an existing app called loopd — a daily vlogging PWA.</span>
+It lets users log journal entries with text, habit, and
+clip blocks throughout the day.
+
+<span class="hl">For the journal entry screen, write user stories with</span>
+<span class="hl">all three paths for:</span>
+  - Creating a new entry
+  - Adding a clip block to an existing entry
+  - Checking off a habit block
+
+<span class="hl">Data model:</span>
+  Entry: { id, date, blocks: Block[] }
+  Block: { type: 'text'|'habit'|'clip', value, timestamp }
+
+<span class="hl">Stack:</span> Next.js, Notion API as the database
+
+<span class="hl">Constraints:</span>
+  - All reads/writes go through Notion API, no local DB
+  - Blocks append to entry, never replace existing blocks
+  - Habit blocks can only be checked once per day</div>
+        </div>
+      </div>
+
+      <div class="callout info" style="margin-top:.875rem">User stories written this way feed directly into your spec. Once Claude generates them, paste the paths into your <code style="font-family:'DM Mono',monospace;font-size:12px">docs/features/[name].md</code> spec file as the behaviour section.</div>
+    </div>
   </div>
-
-
-<footer>
   <p>aipe — AI Product Engineering curriculum</p>
   <p><a href="index.html">← back to index</a></p>
 </footer>
