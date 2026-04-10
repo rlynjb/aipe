@@ -982,6 +982,867 @@
     </div>
   </div>
 
+
+  <!-- 12 -->
+  <p class="section-label" id="s12">12 — Writing specs for your app</p>
+
+  <div class="card">
+    <p class="card-title">Specs are the techniques applied in order</p>
+    <p class="body-text">A spec isn't a separate document type — it's what you get when you run through the cheatsheet sections in sequence. The sections aren't isolated tools, they're stages of the same process. Which stages you run depends on whether you're implementing something new or closing gaps before a phase transition.</p>
+    <div class="why">
+      <p class="why-label">Why it matters</p>
+      <p>Without a spec, every prompt starts from scratch. With a spec saved to <code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold2)">.dev/</code>, Claude Code always has full context — across sessions, across phases, across tools.</p>
+    </div>
+    <div class="callout info">Use Claude.ai to write the spec. Use Claude Code to implement it. Never design and build in the same session — context fills up and the AI loses track of earlier decisions.</div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">The .dev/ and .docs/ folder structure</p>
+    <p class="body-text"><code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold2)">.dev/</code> holds persistent project knowledge the AI reads at the start of every session — what the codebase is and how to work in it. <code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold2)">.docs/</code> holds specs and planning documents — what you're building or fixing, referenced per task.</p>
+<div class="code-block"><span class="hl">.dev/</span>                  <span class="cm">loaded globally — AI reads on every session</span>
+  <span class="arr">→</span> context.md          <span class="cm">codebase snapshot — stack, structure, entities</span>
+  <span class="arr">→</span> rules.md            <span class="cm">coding conventions, do-not-touch list</span>
+  <span class="arr">→</span> skills.md           <span class="cm">reusable patterns and snippets</span>
+  <span class="arr">→</span> stack.md            <span class="cm">tech stack details</span>
+
+<span class="hl">.docs/</span>                 <span class="cm">referenced per task — not loaded globally</span>
+  <span class="arr">→</span> features/
+      [feature-name].md  <span class="cm">feature specs + onboarding</span>
+  <span class="arr">→</span> phases/
+      phase-N-audit.md   <span class="cm">phase audits</span>
+  <span class="arr">→</span> tests/
+      [feature-name].md  <span class="cm">manual test cases</span>
+  <span class="arr">→</span> bugs/
+      [feature-name].md  <span class="cm">bug report specs</span>
+  <span class="arr">→</span> refactors/
+      [name].md          <span class="cm">refactor specs</span>
+  <span class="arr">→</span> migrations/
+      [name].md          <span class="cm">migration specs</span>
+  <span class="arr">→</span> performance/
+      [name].md          <span class="cm">performance specs</span>
+  <span class="arr">→</span> prompts/
+      [name].md          <span class="cm">prompt engineering specs</span>
+  <span class="arr">→</span> integrations/
+      [service-name].md  <span class="cm">integration specs</span></div>
+  </div>
+
+  <!-- tab: implementing vs refining -->
+  <div class="tabs-shell">
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="implementing">Feature</button>
+      <button class="tab-btn" data-tab="refining">Audit</button>
+      <button class="tab-btn" data-tab="testing">Testing</button>
+      <button class="tab-btn" data-tab="userstories">User stories</button>
+      <button class="tab-btn" data-tab="bugreport">Debugging</button>
+      <button class="tab-btn" data-tab="refactor">Refactor</button>
+      <button class="tab-btn" data-tab="migration">Migration</button>
+      <button class="tab-btn" data-tab="performance">Performance</button>
+      <button class="tab-btn" data-tab="prompteng">Prompt engineering</button>
+      <button class="tab-btn" data-tab="onboarding">Onboarding</button>
+      <button class="tab-btn" data-tab="integration">Integration</button>
+    </div>
+
+    <!-- ── TAB: Implementing ── -->
+    <div class="tab-panel active" data-panel="implementing">
+      <div class="tab-intro">
+        <p>Use this when building something new. You're answering: <em>what are we building?</em> The goal is a spec that removes every decision Claude Code would otherwise guess on.</p>
+      </div>
+
+      <div class="tab-group-label">Step 1 — App analysis <a href="#s09" class="sec-ref">09</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">Ask Claude.ai to extract the current state of your codebase. You do this once per project, then update it when the codebase changes significantly.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Analyse my [app] codebase and answer:
+data model, state management, file structure,
+external deps, what must not change.
+Output as context.md for my .dev/ folder."</span></div>
+          </div>
+          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.dev/context.md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Steps 2–5 — Feature spec <a href="#s03" class="sec-ref">03</a><a href="#s06" class="sec-ref">06</a><a href="#s05" class="sec-ref">05</a><a href="#s07" class="sec-ref">07</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">One conversation. You describe the feature, Claude.ai applies the template and fills in the gaps. Review and lock it before moving on.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Help me write a spec for [feature]
+using my prompting cheatsheet structure.
+Here's what I want it to do: [description]"</span></div>
+          </div>
+          <div class="code-block"><span class="hl">## Data model</span>       <span class="cm">entities, shape, relationships</span>
+<span class="hl">## What changes</span>     <span class="cm">reads, writes, mutations</span>
+<span class="hl">## Behaviour</span>        <span class="cm">interaction flow — all three paths</span>
+<span class="hl">## UI</span>               <span class="cm">visual treatment, only after above</span>
+<span class="hl">## Constraints</span>      <span class="cm">must / must not</span></div>
+          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/features/[name].md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Step 6 — Implement <a href="#s04" class="sec-ref">04</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-code">Claude Code</div>
+        <div class="spec-body">
+          <p class="spec-desc">Open a new Claude Code session. Feed it the spec files. This is the only step that goes to Claude Code — everything before this was design.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Read .dev/context.md and
+.docs/features/[name].md
+then implement the [feature]."</span></div>
+          </div>
+          <div class="callout good" style="margin-top:.75rem">The spec removes every decision Claude Code would otherwise guess on. What's left is just the implementation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Refining ── -->
+    <div class="tab-panel" data-panel="refining">
+      <div class="tab-intro">
+        <p>Use this at the end of a phase before starting the next one. You're answering: <em>what is the current state, what's incomplete, and what must be true before we move forward?</em> This is subtractive — you're closing gaps, not adding features.</p>
+      </div>
+
+      <div class="tab-group-label">Step 1 — Update app analysis <a href="#s09" class="sec-ref">09</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">Re-run app analysis with a focus on what has changed since the last phase. More important here than during feature work — the codebase has grown and assumptions may have shifted.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Update context.md to reflect the current
+state of [app]. What has changed since phase N?
+What's stable, what's still rough?"</span></div>
+          </div>
+          <p class="spec-save">Update → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.dev/context.md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Step 2 — Phase audit</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">Instead of a feature spec, write a phase audit. What's complete, what's half-done, what's blocking the next phase, and what's explicitly deferred. Document deferred items — otherwise you accidentally build on top of them.</p>
+<div class="code-block"><span class="hl">## What's complete</span>
+<span class="cm">features that are stable and tested</span>
+
+<span class="hl">## What's incomplete</span>
+<span class="cm">exists but has gaps — missing states,
+unhappy paths deferred, known edge cases</span>
+
+<span class="hl">## What's blocking next phase</span>
+<span class="cm">must be resolved before building anything new</span>
+
+<span class="hl">## What's explicitly deferred</span>
+<span class="cm">choosing not to fix now — documented so you
+don't build on top of it unknowingly</span></div>
+          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/phases/phase-N-audit.md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Steps 3–5 — Mini specs per blocker <a href="#s06" class="sec-ref">06</a><a href="#s05" class="sec-ref">05</a><a href="#s07" class="sec-ref">07</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">For each item in "incomplete" or "blocking", write a mini spec — same technique as feature specs but smaller in scope. Interaction flow and three paths for each gap.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Write a mini spec to fix [incomplete item].
+Cover the interaction flow, unhappy path,
+and the three states. Keep it tight."</span></div>
+          </div>
+          <p class="spec-save">Save each → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/features/fix-[name].md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Step 6 — Fix in Claude Code <a href="#s04" class="sec-ref">04</a></div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-code">Claude Code</div>
+        <div class="spec-body">
+          <p class="spec-desc">Same as implementing a feature — one spec file per fix, one Claude Code session per fix. Keep sessions narrow so context stays clean.</p>
+          <div class="example">
+            <p class="example-label">Prompt to use</p>
+<div class="code-block"><span class="ok">"Read .dev/context.md and
+.docs/features/fix-[name].md
+then fix [item]."</span></div>
+          </div>
+          <div class="callout warn" style="margin-top:.75rem">Fix blockers before starting the next phase. Building new features on top of half-finished ones compounds bugs in ways that become very hard to trace.</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">After all fixes — update context</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat">Claude.ai</div>
+        <div class="spec-body">
+          <p class="spec-desc">Once all blockers are resolved, update context.md to reflect the clean state. The next phase starts from accurate, stable ground.</p>
+<div class="code-block"><span class="ok">"Update .dev/context.md — phase N blockers
+are resolved. Mark those features as stable.
+App is ready for phase [N+1]."</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Testing ── -->
+    <div class="tab-panel" data-panel="testing">
+      <div class="tab-intro">
+        <p>Use this after implementation to manually verify a feature before shipping. Each test case is a path with numbered steps and a clear expected result per step. Define "done when" before you start testing, not after.</p>
+      </div>
+
+      <div class="tab-group-label">Test case format</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## Feature</span>
+<span class="cm">[name of the feature being tested]</span>
+
+<span class="hl">## Setup</span>
+<span class="cm">[app state required before testing begins]</span>
+
+<span class="hl">## Happy path</span>
+<span class="cm">Steps:</span>
+<span class="cm">  1. [action]</span>
+<span class="cm">  2. [action]</span>
+<span class="cm">  3. [action]</span>
+<span class="cm">Expect:</span>
+<span class="cm">  [ ] [what you should see after step N]</span>
+<span class="cm">  [ ] [what you should see after step N]</span>
+
+<span class="hl">## Unhappy path</span>
+<span class="cm">Steps:</span>
+<span class="cm">  1. [action that triggers failure]</span>
+<span class="cm">  2. [e.g. disconnect network then submit]</span>
+<span class="cm">Expect:</span>
+<span class="cm">  [ ] [error state shown correctly]</span>
+<span class="cm">  [ ] [data not lost]</span>
+<span class="cm">  [ ] [retry available if needed]</span>
+
+<span class="hl">## Weird path</span>
+<span class="cm">Steps:</span>
+<span class="cm">  1. [edge case setup]</span>
+<span class="cm">  2. [action]</span>
+<span class="cm">Expect:</span>
+<span class="cm">  [ ] [boundary condition handled correctly]</span>
+<span class="cm">  [ ] [no crash or visual break]</span>
+
+<span class="hl">## States</span>
+<span class="cm">  [ ] empty state — correct before any data</span>
+<span class="cm">  [ ] error state — correct on failure</span>
+<span class="cm">  [ ] re-entry — correct after close + reopen</span>
+
+<span class="hl">## Done when</span>
+<span class="cm">[the specific condition that means this feature is shippable]</span></div>
+          <p class="spec-save">Save as → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/tests/[feature-name].md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Filled example — DailyRecap</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Example</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## Feature</span>
+DailyRecap — end of day summary
+
+<span class="hl">## Setup</span>
+Today screen open. At least 1 entry with mixed
+block types (text + habit + clip) logged today.
+
+<span class="hl">## Happy path</span>
+Steps:
+  1. Open Today screen
+  2. Scroll past journal entries to bottom
+  3. Observe the recap section
+Expect:
+  <span class="ok">[ ]</span> Recap section is visible below entries
+  <span class="ok">[ ]</span> Clips section shows thumbnails
+  <span class="ok">[ ]</span> Habits section shows checked / total count
+  <span class="ok">[ ]</span> Notes section shows truncated text blocks
+
+<span class="hl">## Unhappy path</span>
+Steps:
+  1. Disconnect network
+  2. Force-close and reopen the app
+  3. Navigate to Today screen
+Expect:
+  <span class="ok">[ ]</span> Recap section is hidden — no broken UI
+  <span class="ok">[ ]</span> No crash or white screen
+  <span class="ok">[ ]</span> Journal entries show their own error state
+
+Steps:
+  1. Log only clips today (no text or habits)
+  2. Open Today screen
+Expect:
+  <span class="ok">[ ]</span> Only clips section renders in recap
+  <span class="ok">[ ]</span> No empty habit or notes sections shown
+
+<span class="hl">## Weird path</span>
+Steps:
+  1. Log 50 clips today
+  2. Scroll to recap
+Expect:
+  <span class="ok">[ ]</span> Shows 4 thumbnails + "+46" overflow label
+  <span class="ok">[ ]</span> No layout overflow or clipping
+
+Steps:
+  1. Log exactly 1 entry with 1 text block
+  2. Scroll to recap
+Expect:
+  <span class="ok">[ ]</span> Only notes section renders
+  <span class="ok">[ ]</span> No empty clips or habits sections shown
+
+<span class="hl">## States</span>
+  <span class="ok">[ ]</span> No entries today → recap not shown at all
+  <span class="ok">[ ]</span> Entries loading → skeleton shown, not blank
+  <span class="ok">[ ]</span> Close + reopen app → recap reloads correctly
+
+<span class="hl">## Done when</span>
+All checkboxes pass on device, not just browser</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">What each path covers</div>
+      <div class="spec-step" style="padding-top:0;border-top:none;">
+        <div class="spec-body">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div>
+              <span class="pill pill-happy" style="margin-bottom:4px;">Happy path</span>
+              <p class="spec-desc" style="margin:0">The ideal flow — user does everything correctly. Steps verify the core feature works as designed.</p>
+            </div>
+            <div>
+              <span class="pill pill-unhappy" style="margin-bottom:4px;">Unhappy path</span>
+              <p class="spec-desc" style="margin:0">Things that go wrong — bad input, network failure, repeated actions. Steps verify the app handles failure without crashing or losing data.</p>
+            </div>
+            <div>
+              <span class="pill pill-weird" style="margin-bottom:4px;">Weird path</span>
+              <p class="spec-desc" style="margin:0">Technically valid but unintended — extreme data, timing edge cases, boundary conditions. Steps verify nothing breaks unexpectedly.</p>
+            </div>
+          </div>
+          <div class="callout warn" style="margin-top:.875rem">Always test on device, not just browser. Layout, touch targets, scroll behaviour, and timing differ enough that browser-only testing misses real bugs.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: User stories ── -->
+    <div class="tab-panel" data-panel="userstories">
+      <div class="tab-intro">
+        <p>Use this to generate user stories with all three paths for an existing app or feature. The more context you provide — data model, stack, constraints — the more accurate the paths. Without the data model, Claude invents plausible but possibly wrong failure modes.</p>
+      </div>
+
+      <div class="tab-group-label">Prompt template</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">I have an existing app called [app name].</span>
+
+[2–3 sentences describing what it does]
+
+<span class="hl">For the [feature or screen] feature, write user stories</span>
+<span class="hl">with all three paths for each story.</span>
+
+<span class="hl">Data model:</span>
+<span class="cm">  [Entity]: { field, field, field }</span>
+<span class="cm">  [Entity]: { field, field, field }</span>
+
+<span class="hl">Stack:</span> <span class="cm">[framework, database, relevant services]</span>
+
+<span class="hl">Constraints:</span>
+<span class="cm">  - [must do X]</span>
+<span class="cm">  - [must not do Y]</span>
+
+<span class="hl">Format each story as:</span>
+
+## Story
+As a [user], I want to [action] so that [outcome].
+
+## Happy path
+Steps:
+  1. [action]
+  2. [action]
+Expect:
+  [ ] [result]
+
+## Unhappy path
+Steps:
+  1. [action that triggers failure]
+Expect:
+  [ ] [result]
+
+## Weird path
+Steps:
+  1. [edge case setup]
+  2. [action]
+Expect:
+  [ ] [result]</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">What to include for better output</div>
+      <div class="spec-step">
+        <div class="spec-body">
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:.875rem;">
+            <div class="state-block" style="padding:.5rem 0">
+              <span class="tag">Data model</span>
+              <p class="state-desc">Entity names, field shapes, relationships. Without this, Claude guesses at what can go wrong — with it, unhappy paths reflect real failure modes in your stack.</p>
+            </div>
+            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Screen or flow name</span>
+              <p class="state-desc">Which specific screen or user flow you're targeting. Keeps stories scoped and prevents Claude from writing generic stories that could apply to any app.</p>
+            </div>
+            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Tech stack</span>
+              <p class="state-desc">Framework, database, external services. Unhappy paths differ significantly — Notion API timeouts behave differently to REST API failures or local state errors.</p>
+            </div>
+            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Constraints</span>
+              <p class="state-desc">Things it must or must not do. Prevents Claude from writing stories that conflict with existing behaviour or architecture decisions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Filled example — loopd journal entry</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Example</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">I have an existing app called loopd — a daily vlogging PWA.</span>
+It lets users log journal entries with text, habit, and
+clip blocks throughout the day.
+
+<span class="hl">For the journal entry screen, write user stories with</span>
+<span class="hl">all three paths for:</span>
+  - Creating a new entry
+  - Adding a clip block to an existing entry
+  - Checking off a habit block
+
+<span class="hl">Data model:</span>
+  Entry: { id, date, blocks: Block[] }
+  Block: { type: 'text'|'habit'|'clip', value, timestamp }
+
+<span class="hl">Stack:</span> Next.js, Notion API as the database
+
+<span class="hl">Constraints:</span>
+  - All reads/writes go through Notion API, no local DB
+  - Blocks append to entry, never replace existing blocks
+  - Habit blocks can only be checked once per day</div>
+        </div>
+      </div>
+
+      <div class="callout info" style="margin-top:.875rem">User stories written this way feed directly into your spec. Once Claude generates them, paste the paths into your <code style="font-family:'DM Mono',monospace;font-size:12px">docs/features/[name].md</code> spec file as the behaviour section.</div>
+    </div>
+
+    <!-- ── TAB: Bug report ── -->
+    <div class="tab-panel" data-panel="bugreport">
+      <div class="tab-intro">
+        <p>Use this when a feature is buggy and you need Claude to diagnose and fix it. This is a debugging spec, not a feature spec — the goal is to give Claude enough context to find the root cause without guessing. One bug per file, one Claude Code session per bug.</p>
+      </div>
+
+      <div class="tab-group-label">Bug report spec format</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+          <p class="spec-desc">Always include the exact error output. Claude pattern-matches on error strings far more reliably than on vague descriptions — "it crashes" makes Claude guess, a stack trace tells Claude exactly where to look.</p>
+<div class="code-block"><span class="hl">## Feature</span>
+<span class="cm">[which feature is buggy]</span>
+
+<span class="hl">## Environment</span>
+<span class="cm">[browser/device, app state when bug occurs]</span>
+
+<span class="hl">## Data model</span>
+<span class="cm">[current shape of the data involved]</span>
+
+<span class="hl">## Steps to reproduce</span>
+<span class="cm">  1. [exact step]</span>
+<span class="cm">  2. [exact step]</span>
+<span class="cm">  3. [exact step]</span>
+
+<span class="hl">## Observed behaviour</span>
+<span class="cm">[what actually happens — specific, not "it breaks"]</span>
+
+<span class="hl">## Expected behaviour</span>
+<span class="cm">[what should happen instead]</span>
+
+<span class="hl">## Error output</span>
+<span class="cm">[paste exact console error or stack trace here]</span>
+
+<span class="hl">## Suspected cause</span>
+<span class="cm">[your hunch — wrong state, bad transform, race condition]</span>
+<span class="cm">[if no idea, say so — Claude will reason from the above]</span>
+
+<span class="hl">## Constraints</span>
+<span class="cm">  - Do not modify [X] — only fix [Y]</span>
+<span class="cm">  - Must not change the data model</span>
+<span class="cm">  - Fix must not affect [related feature]</span></div>
+          <p class="spec-save">Save as → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/bugs/[feature-name].md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Common bug patterns for buffr</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Pattern 1</div>
+        <div class="spec-body">
+          <p class="step-title">State not updating after action</p>
+          <p class="spec-desc">UI shows stale data after an LLM response or tool call completes.</p>
+<div class="code-block"><span class="hl">## Suspected cause</span>
+State mutation — the LangChain response updates the
+store but the component isn't re-rendering.
+Or: agent result returned but conversation history
+not appended correctly.
+
+<span class="hl">## Constraints</span>
+  - Do not refactor the store — only fix the update call
+  - Check useConversation() hook before touching agent</div>
+        </div>
+      </div>
+
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Pattern 2</div>
+        <div class="spec-body">
+          <p class="step-title">LLM response not arriving / timing out</p>
+          <p class="spec-desc">Streaming hangs or fetch returns nothing.</p>
+<div class="code-block"><span class="hl">## Environment</span>
+Provider: [Anthropic / OpenAI / Ollama]
+Model: [model string]
+Streaming: [yes / no]
+
+<span class="hl">## Suspected cause</span>
+Provider switch not passing correct API key or
+model string for this provider.
+Or: streaming response not consumed correctly —
+reader may be closing early.</div>
+        </div>
+      </div>
+
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Pattern 3</div>
+        <div class="spec-body">
+          <p class="step-title">Agent routing to wrong tool</p>
+          <p class="spec-desc">ReAct loop selects the wrong tool or skips a reasoning step.</p>
+<div class="code-block"><span class="hl">## Observed behaviour</span>
+Agent selects [wrong tool] when [condition].
+Or: agent completes tool call but doesn't pass
+result back into next reasoning step.
+
+<span class="hl">## Suspected cause</span>
+Tool description ambiguous — Claude selecting by
+description match, not intent.
+Or: tool result not injected back into message
+history correctly after execution.</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Flow</div>
+      <div class="spec-step" style="padding-top:0;border-top:none;">
+        <div class="spec-body">
+<div class="code-block"><span class="hl">Claude.ai</span>
+  <span class="arr">→</span> write bug report spec
+  <span class="arr">→</span> save to .docs/bugs/[feature-name].md
+
+<span class="hl">Claude Code</span>
+  <span class="arr">→</span> "Read .dev/context.md and
+     .docs/bugs/[feature-name].md
+     then diagnose and fix the bug."</div>
+          <div class="callout warn" style="margin-top:.875rem">One bug per file, one Claude Code session per bug. Mixing multiple bugs in one session causes the AI to conflate causes and produce fixes that break adjacent things.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Refactor ── -->
+    <div class="tab-panel" data-panel="refactor">
+      <div class="tab-intro">
+        <p>Use this when restructuring existing code without changing behaviour. The constraint list does most of the work — what must stay functionally identical, what the target structure looks like, and explicit do-not-touch boundaries.</p>
+      </div>
+      <div class="tab-group-label">Refactor spec format</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## What to refactor</span>
+<span class="cm">[file, module, or pattern being restructured]</span>
+
+<span class="hl">## Why</span>
+<span class="cm">[the problem with the current structure]</span>
+
+<span class="hl">## Current structure</span>
+<span class="cm">[brief description or code snippet of what exists]</span>
+
+<span class="hl">## Target structure</span>
+<span class="cm">[what it should look like after — describe or sketch]</span>
+
+<span class="hl">## Must not change</span>
+<span class="cm">  - External API / component interface stays identical</span>
+<span class="cm">  - No behaviour changes — same input → same output</span>
+<span class="cm">  - Do not touch [specific files]</span>
+
+<span class="hl">## Must not introduce</span>
+<span class="cm">  - No new dependencies</span>
+<span class="cm">  - No new abstractions not discussed here</span>
+
+<span class="hl">## Done when</span>
+<span class="cm">[existing tests pass / feature still works end-to-end]</span></div>
+          <p class="spec-save">Save as → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/refactors/[name].md</code></p>
+        </div>
+      </div>
+      <div class="tab-group-label">Key principle</div>
+      <div class="spec-step" style="padding-top:0;border-top:none;">
+        <div class="spec-body">
+          <div class="callout warn">Refactors are the highest-risk prompts to give AI. Without tight constraints, Claude will optimise aggressively and change things you didn't ask it to. The "must not change" and "must not introduce" sections are the most important part of this spec.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Migration ── -->
+    <div class="tab-panel" data-panel="migration">
+      <div class="tab-intro">
+        <p>Use this when moving data, changing a schema, or swapping a dependency. Migrations need a clear before/after state, a rollback plan, and steps that can be done incrementally without breaking production.</p>
+      </div>
+      <div class="tab-group-label">Migration spec format</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## What is being migrated</span>
+<span class="cm">[data schema / dependency / service / pattern]</span>
+
+<span class="hl">## Before state</span>
+<span class="cm">[current structure, dependency, or data shape]</span>
+
+<span class="hl">## After state</span>
+<span class="cm">[target structure, dependency, or data shape]</span>
+
+<span class="hl">## Why</span>
+<span class="cm">[reason for the migration]</span>
+
+<span class="hl">## Steps</span>
+<span class="cm">  1. [incremental step — safe to ship alone]</span>
+<span class="cm">  2. [incremental step]</span>
+<span class="cm">  3. [incremental step]</span>
+
+<span class="hl">## Rollback plan</span>
+<span class="cm">[how to revert if something breaks in production]</span>
+
+<span class="hl">## What must keep working</span>
+<span class="cm">  - [feature A must behave identically after]</span>
+<span class="cm">  - [existing data must not be lost or corrupted]</span>
+
+<span class="hl">## Constraints</span>
+<span class="cm">  - Each step must be independently deployable</span>
+<span class="cm">  - No breaking changes to external interfaces</span></div>
+          <p class="spec-save">Save as → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/migrations/[name].md</code></p>
+        </div>
+      </div>
+      <div class="tab-group-label">buffr example — chains to ReAct agent</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Example</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## What is being migrated</span>
+LangChain chains (LCEL) → ReAct agent loop
+
+<span class="hl">## Before state</span>
+prompt.pipe(model).pipe(parser) — linear chain,
+no tool routing, no multi-step reasoning
+
+<span class="hl">## After state</span>
+AgentExecutor with tool array, ReAct loop,
+conversation memory injected per session
+
+<span class="hl">## Steps</span>
+  1. Add tool definitions alongside existing chain
+  2. Wire AgentExecutor, keep chain as fallback
+  3. Route simple queries to chain, complex to agent
+  4. Remove chain once agent is stable
+
+<span class="hl">## Rollback plan</span>
+Revert to chain by toggling USE_AGENT env flag
+
+<span class="hl">## What must keep working</span>
+  - All existing provider switching (Anthropic/OpenAI/Ollama)
+  - Streaming responses
+  - .dev/ context injection</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Performance ── -->
+    <div class="tab-panel" data-panel="performance">
+      <div class="tab-intro">
+        <p>Use this when something is too slow or too heavy. A performance spec needs a baseline measurement, a clear target, and constraints on acceptable solutions — otherwise Claude will introduce complexity that trades one problem for another.</p>
+      </div>
+      <div class="tab-group-label">Performance spec format</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## What is slow / heavy</span>
+<span class="cm">[specific screen, route, query, or operation]</span>
+
+<span class="hl">## Baseline</span>
+<span class="cm">[measured current behaviour — load time, bundle size,</span>
+<span class="cm"> API calls, re-renders, memory usage]</span>
+
+<span class="hl">## Target</span>
+<span class="cm">[specific measurable goal — "under 200ms", "1 API call",</span>
+<span class="cm"> "no re-render on scroll"]</span>
+
+<span class="hl">## Context</span>
+<span class="cm">[why it's slow — too many fetches, large payload,</span>
+<span class="cm"> no memoisation, blocking render, etc.]</span>
+
+<span class="hl">## Acceptable solutions</span>
+<span class="cm">  - [caching, debounce, lazy load, pagination, etc.]</span>
+
+<span class="hl">## Not acceptable</span>
+<span class="cm">  - No new dependencies</span>
+<span class="cm">  - No breaking API changes</span>
+<span class="cm">  - Do not change data model</span>
+
+<span class="hl">## Done when</span>
+<span class="cm">[target metric is met, measured the same way as baseline]</span></div>
+          <p class="spec-save">Save as → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/performance/[name].md</code></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Prompt engineering ── -->
+    <div class="tab-panel" data-panel="prompteng">
+      <div class="tab-intro">
+        <p>Use this for AI apps like buffr when your system prompt, tool descriptions, or agent instructions are producing wrong output. The "code" being fixed is the prompt itself — not the application logic. Needs current prompt, observed output, and what you've already tried.</p>
+      </div>
+      <div class="tab-group-label">Prompt engineering spec format</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## What prompt is broken</span>
+<span class="cm">[system prompt / tool description / agent instruction]</span>
+
+<span class="hl">## Current prompt</span>
+<span class="cm">[paste the exact current prompt]</span>
+
+<span class="hl">## Input that triggers wrong output</span>
+<span class="cm">[exact user message or context that causes the problem]</span>
+
+<span class="hl">## Observed output</span>
+<span class="cm">[what the model actually returns]</span>
+
+<span class="hl">## Expected output</span>
+<span class="cm">[what it should return instead]</span>
+
+<span class="hl">## What I've already tried</span>
+<span class="cm">[previous attempts and why they didn't work]</span>
+
+<span class="hl">## Constraints</span>
+<span class="cm">  - Must work across all supported providers</span>
+<span class="cm">  - Must not increase token count significantly</span>
+<span class="cm">  - Must not break existing working inputs</span>
+
+<span class="hl">## Done when</span>
+<span class="cm">[the broken input produces the expected output,</span>
+<span class="cm"> and 3 other inputs still produce correct output]</span></div>
+          <p class="spec-save">Save as → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/prompts/[name].md</code></p>
+        </div>
+      </div>
+      <div class="tab-group-label">Key principle</div>
+      <div class="spec-step" style="padding-top:0;border-top:none;">
+        <div class="spec-body">
+          <div class="callout info">Always test a prompt fix against at least 3 inputs that were already working correctly. A fix that solves one failure mode while breaking existing behaviour is worse than the original problem.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Onboarding ── -->
+    <div class="tab-panel" data-panel="onboarding">
+      <div class="tab-intro">
+        <p>Use this for the first-run experience — what a brand new user sees before any data exists. Covers empty states, setup flows, and progressive disclosure. Relevant for loopd, contrl, and any app where the first session is meaningfully different from subsequent ones.</p>
+      </div>
+      <div class="tab-group-label">Onboarding spec format</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## App / feature being onboarded</span>
+<span class="cm">[app name or specific feature with a first-run state]</span>
+
+<span class="hl">## First-run trigger</span>
+<span class="cm">[how the app knows it's a new user —</span>
+<span class="cm"> no data, flag in storage, first login, etc.]</span>
+
+<span class="hl">## What the user needs to do first</span>
+<span class="cm">[minimum setup required before the app is useful]</span>
+
+<span class="hl">## First-run flow</span>
+<span class="cm">Steps:</span>
+<span class="cm">  1. [what user sees on first open]</span>
+<span class="cm">  2. [first action prompted]</span>
+<span class="cm">  3. [completion state]</span>
+<span class="cm">Expect:</span>
+<span class="cm">  [ ] [user understands what to do next]</span>
+<span class="cm">  [ ] [no dead ends or empty screens]</span>
+
+<span class="hl">## Empty states per screen</span>
+<span class="cm">  [Screen A]: [what shows before any data]</span>
+<span class="cm">  [Screen B]: [what shows before any data]</span>
+
+<span class="hl">## Progressive disclosure</span>
+<span class="cm">[what is hidden until the user completes setup —</span>
+<span class="cm"> features that require data to be meaningful]</span>
+
+<span class="hl">## Skip / defer option</span>
+<span class="cm">[can the user skip setup? what happens if they do?]</span>
+
+<span class="hl">## Done when</span>
+<span class="cm">[a new user can reach the core value of the app</span>
+<span class="cm"> without hitting a blank screen or dead end]</span></div>
+          <p class="spec-save">Save as → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/features/onboarding.md</code></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Integration ── -->
+    <div class="tab-panel" data-panel="integration">
+      <div class="tab-intro">
+        <p>Use this when connecting to a new external service or API — Notion, a new LLM provider, a webhook, or any third-party dependency. Needs auth flow, data contract, error handling, and rate limit behaviour defined upfront.</p>
+      </div>
+      <div class="tab-group-label">Integration spec format</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## Service being integrated</span>
+<span class="cm">[name and purpose of the external service]</span>
+
+<span class="hl">## What it replaces or extends</span>
+<span class="cm">[existing feature this connects to, or "new capability"]</span>
+
+<span class="hl">## Auth</span>
+<span class="cm">[API key / OAuth / token — where it's stored,</span>
+<span class="cm"> how it's passed, how it's rotated]</span>
+
+<span class="hl">## Data contract</span>
+<span class="cm">Request shape:  [fields, types, required vs optional]</span>
+<span class="cm">Response shape: [fields, types, what we actually use]</span>
+
+<span class="hl">## Error handling</span>
+<span class="cm">  - Rate limit (429): [retry strategy]</span>
+<span class="cm">  - Auth failure (401): [behaviour]</span>
+<span class="cm">  - Service down (5xx): [fallback]</span>
+<span class="cm">  - Malformed response: [behaviour]</span>
+
+<span class="hl">## Rate limits</span>
+<span class="cm">[requests per second/minute, payload size limits]</span>
+
+<span class="hl">## Where it lives in the codebase</span>
+<span class="cm">[new file location, existing file to modify]</span>
+
+<span class="hl">## Constraints</span>
+<span class="cm">  - Credentials never exposed to client</span>
+<span class="cm">  - All calls go through [server route / edge function]</span>
+<span class="cm">  - Must not break existing [related feature]</span>
+
+<span class="hl">## Done when</span>
+<span class="cm">[happy path works, rate limit is handled,</span>
+<span class="cm"> auth failure shows correct UI state]</span></div>
+          <p class="spec-save">Save as → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/integrations/[service-name].md</code></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 01 -->
   <p class="section-label" id="s01">01 — What prompt engineering actually is</p>
 
@@ -1545,436 +2406,6 @@ Data model + flow defined there</span></div>
   <span class="arr">→</span> What not to touch   <span class="cm">explicit do-not-modify list</span></div>
   </div>
 
-  <!-- 12 -->
-  <p class="section-label" id="s12">12 — Writing specs for your app</p>
-
-  <div class="card">
-    <p class="card-title">Specs are the techniques applied in order</p>
-    <p class="body-text">A spec isn't a separate document type — it's what you get when you run through the cheatsheet sections in sequence. The sections aren't isolated tools, they're stages of the same process. Which stages you run depends on whether you're implementing something new or closing gaps before a phase transition.</p>
-    <div class="why">
-      <p class="why-label">Why it matters</p>
-      <p>Without a spec, every prompt starts from scratch. With a spec saved to <code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold2)">.dev/</code>, Claude Code always has full context — across sessions, across phases, across tools.</p>
-    </div>
-    <div class="callout info">Use Claude.ai to write the spec. Use Claude Code to implement it. Never design and build in the same session — context fills up and the AI loses track of earlier decisions.</div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">The .dev/ and .docs/ folder structure</p>
-    <p class="body-text"><code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold2)">.dev/</code> holds persistent project knowledge the AI reads at the start of every session — what the codebase is and how to work in it. <code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold2)">.docs/</code> holds specs and planning documents — what you're building or fixing, referenced per task.</p>
-<div class="code-block"><span class="hl">.dev/</span>                  <span class="cm">loaded globally — AI reads on every session</span>
-  <span class="arr">→</span> context.md          <span class="cm">codebase snapshot — stack, structure, entities</span>
-  <span class="arr">→</span> rules.md            <span class="cm">coding conventions, do-not-touch list</span>
-  <span class="arr">→</span> skills.md           <span class="cm">reusable patterns and snippets</span>
-  <span class="arr">→</span> stack.md            <span class="cm">tech stack details</span>
-
-<span class="hl">.docs/</span>                 <span class="cm">referenced per task — not loaded globally</span>
-  <span class="arr">→</span> features/
-      [feature-name].md  <span class="cm">one spec file per feature</span>
-  <span class="arr">→</span> phases/
-      phase-N-audit.md   <span class="cm">phase audit before each transition</span>
-  <span class="arr">→</span> tests/
-      [feature-name].md  <span class="cm">manual test cases per feature</span></div>
-  </div>
-
-  <!-- tab: implementing vs refining -->
-  <div class="tabs-shell">
-    <div class="tab-bar">
-      <button class="tab-btn active" data-tab="implementing">Implementing a feature</button>
-      <button class="tab-btn" data-tab="refining">Refining before next phase</button>
-      <button class="tab-btn" data-tab="testing">Testing a feature</button>
-      <button class="tab-btn" data-tab="userstories">User stories for existing app</button>
-    </div>
-
-    <!-- ── TAB: Implementing ── -->
-    <div class="tab-panel active" data-panel="implementing">
-      <div class="tab-intro">
-        <p>Use this when building something new. You're answering: <em>what are we building?</em> The goal is a spec that removes every decision Claude Code would otherwise guess on.</p>
-      </div>
-
-      <div class="tab-group-label">Step 1 — App analysis <a href="#s09" class="sec-ref">09</a></div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat">Claude.ai</div>
-        <div class="spec-body">
-          <p class="spec-desc">Ask Claude.ai to extract the current state of your codebase. You do this once per project, then update it when the codebase changes significantly.</p>
-          <div class="example">
-            <p class="example-label">Prompt to use</p>
-<div class="code-block"><span class="ok">"Analyse my [app] codebase and answer:
-data model, state management, file structure,
-external deps, what must not change.
-Output as context.md for my .dev/ folder."</span></div>
-          </div>
-          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.dev/context.md</code></p>
-        </div>
-      </div>
-
-      <div class="tab-group-label">Steps 2–5 — Feature spec <a href="#s03" class="sec-ref">03</a><a href="#s06" class="sec-ref">06</a><a href="#s05" class="sec-ref">05</a><a href="#s07" class="sec-ref">07</a></div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat">Claude.ai</div>
-        <div class="spec-body">
-          <p class="spec-desc">One conversation. You describe the feature, Claude.ai applies the template and fills in the gaps. Review and lock it before moving on.</p>
-          <div class="example">
-            <p class="example-label">Prompt to use</p>
-<div class="code-block"><span class="ok">"Help me write a spec for [feature]
-using my prompting cheatsheet structure.
-Here's what I want it to do: [description]"</span></div>
-          </div>
-          <div class="code-block"><span class="hl">## Data model</span>       <span class="cm">entities, shape, relationships</span>
-<span class="hl">## What changes</span>     <span class="cm">reads, writes, mutations</span>
-<span class="hl">## Behaviour</span>        <span class="cm">interaction flow — all three paths</span>
-<span class="hl">## UI</span>               <span class="cm">visual treatment, only after above</span>
-<span class="hl">## Constraints</span>      <span class="cm">must / must not</span></div>
-          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/features/[name].md</code></p>
-        </div>
-      </div>
-
-      <div class="tab-group-label">Step 6 — Implement <a href="#s04" class="sec-ref">04</a></div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-code">Claude Code</div>
-        <div class="spec-body">
-          <p class="spec-desc">Open a new Claude Code session. Feed it the spec files. This is the only step that goes to Claude Code — everything before this was design.</p>
-          <div class="example">
-            <p class="example-label">Prompt to use</p>
-<div class="code-block"><span class="ok">"Read .dev/context.md and
-.docs/features/[name].md
-then implement the [feature]."</span></div>
-          </div>
-          <div class="callout good" style="margin-top:.75rem">The spec removes every decision Claude Code would otherwise guess on. What's left is just the implementation.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── TAB: Refining ── -->
-    <div class="tab-panel" data-panel="refining">
-      <div class="tab-intro">
-        <p>Use this at the end of a phase before starting the next one. You're answering: <em>what is the current state, what's incomplete, and what must be true before we move forward?</em> This is subtractive — you're closing gaps, not adding features.</p>
-      </div>
-
-      <div class="tab-group-label">Step 1 — Update app analysis <a href="#s09" class="sec-ref">09</a></div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat">Claude.ai</div>
-        <div class="spec-body">
-          <p class="spec-desc">Re-run app analysis with a focus on what has changed since the last phase. More important here than during feature work — the codebase has grown and assumptions may have shifted.</p>
-          <div class="example">
-            <p class="example-label">Prompt to use</p>
-<div class="code-block"><span class="ok">"Update context.md to reflect the current
-state of [app]. What has changed since phase N?
-What's stable, what's still rough?"</span></div>
-          </div>
-          <p class="spec-save">Update → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.dev/context.md</code></p>
-        </div>
-      </div>
-
-      <div class="tab-group-label">Step 2 — Phase audit</div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat">Claude.ai</div>
-        <div class="spec-body">
-          <p class="spec-desc">Instead of a feature spec, write a phase audit. What's complete, what's half-done, what's blocking the next phase, and what's explicitly deferred. Document deferred items — otherwise you accidentally build on top of them.</p>
-<div class="code-block"><span class="hl">## What's complete</span>
-<span class="cm">features that are stable and tested</span>
-
-<span class="hl">## What's incomplete</span>
-<span class="cm">exists but has gaps — missing states,
-unhappy paths deferred, known edge cases</span>
-
-<span class="hl">## What's blocking next phase</span>
-<span class="cm">must be resolved before building anything new</span>
-
-<span class="hl">## What's explicitly deferred</span>
-<span class="cm">choosing not to fix now — documented so you
-don't build on top of it unknowingly</span></div>
-          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/phases/phase-N-audit.md</code></p>
-        </div>
-      </div>
-
-      <div class="tab-group-label">Steps 3–5 — Mini specs per blocker <a href="#s06" class="sec-ref">06</a><a href="#s05" class="sec-ref">05</a><a href="#s07" class="sec-ref">07</a></div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat">Claude.ai</div>
-        <div class="spec-body">
-          <p class="spec-desc">For each item in "incomplete" or "blocking", write a mini spec — same technique as feature specs but smaller in scope. Interaction flow and three paths for each gap.</p>
-          <div class="example">
-            <p class="example-label">Prompt to use</p>
-<div class="code-block"><span class="ok">"Write a mini spec to fix [incomplete item].
-Cover the interaction flow, unhappy path,
-and the three states. Keep it tight."</span></div>
-          </div>
-          <p class="spec-save">Save each → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/features/fix-[name].md</code></p>
-        </div>
-      </div>
-
-      <div class="tab-group-label">Step 6 — Fix in Claude Code <a href="#s04" class="sec-ref">04</a></div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-code">Claude Code</div>
-        <div class="spec-body">
-          <p class="spec-desc">Same as implementing a feature — one spec file per fix, one Claude Code session per fix. Keep sessions narrow so context stays clean.</p>
-          <div class="example">
-            <p class="example-label">Prompt to use</p>
-<div class="code-block"><span class="ok">"Read .dev/context.md and
-.docs/features/fix-[name].md
-then fix [item]."</span></div>
-          </div>
-          <div class="callout warn" style="margin-top:.75rem">Fix blockers before starting the next phase. Building new features on top of half-finished ones compounds bugs in ways that become very hard to trace.</div>
-        </div>
-      </div>
-
-      <div class="tab-group-label">After all fixes — update context</div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat">Claude.ai</div>
-        <div class="spec-body">
-          <p class="spec-desc">Once all blockers are resolved, update context.md to reflect the clean state. The next phase starts from accurate, stable ground.</p>
-<div class="code-block"><span class="ok">"Update .dev/context.md — phase N blockers
-are resolved. Mark those features as stable.
-App is ready for phase [N+1]."</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── TAB: Testing ── -->
-    <div class="tab-panel" data-panel="testing">
-      <div class="tab-intro">
-        <p>Use this after implementation to manually verify a feature before shipping. Each test case is a path with numbered steps and a clear expected result per step. Define "done when" before you start testing, not after.</p>
-      </div>
-
-      <div class="tab-group-label">Test case format</div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
-        <div class="spec-body">
-<div class="code-block"><span class="hl">## Feature</span>
-<span class="cm">[name of the feature being tested]</span>
-
-<span class="hl">## Setup</span>
-<span class="cm">[app state required before testing begins]</span>
-
-<span class="hl">## Happy path</span>
-<span class="cm">Steps:</span>
-<span class="cm">  1. [action]</span>
-<span class="cm">  2. [action]</span>
-<span class="cm">  3. [action]</span>
-<span class="cm">Expect:</span>
-<span class="cm">  [ ] [what you should see after step N]</span>
-<span class="cm">  [ ] [what you should see after step N]</span>
-
-<span class="hl">## Unhappy path</span>
-<span class="cm">Steps:</span>
-<span class="cm">  1. [action that triggers failure]</span>
-<span class="cm">  2. [e.g. disconnect network then submit]</span>
-<span class="cm">Expect:</span>
-<span class="cm">  [ ] [error state shown correctly]</span>
-<span class="cm">  [ ] [data not lost]</span>
-<span class="cm">  [ ] [retry available if needed]</span>
-
-<span class="hl">## Weird path</span>
-<span class="cm">Steps:</span>
-<span class="cm">  1. [edge case setup]</span>
-<span class="cm">  2. [action]</span>
-<span class="cm">Expect:</span>
-<span class="cm">  [ ] [boundary condition handled correctly]</span>
-<span class="cm">  [ ] [no crash or visual break]</span>
-
-<span class="hl">## States</span>
-<span class="cm">  [ ] empty state — correct before any data</span>
-<span class="cm">  [ ] error state — correct on failure</span>
-<span class="cm">  [ ] re-entry — correct after close + reopen</span>
-
-<span class="hl">## Done when</span>
-<span class="cm">[the specific condition that means this feature is shippable]</span></div>
-          <p class="spec-save">Save as → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/tests/[feature-name].md</code></p>
-        </div>
-      </div>
-
-      <div class="tab-group-label">Filled example — DailyRecap</div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Example</div>
-        <div class="spec-body">
-<div class="code-block"><span class="hl">## Feature</span>
-DailyRecap — end of day summary
-
-<span class="hl">## Setup</span>
-Today screen open. At least 1 entry with mixed
-block types (text + habit + clip) logged today.
-
-<span class="hl">## Happy path</span>
-Steps:
-  1. Open Today screen
-  2. Scroll past journal entries to bottom
-  3. Observe the recap section
-Expect:
-  <span class="ok">[ ]</span> Recap section is visible below entries
-  <span class="ok">[ ]</span> Clips section shows thumbnails
-  <span class="ok">[ ]</span> Habits section shows checked / total count
-  <span class="ok">[ ]</span> Notes section shows truncated text blocks
-
-<span class="hl">## Unhappy path</span>
-Steps:
-  1. Disconnect network
-  2. Force-close and reopen the app
-  3. Navigate to Today screen
-Expect:
-  <span class="ok">[ ]</span> Recap section is hidden — no broken UI
-  <span class="ok">[ ]</span> No crash or white screen
-  <span class="ok">[ ]</span> Journal entries show their own error state
-
-Steps:
-  1. Log only clips today (no text or habits)
-  2. Open Today screen
-Expect:
-  <span class="ok">[ ]</span> Only clips section renders in recap
-  <span class="ok">[ ]</span> No empty habit or notes sections shown
-
-<span class="hl">## Weird path</span>
-Steps:
-  1. Log 50 clips today
-  2. Scroll to recap
-Expect:
-  <span class="ok">[ ]</span> Shows 4 thumbnails + "+46" overflow label
-  <span class="ok">[ ]</span> No layout overflow or clipping
-
-Steps:
-  1. Log exactly 1 entry with 1 text block
-  2. Scroll to recap
-Expect:
-  <span class="ok">[ ]</span> Only notes section renders
-  <span class="ok">[ ]</span> No empty clips or habits sections shown
-
-<span class="hl">## States</span>
-  <span class="ok">[ ]</span> No entries today → recap not shown at all
-  <span class="ok">[ ]</span> Entries loading → skeleton shown, not blank
-  <span class="ok">[ ]</span> Close + reopen app → recap reloads correctly
-
-<span class="hl">## Done when</span>
-All checkboxes pass on device, not just browser</div>
-        </div>
-      </div>
-
-      <div class="tab-group-label">What each path covers</div>
-      <div class="spec-step" style="padding-top:0;border-top:none;">
-        <div class="spec-body">
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div>
-              <span class="pill pill-happy" style="margin-bottom:4px;">Happy path</span>
-              <p class="spec-desc" style="margin:0">The ideal flow — user does everything correctly. Steps verify the core feature works as designed.</p>
-            </div>
-            <div>
-              <span class="pill pill-unhappy" style="margin-bottom:4px;">Unhappy path</span>
-              <p class="spec-desc" style="margin:0">Things that go wrong — bad input, network failure, repeated actions. Steps verify the app handles failure without crashing or losing data.</p>
-            </div>
-            <div>
-              <span class="pill pill-weird" style="margin-bottom:4px;">Weird path</span>
-              <p class="spec-desc" style="margin:0">Technically valid but unintended — extreme data, timing edge cases, boundary conditions. Steps verify nothing breaks unexpectedly.</p>
-            </div>
-          </div>
-          <div class="callout warn" style="margin-top:.875rem">Always test on device, not just browser. Layout, touch targets, scroll behaviour, and timing differ enough that browser-only testing misses real bugs.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── TAB: User stories ── -->
-    <div class="tab-panel" data-panel="userstories">
-      <div class="tab-intro">
-        <p>Use this to generate user stories with all three paths for an existing app or feature. The more context you provide — data model, stack, constraints — the more accurate the paths. Without the data model, Claude invents plausible but possibly wrong failure modes.</p>
-      </div>
-
-      <div class="tab-group-label">Prompt template</div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
-        <div class="spec-body">
-<div class="code-block"><span class="hl">I have an existing app called [app name].</span>
-
-[2–3 sentences describing what it does]
-
-<span class="hl">For the [feature or screen] feature, write user stories</span>
-<span class="hl">with all three paths for each story.</span>
-
-<span class="hl">Data model:</span>
-<span class="cm">  [Entity]: { field, field, field }</span>
-<span class="cm">  [Entity]: { field, field, field }</span>
-
-<span class="hl">Stack:</span> <span class="cm">[framework, database, relevant services]</span>
-
-<span class="hl">Constraints:</span>
-<span class="cm">  - [must do X]</span>
-<span class="cm">  - [must not do Y]</span>
-
-<span class="hl">Format each story as:</span>
-
-## Story
-As a [user], I want to [action] so that [outcome].
-
-## Happy path
-Steps:
-  1. [action]
-  2. [action]
-Expect:
-  [ ] [result]
-
-## Unhappy path
-Steps:
-  1. [action that triggers failure]
-Expect:
-  [ ] [result]
-
-## Weird path
-Steps:
-  1. [edge case setup]
-  2. [action]
-Expect:
-  [ ] [result]</div>
-        </div>
-      </div>
-
-      <div class="tab-group-label">What to include for better output</div>
-      <div class="spec-step">
-        <div class="spec-body">
-          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:.875rem;">
-            <div class="state-block" style="padding:.5rem 0">
-              <span class="tag">Data model</span>
-              <p class="state-desc">Entity names, field shapes, relationships. Without this, Claude guesses at what can go wrong — with it, unhappy paths reflect real failure modes in your stack.</p>
-            </div>
-            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
-              <span class="tag">Screen or flow name</span>
-              <p class="state-desc">Which specific screen or user flow you're targeting. Keeps stories scoped and prevents Claude from writing generic stories that could apply to any app.</p>
-            </div>
-            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
-              <span class="tag">Tech stack</span>
-              <p class="state-desc">Framework, database, external services. Unhappy paths differ significantly — Notion API timeouts behave differently to REST API failures or local state errors.</p>
-            </div>
-            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
-              <span class="tag">Constraints</span>
-              <p class="state-desc">Things it must or must not do. Prevents Claude from writing stories that conflict with existing behaviour or architecture decisions.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tab-group-label">Filled example — loopd journal entry</div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Example</div>
-        <div class="spec-body">
-<div class="code-block"><span class="hl">I have an existing app called loopd — a daily vlogging PWA.</span>
-It lets users log journal entries with text, habit, and
-clip blocks throughout the day.
-
-<span class="hl">For the journal entry screen, write user stories with</span>
-<span class="hl">all three paths for:</span>
-  - Creating a new entry
-  - Adding a clip block to an existing entry
-  - Checking off a habit block
-
-<span class="hl">Data model:</span>
-  Entry: { id, date, blocks: Block[] }
-  Block: { type: 'text'|'habit'|'clip', value, timestamp }
-
-<span class="hl">Stack:</span> Next.js, Notion API as the database
-
-<span class="hl">Constraints:</span>
-  - All reads/writes go through Notion API, no local DB
-  - Blocks append to entry, never replace existing blocks
-  - Habit blocks can only be checked once per day</div>
-        </div>
-      </div>
-
-      <div class="callout info" style="margin-top:.875rem">User stories written this way feed directly into your spec. Once Claude generates them, paste the paths into your <code style="font-family:'DM Mono',monospace;font-size:12px">docs/features/[name].md</code> spec file as the behaviour section.</div>
-    </div>
-  </div>
   <p>aipe — AI Product Engineering curriculum</p>
   <p><a href="index.html">← back to index</a></p>
 </footer>
