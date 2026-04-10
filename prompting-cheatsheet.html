@@ -726,6 +726,89 @@
     footer p { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: .06em; }
     footer a  { color: var(--gold2); text-decoration: none; }
     footer a:hover { color: var(--gold); }
+    /* ── Mobile ── */
+    @media (max-width: 600px) {
+
+      /* Header */
+      header {
+        padding: 1.25rem 1rem 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .5rem;
+      }
+
+      header h1 { font-size: 1.75rem; }
+
+      .header-tag { align-self: flex-start; }
+
+      /* Main */
+      main { padding: 1rem; gap: 1px; }
+
+      /* Section labels */
+      .section-label { padding: 1.75rem 0 .625rem; }
+
+      /* Cards */
+      .card { padding: 1rem; }
+
+      /* Code blocks — allow horizontal scroll */
+      .code-block {
+        font-size: 11px;
+        overflow-x: auto;
+        white-space: pre;
+      }
+
+      /* Two col → single */
+      .two-col { grid-template-columns: 1fr; gap: .875rem; }
+
+      /* Do/dont → single */
+      .do-dont { grid-template-columns: 1fr; }
+      .dont-block { border-left: 1px solid rgba(224,92,106,.15); border-top: none; }
+
+      /* Picker grid → single */
+      .picker-grid { grid-template-columns: 1fr; }
+
+      /* Layer rows — stack badge below bar */
+      .layer-row { flex-wrap: wrap; gap: 6px; }
+      .layer-badge { width: 100%; text-align: left; }
+
+      /* Step rows — tighten */
+      .step-row { gap: 10px; }
+      .step-num { width: 20px; height: 20px; font-size: 9px; }
+
+      /* Spec steps — stack tool badge above body */
+      .spec-step { flex-direction: column; gap: 8px; }
+      .spec-tool { align-self: flex-start; }
+
+      /* Map table — already handled at 640px, ensure padding */
+      .map-table td { font-size: 12px; }
+
+      /* Workflow row — wrap */
+      .workflow-row { gap: 6px; }
+      .wf-label { font-size: 11px; }
+
+      /* Path blocks */
+      .path-examples { gap: 3px; }
+      .tag { font-size: 9px; padding: 2px 7px; }
+
+      /* State blocks */
+      .state-header { flex-wrap: wrap; }
+      .state-eg { font-size: 11px; }
+
+      /* Tabs */
+      .tab-btn { font-size: 10px; padding: 10px 12px; }
+      .tab-panel { padding: 1rem; }
+      .tab-intro { font-size: 12px; }
+      .tab-group-label { margin: 1rem 0 .5rem; }
+
+      /* Footer */
+      footer {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .25rem;
+      }
+    }
+
   </style>
 </head>
 <body>
