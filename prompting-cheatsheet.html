@@ -1152,6 +1152,7 @@
       <button class="tab-btn" data-tab="onboarding">Onboarding</button>
       <button class="tab-btn" data-tab="integration">Integration</button>
       <button class="tab-btn" data-tab="curriculum">Curriculum</button>
+      <button class="tab-btn" data-tab="plan">Plan</button>
     </div>
     </div>
 
@@ -2095,6 +2096,224 @@ Structure as a markdown document with:
             </div>
           </div>
           <div class="callout info" style="margin-top:.875rem">This spec is reusable across any codebase, any language, any stack. The output changes — the prompt doesn't.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Plan ── -->
+    <div class="tab-panel" data-panel="plan">
+      <div class="tab-intro">
+        <p>A reusable format for creating phased implementation plans that Claude Code can work through autonomously across multiple sessions. Use this when a project needs 20+ hours of work, spans multiple features, and you want Claude Code to resume without re-explaining context each time.</p>
+      </div>
+
+      <div class="tab-group-label">When to use it</div>
+      <div class="spec-step" style="padding-top:0;border-top:none">
+        <div class="spec-body">
+          <div class="do-dont">
+            <div class="do-block">
+              <p class="do-label">✓ Good fit</p>
+              <p class="item">Migrating a codebase to a new architecture</p>
+              <p class="item">Multiple related features that build on each other</p>
+              <p class="item">Refactors spanning many files over a long horizon</p>
+              <p class="item">Any project where Claude Code must resume across sessions</p>
+            </div>
+            <div class="dont-block">
+              <p class="do-label">✗ Not a fit</p>
+              <p class="item">One-off bug fixes or single-file edits</p>
+              <p class="item">Exploratory or prototype work</p>
+              <p class="item">Tasks under a few hours — the structure is overhead</p>
+              <p class="item">Work where the end state isn't yet defined</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Prompt to generate a plan</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+          <p class="spec-desc">Paste this into Claude.ai along with your spec, codebase context, or feature list. Claude produces a full <code style="font-size:11px">plan.md</code> ready to save to the repo root.</p>
+<div class="code-block"><span class="hl">Create an implementation plan in the Plan Spec format.</span>
+
+Project: <span class="cm">[NAME]</span>
+Stack:   <span class="cm">[LIST STACK]</span>
+Context: <span class="cm">[WHAT THE PROJECT IS, 1–3 SENTENCES]</span>
+
+Features to implement (in rough priority order):
+1. <span class="cm">[FEATURE 1]</span>
+2. <span class="cm">[FEATURE 2]</span>
+3. <span class="cm">[FEATURE 3]</span>
+
+Requirements:
+<span class="arr">→</span> Break work into sequential phases, one per feature
+   (split large features into multiple phases)
+<span class="arr">→</span> Each phase must have: Status, Goal, Depends on,
+   numbered checkbox Steps, Constraints, Rollback plan,
+   Done-when checklist, and a Notify-user footer
+<span class="arr">→</span> Include a session startup prompt at the top
+<span class="arr">→</span> Include a notification rule for phase completion
+<span class="arr">→</span> Include portability / cross-phase constraints
+<span class="arr">→</span> Include a phase overview table with time estimates
+<span class="arr">→</span> Mark Phase 1 as Active, all others as Backlog
+<span class="arr">→</span> Number steps as [phase].[step] e.g. 1.1, 1.2, 2.1
+<span class="arr">→</span> Steps must be concrete enough to execute without
+   clarification — name specific files and functions
+<span class="arr">→</span> End with cross-phase constraints and file location
+
+Output the full plan.md file, ready to save.</div>
+          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">[project]-plan.md</code> in repo root</p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Required sections in every plan file</div>
+      <div class="spec-step">
+        <div class="spec-body">
+          <div style="display:flex;flex-direction:column;gap:0">
+            <div class="state-block" style="padding:.625rem 0">
+              <span class="tag">1. Title + summary</span>
+              <p class="state-desc">One-line description. The instruction: "Read this file at the start of every session and continue from the next unchecked step."</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">2. Session startup prompt</span>
+              <p class="state-desc">Exact instruction Claude Code follows when it opens a new session. Reads the plan file, finds the active phase, finds the next unchecked step.</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">3. Notification rule</span>
+              <p class="state-desc">The exact message Claude Code must output after completing each phase — summary of what was done, what's next, and "Ready to continue? Type yes."</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">4. Context + stack</span>
+              <p class="state-desc">What the project is, what this plan covers, why phases are ordered this way. Ends with a one-line stack summary.</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">5. Portability rules</span>
+              <p class="state-desc">Non-negotiable constraints that apply throughout every phase — things like "don't touch auth", "always use migration files", "never break auto-save".</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">6. Phase overview table</span>
+              <p class="state-desc">All phases with dependencies and time estimates in one scannable table. Phase 1 active, rest backlog.</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">7. Phases (one section each)</span>
+              <p class="state-desc">Each phase has: Status, Goal, Depends on, Steps (checkboxes), Constraints, Rollback plan, Done-when checklist, Notify-user footer.</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">8. Cross-phase constraints</span>
+              <p class="state-desc">Rules for every phase: notify after each, one phase per session, don't touch unrelated files, run tests, deploy after key phases.</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">9. File location</span>
+              <p class="state-desc">Where to save the plan in the repo. Always root — not <code style="font-size:11px">docs/</code> or <code style="font-size:11px">specs/</code> — so session startup is frictionless.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Phase structure</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Format</div>
+        <div class="spec-body">
+<div class="code-block"><span class="hl">## Phase [N] — [name]</span>
+
+**Status: Active** <span class="cm">or</span> **Status: Backlog**
+
+**Goal:** <span class="cm">[1–2 sentences — what it achieves and why ordered here]</span>
+
+**Depends on:** <span class="cm">[previous phase, or — for Phase 1]</span>
+
+---
+
+<span class="hl">### Steps</span>
+
+- [ ] **[N].1** <span class="cm">[Concrete step — name specific files and functions]</span>
+  - <span class="cm">[Sub-bullet for additional detail]</span>
+
+- [ ] **[N].2** <span class="cm">[Next step]</span>
+
+- [ ] **[N].X** Run test suite — all existing tests pass
+
+---
+
+<span class="hl">### Constraints</span>
+- <span class="cm">[What this phase must NOT do]</span>
+- <span class="cm">[Behaviour that must be preserved]</span>
+
+<span class="hl">### Rollback plan</span>
+<span class="cm">[How to undo this phase if it breaks something]</span>
+
+<span class="hl">### ✓ Done when</span>
+- [ ] <span class="cm">[Observable outcome — "users can X", not "I wrote X"]</span>
+- [ ] All tests pass
+- [ ] Deployed without errors
+
+<span class="arr">→</span> Notify user, wait for confirmation before Phase [N+1]</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Phase sizing rules</div>
+      <div class="spec-step" style="padding-top:0;border-top:none">
+        <div class="spec-body">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.625rem">
+            <span class="tag">6–15 steps per phase</span>
+            <span class="tag">4–12 hours per phase</span>
+            <span class="tag">split if &gt; 20 steps</span>
+            <span class="tag">merge if &lt; 5 steps</span>
+          </div>
+          <div class="do-dont">
+            <div class="do-block">
+              <p class="do-label">✓ Concrete step</p>
+<div class="code-block"><span class="ok">- [ ] **2.3** Create `lib/ai/summarize.ts`:
+  - Loads entries from SQLite
+  - Builds prompt via `lib/ai/prompt.ts`
+  - Calls Claude (claude-sonnet-4-6)
+  - Writes to `ai_summaries` on success</span></div>
+            </div>
+            <div class="dont-block">
+              <p class="do-label">✗ Too vague</p>
+<div class="code-block"><span class="bad">- [ ] **2.3** Add AI summary
+  functionality</span></div>
+              <p style="font-size:12px;color:var(--danger);margin-top:6px">No file names, no function signatures, no behaviour specified. Claude Code will guess.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">How Claude Code uses the plan</div>
+      <div class="spec-step" style="padding-top:0;border-top:none">
+        <div class="spec-body">
+<div class="code-block"><span class="hl">Session start</span>
+  <span class="arr">→</span> reads plan file from repo root
+  <span class="arr">→</span> finds phase marked Status: Active
+  <span class="arr">→</span> finds first unchecked step [ ]
+
+<span class="hl">Working</span>
+  <span class="arr">→</span> executes step
+  <span class="arr">→</span> updates [ ] to [x] in the plan file
+  <span class="arr">→</span> moves to next unchecked step
+  <span class="arr">→</span> repeats
+
+<span class="hl">Phase complete</span>
+  <span class="arr">→</span> all steps + done-when items checked
+  <span class="arr">→</span> outputs notification message
+  <span class="arr">→</span> stops — waits for user to type "yes"
+
+<span class="hl">Next session</span>
+  <span class="arr">→</span> active phase moves to Phase N+1
+  <span class="arr">→</span> cycle repeats</div>
+          <div class="callout info" style="margin-top:.875rem">The plan file IS the state. No separate todo list, no external tracker. Just the file in the repo, versioned alongside the code it describes.</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">File naming</div>
+      <div class="spec-step" style="padding-top:0;border-top:none">
+        <div class="spec-body">
+<div class="code-block"><span class="cm">Project-wide plan (multiple features):</span>
+  <span class="ok">[project]-plan.md</span>   <span class="cm">e.g. loopd-plan.md, buffr-plan.md</span>
+
+<span class="cm">Single-feature plan:</span>
+  <span class="ok">[feature]-plan.md</span>   <span class="cm">e.g. auth-plan.md, onboarding-plan.md</span>
+
+<span class="cm">Always save in repo root — not docs/ or specs/</span></div>
         </div>
       </div>
     </div>
