@@ -604,11 +604,31 @@
       border: 1px solid var(--border);
     }
 
+    .tab-bar-wrap {
+      position: relative;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-bar-wrap::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 40px;
+      background: linear-gradient(to right, transparent, var(--bg2));
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity .2s;
+    }
+
+    .tab-bar-wrap.no-fade::after { opacity: 0; }
+
     .tab-bar {
       display: flex;
-      border-bottom: 1px solid var(--border);
       overflow-x: auto;
       scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
     }
 
     .tab-bar::-webkit-scrollbar { display: none; }
@@ -626,10 +646,11 @@
       cursor: pointer;
       transition: color .15s, background .15s;
       white-space: nowrap;
+      flex-shrink: 0;
+      min-height: 44px;
     }
 
     .tab-btn:last-child { border-right: none; }
-
     .tab-btn:hover { color: var(--muted); background: var(--bg3); }
 
     .tab-btn.active {
@@ -829,9 +850,11 @@
 
   <div class="tabs-shell">
     <!-- tab bar -->
+    <div class="tab-bar-wrap">
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="picker">Use case quick picker</button>
       <button class="tab-btn" data-tab="mapping">Mapping to techniques</button>
+    </div>
     </div>
 
     <!-- ── TAB: Quick picker ── -->
@@ -1115,6 +1138,7 @@
 
   <!-- tab: implementing vs refining -->
   <div class="tabs-shell">
+    <div class="tab-bar-wrap">
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="implementing">Feature</button>
       <button class="tab-btn" data-tab="refining">Audit</button>
@@ -1127,6 +1151,8 @@
       <button class="tab-btn" data-tab="prompteng">Prompt engineering</button>
       <button class="tab-btn" data-tab="onboarding">Onboarding</button>
       <button class="tab-btn" data-tab="integration">Integration</button>
+      <button class="tab-btn" data-tab="curriculum">Curriculum</button>
+    </div>
     </div>
 
     <!-- ── TAB: Implementing ── -->
@@ -1928,6 +1954,150 @@ Revert to chain by toggling USE_AGENT env flag
         </div>
       </div>
     </div>
+
+    <!-- ── TAB: Curriculum ── -->
+    <div class="tab-panel" data-panel="curriculum">
+      <div class="tab-intro">
+        <p>A reusable prompt spec that turns any working codebase into a structured learning resource. Extracts formal concepts already present in the code, grounds each one in a specific file or pattern, and organises them into a curriculum ordered by dependency. Works with any app, any language, any stack.</p>
+      </div>
+
+      <div class="tab-group-label">Why this works</div>
+      <div class="spec-step" style="padding-top:0;border-top:none;">
+        <div class="spec-body">
+          <div class="why">
+            <p class="why-label">Why it matters</p>
+            <p>Learning from toy examples teaches a concept in isolation. Learning from your own codebase teaches it in context — where it lives, why it was chosen, what problem it solves. That's the difference between knowing a pattern and knowing when to use it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Prompt template</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+          <p class="spec-desc">Paste your codebase spec or architecture doc, then send this prompt. The output is a structured curriculum doc you can save and study from.</p>
+<div class="code-block"><span class="hl">I'm going to share the architecture and codebase of an app
+I built. Turn it into a structured learning resource that
+teaches me the underlying concepts through my own code.</span>
+
+<span class="hl">App spec / architecture doc:</span>
+<span class="cm">[paste your spec, README, or architecture doc here]</span>
+
+<span class="hl">1. Extract concepts</span>
+Identify every meaningful concept in this codebase.
+Map each one to a formal name and category:
+
+  <span class="arr">→</span> Agentic AI       <span class="cm">LLM vs agent, tool calling, ReAct loop,
+                    memory patterns, orchestration, prompt chaining</span>
+  <span class="arr">→</span> Systems thinking <span class="cm">separation of concerns, data flow,
+                    storage abstraction, idempotency,
+                    migration strategies, race conditions</span>
+  <span class="arr">→</span> Thinking in code <span class="cm">type-driven design, schema-first dev,
+                    error classification, optimistic UI,
+                    provider abstraction, rollback patterns</span>
+  <span class="arr">→</span> AI product eng   <span class="cm">context window management, spec-driven dev,
+                    memory bank patterns, evaluation,
+                    cost vs capability tradeoffs</span>
+  <span class="arr">→</span> Language-agnostic <span class="cm">any patterns or mental models that
+                     transfer across stacks</span>
+
+<span class="hl">2. Ground each concept in the codebase</span>
+For every concept, explain:
+  <span class="arr">→</span> What it is       <span class="cm">formal definition, 2–3 sentences</span>
+  <span class="arr">→</span> Where it lives   <span class="cm">specific file, function, or pattern in this app</span>
+  <span class="arr">→</span> Why it exists    <span class="cm">what problem it solves in this specific context</span>
+  <span class="arr">→</span> General rule     <span class="cm">the transferable principle beyond this codebase</span>
+
+<span class="hl">3. Build a curriculum</span>
+Organise all concepts into a learning path:
+  <span class="arr">→</span> Order by dependency  <span class="cm">prerequisites before advanced topics</span>
+  <span class="arr">→</span> Group by theme       <span class="cm">cluster related concepts</span>
+  <span class="arr">→</span> Mark difficulty      <span class="cm">foundational / intermediate / advanced</span>
+  <span class="arr">→</span> Suggest next steps   <span class="cm">what to read, build, or explore to go deeper</span>
+
+<span class="hl">4. Output format</span>
+Structure as a markdown document with:
+  <span class="arr">→</span> Concept index at the top (name, category, difficulty)
+  <span class="arr">→</span> One section per concept with the four explanations
+  <span class="arr">→</span> Curriculum section at the end with ordered learning path
+  <span class="arr">→</span> "Go deeper" links per concept
+
+<span class="hl">Constraints</span>
+  <span class="arr">→</span> Every explanation must reference a specific part of the codebase
+  <span class="arr">→</span> No generic definitions disconnected from the actual code
+  <span class="arr">→</span> Language-agnostic principles must be explicitly labelled
+  <span class="arr">→</span> If a concept is only partially implemented, note what's missing
+     and why completing it would deepen understanding</div>
+          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.buffr/specs/curriculum.md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Example concepts it extracts — buffr</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Example</div>
+        <div class="spec-body">
+          <div style="display:flex;flex-direction:column;gap:0">
+            <div class="state-block" style="padding:.625rem 0">
+              <span class="tag">Provider abstraction</span>
+              <p class="state-desc">Lives in <code style="font-size:11px">netlify/functions/lib/ai/provider.ts</code>. The multi-provider factory that swaps Anthropic/OpenAI/Ollama behind a single interface. General rule: abstract what changes, stabilise what doesn't.</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Prompt chaining</span>
+              <p class="state-desc">Lives in <code style="font-size:11px">chains/summarizer.ts</code>, <code style="font-size:11px">chains/intent.ts</code>. Each chain is a single-purpose LLM call. General rule: one prompt, one job — chain them rather than cramming everything into one context.</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Idempotency</span>
+              <p class="state-desc">Lives in the manual actions race condition fix and the backfill migration script. General rule: operations safe to retry are easier to reason about, debug, and recover from.</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Memory bank pattern</span>
+              <p class="state-desc">Lives in the <code style="font-size:11px">.buffr/</code> directory structure. Externalising AI context into files the model reads on session start. General rule: when a tool has no memory, you build the memory layer yourself.</p>
+            </div>
+            <div class="state-block" style="padding:.625rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Parallel write migration</span>
+              <p class="state-desc">Lives in the Neon DB migration plan (Phases 3–5). Write to both stores, verify parity, then cut over reads. General rule: never cut over reads and writes simultaneously — separate the risks.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">How to use the output</div>
+      <div class="spec-step" style="padding-top:0;border-top:none;">
+        <div class="spec-body">
+          <div class="steps">
+            <div class="step-row" style="padding-top:0;border-top:none">
+              <div class="step-num">1</div>
+              <div>
+                <p class="step-title">Save as curriculum doc</p>
+                <p class="step-desc">Save to <code style="font-size:11px">.buffr/specs/curriculum.md</code>. Update it as the codebase grows — new features surface new concepts.</p>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-num">2</div>
+              <div>
+                <p class="step-title">Study one concept at a time</p>
+                <p class="step-desc">Read the explanation, find it in the code, then explain it back in your own words without looking. That's the test.</p>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-num">3</div>
+              <div>
+                <p class="step-title">Implement the missing pieces</p>
+                <p class="step-desc">If a concept is only partially present (e.g. agent loop exists but has no memory), implement the gap as a learning exercise. Building beats reading every time.</p>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-num">4</div>
+              <div>
+                <p class="step-title">Re-run on new codebases</p>
+                <p class="step-desc">Every app surfaces different concepts. Run this spec against loopd, contrl, or any new project to extract what's unique to that domain.</p>
+              </div>
+            </div>
+          </div>
+          <div class="callout info" style="margin-top:.875rem">This spec is reusable across any codebase, any language, any stack. The output changes — the prompt doesn't.</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 01 -->
@@ -2498,7 +2668,20 @@ Data model + flow defined there</span></div>
 </footer>
 
 <script>
+  function updateFade(bar) {
+    const wrap = bar.closest('.tab-bar-wrap');
+    if (!wrap) return;
+    const atEnd = bar.scrollLeft + bar.clientWidth >= bar.scrollWidth - 4;
+    wrap.classList.toggle('no-fade', atEnd);
+  }
+
   document.querySelectorAll('.tabs-shell').forEach(shell => {
+    const bar = shell.querySelector('.tab-bar');
+    if (bar) {
+      updateFade(bar);
+      bar.addEventListener('scroll', () => updateFade(bar));
+    }
+
     shell.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = btn.dataset.tab;
@@ -2508,6 +2691,8 @@ Data model + flow defined there</span></div>
           if (p.dataset.panel === target) p.classList.add('active');
         });
         btn.classList.add('active');
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        if (bar) updateFade(bar);
       });
     });
   });
