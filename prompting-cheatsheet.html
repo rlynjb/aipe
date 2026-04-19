@@ -1140,24 +1140,24 @@
   <div class="tabs-shell">
     <div class="tab-bar-wrap">
     <div class="tab-bar">
-      <button class="tab-btn active" data-tab="implementing">Feature</button>
+      <button class="tab-btn active" data-tab="plan">Plan</button>
+      <button class="tab-btn" data-tab="implementing">Feature</button>
+      <button class="tab-btn" data-tab="bugreport">Debugging</button>
+      <button class="tab-btn" data-tab="curriculum">Curriculum</button>
       <button class="tab-btn" data-tab="refining">Audit</button>
       <button class="tab-btn" data-tab="testing">Testing</button>
       <button class="tab-btn" data-tab="userstories">User stories</button>
-      <button class="tab-btn" data-tab="bugreport">Debugging</button>
       <button class="tab-btn" data-tab="refactor">Refactor</button>
       <button class="tab-btn" data-tab="migration">Migration</button>
       <button class="tab-btn" data-tab="performance">Performance</button>
       <button class="tab-btn" data-tab="prompteng">Prompt engineering</button>
       <button class="tab-btn" data-tab="onboarding">Onboarding</button>
       <button class="tab-btn" data-tab="integration">Integration</button>
-      <button class="tab-btn" data-tab="curriculum">Curriculum</button>
-      <button class="tab-btn" data-tab="plan">Plan</button>
     </div>
     </div>
 
     <!-- ── TAB: Implementing ── -->
-    <div class="tab-panel active" data-panel="implementing">
+    <div class="tab-panel" data-panel="implementing">
       <div class="tab-intro">
         <p>Use this when building something new. You're answering: <em>what are we building?</em> The goal is a spec that removes every decision Claude Code would otherwise guess on.</p>
       </div>
@@ -1549,115 +1549,175 @@ clip blocks throughout the day.
     <!-- ── TAB: Bug report ── -->
     <div class="tab-panel" data-panel="bugreport">
       <div class="tab-intro">
-        <p>Use this when a feature is buggy and you need Claude to diagnose and fix it. This is a debugging spec, not a feature spec — the goal is to give Claude enough context to find the root cause without guessing. One bug per file, one Claude Code session per bug.</p>
+        <p>Use this when a bug keeps coming back and describing it to Claude Code isn't working. The root problem is that Claude Code can only act on what it can observe — if it's relying on your description, it's guessing. This spec makes the app observable first, then lets Claude Code read real evidence instead.</p>
       </div>
 
-      <div class="tab-group-label">Bug report spec format</div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+      <div class="tab-group-label">Why describing bugs to Claude Code fails</div>
+      <div class="spec-step" style="padding-top:0;border-top:none;">
         <div class="spec-body">
-          <p class="spec-desc">Always include the exact error output. Claude pattern-matches on error strings far more reliably than on vague descriptions — "it crashes" makes Claude guess, a stack trace tells Claude exactly where to look.</p>
+          <div class="why">
+            <p class="why-label">The real problem</p>
+            <p>When you describe a bug verbally, Claude Code builds a mental model of what might be wrong and fixes that model — not the actual bug. Each failed fix narrows what it tries next, but it's still working from your filtered description. The fix is to give Claude Code direct access to what's actually happening: structured logs, state snapshots, network traces, and reproduced interactions it can observe itself.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Step 1 — Instrument before debugging</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-code">Claude Code</div>
+        <div class="spec-body">
+          <p class="spec-desc">Before touching the bug, ask Claude Code to add observability to the area where the bug lives. Give it nothing else to do in this step — instrumentation only.</p>
+<div class="code-block"><span class="hl">Before we fix anything, instrument [feature/component]
+so we can observe what's actually happening.</span>
+
+Add the following:
+<span class="arr">→</span> Structured log at every state transition
+   <span class="cm">log: { event, prev_state, next_state, timestamp, input }</span>
+<span class="arr">→</span> Log at every external call (API, DB, LLM)
+   <span class="cm">log: { call, input, output, duration_ms, error? }</span>
+<span class="arr">→</span> Log at every branch point that affects this bug
+   <span class="cm">log: { condition, value, branch_taken }</span>
+<span class="arr">→</span> Snapshot the full state before and after the
+   operation that triggers the bug
+
+<span class="hl">Output logs to:</span>
+<span class="cm">[console / log file / debug panel / wherever is easiest
+ to read in this stack]</span>
+
+<span class="hl">Constraints</span>
+  - Do not fix anything yet — only add logging
+  - Logs must include timestamps and unique event names
+  - Remove all logs after the bug is fixed</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Step 2 — Reproduce and collect evidence</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">You</div>
+        <div class="spec-body">
+          <p class="spec-desc">Run the exact sequence that triggers the bug. Collect all output — logs, errors, network traces, screenshots. Do this once and capture everything. Do not describe it from memory.</p>
+<div class="code-block"><span class="cm">Collect:</span>
+  <span class="arr">→</span> Full console log output (copy all, not just errors)
+  <span class="arr">→</span> Network tab — all requests and responses
+  <span class="arr">→</span> State snapshots from before and after the failure
+  <span class="arr">→</span> Exact error message and stack trace if any
+  <span class="arr">→</span> Screenshot or screen recording of what happened</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Step 3 — Bug report spec with evidence</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-code">Claude Code</div>
+        <div class="spec-body">
+          <p class="spec-desc">Feed Claude Code the collected evidence — not your interpretation of it. Paste raw logs, not summaries. The spec below is what you hand it.</p>
 <div class="code-block"><span class="hl">## Feature</span>
 <span class="cm">[which feature is buggy]</span>
 
 <span class="hl">## Environment</span>
-<span class="cm">[browser/device, app state when bug occurs]</span>
+<span class="cm">[browser / device / OS, app state when bug occurs]</span>
 
-<span class="hl">## Data model</span>
-<span class="cm">[current shape of the data involved]</span>
-
-<span class="hl">## Steps to reproduce</span>
-<span class="cm">  1. [exact step]</span>
-<span class="cm">  2. [exact step]</span>
-<span class="cm">  3. [exact step]</span>
+<span class="hl">## Steps to reproduce (exact)</span>
+<span class="cm">  1. [exact action]</span>
+<span class="cm">  2. [exact action]</span>
+<span class="cm">  3. [exact action — this is where it breaks]</span>
 
 <span class="hl">## Observed behaviour</span>
-<span class="cm">[what actually happens — specific, not "it breaks"]</span>
+<span class="cm">[what actually happens — quote the UI or log, not your
+ interpretation of it]</span>
 
 <span class="hl">## Expected behaviour</span>
 <span class="cm">[what should happen instead]</span>
 
+<span class="hl">## Structured log output</span>
+<span class="cm">[paste raw log output from Step 1 instrumentation here]</span>
+
+<span class="hl">## State snapshot — before</span>
+<span class="cm">[paste the state object before the operation]</span>
+
+<span class="hl">## State snapshot — after</span>
+<span class="cm">[paste the state object after the operation, if available]</span>
+
+<span class="hl">## Network trace</span>
+<span class="cm">[paste relevant request/response from network tab]</span>
+
 <span class="hl">## Error output</span>
-<span class="cm">[paste exact console error or stack trace here]</span>
+<span class="cm">[paste exact console error and full stack trace]</span>
+
+<span class="hl">## What has already been tried</span>
+<span class="cm">[list every fix that was attempted and what happened —
+ this prevents Claude from trying the same thing again]</span>
 
 <span class="hl">## Suspected cause</span>
-<span class="cm">[your hunch — wrong state, bad transform, race condition]</span>
-<span class="cm">[if no idea, say so — Claude will reason from the above]</span>
+<span class="cm">[your hunch if you have one — wrong state, race condition,
+ bad transform, off-by-one, etc. Say "unknown" if not sure]</span>
 
 <span class="hl">## Constraints</span>
-<span class="cm">  - Do not modify [X] — only fix [Y]</span>
-<span class="cm">  - Must not change the data model</span>
-<span class="cm">  - Fix must not affect [related feature]</span></div>
+<span class="cm">  - Do not modify [X] — only change [Y]</span>
+<span class="cm">  - Fix must not affect [related feature]</span>
+<span class="cm">  - Remove all debug logging after fix is confirmed</span></div>
           <p class="spec-save">Save as → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.docs/bugs/[feature-name].md</code></p>
         </div>
       </div>
 
-      <div class="tab-group-label">Common bug patterns for buffr</div>
+      <div class="tab-group-label">Step 4 — Let Claude Code diagnose from evidence</div>
       <div class="spec-step">
-        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Pattern 1</div>
+        <div class="spec-tool spec-tool-code">Claude Code</div>
         <div class="spec-body">
-          <p class="step-title">State not updating after action</p>
-          <p class="spec-desc">UI shows stale data after an LLM response or tool call completes.</p>
-<div class="code-block"><span class="hl">## Suspected cause</span>
-State mutation — the LangChain response updates the
-store but the component isn't re-rendering.
-Or: agent result returned but conversation history
-not appended correctly.
+          <p class="spec-desc">With real evidence in hand, Claude Code can trace what actually happened rather than guessing. Give it this instruction after feeding the spec.</p>
+<div class="code-block"><span class="hl">Read .docs/bugs/[feature-name].md.
 
-<span class="hl">## Constraints</span>
-  - Do not refactor the store — only fix the update call
-  - Check useConversation() hook before touching agent</div>
+Do not fix anything yet.
+
+First, trace through the log output and state snapshots
+and tell me:
+  1. Exactly where the execution diverged from expected
+  2. What the root cause is (not a symptom — the cause)
+  3. What the minimal fix is
+  4. What else might break if you apply that fix
+
+Then wait for my confirmation before making any changes.</span></div>
+          <div class="callout" style="margin-top:.75rem">Asking Claude Code to diagnose before fixing forces it to reason from evidence rather than pattern-match on the symptom. The diagnosis step catches cases where the obvious fix masks the real cause.</div>
         </div>
       </div>
 
+      <div class="tab-group-label">Step 5 — Fix and verify</div>
       <div class="spec-step">
-        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Pattern 2</div>
+        <div class="spec-tool spec-tool-code">Claude Code</div>
         <div class="spec-body">
-          <p class="step-title">LLM response not arriving / timing out</p>
-          <p class="spec-desc">Streaming hangs or fetch returns nothing.</p>
-<div class="code-block"><span class="hl">## Environment</span>
-Provider: [Anthropic / OpenAI / Ollama]
-Model: [model string]
-Streaming: [yes / no]
+          <p class="spec-desc">Once you've confirmed the diagnosis, apply the fix and verify using the same reproduction steps — not a new description.</p>
+<div class="code-block"><span class="hl">Apply the fix described in the diagnosis.
 
-<span class="hl">## Suspected cause</span>
-Provider switch not passing correct API key or
-model string for this provider.
-Or: streaming response not consumed correctly —
-reader may be closing early.</div>
+After applying:
+  1. Re-run the exact steps to reproduce from the spec
+  2. Confirm the structured logs now show the correct path
+  3. Confirm the state snapshots match expected values
+  4. Remove all debug logging added in Step 1
+  5. Run the test suite</span></div>
         </div>
       </div>
 
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Pattern 3</div>
-        <div class="spec-body">
-          <p class="step-title">Agent routing to wrong tool</p>
-          <p class="spec-desc">ReAct loop selects the wrong tool or skips a reasoning step.</p>
-<div class="code-block"><span class="hl">## Observed behaviour</span>
-Agent selects [wrong tool] when [condition].
-Or: agent completes tool call but doesn't pass
-result back into next reasoning step.
-
-<span class="hl">## Suspected cause</span>
-Tool description ambiguous — Claude selecting by
-description match, not intent.
-Or: tool result not injected back into message
-history correctly after execution.</div>
-        </div>
-      </div>
-
-      <div class="tab-group-label">Flow</div>
+      <div class="tab-group-label">When the same bug keeps coming back</div>
       <div class="spec-step" style="padding-top:0;border-top:none;">
         <div class="spec-body">
-<div class="code-block"><span class="hl">Claude.ai</span>
-  <span class="arr">→</span> write bug report spec
-  <span class="arr">→</span> save to .docs/bugs/[feature-name].md
-
-<span class="hl">Claude Code</span>
-  <span class="arr">→</span> "Read .dev/context.md and
-     .docs/bugs/[feature-name].md
-     then diagnose and fix the bug."</div>
-          <div class="callout warn" style="margin-top:.875rem">One bug per file, one Claude Code session per bug. Mixing multiple bugs in one session causes the AI to conflate causes and produce fixes that break adjacent things.</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div class="state-block" style="padding:.5rem 0">
+              <span class="tag">Symptom was fixed, not the cause</span>
+              <p class="state-desc">The previous fix suppressed the visible error but the underlying condition still occurs. Use the diagnosis step (Step 4) to find where the state first goes wrong — not where it visibly breaks.</p>
+            </div>
+            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Missing "what was already tried" section</span>
+              <p class="state-desc">If you don't tell Claude Code what was tried before, it will try the same things again. The "what has been tried" section is the most important field for recurring bugs.</p>
+            </div>
+            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Fix broke something else</span>
+              <p class="state-desc">The fix changed shared state or a shared utility. Use the "constraints" section to list what must not change, and ask for the minimal change that fixes only this case.</p>
+            </div>
+            <div class="state-block" style="padding:.5rem 0;border-top:1px solid var(--border)">
+              <span class="tag">Race condition or timing bug</span>
+              <p class="state-desc">Timestamps in structured logs will show this. If two events happen in the wrong order, the logs will show the sequence. Ask Claude Code to look for ordering violations in the log output specifically.</p>
+            </div>
+          </div>
+          <div class="callout warn" style="margin-top:.875rem">One bug per Claude Code session. Mixing multiple bugs causes the AI to conflate causes and produce fixes that break adjacent things.</div>
         </div>
       </div>
     </div>
@@ -2101,7 +2161,7 @@ Structure as a markdown document with:
     </div>
 
     <!-- ── TAB: Plan ── -->
-    <div class="tab-panel" data-panel="plan">
+    <div class="tab-panel active" data-panel="plan">
       <div class="tab-intro">
         <p>A reusable format for creating phased implementation plans that Claude Code can work through autonomously across multiple sessions. Use this when a project needs 20+ hours of work, spans multiple features, and you want Claude Code to resume without re-explaining context each time.</p>
       </div>
