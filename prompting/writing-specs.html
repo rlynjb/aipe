@@ -1137,7 +1137,7 @@
         <p>Use this when building something new. You're answering: <em>what are we building?</em> The goal is a spec that removes every decision Claude Code would otherwise guess on.</p>
       </div>
 
-      <div class="tab-group-label">Step 1 — App analysis <a href="#s09" class="sec-ref">09</a></div>
+      <div class="tab-group-label">Step 1 — App analysis <a href="analysing-app.html" class="sec-ref">09</a></div>
       <div class="spec-step">
         <div class="spec-tool spec-tool-chat">Claude.ai</div>
         <div class="spec-body">
@@ -1153,7 +1153,7 @@ Output as context.md for my .dev/ folder."</span></div>
         </div>
       </div>
 
-      <div class="tab-group-label">Steps 2–5 — Feature spec <a href="#s03" class="sec-ref">03</a><a href="#s06" class="sec-ref">06</a><a href="#s05" class="sec-ref">05</a><a href="#s07" class="sec-ref">07</a></div>
+      <div class="tab-group-label">Steps 2–5 — Feature spec <a href="feature-implementation.html" class="sec-ref">03</a><a href="interaction-flow.html" class="sec-ref">06</a><a href="three-user-paths.html" class="sec-ref">05</a><a href="three-states.html" class="sec-ref">07</a></div>
       <div class="spec-step">
         <div class="spec-tool spec-tool-chat">Claude.ai</div>
         <div class="spec-body">
@@ -1173,7 +1173,7 @@ Here's what I want it to do: [description]"</span></div>
         </div>
       </div>
 
-      <div class="tab-group-label">Step 6 — Implement <a href="#s04" class="sec-ref">04</a></div>
+      <div class="tab-group-label">Step 6 — Implement <a href="two-layer-prompt.html" class="sec-ref">04</a></div>
       <div class="spec-step">
         <div class="spec-tool spec-tool-code">Claude Code</div>
         <div class="spec-body">
@@ -1195,7 +1195,7 @@ then implement the [feature]."</span></div>
         <p>Use this at the end of a phase before starting the next one. You're answering: <em>what is the current state, what's incomplete, and what must be true before we move forward?</em> This is subtractive — you're closing gaps, not adding features.</p>
       </div>
 
-      <div class="tab-group-label">Step 1 — Update app analysis <a href="#s09" class="sec-ref">09</a></div>
+      <div class="tab-group-label">Step 1 — Update app analysis <a href="analysing-app.html" class="sec-ref">09</a></div>
       <div class="spec-step">
         <div class="spec-tool spec-tool-chat">Claude.ai</div>
         <div class="spec-body">
@@ -1232,7 +1232,7 @@ don't build on top of it unknowingly</span></div>
         </div>
       </div>
 
-      <div class="tab-group-label">Steps 3–5 — Mini specs per blocker <a href="#s06" class="sec-ref">06</a><a href="#s05" class="sec-ref">05</a><a href="#s07" class="sec-ref">07</a></div>
+      <div class="tab-group-label">Steps 3–5 — Mini specs per blocker <a href="interaction-flow.html" class="sec-ref">06</a><a href="three-user-paths.html" class="sec-ref">05</a><a href="three-states.html" class="sec-ref">07</a></div>
       <div class="spec-step">
         <div class="spec-tool spec-tool-chat">Claude.ai</div>
         <div class="spec-body">
@@ -1247,7 +1247,7 @@ and the three states. Keep it tight."</span></div>
         </div>
       </div>
 
-      <div class="tab-group-label">Step 6 — Fix in Claude Code <a href="#s04" class="sec-ref">04</a></div>
+      <div class="tab-group-label">Step 6 — Fix in Claude Code <a href="two-layer-prompt.html" class="sec-ref">04</a></div>
       <div class="spec-step">
         <div class="spec-tool spec-tool-code">Claude Code</div>
         <div class="spec-body">
@@ -2364,91 +2364,6 @@ Output the full plan.md file, ready to save.</div>
 </div>
 
 <script>
-  const NAV = [
-    { label: 'Quick reference',              href: '#s11' },
-    { label: 'Writing specs',                href: '#s12' },
-    { label: 'Closing the feedback loop',    href: '#s10' },
-    {
-      label: 'Reference',
-      group: true,
-      items: [
-        { label: '01 — What PE actually is',     href: '#s01' },
-        { label: '02 — Detail vs high-level',    href: '#s02' },
-        { label: '03 — Feature impl order',      href: '#s03' },
-        { label: '04 — Two-layer prompt',        href: '#s04' },
-        { label: '05 — Three user paths',        href: '#s05' },
-        { label: '06 — Interaction flow',        href: '#s06' },
-        { label: '07 — Three states',            href: '#s07' },
-        { label: '08 — Workflow',                href: '#s08' },
-        { label: '09 — Analysing an app',        href: '#s09' },
-      ]
-    }
-  ];
-
-  function buildNav(container) {
-    container.innerHTML = '';
-    NAV.forEach(item => {
-      if (item.group) {
-        const btn = document.createElement('button');
-        btn.className = 'sidebar-group-btn';
-        btn.innerHTML = `<span>${item.label}</span><span class="chevron">›</span>`;
-        const items = document.createElement('div');
-        items.className = 'sidebar-group-items';
-        item.items.forEach(sub => {
-          const a = document.createElement('a');
-          a.className = 'sidebar-link';
-          a.href = sub.href;
-          a.textContent = sub.label;
-          a.addEventListener('click', () => closeDrawer());
-          items.appendChild(a);
-        });
-        btn.addEventListener('click', () => {
-          btn.classList.toggle('open');
-          items.classList.toggle('open');
-        });
-        container.appendChild(btn);
-        container.appendChild(items);
-      } else {
-        const a = document.createElement('a');
-        a.className = 'sidebar-link';
-        a.href = item.href;
-        a.textContent = item.label;
-        a.addEventListener('click', () => closeDrawer());
-        container.appendChild(a);
-      }
-    });
-  }
-
-  buildNav(document.getElementById('sidebar-nav'));
-  buildNav(document.getElementById('drawer-nav'));
-
-  // Active link tracking
-  function setActive(href) {
-    document.querySelectorAll('.sidebar-link').forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === href);
-    });
-    // Auto-open reference group if an inner link is active
-    document.querySelectorAll('.sidebar-group-items').forEach(group => {
-      const hasActive = group.querySelector('.sidebar-link.active');
-      if (hasActive) {
-        group.classList.add('open');
-        const btn = group.previousElementSibling;
-        if (btn) btn.classList.add('open');
-      }
-    });
-  }
-
-  const sections = ['s11','s12','s10','s01','s02','s03','s04','s05','s06','s07','s08','s09'];
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) setActive('#' + e.target.id);
-    });
-  }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
-
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
-  });
 
   // Mobile drawer
   const overlay  = document.getElementById('sidebar-overlay');
@@ -2456,12 +2371,9 @@ Output the full plan.md file, ready to save.</div>
   const menuBtn  = document.getElementById('menu-btn');
   const closeBtn = document.getElementById('drawer-close');
 
-  function openDrawer()  { drawer.classList.add('open'); overlay.classList.add('open'); }
-  function closeDrawer() { drawer.classList.remove('open'); overlay.classList.remove('open'); }
-
-  menuBtn.addEventListener('click', openDrawer);
-  closeBtn.addEventListener('click', closeDrawer);
-  overlay.addEventListener('click', closeDrawer);
+  if (menuBtn)  menuBtn.addEventListener('click',  () => { drawer.classList.add('open'); overlay.classList.add('open'); });
+  if (closeBtn) closeBtn.addEventListener('click', () => { drawer.classList.remove('open'); overlay.classList.remove('open'); });
+  if (overlay)  overlay.addEventListener('click',  () => { drawer.classList.remove('open'); overlay.classList.remove('open'); });
 
   // Tab shells
   function updateFade(bar) {
@@ -2473,10 +2385,7 @@ Output the full plan.md file, ready to save.</div>
 
   document.querySelectorAll('.tabs-shell').forEach(shell => {
     const bar = shell.querySelector('.tab-bar');
-    if (bar) {
-      updateFade(bar);
-      bar.addEventListener('scroll', () => updateFade(bar));
-    }
+    if (bar) { updateFade(bar); bar.addEventListener('scroll', () => updateFade(bar)); }
     shell.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = btn.dataset.tab;

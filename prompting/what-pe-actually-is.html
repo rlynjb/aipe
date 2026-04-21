@@ -1134,91 +1134,6 @@
 </div>
 
 <script>
-  const NAV = [
-    { label: 'Quick reference',              href: '#s11' },
-    { label: 'Writing specs',                href: '#s12' },
-    { label: 'Closing the feedback loop',    href: '#s10' },
-    {
-      label: 'Reference',
-      group: true,
-      items: [
-        { label: '01 — What PE actually is',     href: '#s01' },
-        { label: '02 — Detail vs high-level',    href: '#s02' },
-        { label: '03 — Feature impl order',      href: '#s03' },
-        { label: '04 — Two-layer prompt',        href: '#s04' },
-        { label: '05 — Three user paths',        href: '#s05' },
-        { label: '06 — Interaction flow',        href: '#s06' },
-        { label: '07 — Three states',            href: '#s07' },
-        { label: '08 — Workflow',                href: '#s08' },
-        { label: '09 — Analysing an app',        href: '#s09' },
-      ]
-    }
-  ];
-
-  function buildNav(container) {
-    container.innerHTML = '';
-    NAV.forEach(item => {
-      if (item.group) {
-        const btn = document.createElement('button');
-        btn.className = 'sidebar-group-btn';
-        btn.innerHTML = `<span>${item.label}</span><span class="chevron">›</span>`;
-        const items = document.createElement('div');
-        items.className = 'sidebar-group-items';
-        item.items.forEach(sub => {
-          const a = document.createElement('a');
-          a.className = 'sidebar-link';
-          a.href = sub.href;
-          a.textContent = sub.label;
-          a.addEventListener('click', () => closeDrawer());
-          items.appendChild(a);
-        });
-        btn.addEventListener('click', () => {
-          btn.classList.toggle('open');
-          items.classList.toggle('open');
-        });
-        container.appendChild(btn);
-        container.appendChild(items);
-      } else {
-        const a = document.createElement('a');
-        a.className = 'sidebar-link';
-        a.href = item.href;
-        a.textContent = item.label;
-        a.addEventListener('click', () => closeDrawer());
-        container.appendChild(a);
-      }
-    });
-  }
-
-  buildNav(document.getElementById('sidebar-nav'));
-  buildNav(document.getElementById('drawer-nav'));
-
-  // Active link tracking
-  function setActive(href) {
-    document.querySelectorAll('.sidebar-link').forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === href);
-    });
-    // Auto-open reference group if an inner link is active
-    document.querySelectorAll('.sidebar-group-items').forEach(group => {
-      const hasActive = group.querySelector('.sidebar-link.active');
-      if (hasActive) {
-        group.classList.add('open');
-        const btn = group.previousElementSibling;
-        if (btn) btn.classList.add('open');
-      }
-    });
-  }
-
-  const sections = ['s11','s12','s10','s01','s02','s03','s04','s05','s06','s07','s08','s09'];
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) setActive('#' + e.target.id);
-    });
-  }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
-
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
-  });
 
   // Mobile drawer
   const overlay  = document.getElementById('sidebar-overlay');
@@ -1226,12 +1141,9 @@
   const menuBtn  = document.getElementById('menu-btn');
   const closeBtn = document.getElementById('drawer-close');
 
-  function openDrawer()  { drawer.classList.add('open'); overlay.classList.add('open'); }
-  function closeDrawer() { drawer.classList.remove('open'); overlay.classList.remove('open'); }
-
-  menuBtn.addEventListener('click', openDrawer);
-  closeBtn.addEventListener('click', closeDrawer);
-  overlay.addEventListener('click', closeDrawer);
+  if (menuBtn)  menuBtn.addEventListener('click',  () => { drawer.classList.add('open'); overlay.classList.add('open'); });
+  if (closeBtn) closeBtn.addEventListener('click', () => { drawer.classList.remove('open'); overlay.classList.remove('open'); });
+  if (overlay)  overlay.addEventListener('click',  () => { drawer.classList.remove('open'); overlay.classList.remove('open'); });
 
   // Tab shells
   function updateFade(bar) {
@@ -1243,10 +1155,7 @@
 
   document.querySelectorAll('.tabs-shell').forEach(shell => {
     const bar = shell.querySelector('.tab-bar');
-    if (bar) {
-      updateFade(bar);
-      bar.addEventListener('scroll', () => updateFade(bar));
-    }
+    if (bar) { updateFade(bar); bar.addEventListener('scroll', () => updateFade(bar)); }
     shell.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = btn.dataset.tab;
