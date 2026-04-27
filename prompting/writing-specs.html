@@ -2639,13 +2639,13 @@ Structure as a markdown document:
     });
   });
 
-  // Activate tab from URL hash
-  (function() {
+  // Activate tab from hash — runs on load and on hashchange
+  function activateFromHash() {
     const hash = window.location.hash.replace('#', '');
     if (!hash) return;
     const shell = document.querySelector('.tabs-shell');
     if (!shell) return;
-    const btn = shell.querySelector('[data-tab="' + hash + '"]');
+    const btn   = shell.querySelector('[data-tab="' + hash + '"]');
     const panel = shell.querySelector('[data-panel="' + hash + '"]');
     if (!btn || !panel) return;
     shell.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -2653,9 +2653,19 @@ Structure as a markdown document:
     btn.classList.add('active');
     panel.classList.add('active');
     btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-  })();
+    // Sync sidebar highlight
+    document.querySelectorAll('[data-tab-link]').forEach(a => {
+      a.classList.toggle('active', a.dataset.tabLink === hash);
+    });
+  }
 
-  // Update hash and sidebar highlight when tab clicked
+  // Run on load
+  activateFromHash();
+
+  // Run whenever hash changes (sidebar link clicked while already on this page)
+  window.addEventListener('hashchange', activateFromHash);
+
+  // Update hash and sidebar when tab button clicked directly
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const tab = btn.dataset.tab;
