@@ -2431,6 +2431,9 @@ Categories:
   <span class="arr">→</span> Developer process    <span class="cm">spec-driven dev, testing, deployment, tooling</span>
   <span class="arr">→</span> Ownership + judgment <span class="cm">decisions you made, tradeoffs you accepted,
                           things you'd do differently</span>
+  <span class="arr">→</span> DSA                  <span class="cm">data structures and algorithms visible in this
+                          codebase — sorting, searching, traversal,
+                          time/space complexity of key operations</span>
 
 <span class="hl">2. Generate likely interview questions</span>
 For each category, write the 3 most likely questions
@@ -2439,6 +2442,17 @@ Label each question:
   <span class="cm">[mid]</span>    — expected of a mid-level engineer
   <span class="cm">[senior]</span> — expected of a senior engineer
   <span class="cm">[arch]</span>   — expected of an architect or staff engineer
+
+For the DSA category specifically, also generate
+3 standalone coding questions an interviewer might
+give based on patterns in this codebase:
+  <span class="arr">→</span> One array / list manipulation problem
+  <span class="arr">→</span> One tree / graph or nested structure problem
+  <span class="arr">→</span> One problem based on a real operation in the app
+     (e.g. reordering, deduplication, flattening, diffing)
+For each: write the problem statement, the optimal
+solution with complexity analysis, and a brute force
+alternative so you can explain the tradeoff.
 
 <span class="hl">3. Write model answers for each question</span>
 For each question, write a model answer that:
@@ -2487,7 +2501,13 @@ Structure as a markdown document:
   <span class="arr">→</span> Model answer directly below each question
   <span class="arr">→</span> Weaknesses section with objection + response pairs
   <span class="arr">→</span> Refactoring section with effort/value assessment
-  <span class="arr">→</span> AI angle section at the end
+  <span class="arr">→</span> AI angle section
+  <span class="arr">→</span> DSA section last — three coding problems derived
+     from this codebase, each with:
+       problem statement
+       brute force solution + complexity
+       optimal solution + complexity
+       why the optimal works (the insight, not just the code)
 
 <span class="hl">Constraints</span>
   <span class="arr">→</span> Every answer must reference specific code — no generic
@@ -2529,6 +2549,92 @@ Structure as a markdown document:
             </div>
 
           </div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">DSA — what it extracts from your codebase</div>
+      <div class="spec-step">
+        <div class="spec-body">
+          <p class="spec-desc">The spec derives DSA problems from operations that already exist in your app — not generic LeetCode questions. Every problem is grounded in something you actually built, which means you can explain it naturally.</p>
+          <div style="display:flex;flex-direction:column;gap:0">
+
+            <div class="state-block" style="padding:.75rem 0">
+              <span class="tag">From buffr — reorder manual actions</span>
+              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Problem:</strong> Given an array of task objects each with an <code style="font-size:11px">id</code> and <code style="font-size:11px">position</code>, and a new ordered list of IDs, return the updated array with positions reassigned.</p>
+              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Brute force:</strong> Loop through new ID order, find each item by id scan — O(n²)</p>
+              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Optimal:</strong> Build a hashmap of id → item first, then map over new order in one pass — O(n). The insight: trading O(n) space for O(n) time by eliminating the inner search loop.</p>
+            </div>
+
+            <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
+              <span class="tag">From buffr — deduplicate session summaries</span>
+              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Problem:</strong> Given an array of activity items (commits, completed actions) each with a <code style="font-size:11px">title</code> and <code style="font-size:11px">source</code>, remove duplicates where title and source both match.</p>
+              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Brute force:</strong> Nested loop comparing every pair — O(n²)</p>
+              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Optimal:</strong> Use a Set with a composite key <code style="font-size:11px">`${title}::${source}`</code> — O(n). The insight: a compound key collapses a 2D uniqueness check into a 1D lookup.</p>
+            </div>
+
+            <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
+              <span class="tag">From buffr — flatten nested spec tree</span>
+              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Problem:</strong> Given a <code style="font-size:11px">.buffr/specs/</code> directory tree (nested categories with files), return a flat array of all file paths.</p>
+              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Brute force:</strong> Recursive DFS with array concatenation at each level — O(n) time but O(n²) space from intermediate arrays</p>
+              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Optimal:</strong> Iterative DFS with a stack and a single result array — O(n) time, O(d) space where d is max depth. The insight: avoid intermediate array allocation by collecting into one array throughout.</p>
+            </div>
+
+          </div>
+          <div class="callout" style="margin-top:.875rem">These aren't invented examples — they're derived from real operations in buffr. When an interviewer asks a DSA question, tying your answer back to something you actually implemented is far more convincing than solving it as an abstract puzzle.</div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">Standalone DSA prep prompt</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+          <p class="spec-desc">Use this separately from the main interview spec when you want to drill DSA specifically — grounded in your codebase, not generic problems.</p>
+<div class="code-block"><span class="hl">Review this codebase and generate a DSA study guide
+grounded in operations that actually exist in this app.</span>
+
+<span class="hl">Codebase / spec:</span>
+<span class="cm">[paste your spec or architecture doc here]</span>
+
+<span class="hl">For each of the following, identify a real operation in
+the codebase that maps to it, then generate a coding
+problem derived from that operation:</span>
+
+  <span class="arr">→</span> Array manipulation    <span class="cm">reordering, filtering, deduplication,
+                           transformation, pagination</span>
+  <span class="arr">→</span> HashMap / Set usage    <span class="cm">lookups, grouping, uniqueness checks,
+                           index building</span>
+  <span class="arr">→</span> Tree / nested data     <span class="cm">recursive structures, path traversal,
+                           flattening, deep merge</span>
+  <span class="arr">→</span> Sorting                <span class="cm">custom sort keys, stable sort, sort by
+                           multiple fields</span>
+  <span class="arr">→</span> String manipulation    <span class="cm">parsing, transformation, pattern matching,
+                           slug generation, path building</span>
+  <span class="arr">→</span> Queue / stack patterns <span class="cm">undo/redo, job queues, session history,
+                           breadcrumb trails</span>
+
+<span class="hl">For each problem:</span>
+  <span class="arr">→</span> Write the problem statement (2–4 sentences)
+  <span class="arr">→</span> Show where this pattern appears in the codebase
+  <span class="arr">→</span> Brute force solution with time + space complexity
+  <span class="arr">→</span> Optimal solution with time + space complexity
+  <span class="arr">→</span> The key insight — what makes the optimal work
+  <span class="arr">→</span> A follow-up question an interviewer would likely ask
+     and how to answer it
+
+<span class="hl">Also generate a complexity cheat sheet for this codebase:</span>
+  For every significant data operation in the app
+  (list all items, filter by field, sort, update one,
+  delete one, reorder), state the current time and
+  space complexity and whether it's acceptable or
+  would need improvement at scale.
+
+<span class="hl">Constraints</span>
+  <span class="arr">→</span> Every problem must trace back to real code in this app
+  <span class="arr">→</span> Use TypeScript in solutions to match the codebase
+  <span class="arr">→</span> Complexity analysis must include both time and space
+  <span class="arr">→</span> Follow-up questions should be ones a senior engineer
+     would actually ask, not generic</div>
+          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.buffr/specs/interview/[project]-dsa.md</code></p>
         </div>
       </div>
 
