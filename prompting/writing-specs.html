@@ -2495,31 +2495,155 @@ not just AI usage. The goal is to demonstrate that
 AI was a tool, and you were the engineer.
 
 <span class="hl">7. Output format</span>
-Structure as a markdown document:
-  <span class="arr">→</span> Section per interview category
+Structure as a markdown document. I am a visual learner
+so include the following at the top and within sections:
+
+<span class="hl">Table of contents</span>
+Generate a TOC at the top with anchor links to every
+section so I can jump directly to what I need to review:
+  <span class="cm">## Table of Contents
+  1. [System design](#system-design)
+  2. [Frontend engineering](#frontend-engineering)
+  3. [Backend / API](#backend-api)
+  4. [AI engineering](#ai-engineering)
+  5. [Data modelling](#data-modelling)
+  6. [Reliability](#reliability)
+  7. [Developer process](#developer-process)
+  8. [Ownership + judgment](#ownership-judgment)
+  9. [DSA](#dsa)
+  10. [Weaknesses + objections](#weaknesses)
+  11. [Refactoring](#refactoring)
+  12. [AI-assisted dev](#ai-assisted)</span>
+
+<span class="hl">ASCII diagrams — include one per section where relevant:</span>
+  <span class="arr">→</span> System design      <span class="cm">request flow or component dependency diagram</span>
+  <span class="arr">→</span> Frontend           <span class="cm">component tree or state flow diagram</span>
+  <span class="arr">→</span> Backend / API      <span class="cm">request → function → storage flow</span>
+  <span class="arr">→</span> AI engineering     <span class="cm">LLM chain or agent loop diagram</span>
+  <span class="arr">→</span> Data modelling     <span class="cm">entity relationship or schema diagram</span>
+  <span class="arr">→</span> DSA                <span class="cm">before/after state diagram for each algorithm,
+                       step-by-step trace for the optimal solution</span>
+
+Diagrams must be ASCII art inside code blocks so they
+render in any markdown viewer. Use box-drawing characters
+(─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ →) for clean lines.
+
+<span class="hl">Section structure:</span>
   <span class="arr">→</span> Each question with its level label
   <span class="arr">→</span> Model answer directly below each question
+  <span class="arr">→</span> ASCII diagram at the end of each section
   <span class="arr">→</span> Weaknesses section with objection + response pairs
   <span class="arr">→</span> Refactoring section with effort/value assessment
   <span class="arr">→</span> AI angle section
-  <span class="arr">→</span> DSA section last — three coding problems derived
-     from this codebase, each with:
-       problem statement
-       brute force solution + complexity
-       optimal solution + complexity
-       why the optimal works (the insight, not just the code)
+  <span class="arr">→</span> DSA section last — three coding problems each with
+     problem statement, brute force, optimal, key insight,
+     and a step-by-step execution trace diagram
 
 <span class="hl">Constraints</span>
   <span class="arr">→</span> Every answer must reference specific code — no generic
      responses that could apply to any project
   <span class="arr">→</span> Tradeoffs must be named, not hidden
   <span class="arr">→</span> Weakness responses must be confident, not defensive
-  <span class="arr">→</span> AI answers must show ownership, not deflection</div>
+  <span class="arr">→</span> AI answers must show ownership, not deflection
+  <span class="arr">→</span> All diagrams must be ASCII — no Mermaid, no images</div>
           <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.buffr/specs/interview/[project-name].md</code></p>
         </div>
       </div>
 
-      <div class="tab-group-label">What it produces — example for buffr</div>
+      <div class="tab-group-label">What the TOC and diagrams look like</div>
+      <div class="spec-step">
+        <div class="spec-body">
+          <p class="spec-desc">Examples of the TOC and ASCII diagrams the spec generates — grounded in buffr's architecture.</p>
+<div class="code-block"><span class="hl">## Table of Contents</span>
+<span class="cm">1. System design .............. line 12
+2. Frontend engineering ....... line 48
+3. Backend / API .............. line 89
+4. AI engineering ............. line 134
+5. Data modelling ............. line 178
+6. Reliability ................ line 212
+7. Developer process .......... line 248
+8. Ownership + judgment ....... line 283
+9. DSA ........................ line 318
+10. Weaknesses + objections ... line 367
+11. Refactoring ............... line 401
+12. AI-assisted dev ........... line 438</span>
+
+<span class="hl">## System design — request flow</span>
+<span class="cm">Browser
+  │
+  ▼
+Next.js App Router ──── middleware (auth check)
+  │                          │
+  │                     redirect /login
+  ▼
+Page component
+  │
+  ▼
+lib/api.ts (fetch wrapper)
+  │
+  ▼
+/.netlify/functions/[endpoint]
+  │
+  ├── lib/storage/[entity].ts  ←── Netlify Blobs
+  │
+  ├── lib/ai/provider.ts       ←── Anthropic / OpenAI / Ollama
+  │        │
+  │        └── chains/[chain].ts
+  │
+  └── lib/github.ts            ←── GitHub API</span>
+
+<span class="hl">## AI engineering — LangChain chain flow</span>
+<span class="cm">User ends session
+  │
+  ▼
+POST /session-ai?summarize
+  │
+  ▼
+provider.ts
+  └── getModel(provider) → BaseChatModel
+          │
+          ▼
+createSummarizeChain(model)
+  ├── SystemMessage: summarize instructions
+  ├── HumanMessage:  activity items[]
+  │
+  ▼
+LLM response
+  │
+  ▼
+parse-utils.ts → JSON.parse → { goal, bullets[] }
+  │
+  ▼
+POST /sessions → save session row</span>
+
+<span class="hl">## DSA — hashmap reorder trace</span>
+<span class="cm">Input:
+  items    = [{id:"a",pos:0}, {id:"b",pos:1}, {id:"c",pos:2}]
+  newOrder = ["c", "a", "b"]
+
+Step 1 — build index (O(n)):
+  map = { "a": {id:"a",pos:0},
+          "b": {id:"b",pos:1},
+          "c": {id:"c",pos:2} }
+
+Step 2 — map over newOrder (O(n)):
+  "c" → map["c"] → assign pos:0
+  "a" → map["a"] → assign pos:1
+  "b" → map["b"] → assign pos:2
+
+Output:
+  [{id:"c",pos:0}, {id:"a",pos:1}, {id:"b",pos:2}]
+
+Time:  O(n) — two single passes
+Space: O(n) — the hashmap
+
+vs brute force (nested loop):
+  for each id in newOrder:          ← O(n)
+    for each item in items:         ← O(n)
+      if item.id === id → assign    ← O(1)
+  Total: O(n²)</span></div>
+        </div>
+      </div>
       <div class="spec-step">
         <div class="spec-body">
           <div style="display:flex;flex-direction:column;gap:0">
