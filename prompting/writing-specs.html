@@ -1028,7 +1028,24 @@
 <a href="index.html" class="sidebar-link">← Back to index</a>
 <div class="sidebar-section">Prompting</div>
 <a href="quick-reference.html" class="sidebar-link">Quick reference</a>
-<a href="writing-specs.html" class="sidebar-link active">Writing specs</a>
+<button class="sidebar-group-btn open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Writing specs</span><span class="chevron">›</span></button>
+<div class="sidebar-group-items open">
+  <a href="writing-specs.html" class="sidebar-link">Overview</a>
+  <a href="writing-specs.html#plan" class="sidebar-link" data-tab-link="plan">Plan</a>
+  <a href="writing-specs.html#implementing" class="sidebar-link" data-tab-link="implementing">Feature</a>
+  <a href="writing-specs.html#bugreport" class="sidebar-link" data-tab-link="bugreport">Debugging</a>
+  <a href="writing-specs.html#curriculum" class="sidebar-link" data-tab-link="curriculum">Curriculum</a>
+  <a href="writing-specs.html#interview" class="sidebar-link" data-tab-link="interview">Interview</a>
+  <a href="writing-specs.html#refining" class="sidebar-link" data-tab-link="refining">Audit</a>
+  <a href="writing-specs.html#testing" class="sidebar-link" data-tab-link="testing">Testing</a>
+  <a href="writing-specs.html#userstories" class="sidebar-link" data-tab-link="userstories">User stories</a>
+  <a href="writing-specs.html#refactor" class="sidebar-link" data-tab-link="refactor">Refactor</a>
+  <a href="writing-specs.html#migration" class="sidebar-link" data-tab-link="migration">Migration</a>
+  <a href="writing-specs.html#performance" class="sidebar-link" data-tab-link="performance">Performance</a>
+  <a href="writing-specs.html#prompteng" class="sidebar-link" data-tab-link="prompteng">Prompt engineering</a>
+  <a href="writing-specs.html#onboarding" class="sidebar-link" data-tab-link="onboarding">Onboarding</a>
+  <a href="writing-specs.html#integration" class="sidebar-link" data-tab-link="integration">Integration</a>
+</div>
 <a href="closing-feedback-loop.html" class="sidebar-link">Closing the feedback loop</a>
 <button class="sidebar-group-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Reference sections</span><span class="chevron">›</span></button>
 <div class="sidebar-group-items">
@@ -1051,7 +1068,24 @@
 <a href="index.html" class="sidebar-link">← Back to index</a>
 <div class="sidebar-section">Prompting</div>
 <a href="quick-reference.html" class="sidebar-link">Quick reference</a>
-<a href="writing-specs.html" class="sidebar-link active">Writing specs</a>
+<button class="sidebar-group-btn open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Writing specs</span><span class="chevron">›</span></button>
+<div class="sidebar-group-items open">
+  <a href="writing-specs.html" class="sidebar-link">Overview</a>
+  <a href="writing-specs.html#plan" class="sidebar-link" data-tab-link="plan">Plan</a>
+  <a href="writing-specs.html#implementing" class="sidebar-link" data-tab-link="implementing">Feature</a>
+  <a href="writing-specs.html#bugreport" class="sidebar-link" data-tab-link="bugreport">Debugging</a>
+  <a href="writing-specs.html#curriculum" class="sidebar-link" data-tab-link="curriculum">Curriculum</a>
+  <a href="writing-specs.html#interview" class="sidebar-link" data-tab-link="interview">Interview</a>
+  <a href="writing-specs.html#refining" class="sidebar-link" data-tab-link="refining">Audit</a>
+  <a href="writing-specs.html#testing" class="sidebar-link" data-tab-link="testing">Testing</a>
+  <a href="writing-specs.html#userstories" class="sidebar-link" data-tab-link="userstories">User stories</a>
+  <a href="writing-specs.html#refactor" class="sidebar-link" data-tab-link="refactor">Refactor</a>
+  <a href="writing-specs.html#migration" class="sidebar-link" data-tab-link="migration">Migration</a>
+  <a href="writing-specs.html#performance" class="sidebar-link" data-tab-link="performance">Performance</a>
+  <a href="writing-specs.html#prompteng" class="sidebar-link" data-tab-link="prompteng">Prompt engineering</a>
+  <a href="writing-specs.html#onboarding" class="sidebar-link" data-tab-link="onboarding">Onboarding</a>
+  <a href="writing-specs.html#integration" class="sidebar-link" data-tab-link="integration">Integration</a>
+</div>
 <a href="closing-feedback-loop.html" class="sidebar-link">Closing the feedback loop</a>
 <button class="sidebar-group-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Reference sections</span><span class="chevron">›</span></button>
 <div class="sidebar-group-items">
@@ -1128,6 +1162,7 @@
       <button class="tab-btn" data-tab="prompteng">Prompt engineering</button>
       <button class="tab-btn" data-tab="onboarding">Onboarding</button>
       <button class="tab-btn" data-tab="integration">Integration</button>
+      <button class="tab-btn" data-tab="interview">Interview</button>
     </div>
     </div>
 
@@ -2352,9 +2387,212 @@ Output the full plan.md file, ready to save.</div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- s10: Closing the feedback loop -->
+    <!-- ── TAB: Interview ── -->
+    <div class="tab-panel" data-panel="interview">
+      <div class="tab-intro">
+        <p>Use this when preparing to defend a project you built — especially one built with AI assistance. It reviews your codebase and maps what's there to the questions interviewers actually ask. Covers frontend, system design, architecture, and AI engineering angles. Outputs prep material at the level of a senior or architect role, not just "here's what I built."</p>
+      </div>
+
+      <div class="tab-group-label">The prompt</div>
+      <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-body">
+          <p class="spec-desc">Paste your codebase spec, README, or architecture doc. Run this prompt in Claude.ai. Save the output — it becomes your interview prep document.</p>
+<div class="code-block"><span class="hl">I'm preparing for software engineering interviews and
+want to defend this project I built. I need you to
+review the codebase and prepare me to answer questions
+at the level of a senior engineer or AI architect —
+not just "here's what I built and why."</span>
+
+<span class="hl">Project spec / architecture doc:</span>
+<span class="cm">[paste your spec, README, or architecture doc here]</span>
+
+<span class="hl">My background:</span>
+<span class="cm">Frontend specialist transitioning to senior / AI engineering roles.
+Comfortable with React, TypeScript, Next.js.
+Want to show architectural thinking, not just implementation skill.</span>
+
+<span class="hl">Do the following:</span>
+
+<span class="hl">1. Map codebase to interview question categories</span>
+For each category below, identify what in this codebase
+directly answers questions in that category. Be specific —
+name the file, pattern, or decision, not just the concept.
+
+Categories:
+  <span class="arr">→</span> System design       <span class="cm">architecture decisions, data flow, scalability</span>
+  <span class="arr">→</span> Frontend engineering <span class="cm">state management, rendering, performance, a11y</span>
+  <span class="arr">→</span> Backend / API        <span class="cm">data layer, auth, serverless, error handling</span>
+  <span class="arr">→</span> AI engineering       <span class="cm">LLM integration, prompt design, agent patterns,
+                          context management, provider switching</span>
+  <span class="arr">→</span> Data modelling       <span class="cm">schema design, relationships, tradeoffs</span>
+  <span class="arr">→</span> Reliability          <span class="cm">error states, rollback, idempotency, edge cases</span>
+  <span class="arr">→</span> Developer process    <span class="cm">spec-driven dev, testing, deployment, tooling</span>
+  <span class="arr">→</span> Ownership + judgment <span class="cm">decisions you made, tradeoffs you accepted,
+                          things you'd do differently</span>
+
+<span class="hl">2. Generate likely interview questions</span>
+For each category, write the 3 most likely questions
+an interviewer would ask about this specific project.
+Label each question:
+  <span class="cm">[mid]</span>    — expected of a mid-level engineer
+  <span class="cm">[senior]</span> — expected of a senior engineer
+  <span class="cm">[arch]</span>   — expected of an architect or staff engineer
+
+<span class="hl">3. Write model answers for each question</span>
+For each question, write a model answer that:
+  <span class="arr">→</span> References specific parts of this codebase
+  <span class="arr">→</span> Explains the reasoning behind the decision, not
+     just what was done
+  <span class="arr">→</span> Acknowledges tradeoffs honestly
+  <span class="arr">→</span> Shows awareness of alternatives that were not chosen
+  <span class="arr">→</span> For [arch] questions: includes what you'd do
+     differently at larger scale
+
+<span class="hl">4. Identify weaknesses and improvement areas</span>
+Review the codebase critically and list:
+  <span class="arr">→</span> What's missing that a senior engineer would expect
+  <span class="arr">→</span> What's implemented in a way that wouldn't scale
+  <span class="arr">→</span> What the most likely interviewer objections are
+  <span class="arr">→</span> How to address each objection honestly and confidently
+     (not defensively — owning the tradeoff is strength)
+
+<span class="hl">5. Refactoring and architecture improvements</span>
+For each weakness identified, explain:
+  <span class="arr">→</span> What the improved version looks like
+  <span class="arr">→</span> What it would cost to get there (effort, risk)
+  <span class="arr">→</span> Whether it's worth it at current scale
+  <span class="arr">→</span> How to articulate the decision in an interview
+     ("I made this tradeoff because X, and I'd address it
+      by doing Y when Z condition is met")
+
+<span class="hl">6. AI-assisted development angle</span>
+I built this with Claude Code and Claude.ai. Prepare me
+to answer questions about this specifically:
+  <span class="arr">→</span> "How much did you actually write vs the AI?"
+  <span class="arr">→</span> "How do you know the code is correct if AI wrote it?"
+  <span class="arr">→</span> "What would you do if the AI got something wrong?"
+  <span class="arr">→</span> "What did you learn from building this?"
+  <span class="arr">→</span> "How is this different from just using a template?"
+
+Write honest answers that show engineering judgment,
+not just AI usage. The goal is to demonstrate that
+AI was a tool, and you were the engineer.
+
+<span class="hl">7. Output format</span>
+Structure as a markdown document:
+  <span class="arr">→</span> Section per interview category
+  <span class="arr">→</span> Each question with its level label
+  <span class="arr">→</span> Model answer directly below each question
+  <span class="arr">→</span> Weaknesses section with objection + response pairs
+  <span class="arr">→</span> Refactoring section with effort/value assessment
+  <span class="arr">→</span> AI angle section at the end
+
+<span class="hl">Constraints</span>
+  <span class="arr">→</span> Every answer must reference specific code — no generic
+     responses that could apply to any project
+  <span class="arr">→</span> Tradeoffs must be named, not hidden
+  <span class="arr">→</span> Weakness responses must be confident, not defensive
+  <span class="arr">→</span> AI answers must show ownership, not deflection</div>
+          <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.buffr/specs/interview/[project-name].md</code></p>
+        </div>
+      </div>
+
+      <div class="tab-group-label">What it produces — example for buffr</div>
+      <div class="spec-step">
+        <div class="spec-body">
+          <div style="display:flex;flex-direction:column;gap:0">
+
+            <div class="state-block" style="padding:.75rem 0">
+              <span class="tag" style="background:rgba(129,140,248,.12);color:#818cf8;border-color:rgba(129,140,248,.25)">[senior] System design</span>
+              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Q: Why Netlify Blobs over a proper database?</strong></p>
+              <p class="state-desc">Model answer: "For a single-user tool at this scale, Netlify Blobs removed all infra overhead — no connection management, no migrations, no provisioning. The tradeoff is no relational queries and a race condition on array writes, which I documented. The migration plan to Neon Postgres exists and is phased — I'd execute it at the point where query complexity or concurrent access makes Blobs a real constraint, not before."</p>
+            </div>
+
+            <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
+              <span class="tag" style="background:rgba(167,139,250,.12);color:#a78bfa;border-color:rgba(167,139,250,.25)">[arch] AI engineering</span>
+              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Q: How would you scale this agent to multiple users?</strong></p>
+              <p class="state-desc">Model answer: "The current design is single-user JWT with global state. Scaling to multi-user requires: per-user context isolation (the .buffr/ structure already models this), conversation memory scoped by user ID, and rate limiting per provider. The provider abstraction layer means I'm not locked to Anthropic — I can route cheaper models for simple chains and reserve GPT-4 for the ReAct loop."</p>
+            </div>
+
+            <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
+              <span class="tag" style="background:rgba(52,211,153,.12);color:#34d399;border-color:rgba(52,211,153,.25)">[mid] AI-assisted dev</span>
+              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Q: How much did you actually write vs the AI?</strong></p>
+              <p class="state-desc">Model answer: "I wrote all the specs, architecture decisions, data models, and constraints. Claude Code wrote most of the implementation from those specs. The distinction matters — I made every decision about what to build and why. The AI executed those decisions faster than I could have typed. I caught several cases where it deviated from the spec and corrected it. That review process is where the engineering judgment lives."</p>
+            </div>
+
+            <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
+              <span class="tag" style="background:rgba(251,191,36,.12);color:#fbbf24;border-color:rgba(251,191,36,.25)">[senior] Weakness + objection</span>
+              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Interviewer: "There are no tests."</strong></p>
+              <p class="state-desc">Model answer: "Correct — I prioritised shipping a working system over test coverage at this stage. The architecture is designed for testability: pure functions, separated concerns, Netlify Functions that can be unit tested in isolation. The plan spec has Vitest setup as a phase gate before each major phase. I'd add tests before any team dependency or production load, not before."</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-group-label">How to use the output</div>
+      <div class="spec-step" style="padding-top:0;border-top:none;">
+        <div class="spec-body">
+          <div class="steps">
+            <div class="step-row" style="border-top:none;padding-top:0">
+              <div class="step-num">1</div>
+              <div>
+                <p class="step-title">Save as your interview prep doc</p>
+                <p class="step-desc">Save to <code style="font-size:11px">.buffr/specs/interview/[project].md</code>. Read it the day before the interview. The model answers give you the structure — adapt the wording to how you naturally speak.</p>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-num">2</div>
+              <div>
+                <p class="step-title">Drill the weakness responses</p>
+                <p class="step-desc">These are the questions that trip people up. Practice saying them out loud. Owning a tradeoff confidently signals senior thinking. Deflecting or making excuses signals junior thinking.</p>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-num">3</div>
+              <div>
+                <p class="step-title">Re-run after every major feature</p>
+                <p class="step-desc">The codebase changes — the prep doc should too. Re-run the spec after each significant phase so your answers stay accurate and current.</p>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-num">4</div>
+              <div>
+                <p class="step-title">Use the improvements list as a roadmap</p>
+                <p class="step-desc">The weaknesses section isn't just for interviews — it's a prioritised list of what to actually improve. Every item you implement is one fewer objection to handle. Best case: you fix it before the interview and mention it proactively.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-group-label" style="margin-top:1.25rem">Defending AI-assisted work — the framing that works</div>
+          <div class="why" style="margin-top:.5rem">
+            <p class="why-label">The right frame</p>
+            <p>Engineers have always used tools — compilers, frameworks, Stack Overflow, copy-paste. The question interviewers are really asking is: <strong style="color:var(--text)">do you understand what you built, and can you reason about it?</strong> The answer to that is in your ability to explain decisions, name tradeoffs, and describe what you'd do differently — not in how many keystrokes you typed.</p>
+          </div>
+<div class="code-block"><span class="cm">What signals senior thinking in AI-assisted projects:</span>
+
+  <span class="ok">✓</span> You wrote the spec before the AI wrote the code
+  <span class="ok">✓</span> You can explain every architectural decision and why
+  <span class="ok">✓</span> You know what the AI got wrong and how you caught it
+  <span class="ok">✓</span> You named the tradeoffs before they were pointed out
+  <span class="ok">✓</span> You have a plan for what to improve and why not yet
+  <span class="ok">✓</span> You can walk through any file and explain what it does
+
+<span class="cm">What signals junior thinking:</span>
+
+  <span class="bad">✗</span> "The AI wrote it so I'm not sure exactly how it works"
+  <span class="bad">✗</span> "I would have done X but the AI did Y and I left it"
+  <span class="bad">✗</span> Describing features without explaining why they exist
+  <span class="bad">✗</span> No awareness of what's missing or what could break
+  <span class="bad">✗</span> Treating AI as the author and yourself as the user</div>
+
+          <div class="callout" style="margin-top:.875rem">The goal isn't to hide that you used AI. It's to show that you used it the way a senior engineer uses any tool — with judgment, with intent, and with full ownership of the result.</div>
+        </div>
+      </div>
+    </div>
+  </div>
     </main>
     <footer>
       <p>aipe — AI Product Engineering curriculum</p>
@@ -2397,6 +2635,33 @@ Output the full plan.md file, ready to save.</div>
         btn.classList.add('active');
         btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         if (bar) updateFade(bar);
+      });
+    });
+  });
+
+  // Activate tab from URL hash
+  (function() {
+    const hash = window.location.hash.replace('#', '');
+    if (!hash) return;
+    const shell = document.querySelector('.tabs-shell');
+    if (!shell) return;
+    const btn = shell.querySelector('[data-tab="' + hash + '"]');
+    const panel = shell.querySelector('[data-panel="' + hash + '"]');
+    if (!btn || !panel) return;
+    shell.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    shell.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    panel.classList.add('active');
+    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  })();
+
+  // Update hash and sidebar highlight when tab clicked
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      history.replaceState(null, '', '#' + tab);
+      document.querySelectorAll('[data-tab-link]').forEach(a => {
+        a.classList.toggle('active', a.dataset.tabLink === tab);
       });
     });
   });
