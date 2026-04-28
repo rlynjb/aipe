@@ -2391,373 +2391,285 @@ Output the full plan.md file, ready to save.</div>
     <!-- ── TAB: Interview ── -->
     <div class="tab-panel" data-panel="interview">
       <div class="tab-intro">
-        <p>Use this when preparing to defend a project you built — especially one built with AI assistance. It reviews your codebase and maps what's there to the questions interviewers actually ask. Covers frontend, system design, architecture, and AI engineering angles. Outputs prep material at the level of a senior or architect role, not just "here's what I built."</p>
+        <p>This spec turns your codebase into a book-style interview prep guide — written the way a developer with 8 years of experience would explain your project to someone preparing to defend it in a room. Not a list of Q&amp;A pairs. A document you actually want to read: narrative, ASCII diagrams, honest critique, and the kind of judgment that comes from having shipped real software and sat on both sides of the interview table.</p>
+      </div>
+
+      <div class="tab-group-label">What the output looks like</div>
+      <div class="spec-step" style="padding-top:0;border-top:none;">
+        <div class="spec-body">
+          <p class="spec-desc">The output is a structured markdown document organised as chapters — like a technical book written specifically about your project. Each chapter opens with a narrative explanation, anchors it with an ASCII diagram, then works through interview questions at three levels of depth.</p>
+<div class="code-block"><span class="hl">Document structure</span>
+
+<span class="cm">Table of Contents
+  ├── Preface: What this project is really about
+  ├── Chapter 1:  System architecture
+  ├── Chapter 2:  Frontend engineering
+  ├── Chapter 3:  Backend and API design
+  ├── Chapter 4:  AI engineering
+  ├── Chapter 5:  Data modelling
+  ├── Chapter 6:  Reliability and error handling
+  ├── Chapter 7:  Developer process
+  ├── Chapter 8:  Ownership and judgment
+  ├── Chapter 9:  Data structures and algorithms
+  ├── Chapter 10: What I'd do differently
+  ├── Chapter 11: Defending AI-assisted work
+  └── Appendix:   Complexity cheat sheet</span>
+
+<span class="hl">Each chapter contains:</span>
+  <span class="arr">→</span> Opening narrative    <span class="cm">2–3 paragraphs explaining the topic
+                          in the context of this specific project</span>
+  <span class="arr">→</span> ASCII diagram         <span class="cm">system flow, component tree, data model,
+                          or algorithm trace — draw before explaining</span>
+  <span class="arr">→</span> Interview questions   <span class="cm">3 per chapter, labelled [mid] [senior] [arch]</span>
+  <span class="arr">→</span> Model answers         <span class="cm">first person, grounded in specific files
+                          and decisions, tradeoffs named explicitly</span>
+  <span class="arr">→</span> The hard question     <span class="cm">the one candidates dodge — answered honestly</span></div>
+        </div>
       </div>
 
       <div class="tab-group-label">The prompt</div>
       <div class="spec-step">
-        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Prompt</div>
         <div class="spec-body">
-          <p class="spec-desc">Paste your codebase spec, README, or architecture doc. Run this prompt in Claude.ai. Save the output — it becomes your interview prep document.</p>
-<div class="code-block"><span class="hl">I'm preparing for software engineering interviews and
-want to defend this project I built. I need you to
-review the codebase and prepare me to answer questions
-at the level of a senior engineer or AI architect —
-not just "here's what I built and why."</span>
+          <p class="spec-desc">Paste your codebase spec, README, or architecture document and send this. Save the output as your prep guide and read it before the interview.</p>
+<div class="code-block"><span class="hl">You are a software developer with 8 years of industry
+experience. You have shipped production systems, reviewed
+hundreds of pull requests, and conducted engineering
+interviews at mid, senior, and staff level. You write
+the way good technical books are written — clear and
+direct, with opinions earned from experience, and
+diagrams that make the abstract concrete.</span>
 
-<span class="hl">Project spec / architecture doc:</span>
+<span class="hl">I need you to read this project spec and write me a
+book-style interview preparation guide. Not a list of
+questions and answers — a document I can read the way
+I read a chapter in a technical book. One that teaches
+me how to think and talk about this project the way a
+senior engineer would.</span>
+
+<span class="hl">Project spec:</span>
 <span class="cm">[paste your spec, README, or architecture doc here]</span>
 
 <span class="hl">My background:</span>
-<span class="cm">Frontend specialist transitioning to senior / AI engineering roles.
-Comfortable with React, TypeScript, Next.js.
-Want to show architectural thinking, not just implementation skill.</span>
+<span class="cm">Frontend specialist moving into senior and AI engineering
+roles. Comfortable with React, TypeScript, Next.js.
+Want to demonstrate architectural judgment, not just
+implementation knowledge. Built this project using
+Claude Code and Claude.ai.</span>
 
-<span class="hl">Do the following:</span>
+<span class="hl">─────────────────────────────────────────────────</span>
+<span class="hl">VOICE AND WRITING STYLE — follow these exactly</span>
+<span class="hl">─────────────────────────────────────────────────</span>
 
-<span class="hl">1. Map codebase to interview question categories</span>
-For each category below, identify what in this codebase
-directly answers questions in that category. Be specific —
-name the file, pattern, or decision, not just the concept.
+Write as an experienced developer talking to a peer.
+Not as an AI generating content. This means:
 
-Categories:
-  <span class="arr">→</span> System design       <span class="cm">architecture decisions, data flow, scalability</span>
-  <span class="arr">→</span> Frontend engineering <span class="cm">state management, rendering, performance, a11y</span>
-  <span class="arr">→</span> Backend / API        <span class="cm">data layer, auth, serverless, error handling</span>
-  <span class="arr">→</span> AI engineering       <span class="cm">LLM integration, prompt design, agent patterns,
-                          context management, provider switching</span>
-  <span class="arr">→</span> Data modelling       <span class="cm">schema design, relationships, tradeoffs</span>
-  <span class="arr">→</span> Reliability          <span class="cm">error states, rollback, idempotency, edge cases</span>
-  <span class="arr">→</span> Developer process    <span class="cm">spec-driven dev, testing, deployment, tooling</span>
-  <span class="arr">→</span> Ownership + judgment <span class="cm">decisions you made, tradeoffs you accepted,
-                          things you'd do differently</span>
-  <span class="arr">→</span> DSA                  <span class="cm">data structures and algorithms visible in this
-                          codebase — sorting, searching, traversal,
-                          time/space complexity of key operations</span>
+<span class="arr">→</span> Use first person for all model answers
+   <span class="cm">Write "I chose Netlify Blobs because..." not
+   "The developer chose Netlify Blobs because..."</span>
 
-<span class="hl">2. Generate likely interview questions</span>
-For each category, write the 3 most likely questions
-an interviewer would ask about this specific project.
-Label each question:
-  <span class="cm">[mid]</span>    — expected of a mid-level engineer
-  <span class="cm">[senior]</span> — expected of a senior engineer
-  <span class="cm">[arch]</span>   — expected of an architect or staff engineer
+<span class="arr">→</span> Be specific — name files, functions, and patterns
+   <span class="cm">Avoid "the system handles" or "the code manages".
+   Say exactly what does what and where it lives.</span>
 
-For the DSA category specifically, also generate
-3 standalone coding questions an interviewer might
-give based on patterns in this codebase:
-  <span class="arr">→</span> One array / list manipulation problem
-  <span class="arr">→</span> One tree / graph or nested structure problem
-  <span class="arr">→</span> One problem based on a real operation in the app
-     (e.g. reordering, deduplication, flattening, diffing)
-For each: write the problem statement, the optimal
-solution with complexity analysis, and a brute force
-alternative so you can explain the tradeoff.
+<span class="arr">→</span> Have opinions
+   <span class="cm">If something in this codebase is suboptimal, say
+   so plainly — then explain why it was still the
+   right call at the time. Avoid hedging language.</span>
 
-<span class="hl">3. Write model answers for each question</span>
-For each question, write a model answer that:
-  <span class="arr">→</span> References specific parts of this codebase
-  <span class="arr">→</span> Explains the reasoning behind the decision, not
-     just what was done
-  <span class="arr">→</span> Acknowledges tradeoffs honestly
-  <span class="arr">→</span> Shows awareness of alternatives that were not chosen
-  <span class="arr">→</span> For [arch] questions: includes what you'd do
-     differently at larger scale
+<span class="arr">→</span> Explain the why behind every decision
+   <span class="cm">"We use serverless functions because..." not just
+   "The backend uses serverless functions."</span>
 
-<span class="hl">4. Identify weaknesses and improvement areas</span>
-Review the codebase critically and list:
-  <span class="arr">→</span> What's missing that a senior engineer would expect
-  <span class="arr">→</span> What's implemented in a way that wouldn't scale
-  <span class="arr">→</span> What the most likely interviewer objections are
-  <span class="arr">→</span> How to address each objection honestly and confidently
-     (not defensively — owning the tradeoff is strength)
+<span class="arr">→</span> Draw before you explain
+   <span class="cm">When a concept has structure — a flow, a tree,
+   a sequence — open with the ASCII diagram. Let the
+   visual anchor the prose that follows.</span>
 
-<span class="hl">5. Refactoring and architecture improvements</span>
-For each weakness identified, explain:
-  <span class="arr">→</span> What the improved version looks like
-  <span class="arr">→</span> What it would cost to get there (effort, risk)
-  <span class="arr">→</span> Whether it's worth it at current scale
-  <span class="arr">→</span> How to articulate the decision in an interview
-     ("I made this tradeoff because X, and I'd address it
-      by doing Y when Z condition is met")
+<span class="hl">─────────────────────────────────────────────────</span>
+<span class="hl">DOCUMENT STRUCTURE</span>
+<span class="hl">─────────────────────────────────────────────────</span>
 
-<span class="hl">6. AI-assisted development angle</span>
-I built this with Claude Code and Claude.ai. Prepare me
-to answer questions about this specifically:
-  <span class="arr">→</span> "How much did you actually write vs the AI?"
-  <span class="arr">→</span> "How do you know the code is correct if AI wrote it?"
-  <span class="arr">→</span> "What would you do if the AI got something wrong?"
-  <span class="arr">→</span> "What did you learn from building this?"
-  <span class="arr">→</span> "How is this different from just using a template?"
+<span class="hl">Table of contents at the top</span>
+<span class="cm">## Table of Contents
+1. Preface: What this project is really about ... p.1
+2. System architecture .......................... p.3
+3. Frontend engineering ......................... p.8
+4. Backend and API design ....................... p.14
+5. AI engineering ............................... p.20
+6. Data modelling ............................... p.26
+7. Reliability and error handling ............... p.31
+8. Developer process ............................ p.36
+9. Ownership and judgment ....................... p.41
+10. Data structures and algorithms .............. p.47
+11. Defending AI-assisted work .................. p.55
+12. What I'd do differently ..................... p.60
+Appendix: Complexity cheat sheet ................ p.64</span>
 
-Write honest answers that show engineering judgment,
-not just AI usage. The goal is to demonstrate that
-AI was a tool, and you were the engineer.
+<span class="hl">Preface — What this project is really about</span>
+One page. Not a feature list. Frame what problem this
+solves, what kind of engineer it shows me to be, and
+what an interviewer should take away from it before
+asking a single question.
 
-<span class="hl">7. Output format</span>
-Structure as a markdown document. I am a visual learner
-so include the following at the top and within sections:
+<span class="hl">For chapters 2–9, use this structure every time:</span>
 
-<span class="hl">Table of contents</span>
-Generate a TOC at the top with anchor links to every
-section so I can jump directly to what I need to review:
-  <span class="cm">## Table of Contents
-  1. [System design](#system-design)
-  2. [Frontend engineering](#frontend-engineering)
-  3. [Backend / API](#backend-api)
-  4. [AI engineering](#ai-engineering)
-  5. [Data modelling](#data-modelling)
-  6. [Reliability](#reliability)
-  7. [Developer process](#developer-process)
-  8. [Ownership + judgment](#ownership-judgment)
-  9. [DSA](#dsa)
-  10. [Weaknesses + objections](#weaknesses)
-  11. [Refactoring](#refactoring)
-  12. [AI-assisted dev](#ai-assisted)</span>
+  <span class="ok">1. Opening (2–3 paragraphs)</span>
+  Explain the topic as if orienting a new team member
+  who just cloned the repo and opened the relevant files.
+  Tell them what they're looking at and why it's shaped
+  the way it is. Be direct.
 
-<span class="hl">ASCII diagrams — include one per section where relevant:</span>
-  <span class="arr">→</span> System design      <span class="cm">request flow or component dependency diagram</span>
-  <span class="arr">→</span> Frontend           <span class="cm">component tree or state flow diagram</span>
-  <span class="arr">→</span> Backend / API      <span class="cm">request → function → storage flow</span>
-  <span class="arr">→</span> AI engineering     <span class="cm">LLM chain or agent loop diagram</span>
-  <span class="arr">→</span> Data modelling     <span class="cm">entity relationship or schema diagram</span>
-  <span class="arr">→</span> DSA                <span class="cm">before/after state diagram for each algorithm,
-                       step-by-step trace for the optimal solution</span>
+  <span class="ok">2. ASCII diagram</span>
+  Draw the structure before explaining it in prose.
+  System flow, component tree, data model, algorithm
+  trace — whatever is most useful for this chapter.
+  Use box-drawing characters: ─ │ ┌ ┐ └ ┘ ├ ┤ → ▼ ◀
+  All diagrams inside fenced code blocks.
 
-Diagrams must be ASCII art inside code blocks so they
-render in any markdown viewer. Use box-drawing characters
-(─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ →) for clean lines.
+  <span class="ok">3. Interview questions — three per chapter</span>
+  Label each:
+    <span class="cm">[mid]</span>    — what a mid-level engineer is expected to know
+    <span class="cm">[senior]</span> — what a senior engineer is expected to know
+    <span class="cm">[arch]</span>   — what an architect or staff engineer shows
 
-<span class="hl">Section structure:</span>
-  <span class="arr">→</span> Each question with its level label
-  <span class="arr">→</span> Model answer directly below each question
-  <span class="arr">→</span> ASCII diagram at the end of each section
-  <span class="arr">→</span> Weaknesses section with objection + response pairs
-  <span class="arr">→</span> Refactoring section with effort/value assessment
-  <span class="arr">→</span> AI angle section
-  <span class="arr">→</span> DSA section last — three coding problems each with
-     problem statement, brute force, optimal, key insight,
-     and a step-by-step execution trace diagram
+  Each model answer must:
+    → Be written in first person
+    → Name a specific file, function, or decision
+    → State the tradeoff explicitly
+    → For [arch]: say what changes at 10x scale
+
+  <span class="ok">4. The hard question</span>
+  The one question candidates always dodge in this area.
+  Write it. Then write the honest answer — the kind that
+  shows maturity, not defensiveness. Own the limitation.
+  Explain the reasoning. Show what you'd do differently.
+
+<span class="hl">Chapter topics:</span>
+
+  <span class="cm">Ch 2 — System architecture</span>
+  Full request flow from browser to storage.
+  The core architectural decisions and their rationale.
+  What the system optimises for and what it gives up.
+  How it would need to change at scale.
+
+  <span class="cm">Ch 3 — Frontend engineering</span>
+  Component tree diagram. State management strategy.
+  Rendering approach. Performance model.
+  What's deliberately simple vs what needs work
+  for a production multi-user app.
+
+  <span class="cm">Ch 4 — Backend and API design</span>
+  Request → function → storage flow diagram.
+  Why the API is shaped this way. Serverless tradeoffs —
+  cold starts, statelessness, connection management.
+  Error classification patterns.
+
+  <span class="cm">Ch 5 — AI engineering</span>
+  LangChain chain flow diagram for each AI feature.
+  Why chains are single-purpose. Provider switching
+  architecture and what it enables. Context window
+  management. The difference between this codebase
+  and just calling an LLM API directly.
+
+  <span class="cm">Ch 6 — Data modelling</span>
+  Entity relationship diagram. Schema decisions.
+  What Netlify Blobs gives and what it costs.
+  The race condition — what caused it, how the Postgres
+  migration fixes it, why it matters.
+
+  <span class="cm">Ch 7 — Reliability and error handling</span>
+  Optimistic UI flow — happy path and rollback path.
+  How errors are classified and surfaced to the user.
+  Idempotency in the migration scripts. What's missing.
+
+  <span class="cm">Ch 8 — Developer process</span>
+  The spec-driven workflow. How .buffr/ works as a
+  memory bank. Why Claude.ai and Claude Code are kept
+  in separate roles. What this process produces that
+  raw AI-assisted development doesn't.
+
+  <span class="cm">Ch 9 — Ownership and judgment</span>
+  The decisions that weren't obvious. What was tried
+  and abandoned. What's deliberately kept simple.
+  This chapter is the most important — it's where
+  senior thinking becomes visible.
+
+  <span class="cm">Ch 10 — DSA</span>
+  For each real operation in the codebase, write a
+  problem statement, then show brute force and optimal
+  with a step-by-step ASCII execution trace.
+  Focus on: reordering, deduplication, flattening.
+  End with a complexity cheat sheet for every major
+  data operation in the app.
+
+  <span class="cm">Ch 11 — Defending AI-assisted work</span>
+  How to answer "how much did you write vs the AI?"
+  and the five other questions interviewers ask.
+  Written as talking points, not scripts.
+
+  <span class="cm">Ch 12 — What I'd do differently</span>
+  An honest retrospective. Not "everything was perfect."
+  Not "I regret all of it." The real answer: what was a
+  reasonable call that I'd now change, what I'd fix
+  first, and what I'd leave alone.
 
 <span class="hl">Constraints</span>
-  <span class="arr">→</span> Every answer must reference specific code — no generic
-     responses that could apply to any project
-  <span class="arr">→</span> Tradeoffs must be named, not hidden
-  <span class="arr">→</span> Weakness responses must be confident, not defensive
-  <span class="arr">→</span> AI answers must show ownership, not deflection
-  <span class="arr">→</span> All diagrams must be ASCII — no Mermaid, no images</div>
+  <span class="arr">→</span> Every chapter must reference specific file names
+  <span class="arr">→</span> All diagrams must be ASCII in fenced code blocks
+     — no Mermaid, no images, no PlantUML
+  <span class="arr">→</span> No generic answers that could apply to any project
+  <span class="arr">→</span> Tradeoffs must be named and owned, not hedged
+  <span class="arr">→</span> Write with opinions — vague is less useful than wrong</div>
           <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.buffr/specs/interview/[project-name].md</code></p>
         </div>
       </div>
 
-      <div class="tab-group-label">What the TOC and diagrams look like</div>
+      <div class="tab-group-label">Standalone DSA prompt</div>
       <div class="spec-step">
+        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Prompt</div>
         <div class="spec-body">
-          <p class="spec-desc">Examples of the TOC and ASCII diagrams the spec generates — grounded in buffr's architecture.</p>
-<div class="code-block"><span class="hl">## Table of Contents</span>
-<span class="cm">1. System design .............. line 12
-2. Frontend engineering ....... line 48
-3. Backend / API .............. line 89
-4. AI engineering ............. line 134
-5. Data modelling ............. line 178
-6. Reliability ................ line 212
-7. Developer process .......... line 248
-8. Ownership + judgment ....... line 283
-9. DSA ........................ line 318
-10. Weaknesses + objections ... line 367
-11. Refactoring ............... line 401
-12. AI-assisted dev ........... line 438</span>
+          <p class="spec-desc">Use this separately when you want to drill DSA only — problems grounded in your own codebase, not abstract LeetCode.</p>
+<div class="code-block"><span class="hl">You are a developer with 8 years of experience teaching
+DSA to working engineers. You know that abstract problems
+don't stick — grounding them in real code does. Write
+like a technical book for visual learners: narrative
+explanations, ASCII step-by-step traces, and opinions
+on what actually matters vs what's interview theatre.</span>
 
-<span class="hl">## System design — request flow</span>
-<span class="cm">Browser
-  │
-  ▼
-Next.js App Router ──── middleware (auth check)
-  │                          │
-  │                     redirect /login
-  ▼
-Page component
-  │
-  ▼
-lib/api.ts (fetch wrapper)
-  │
-  ▼
-/.netlify/functions/[endpoint]
-  │
-  ├── lib/storage/[entity].ts  ←── Netlify Blobs
-  │
-  ├── lib/ai/provider.ts       ←── Anthropic / OpenAI / Ollama
-  │        │
-  │        └── chains/[chain].ts
-  │
-  └── lib/github.ts            ←── GitHub API</span>
-
-<span class="hl">## AI engineering — LangChain chain flow</span>
-<span class="cm">User ends session
-  │
-  ▼
-POST /session-ai?summarize
-  │
-  ▼
-provider.ts
-  └── getModel(provider) → BaseChatModel
-          │
-          ▼
-createSummarizeChain(model)
-  ├── SystemMessage: summarize instructions
-  ├── HumanMessage:  activity items[]
-  │
-  ▼
-LLM response
-  │
-  ▼
-parse-utils.ts → JSON.parse → { goal, bullets[] }
-  │
-  ▼
-POST /sessions → save session row</span>
-
-<span class="hl">## DSA — hashmap reorder trace</span>
-<span class="cm">Input:
-  items    = [{id:"a",pos:0}, {id:"b",pos:1}, {id:"c",pos:2}]
-  newOrder = ["c", "a", "b"]
-
-Step 1 — build index (O(n)):
-  map = { "a": {id:"a",pos:0},
-          "b": {id:"b",pos:1},
-          "c": {id:"c",pos:2} }
-
-Step 2 — map over newOrder (O(n)):
-  "c" → map["c"] → assign pos:0
-  "a" → map["a"] → assign pos:1
-  "b" → map["b"] → assign pos:2
-
-Output:
-  [{id:"c",pos:0}, {id:"a",pos:1}, {id:"b",pos:2}]
-
-Time:  O(n) — two single passes
-Space: O(n) — the hashmap
-
-vs brute force (nested loop):
-  for each id in newOrder:          ← O(n)
-    for each item in items:         ← O(n)
-      if item.id === id → assign    ← O(1)
-  Total: O(n²)</span></div>
-        </div>
-      </div>
-      <div class="spec-step">
-        <div class="spec-body">
-          <div style="display:flex;flex-direction:column;gap:0">
-
-            <div class="state-block" style="padding:.75rem 0">
-              <span class="tag" style="background:rgba(129,140,248,.12);color:#818cf8;border-color:rgba(129,140,248,.25)">[senior] System design</span>
-              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Q: Why Netlify Blobs over a proper database?</strong></p>
-              <p class="state-desc">Model answer: "For a single-user tool at this scale, Netlify Blobs removed all infra overhead — no connection management, no migrations, no provisioning. The tradeoff is no relational queries and a race condition on array writes, which I documented. The migration plan to Neon Postgres exists and is phased — I'd execute it at the point where query complexity or concurrent access makes Blobs a real constraint, not before."</p>
-            </div>
-
-            <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
-              <span class="tag" style="background:rgba(167,139,250,.12);color:#a78bfa;border-color:rgba(167,139,250,.25)">[arch] AI engineering</span>
-              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Q: How would you scale this agent to multiple users?</strong></p>
-              <p class="state-desc">Model answer: "The current design is single-user JWT with global state. Scaling to multi-user requires: per-user context isolation (the .buffr/ structure already models this), conversation memory scoped by user ID, and rate limiting per provider. The provider abstraction layer means I'm not locked to Anthropic — I can route cheaper models for simple chains and reserve GPT-4 for the ReAct loop."</p>
-            </div>
-
-            <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
-              <span class="tag" style="background:rgba(52,211,153,.12);color:#34d399;border-color:rgba(52,211,153,.25)">[mid] AI-assisted dev</span>
-              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Q: How much did you actually write vs the AI?</strong></p>
-              <p class="state-desc">Model answer: "I wrote all the specs, architecture decisions, data models, and constraints. Claude Code wrote most of the implementation from those specs. The distinction matters — I made every decision about what to build and why. The AI executed those decisions faster than I could have typed. I caught several cases where it deviated from the spec and corrected it. That review process is where the engineering judgment lives."</p>
-            </div>
-
-            <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
-              <span class="tag" style="background:rgba(251,191,36,.12);color:#fbbf24;border-color:rgba(251,191,36,.25)">[senior] Weakness + objection</span>
-              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Interviewer: "There are no tests."</strong></p>
-              <p class="state-desc">Model answer: "Correct — I prioritised shipping a working system over test coverage at this stage. The architecture is designed for testability: pure functions, separated concerns, Netlify Functions that can be unit tested in isolation. The plan spec has Vitest setup as a phase gate before each major phase. I'd add tests before any team dependency or production load, not before."</p>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <div class="tab-group-label">DSA — what it extracts from your codebase</div>
-      <div class="spec-step">
-        <div class="spec-body">
-          <p class="spec-desc">The spec derives DSA problems from operations that already exist in your app — not generic LeetCode questions. Every problem is grounded in something you actually built, which means you can explain it naturally.</p>
-          <div style="display:flex;flex-direction:column;gap:0">
-
-            <div class="state-block" style="padding:.75rem 0">
-              <span class="tag">From buffr — reorder manual actions</span>
-              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Problem:</strong> Given an array of task objects each with an <code style="font-size:11px">id</code> and <code style="font-size:11px">position</code>, and a new ordered list of IDs, return the updated array with positions reassigned.</p>
-              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Brute force:</strong> Loop through new ID order, find each item by id scan — O(n²)</p>
-              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Optimal:</strong> Build a hashmap of id → item first, then map over new order in one pass — O(n). The insight: trading O(n) space for O(n) time by eliminating the inner search loop.</p>
-            </div>
-
-            <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
-              <span class="tag">From buffr — deduplicate session summaries</span>
-              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Problem:</strong> Given an array of activity items (commits, completed actions) each with a <code style="font-size:11px">title</code> and <code style="font-size:11px">source</code>, remove duplicates where title and source both match.</p>
-              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Brute force:</strong> Nested loop comparing every pair — O(n²)</p>
-              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Optimal:</strong> Use a Set with a composite key <code style="font-size:11px">`${title}::${source}`</code> — O(n). The insight: a compound key collapses a 2D uniqueness check into a 1D lookup.</p>
-            </div>
-
-            <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
-              <span class="tag">From buffr — flatten nested spec tree</span>
-              <p class="state-desc" style="margin-top:.4rem"><strong style="color:var(--text)">Problem:</strong> Given a <code style="font-size:11px">.buffr/specs/</code> directory tree (nested categories with files), return a flat array of all file paths.</p>
-              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Brute force:</strong> Recursive DFS with array concatenation at each level — O(n) time but O(n²) space from intermediate arrays</p>
-              <p class="state-desc" style="margin-top:.3rem"><strong style="color:var(--text)">Optimal:</strong> Iterative DFS with a stack and a single result array — O(n) time, O(d) space where d is max depth. The insight: avoid intermediate array allocation by collecting into one array throughout.</p>
-            </div>
-
-          </div>
-          <div class="callout" style="margin-top:.875rem">These aren't invented examples — they're derived from real operations in buffr. When an interviewer asks a DSA question, tying your answer back to something you actually implemented is far more convincing than solving it as an abstract puzzle.</div>
-        </div>
-      </div>
-
-      <div class="tab-group-label">Standalone DSA prep prompt</div>
-      <div class="spec-step">
-        <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Template</div>
-        <div class="spec-body">
-          <p class="spec-desc">Use this separately from the main interview spec when you want to drill DSA specifically — grounded in your codebase, not generic problems.</p>
-<div class="code-block"><span class="hl">Review this codebase and generate a DSA study guide
-grounded in operations that actually exist in this app.</span>
-
-<span class="hl">Codebase / spec:</span>
+<span class="hl">Codebase spec:</span>
 <span class="cm">[paste your spec or architecture doc here]</span>
 
-<span class="hl">For each of the following, identify a real operation in
-the codebase that maps to it, then generate a coding
-problem derived from that operation:</span>
+<span class="hl">For each pattern, find where it lives in the codebase
+then write a problem derived from it:</span>
 
-  <span class="arr">→</span> Array manipulation    <span class="cm">reordering, filtering, deduplication,
-                           transformation, pagination</span>
-  <span class="arr">→</span> HashMap / Set usage    <span class="cm">lookups, grouping, uniqueness checks,
-                           index building</span>
-  <span class="arr">→</span> Tree / nested data     <span class="cm">recursive structures, path traversal,
-                           flattening, deep merge</span>
-  <span class="arr">→</span> Sorting                <span class="cm">custom sort keys, stable sort, sort by
-                           multiple fields</span>
-  <span class="arr">→</span> String manipulation    <span class="cm">parsing, transformation, pattern matching,
-                           slug generation, path building</span>
-  <span class="arr">→</span> Queue / stack patterns <span class="cm">undo/redo, job queues, session history,
-                           breadcrumb trails</span>
+  <span class="arr">→</span> Array manipulation    <span class="cm">reordering, filtering, deduplication</span>
+  <span class="arr">→</span> HashMap / Set          <span class="cm">lookups, grouping, index building</span>
+  <span class="arr">→</span> Tree / nested data     <span class="cm">traversal, flattening, deep merge</span>
+  <span class="arr">→</span> Sorting                <span class="cm">multi-field sort, custom comparators</span>
+  <span class="arr">→</span> String manipulation    <span class="cm">parsing, slug generation, path building</span>
 
 <span class="hl">For each problem:</span>
-  <span class="arr">→</span> Write the problem statement (2–4 sentences)
-  <span class="arr">→</span> Show where this pattern appears in the codebase
-  <span class="arr">→</span> Brute force solution with time + space complexity
-  <span class="arr">→</span> Optimal solution with time + space complexity
-  <span class="arr">→</span> The key insight — what makes the optimal work
-  <span class="arr">→</span> A follow-up question an interviewer would likely ask
-     and how to answer it
+  1. Problem statement (2–4 sentences, real-world framing)
+  2. Where this pattern lives in the codebase (file name)
+  3. Brute force solution in TypeScript + complexity
+  4. ASCII step-by-step trace of brute force execution
+  5. Optimal solution in TypeScript + complexity
+  6. ASCII step-by-step trace of optimal execution
+  7. One sentence: why does optimal win?
+  8. The follow-up an interviewer asks next — and the answer
 
-<span class="hl">Also generate a complexity cheat sheet for this codebase:</span>
-  For every significant data operation in the app
-  (list all items, filter by field, sort, update one,
-  delete one, reorder), state the current time and
-  space complexity and whether it's acceptable or
-  would need improvement at scale.
+<span class="hl">End with a complexity cheat sheet:</span>
+Every major data operation in the app — list all, filter,
+sort, get by id, update, delete, reorder — current O()
+for time and space, and whether it holds at 10x scale.
 
 <span class="hl">Constraints</span>
-  <span class="arr">→</span> Every problem must trace back to real code in this app
-  <span class="arr">→</span> Use TypeScript in solutions to match the codebase
-  <span class="arr">→</span> Complexity analysis must include both time and space
-  <span class="arr">→</span> Follow-up questions should be ones a senior engineer
-     would actually ask, not generic</div>
+  <span class="arr">→</span> TypeScript for all code
+  <span class="arr">→</span> ASCII execution traces in fenced code blocks
+  <span class="arr">→</span> Every problem must cite its source file
+  <span class="arr">→</span> If current implementation is O(n²) when O(n) is
+     easy — say so plainly and show the fix</div>
           <p class="spec-save">Save output → <code style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2)">.buffr/specs/interview/[project]-dsa.md</code></p>
         </div>
       </div>
@@ -2769,56 +2681,53 @@ problem derived from that operation:</span>
             <div class="step-row" style="border-top:none;padding-top:0">
               <div class="step-num">1</div>
               <div>
-                <p class="step-title">Save as your interview prep doc</p>
-                <p class="step-desc">Save to <code style="font-size:11px">.buffr/specs/interview/[project].md</code>. Read it the day before the interview. The model answers give you the structure — adapt the wording to how you naturally speak.</p>
+                <p class="step-title">Read it like a book, not a cheat sheet</p>
+                <p class="step-desc">The chapters build on each other — system architecture before frontend, frontend before API, API before AI. Read in order the first time. The narrative is the prep, not just the Q&amp;A at the end of each chapter.</p>
               </div>
             </div>
             <div class="step-row">
               <div class="step-num">2</div>
               <div>
-                <p class="step-title">Drill the weakness responses</p>
-                <p class="step-desc">These are the questions that trip people up. Practice saying them out loud. Owning a tradeoff confidently signals senior thinking. Deflecting or making excuses signals junior thinking.</p>
+                <p class="step-title">Study the diagrams first</p>
+                <p class="step-desc">Before reading a chapter's prose, look at the ASCII diagram and narrate it out loud. If you can explain a diagram cold, you can answer a system design question cold. The diagram is the skeleton — everything else is detail.</p>
               </div>
             </div>
             <div class="step-row">
               <div class="step-num">3</div>
               <div>
-                <p class="step-title">Re-run after every major feature</p>
-                <p class="step-desc">The codebase changes — the prep doc should too. Re-run the spec after each significant phase so your answers stay accurate and current.</p>
+                <p class="step-title">Practise the hard questions out loud</p>
+                <p class="step-desc">Each chapter ends with the question candidates dodge. Practise saying those answers aloud — not reciting them, saying them in your own words. There's a difference between knowing an answer and being able to say it under pressure.</p>
               </div>
             </div>
             <div class="step-row">
               <div class="step-num">4</div>
               <div>
-                <p class="step-title">Use the improvements list as a roadmap</p>
-                <p class="step-desc">The weaknesses section isn't just for interviews — it's a prioritised list of what to actually improve. Every item you implement is one fewer objection to handle. Best case: you fix it before the interview and mention it proactively.</p>
+                <p class="step-title">Re-run after each significant change</p>
+                <p class="step-desc">The guide is only as accurate as the spec you feed it. After the Postgres migration alone, chapters 4, 6, and 7 will have different answers. Keep the prep doc current with the codebase.</p>
               </div>
             </div>
           </div>
 
-          <div class="tab-group-label" style="margin-top:1.25rem">Defending AI-assisted work — the framing that works</div>
+          <div class="tab-group-label" style="margin-top:1.25rem">On defending AI-assisted work</div>
           <div class="why" style="margin-top:.5rem">
-            <p class="why-label">The right frame</p>
-            <p>Engineers have always used tools — compilers, frameworks, Stack Overflow, copy-paste. The question interviewers are really asking is: <strong style="color:var(--text)">do you understand what you built, and can you reason about it?</strong> The answer to that is in your ability to explain decisions, name tradeoffs, and describe what you'd do differently — not in how many keystrokes you typed.</p>
+            <p class="why-label">What interviewers are actually asking</p>
+            <p>The question isn't "did you use AI?" The question is "do you understand what you built?" Those are completely different questions. An interviewer asking about AI usage is probing for judgment — did you know <em>when</em> to use it, <em>what</em> to give it, and <em>whether</em> what it produced was correct? The answers live in your specs, your architecture decisions, and your ability to walk through any file and explain what it does and why.</p>
           </div>
-<div class="code-block"><span class="cm">What signals senior thinking in AI-assisted projects:</span>
+<div class="code-block"><span class="cm">Signals that show you were the engineer:</span>
 
   <span class="ok">✓</span> You wrote the spec before the AI wrote the code
-  <span class="ok">✓</span> You can explain every architectural decision and why
-  <span class="ok">✓</span> You know what the AI got wrong and how you caught it
-  <span class="ok">✓</span> You named the tradeoffs before they were pointed out
-  <span class="ok">✓</span> You have a plan for what to improve and why not yet
-  <span class="ok">✓</span> You can walk through any file and explain what it does
+  <span class="ok">✓</span> You can name every tradeoff in the architecture
+  <span class="ok">✓</span> You caught what the AI got wrong and corrected it
+  <span class="ok">✓</span> You have a clear plan for what to improve and why not yet
+  <span class="ok">✓</span> You can walk any file and explain what it does
 
-<span class="cm">What signals junior thinking:</span>
+<span class="cm">Signals that show you were just the user:</span>
 
-  <span class="bad">✗</span> "The AI wrote it so I'm not sure exactly how it works"
-  <span class="bad">✗</span> "I would have done X but the AI did Y and I left it"
+  <span class="bad">✗</span> "The AI wrote it — I'm not sure exactly how it works"
+  <span class="bad">✗</span> "I would have done X but the AI did Y so I left it"
   <span class="bad">✗</span> Describing features without explaining why they exist
-  <span class="bad">✗</span> No awareness of what's missing or what could break
-  <span class="bad">✗</span> Treating AI as the author and yourself as the user</div>
-
-          <div class="callout" style="margin-top:.875rem">The goal isn't to hide that you used AI. It's to show that you used it the way a senior engineer uses any tool — with judgment, with intent, and with full ownership of the result.</div>
+  <span class="bad">✗</span> No awareness of what's missing or what could break</div>
+          <div class="callout" style="margin-top:.875rem">You built something real. The prep guide doesn't create that — it helps you articulate what's already there. The work happened when you designed the system, named the tradeoffs, and shipped it. This is just the translation layer between what you know and what you can say under pressure.</div>
         </div>
       </div>
     </div>
