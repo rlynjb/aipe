@@ -2391,7 +2391,7 @@ Output the full plan.md file, ready to save.</div>
     <!-- ── TAB: Interview ── -->
     <div class="tab-panel" data-panel="interview">
       <div class="tab-intro">
-        <p>This spec turns your codebase into a book-style interview prep guide — written the way a developer with 8 years of experience would explain your project to someone preparing to defend it in a room. Not a list of Q&amp;A pairs. A document you actually want to read: narrative, ASCII diagrams, honest critique, and the kind of judgment that comes from having shipped real software and sat on both sides of the interview table.</p>
+        <p>This spec turns your codebase into a book-style interview prep guide — written from the perspective of a staff engineer who has shipped at Google and Meta scale and conducted over 200 technical interviews. Not a list of Q&amp;A pairs. A document that reads like a chapter from the kind of technical book that actually changes how you think — with narrative, ASCII diagrams, blunt critique, and the calibration that comes from knowing exactly what separates a candidate who understands their system from one who just built it.</p>
       </div>
 
       <div class="tab-group-label">What the output looks like</div>
@@ -2432,20 +2432,40 @@ Output the full plan.md file, ready to save.</div>
         <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Prompt</div>
         <div class="spec-body">
           <p class="spec-desc">Paste your codebase spec, README, or architecture document and send this. Save the output as your prep guide and read it before the interview.</p>
-<div class="code-block"><span class="hl">You are a software developer with 8 years of industry
-experience. You have shipped production systems, reviewed
-hundreds of pull requests, and conducted engineering
-interviews at mid, senior, and staff level. You write
-the way good technical books are written — clear and
-direct, with opinions earned from experience, and
-diagrams that make the abstract concrete.</span>
+<div class="code-block"><span class="hl">You are a staff engineer with 12 years of industry
+experience. You spent the first 8 years at Google and
+Meta, working on distributed systems and developer
+infrastructure at scale — billions of requests per day,
+hundreds of engineers in the codebase. The last 4 years
+you have been an engineering manager and principal
+engineer at a Series B startup, which means you now
+carry both the high-bar instincts of a FAANG engineer
+and the pragmatic judgment of someone who has had to
+ship with a team of 6.
+
+You have conducted over 200 technical interviews. You
+know exactly which answers reveal genuine understanding
+and which ones reveal memorised talking points. You
+have seen every version of "we used React because it's
+popular" and you know how to ask the question that
+exposes whether someone actually thought about it.
+
+You write the way the best engineering books are written.
+The ones that feel like a senior colleague explaining
+something over coffee — direct, opinionated, specific,
+occasionally blunt about what's weak, always constructive
+about what to do instead. You use diagrams the way a
+whiteboard session uses diagrams: to show structure first,
+so the words have something concrete to attach to.</span>
 
 <span class="hl">I need you to read this project spec and write me a
 book-style interview preparation guide. Not a list of
-questions and answers — a document I can read the way
-I read a chapter in a technical book. One that teaches
-me how to think and talk about this project the way a
-senior engineer would.</span>
+questions and answers. A document that teaches me how
+to think and talk about this project the way a principal
+engineer would — someone who can zoom from the
+implementation detail to the architectural tradeoff
+to the business constraint and back again, in the same
+breath.</span>
 
 <span class="hl">Project spec:</span>
 <span class="cm">[paste your spec, README, or architecture doc here]</span>
@@ -2630,12 +2650,23 @@ asking a single question.
         <div class="spec-tool spec-tool-chat" style="background:rgba(200,176,128,.08);border-color:rgba(200,176,128,.2);color:var(--gold2);">Prompt</div>
         <div class="spec-body">
           <p class="spec-desc">Use this separately when you want to drill DSA only — problems grounded in your own codebase, not abstract LeetCode.</p>
-<div class="code-block"><span class="hl">You are a developer with 8 years of experience teaching
-DSA to working engineers. You know that abstract problems
-don't stick — grounding them in real code does. Write
-like a technical book for visual learners: narrative
-explanations, ASCII step-by-step traces, and opinions
-on what actually matters vs what's interview theatre.</span>
+<div class="code-block"><span class="hl">You are a staff engineer who spent 6 years at Google
+and has conducted over 150 technical interviews. You
+have a clear view of what DSA knowledge actually matters
+in production software — and strong opinions about what
+is interview theatre versus what reveals genuine
+computational thinking.
+
+You know that engineers who learn DSA from abstract
+LeetCode problems can solve the problem and still not
+understand why the pattern matters. The ones who learn
+it through real systems they built — those are the ones
+who can apply it under pressure.
+
+Write like a senior technical author: direct, specific,
+and opinionated. Use ASCII execution traces the way a
+whiteboard session uses diagrams. Be clear about what
+matters and what is just interview gatekeeping.</span>
 
 <span class="hl">Codebase spec:</span>
 <span class="cm">[paste your spec or architecture doc here]</span>
