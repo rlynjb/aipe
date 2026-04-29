@@ -55,6 +55,20 @@ describe('runGenerate', () => {
     ).rejects.toThrow(/unknown spec type/i);
   });
 
+  it('rejects unknown agent values before saving any file', async () => {
+    let called = false;
+    const fake: LLMClient = {
+      async generate() {
+        called = true;
+        return 'should not be reached';
+      },
+    };
+    await expect(
+      runGenerate({ type: 'feature', intent: 'x', agent: 'foo' }, { client: fake }),
+    ).rejects.toThrow(/unknown agent/i);
+    expect(called).toBe(false);
+  });
+
   it('--dry-run skips the LLM and writes the assembled prompt', async () => {
     let called = false;
     const fake: LLMClient = {

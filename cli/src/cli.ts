@@ -52,4 +52,9 @@ program.addHelpText(
   `\nSpec types: ${SPEC_TYPES.join(', ')}\nSee 'aipe list' for descriptions.`,
 );
 
-await program.parseAsync(process.argv);
+try {
+  await program.parseAsync(process.argv);
+} catch (err) {
+  console.error(`aipe: ${err instanceof Error ? err.message : String(err)}`);
+  process.exit(1);
+}

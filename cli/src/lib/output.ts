@@ -20,6 +20,8 @@ const TYPE_TO_FOLDER: Record<SpecType, string> = {
   integration: 'integrations',
 };
 
+export const VALID_AGENTS: readonly AgentTarget[] = ['claude-code', 'codex', 'cursor', 'generic'];
+
 export function formatForAgent(spec: string, agent: AgentTarget, savedPath: string): string {
   switch (agent) {
     case 'claude-code':
@@ -29,6 +31,9 @@ export function formatForAgent(spec: string, agent: AgentTarget, savedPath: stri
     case 'cursor':
       return `<!-- spec: ${savedPath} -->\n${spec}`;
     case 'generic':
+      return spec;
+    default:
+      // Unreachable for valid AgentTarget values; guards against runtime strings that bypass validation.
       return spec;
   }
 }

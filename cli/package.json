@@ -28,6 +28,16 @@
     "prompt-engineering"
   ],
   "license": "MIT",
+  "author": "rlynjb <rlynjb@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rlynjb/aipe.git",
+    "directory": "cli"
+  },
+  "homepage": "https://github.com/rlynjb/aipe#readme",
+  "bugs": {
+    "url": "https://github.com/rlynjb/aipe/issues"
+  },
   "engines": {
     "node": ">=20.11.0"
   },

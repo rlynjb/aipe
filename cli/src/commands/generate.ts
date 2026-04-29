@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { findAipeDir, formatContextForPrompt, loadProjectContext } from '../lib/context.ts';
 import { globalConfigDir, loadGlobalConfig } from '../lib/config.ts';
 import { generateSpec, defaultAnthropicClient, type LLMClient } from '../lib/llm.ts';
-import { detectAgent, formatForAgent, saveSpec } from '../lib/output.ts';
+import { detectAgent, formatForAgent, saveSpec, VALID_AGENTS } from '../lib/output.ts';
 import { loadTemplate } from '../lib/templates.ts';
 import { SPEC_TYPES, type AgentTarget, type SpecType } from '../types.ts';
 
@@ -12,7 +12,7 @@ export interface RunGenerateInput {
   intent: string;
   contextPath?: string;
   outputDir?: string;
-  agent?: AgentTarget;
+  agent?: string;
   dryRun?: boolean;
   print?: boolean;
 }
@@ -28,18 +28,30 @@ function assertSpecType(t: string): SpecType {
   return t as SpecType;
 }
 
+function assertAgent(a: string | undefined): AgentTarget | undefined {
+  if (a === undefined) return undefined;
+  if (!(VALID_AGENTS as readonly string[]).includes(a)) {
+    throw new Error(`Unknown agent: ${a}. Valid values: ${VALID_AGENTS.join(', ')}`);
+  }
+  return a as AgentTarget;
+}
+
 export async function runGenerate(
   input: RunGenerateInput,
   deps: RunGenerateDeps = {},
 ): Promise<void> {
   const type = assertSpecType(input.type);
   const cfg = loadGlobalConfig();
-  const agent = detectAgent(input.agent, cfg.defaultAgent);
+  const agent = detectAgent(assertAgent(input.agent), cfg.defaultAgent);
 
   const aipeDir = findAipeDir(process.cwd());
   if (!aipeDir) {
+    const fallback = input.outputDir ?? join(process.cwd(), '.aipe', 'specs');
     console.warn(
-      `! No .aipe/ directory found. Generating with empty project context. Run 'aipe init' to add one.`,
+      `! No .aipe/ directory found. Generating with empty project context.`,
+    );
+    console.warn(
+      `  Output will be written under ${fallback}. Run 'aipe init' to set up project context.`,
     );
   }
 
