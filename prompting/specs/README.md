@@ -27,9 +27,9 @@ Paste directly into Claude.ai or Claude Code.
 1. Open the relevant `.md` file
 2. Copy the prompt block
 3. Paste into Claude.ai with your project spec or codebase context
-4. Save the output to `.buffr/specs/[category]/[name].md`
-5. Reference it in Claude Code: `Read .buffr/project/context.md and .buffr/specs/[category]/[name].md then implement.`
+4. Save the output to `.aipe/specs/[category]/[name].md`
+5. Reference it in Claude Code: `Read .aipe/project/context.md and .aipe/specs/[category]/[name].md then implement.`
 
 ## File location
 
-Save this folder as `specs/` in your AIPE repo or link it from `.buffr/global/skills.md`.
+Save this folder as `specs/` in your AIPE repo or link it from `.aipe/global/skills.md`.

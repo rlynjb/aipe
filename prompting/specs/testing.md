@@ -49,7 +49,7 @@ Expect:
 ```
 
 
-> 💾 Save as → .buffr/specs/tests/[feature-name].md
+> 💾 Save as → .aipe/specs/tests/[feature-name].md
 
 
 ## Filled example — DailyRecap

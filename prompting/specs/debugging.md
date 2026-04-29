@@ -109,7 +109,7 @@ Feed Claude Code the collected evidence — not your interpretation of it. Paste
 ```
 
 
-> 💾 Save as → .buffr/specs/bugs/[feature-name].md
+> 💾 Save as → .aipe/specs/bugs/[feature-name].md
 
 
 ## Step 4 — Let Claude Code diagnose from evidence
@@ -120,7 +120,7 @@ With real evidence in hand, Claude Code can trace what actually happened rather 
 
 
 ```
-Read .buffr/specs/bugs/[feature-name].md.
+Read .aipe/specs/bugs/[feature-name].md.
 
 Do not fix anything yet.
 

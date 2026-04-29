@@ -35,4 +35,4 @@ Use this when something is too slow or too heavy. A performance spec needs a bas
 ```
 
 
-> 💾 Save as → .buffr/specs/performance/[name].md
+> 💾 Save as → .aipe/specs/performance/[name].md

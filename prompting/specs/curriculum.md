@@ -71,7 +71,7 @@ Constraints
 ```
 
 
-> 💾 Save output → .buffr/specs/curriculum.md
+> 💾 Save output → .aipe/specs/curriculum.md
 
 
 ## Example concepts it extracts — buffr
@@ -85,7 +85,7 @@ Lives in chains/summarizer.ts, chains/intent.ts. Each chain is a single-purpose 
 
 Lives in the manual actions race condition fix and the backfill migration script. General rule: operations safe to retry are easier to reason about, debug, and recover from.
 
-Lives in the .buffr/ directory structure. Externalising AI context into files the model reads on session start. General rule: when a tool has no memory, you build the memory layer yourself.
+Lives in the .aipe/ directory structure. Externalising AI context into files the model reads on session start. General rule: when a tool has no memory, you build the memory layer yourself.
 
 Lives in the Neon DB migration plan (Phases 3–5). Write to both stores, verify parity, then cut over reads. General rule: never cut over reads and writes simultaneously — separate the risks.
 
@@ -94,7 +94,7 @@ Lives in the Neon DB migration plan (Phases 3–5). Write to both stores, verify
 
 > This spec is reusable across any codebase, any language, any stack. The output changes — the prompt doesn't.
 
-1. **Save as curriculum doc** — Save to .buffr/specs/curriculum.md. Update it as the codebase grows — new features surface new concepts.
+1. **Save as curriculum doc** — Save to .aipe/specs/curriculum.md. Update it as the codebase grows — new features surface new concepts.
 
 2. **Study one concept at a time** — Read the explanation, find it in the code, then explain it back in your own words without looking. That's the test.
 

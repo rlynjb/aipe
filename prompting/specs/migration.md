@@ -37,7 +37,7 @@ Use this when moving data, changing a schema, or swapping a dependency. Migratio
 ```
 
 
-> 💾 Save as → .buffr/specs/migrations/[name].md
+> 💾 Save as → .aipe/specs/migrations/[name].md
 
 
 ## buffr example — chains to ReAct agent
@@ -67,5 +67,5 @@ Revert to chain by toggling USE_AGENT env flag
 ## What must keep working
   - All existing provider switching (Anthropic/OpenAI/Ollama)
   - Streaming responses
-  - .buffr/global/ context injection
+  - .aipe/global/ context injection
 ```

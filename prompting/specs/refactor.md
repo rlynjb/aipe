@@ -33,7 +33,7 @@ Use this when restructuring existing code without changing behaviour. The constr
 ```
 
 
-> 💾 Save as → .buffr/specs/refactors/[name].md
+> 💾 Save as → .aipe/specs/refactors/[name].md
 
 
 ## Key principle

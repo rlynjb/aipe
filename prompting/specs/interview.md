@@ -216,7 +216,7 @@ Chapter topics:
   Idempotency in the migration scripts. What's missing.
 
   Ch 8 — Developer process
-  The spec-driven workflow. How .buffr/ works as a
+  The spec-driven workflow. How .aipe/ works as a
   memory bank. Why Claude.ai and Claude Code are kept
   in separate roles. What this process produces that
   raw AI-assisted development doesn't.
@@ -256,7 +256,7 @@ Constraints
 ```
 
 
-> 💾 Save output → .buffr/specs/interview/[project-name].md
+> 💾 Save output → .aipe/specs/interview/[project-name].md
 
 
 ## Standalone DSA prompt
@@ -319,7 +319,7 @@ Constraints
 ```
 
 
-> 💾 Save output → .buffr/specs/interview/[project]-dsa.md
+> 💾 Save output → .aipe/specs/interview/[project]-dsa.md
 
 
 ## How to use the output
