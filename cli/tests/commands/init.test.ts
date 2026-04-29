@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { runInit } from '../../src/commands/init.ts';
 
@@ -42,5 +42,33 @@ describe('runInit (project)', () => {
     writeFileSync(path, existing + '\n' + stamp);
     await runInit({ global: false });
     expect(readFileSync(path, 'utf8')).toContain(stamp);
+  });
+});
+
+describe('runInit (global)', () => {
+  let tmp: string;
+  let homeBackup: string | undefined;
+
+  beforeEach(() => {
+    tmp = mkdtempSync(join(tmpdir(), 'aipe-home-'));
+    homeBackup = process.env.HOME;
+    process.env.HOME = tmp;
+  });
+
+  afterEach(() => {
+    if (homeBackup === undefined) delete process.env.HOME;
+    else process.env.HOME = homeBackup;
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
+  it('creates ~/.config/aipe/ scaffold', async () => {
+    await runInit({ global: true });
+    expect(homedir()).toBe(tmp); // sanity check the override worked
+    const root = join(tmp, '.config', 'aipe');
+    expect(existsSync(join(root, 'global', 'identity.md'))).toBe(true);
+    expect(existsSync(join(root, 'global', 'rules.md'))).toBe(true);
+    expect(existsSync(join(root, 'global', 'stack.md'))).toBe(true);
+    expect(existsSync(join(root, 'global', 'skills.md'))).toBe(true);
+    expect(existsSync(join(root, 'config.json'))).toBe(true);
   });
 });
