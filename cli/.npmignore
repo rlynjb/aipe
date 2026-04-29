@@ -1,0 +1,8 @@
+src/
+tests/
+scripts/
+.gitignore
+tsconfig.json
+vitest.config.ts
+*.tsbuildinfo
+.env
