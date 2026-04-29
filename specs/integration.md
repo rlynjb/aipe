@@ -44,4 +44,4 @@ Response shape: [fields, types, what we actually use]
 ```
 
 
-> 💾 Save as → .buffr/specs/integrations/[service-name].md
+> 💾 Save as → .aipe/specs/integrations/[service-name].md

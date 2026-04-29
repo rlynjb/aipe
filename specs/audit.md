@@ -15,7 +15,7 @@ What's stable, what's still rough?"
 ```
 
 
-> 💾 Update → .buffr/project/context.md
+> 💾 Update → .aipe/project/context.md
 
 
 ## Step 2 — Phase audit
@@ -40,7 +40,7 @@ don't build on top of it unknowingly
 ```
 
 
-> 💾 Save output → .buffr/specs/phases/phase-N-audit.md
+> 💾 Save output → .aipe/specs/phases/phase-N-audit.md
 
 
 ## Steps 3–5 — Mini specs per blocker
@@ -55,7 +55,7 @@ and the three states. Keep it tight."
 ```
 
 
-> 💾 Save each → .buffr/specs/features/fix-[name].md
+> 💾 Save each → .aipe/specs/features/fix-[name].md
 
 
 ## Step 6 — Fix in Claude Code
@@ -66,8 +66,8 @@ Same as implementing a feature — one spec file per fix, one Claude Code sessio
 
 
 ```
-"Read .buffr/project/context.md and
-.buffr/specs/features/fix-[name].md
+"Read .aipe/project/context.md and
+.aipe/specs/features/fix-[name].md
 then fix [item]."
 ```
 
@@ -78,7 +78,7 @@ Once all blockers are resolved, update context.md to reflect the clean state. Th
 
 
 ```
-"Update .buffr/project/context.md — phase N blockers
+"Update .aipe/project/context.md — phase N blockers
 are resolved. Mark those features as stable.
 App is ready for phase [N+1]."
 ```

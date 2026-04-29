@@ -43,4 +43,4 @@ Expect:
 ```
 
 
-> 💾 Save as → .buffr/specs/features/onboarding.md
+> 💾 Save as → .aipe/specs/features/onboarding.md

@@ -12,11 +12,11 @@ Ask Claude.ai to extract the current state of your codebase. You do this once pe
 "Analyse my [app] codebase and answer:
 data model, state management, file structure,
 external deps, what must not change.
-Output as context.md for my .buffr/global/ folder."
+Output as context.md for my .aipe/global/ folder."
 ```
 
 
-> 💾 Save output → .buffr/project/context.md
+> 💾 Save output → .aipe/project/context.md
 
 
 ## Steps 2–5 — Feature spec
@@ -40,7 +40,7 @@ Here's what I want it to do: [description]"
 ```
 
 
-> 💾 Save output → .buffr/specs/features/[name].md
+> 💾 Save output → .aipe/specs/features/[name].md
 
 
 ## Step 6 — Implement
@@ -51,7 +51,7 @@ Open a new Claude Code session. Feed it the spec files. This is the only step th
 
 
 ```
-"Read .buffr/project/context.md and
-.buffr/specs/features/[name].md
+"Read .aipe/project/context.md and
+.aipe/specs/features/[name].md
 then implement the [feature]."
 ```

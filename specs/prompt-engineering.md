@@ -36,7 +36,7 @@ Use this for AI apps like buffr when your system prompt, tool descriptions, or a
 ```
 
 
-> 💾 Save as → .buffr/specs/prompts/[name].md
+> 💾 Save as → .aipe/specs/prompts/[name].md
 
 
 ## Key principle
