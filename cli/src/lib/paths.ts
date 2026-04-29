@@ -14,6 +14,6 @@ export function templatesDir(): string {
   // Prod: dist/templates is created by `npm run build` (copy-templates.js).
   const bundled = join(packageRoot(), 'dist', 'templates');
   if (existsSync(bundled)) return bundled;
-  // Dev: read from the monorepo source — `cli/` and `prompting/` are siblings.
-  return join(packageRoot(), '..', 'prompting', 'specs');
+  // Dev: read from the monorepo source — `cli/` and `specs/` are siblings.
+  return join(packageRoot(), '..', 'specs');
 }

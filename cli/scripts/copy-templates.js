@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const cliRoot = resolve(here, '..');
-const src = resolve(cliRoot, '..', 'prompting', 'specs');
+const src = resolve(cliRoot, '..', 'specs');
 const dst = resolve(cliRoot, 'dist', 'templates');
 
 if (!existsSync(src)) {
