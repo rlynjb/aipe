@@ -1,7 +1,6 @@
 .claude/worktrees/
 .worktrees/
 cli/node_modules/
-cli/dist/
 .env
 *.tsbuildinfo
 
