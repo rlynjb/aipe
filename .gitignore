@@ -4,3 +4,6 @@ cli/node_modules/
 cli/dist/
 .env
 *.tsbuildinfo
+
+# Root-level npm artifacts (cli/ is the real package)
+node_modules/

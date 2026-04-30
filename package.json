@@ -1,0 +1,40 @@
+{
+  "name": "aipe-monorepo",
+  "version": "0.1.0",
+  "description": "Spec workflow CLI for AI-assisted development. Root package wires the github install path; the publishable package lives in cli/.",
+  "private": false,
+  "type": "module",
+  "bin": {
+    "aipe": "./cli/bin/cli.js"
+  },
+  "scripts": {
+    "_comment_prepare": "Runs at install time, including for `npm install -g github:rlynjb/aipe#main`. Three things to know: (1) `--global=false` is critical because npm propagates npm_config_global=true into nested installs during a global prepare, which silently no-ops most deps. (2) `--include=dev` is needed because typescript+tsx are devDeps and the build needs them. (3) We deliberately don't use workspaces here because npm install -g doesn't honor them.",
+    "prepare": "cd cli && npm install --no-audit --no-fund --include=dev --global=false && npm run build",
+    "build": "cd cli && npm run build",
+    "test": "cd cli && npm test",
+    "typecheck": "cd cli && npm run typecheck",
+    "dev": "cd cli && npm run dev"
+  },
+  "files": [
+    "cli/bin",
+    "cli/dist",
+    "cli/node_modules",
+    "cli/package.json",
+    "cli/README.md",
+    "specs",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "license": "MIT",
+  "author": "rlynjb <rlynjb@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rlynjb/aipe.git"
+  },
+  "homepage": "https://github.com/rlynjb/aipe#readme",
+  "bugs": {
+    "url": "https://github.com/rlynjb/aipe/issues"
+  }
+}
