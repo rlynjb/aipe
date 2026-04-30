@@ -28,15 +28,7 @@
     "typescript": "^6.0.3",
     "vitest": "^4.1.5"
   },
-  "_comment_files": "node_modules deliberately excluded — npm refuses to pack node_modules into tarballs. Listing only what should be packed lets the standard tarball flow work; npm install -g re-installs `dependencies` into the global node_modules at the proper level for node resolution to find them.",
-  "files": [
-    "cli/bin",
-    "cli/dist",
-    "cli/package.json",
-    "cli/README.md",
-    "specs",
-    "README.md"
-  ],
+  "_comment_files": "Deliberately omitted — when present, npm install -g github:... was producing odd results (cli/bin pruned but cli/src kept). Without files, npm installs everything from the git clone, governed only by .gitignore, which is what we want.",
   "engines": {
     "node": ">=20.11.0"
   },
