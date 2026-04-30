@@ -13,14 +13,15 @@ Pick the path that matches where the package is right now.
 ### From the GitHub repo (current state — package not yet on npm)
 
 ```bash
-# install once globally from the monorepo subpath
-npm install -g github:rlynjb/aipe#main
+# Install globally via the github tarball URL (preferred — works with the
+# monorepo structure)
+npm install -g https://github.com/rlynjb/aipe/tarball/main
 
-# or pin to a tagged release-candidate
-npm install -g github:rlynjb/aipe#aipe-v0.1.0
+# Or pin to a tagged release-candidate
+npm install -g https://github.com/rlynjb/aipe/tarball/aipe-v0.1.0
 ```
 
-`package.json` declares `"directory": "cli"`, so npm picks the right subfolder out of the monorepo.
+> **Note:** the short form `npm install -g github:rlynjb/aipe#main` has known issues with npm's git-fetch path for monorepo-shaped repos (the install creates a symlink to a temp clone that gets pruned, leaving the bin dangling). The tarball URL above bypasses that bug and installs reliably.
 
 ### From a local clone (for developers iterating on `aipe` itself)
 
