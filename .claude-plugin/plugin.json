@@ -4,9 +4,6 @@
   "version": "1.0.0",
   "author": { "name": "rlynjb" },
   "homepage": "https://github.com/rlynjb/aipe",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/rlynjb/aipe"
-  },
+  "repository": "https://github.com/rlynjb/aipe",
   "license": "MIT"
 }
