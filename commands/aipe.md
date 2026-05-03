@@ -65,13 +65,13 @@ Read these files. Skip any that don't exist (empty content is fine for the optio
 
 ## Step 3 — Load the spec template
 
-Read the template from this plugin's `specs/` directory. The plugin is installed at `~/.claude/plugins/aipe/` after `/plugin install aipe@rlynjb-aipe`, so the template is at:
+Read the template from this plugin's `specs/` directory using the `${CLAUDE_PLUGIN_ROOT}` environment variable, which always points at the plugin's installed root:
 
 ```
-~/.claude/plugins/aipe/specs/<spec-type>.md
+${CLAUDE_PLUGIN_ROOT}/specs/<spec-type>.md
 ```
 
-(If you're running this from a local clone / dev install, the path is `<repo-root>/specs/<spec-type>.md`. Try the installed path first; if it doesn't exist, search for `specs/<spec-type>.md` upward from this file's location.)
+If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for `specs/<spec-type>.md` upward from this file's location.
 
 ---
 

@@ -64,13 +64,13 @@ Read these files. Skip any that don't exist (empty content is fine for the optio
 
 ## Step 3 — Load the spec template
 
-Read the template from this plugin's `specs/` directory. The plugin is installed at `~/.codex/plugins/cache/aipe/` after `codex plugin marketplace add rlynjb/aipe`, so the template is at:
+Read the template from this plugin's `specs/` directory using the plugin-root environment variable that Codex provides (typically `${CODEX_PLUGIN_ROOT}` or equivalent):
 
 ```
-~/.codex/plugins/cache/aipe/specs/<spec-type>.md
+${CODEX_PLUGIN_ROOT}/specs/<spec-type>.md
 ```
 
-(If you're running this from a local clone / dev install, the path is `<repo-root>/specs/<spec-type>.md`. Try the installed path first; if it doesn't exist, search for `specs/<spec-type>.md` upward from this file's location.)
+If the plugin-root variable is unset (running from a dev clone), fall back to searching for `specs/<spec-type>.md` upward from this file's location.
 
 ---
 
