@@ -1,12 +1,12 @@
 {
   "name": "rlynjb-aipe",
   "owner": { "name": "rlynjb" },
+  "description": "Spec workflow plugin for AI-assisted development",
   "plugins": [
     {
       "name": "aipe",
-      "source": "github",
-      "repo": "rlynjb/aipe",
-      "path": "."
+      "source": ".",
+      "description": "Generate filled specs from 14 templates and your project context, using your agent's own model — no external CLI."
     }
   ]
 }
