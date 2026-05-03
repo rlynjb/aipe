@@ -1,0 +1,10 @@
+{
+  "name": "aipe",
+  "description": "Spec workflow for AI-assisted development. Generate filled specs from 14 templates and your project context, using your agent's own model — no external CLI, no extra API keys.",
+  "version": "1.0.0",
+  "developerName": "rlynjb",
+  "websiteURL": "https://github.com/rlynjb/aipe",
+  "category": "productivity",
+  "skills": ["./skills/aipe"],
+  "license": "MIT"
+}

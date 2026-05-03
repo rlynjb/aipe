@@ -1,0 +1,12 @@
+{
+  "name": "rlynjb-aipe",
+  "owner": { "name": "rlynjb" },
+  "plugins": [
+    {
+      "name": "aipe",
+      "source": "github",
+      "repo": "rlynjb/aipe",
+      "path": "."
+    }
+  ]
+}

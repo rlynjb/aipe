@@ -1,8 +1,3 @@
 .claude/worktrees/
 .worktrees/
-cli/node_modules/
 .env
-*.tsbuildinfo
-
-# Root-level npm artifacts (cli/ is the real package)
-node_modules/
