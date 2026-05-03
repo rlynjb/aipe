@@ -35,44 +35,47 @@ Codex auto-installs and tracks the plugin in `~/.codex/config.toml`. After insta
 
 ## Usage
 
-Once installed, the flow is the same in both agents:
+Once installed, you get one slash command per spec type. The flow is the same in both agents:
 
 ```
-/aipe feature add dark mode toggle
+/aipe:feature add dark mode toggle
+/aipe:debugging cart total shows wrong amount
+/aipe:interview defending the api gateway
+/aipe:refactor extract the auth middleware
 ```
 
-The first time you run it in a project, it scaffolds `.aipe/project/context.md` and asks you to fill it in (your stack, data model, file structure, constraints). That file is the project context the agent uses to fill the template.
+The first time you run any of them in a project, the command scaffolds `.aipe/project/context.md` and asks you to fill it in (your stack, data model, file structure, constraints). That file is the project context the agent uses to fill the template.
 
-After context is in place, every `/aipe` invocation:
+After context is in place, every `/aipe:<type>` invocation:
 
-1. Loads the named template (e.g. `specs/feature.md`).
+1. Loads the matching template (e.g. `specs/feature.md` for `/aipe:feature`).
 2. Loads your project context (`.aipe/project/*.md` and any global config at `~/.config/aipe/global/*.md`).
 3. Composes a filled spec using the agent's own model.
 4. Saves it to `.aipe/specs/<type-plural>/<slug>.md`.
 5. Summarises and stops — waiting for you to say "implement it" or refine.
 
+Tab completion: type `/aipe:` and tab to see all 14 spec types.
+
 ---
 
 ## Spec types
 
-14 templates cover the common kinds of work you hand to a coding agent:
-
-| Type | Use when |
-|------|----------|
-| `plan` | Multi-phase project that spans sessions |
-| `feature` | Building something new |
-| `debugging` | A bug keeps coming back |
-| `curriculum` | Turning a codebase into a learning resource |
-| `interview` | Defending a project in an interview |
-| `audit` | Reviewing existing code before adding to it |
-| `testing` | Writing or improving tests |
-| `user-stories` | Rewriting tasks in different personas |
-| `refactor` | Restructuring without changing behaviour |
-| `migration` | Changing a schema, dependency, or storage layer |
-| `performance` | Diagnosing speed or bundle issues |
-| `prompt-engineering` | Fixing AI output quality |
-| `onboarding` | Generating context docs for a new codebase |
-| `integration` | Connecting an external service |
+| Command | Use when |
+|---------|----------|
+| `/aipe:plan` | Multi-phase project that spans sessions |
+| `/aipe:feature` | Building something new |
+| `/aipe:debugging` | A bug keeps coming back |
+| `/aipe:curriculum` | Turning a codebase into a learning resource |
+| `/aipe:interview` | Defending a project in an interview |
+| `/aipe:audit` | Reviewing existing code before adding to it |
+| `/aipe:testing` | Writing or improving tests |
+| `/aipe:user-stories` | Rewriting tasks in different personas |
+| `/aipe:refactor` | Restructuring without changing behaviour |
+| `/aipe:migration` | Changing a schema, dependency, or storage layer |
+| `/aipe:performance` | Diagnosing speed or bundle issues |
+| `/aipe:prompt-engineering` | Fixing AI output quality |
+| `/aipe:onboarding` | Generating context docs for a new codebase |
+| `/aipe:integration` | Connecting an external service |
 
 The templates are plain markdown in [`specs/`](specs/) — read them directly to see what each one produces.
 
@@ -108,10 +111,12 @@ Users get the new template the next time they update the plugin (`/plugin update
 
 **Add a new spec type:**
 
-1. Drop the new template at `specs/<type>.md`.
-2. Edit `commands/aipe.md` — add the type to the **Valid spec types** list and the **Folder map**.
-3. Edit `skills/aipe/SKILL.md` — same two edits as the Claude Code command.
-4. Commit, push, bump `version` in both `.claude-plugin/plugin.json` and `.codex-plugin/plugin.json`.
+1. Drop the new template at `specs/<new-type>.md`.
+2. Add `commands/<new-type>.md` (Claude Code) — copy any existing command file, swap the `description`, the `/aipe:<type>` references, and the output folder name in the Step 5 Path line.
+3. Add `skills/<new-type>/SKILL.md` (Codex) — same content as the Claude Code command.
+4. Add `"./skills/<new-type>"` to the `skills` array in `.codex-plugin/plugin.json`.
+5. Bump `version` in both `.claude-plugin/plugin.json` and `.codex-plugin/plugin.json`.
+6. Commit, push.
 
 That's it — there's no code to compile, no tests to update.
 
@@ -121,13 +126,13 @@ That's it — there's no code to compile, no tests to update.
 
 ```
 aipe/
-  .claude-plugin/        ← Claude Code plugin manifest + marketplace listing
-  .codex-plugin/         ← Codex plugin manifest
-  commands/aipe.md       ← Claude Code slash command body
-  skills/aipe/SKILL.md   ← Codex skill body (same content, different filename)
-  specs/                 ← 14 template markdowns — single source of truth
-  html/                  ← static cheatsheet site (separate from the plugin)
-  docs/                  ← roadmap and historical plans
+  .claude-plugin/         ← Claude Code plugin manifest + marketplace listing
+  .codex-plugin/          ← Codex plugin manifest
+  commands/<type>.md      ← 14 Claude Code slash commands (one per spec type)
+  skills/<type>/SKILL.md  ← 14 Codex skills (same content, Codex's directory layout)
+  specs/                  ← 14 template markdowns — single source of truth
+  html/                   ← static cheatsheet site (separate from the plugin)
+  docs/                   ← roadmap and historical plans
 ```
 
 ---
