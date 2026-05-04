@@ -88,6 +88,7 @@ The templates are plain markdown in [`specs/`](specs/) — read them directly to
 | `.aipe/project/context.md`, `rules.md`, `stack.md` | Per-project context — committed to the repo, edited as the codebase evolves |
 | `.aipe/specs/<type-plural>/<slug>.md` | Generated specs — also typically committed |
 | `.aipe/specs/interview/<slug>/` | Interview prep guides — saved as a directory of per-chapter files (`00-preface.md`, `01-system-architecture.md`, …, `README.md`) since the output is book-length |
+| `.aipe/specs/curriculum/<slug>/` | Curriculum learning resources — saved as a directory of per-category chapter files (`00-overview.md`, `01-agentic-ai.md`, …, `06-curriculum-path.md`, `README.md`) for the same reason |
 | `~/.config/aipe/global/*.md` | Cross-project context — your identity, default stack, skills, conventions |
 
 Global files are optional. Project context is what makes the difference between a generic spec and one that names your real files and constraints.

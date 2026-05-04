@@ -57,34 +57,80 @@ ${CODEX_PLUGIN_ROOT}/specs/curriculum.md
 
 If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for `specs/curriculum.md` upward from this file's location.
 
-## Step 4 — Compose the filled spec
+## Step 4 — Plan the curriculum
 
-Apply the template structure to the project context and the user's intent (`$ARGUMENTS`). Use your own model — this is what you're already doing in this conversation, no external API call.
+The curriculum spec produces a structured learning resource — too long and too multi-themed for a single file. Save it as a **directory** of per-category chapter files, with a final ordered learning path and a README.md table of contents.
 
-Rules:
-- Replace every `[bracket placeholder]` with concrete content.
-- All file names and paths must match the actual project (from the context files).
-- Constraints sections must reflect real project constraints, not generic advice.
-- Output ONLY the filled spec body — no preamble, no commentary.
+Apply the template (loaded in Step 3) to the project context and the user's intent (`$ARGUMENTS`). The template names 5 fixed categories of concepts to extract:
 
-## Step 5 — Save the spec
+- Agentic AI
+- Systems thinking
+- Thinking in code
+- AI product engineering
+- Language-agnostic
+
+Plan to walk these in order: for each category, identify the concepts present in the project's codebase, then write a chapter that explains each concept using the template's four-part structure (What it is / Where it lives / Why it exists / General rule).
+
+## Step 5 — Determine the output directory
 
 Compute the slug from `$ARGUMENTS`: lowercase, replace non-alphanumerics with `-`, collapse repeats, trim to 60 chars. If empty, use `spec`.
 
-Path: `.aipe/specs/curriculum/<slug>.md`
+Directory: `.aipe/specs/curriculum/<slug>/`
 
-If that file already exists, append an ISO timestamp: `.aipe/specs/curriculum/<slug>-<YYYY-MM-DDTHH-MM-SS>.md`. **Never overwrite.**
+If the directory already exists, append an ISO timestamp: `.aipe/specs/curriculum/<slug>-<YYYY-MM-DDTHH-MM-SS>/`. **Never overwrite.**
 
-Create parent directories as needed and write the filled spec.
+Create the directory.
 
-## Step 6 — Report + stop
+## Step 6 — Generate and save each category chapter sequentially
+
+For each row in the table below: identify the concepts in the project that fit the category, compose the chapter (one concept per subsection, each with the four-part structure), then immediately Write the file before moving on.
+
+| File | Category |
+|---|---|
+| `00-overview.md` | Why this curriculum exists for THIS codebase, how to study it (read → find → explain back) |
+| `01-agentic-ai.md` | LLM vs agent, tool calling, ReAct loop, memory patterns, orchestration, prompt chaining |
+| `02-systems-thinking.md` | Separation of concerns, data flow, storage abstraction, idempotency, migration strategies, race conditions |
+| `03-thinking-in-code.md` | Type-driven design, schema-first dev, error classification, optimistic UI, provider abstraction, rollback patterns |
+| `04-ai-product-engineering.md` | Context window management, spec-driven dev, memory bank patterns, evaluation, cost vs capability tradeoffs |
+| `05-language-agnostic.md` | Patterns or mental models that transfer across stacks |
+
+Each concept inside a chapter follows the template's four-part structure:
+- **What it is** — formal definition, 2–3 sentences
+- **Where it lives** — specific file, function, or pattern in this codebase
+- **Why it exists** — what problem it solves in this specific context
+- **General rule** — the transferable principle beyond this codebase
+
+Mark difficulty per concept (foundational / intermediate / advanced) and note "Go deeper" links or follow-up reading where relevant.
+
+If a category has no concepts in this codebase (e.g., a pure data app has nothing in `01-agentic-ai`), still write the file but keep it short and explicit about why ("This codebase has no agentic component. If you want to learn this category, the closest analog here is …, or move on to `02-systems-thinking`.").
+
+## Step 7 — Generate the curriculum-path chapter
+
+After all 6 category chapters are written, create `06-curriculum-path.md` containing the ordered learning path:
+
+- Order concepts across all categories by dependency (prerequisites before advanced topics).
+- Group thematically when concepts cluster naturally.
+- Mark each entry with its difficulty and a link back to the chapter+section where it's explained.
+- End with "Suggested next steps" — what to read, build, or explore to go deeper.
+
+## Step 8 — Generate the table of contents
+
+After the curriculum-path chapter exists, create `README.md` in the same directory containing:
+
+- Title: `# Curriculum: <intent from $ARGUMENTS>`
+- One sentence describing the codebase being studied.
+- A markdown list linking to all 7 files in order, each with a 1-line summary drawn from what you actually wrote (not the template's generic descriptions).
+- A flat **concept index** at the bottom: every concept you covered, with its category, difficulty, and a link to its chapter section.
+
+## Step 9 — Report + stop
 
 Print exactly:
 
 ```
-✓ Spec saved to <path>
+✓ Curriculum saved to .aipe/specs/curriculum/<slug>/
+  6 category chapters + curriculum-path + README.md table of contents
 ```
 
-Then give a 3-sentence summary of what the spec covers (the main sections, the key decisions baked in, any open questions the user might want to clarify).
+Then a 3-sentence summary: which categories were richest given this codebase's actual surface area, which were intentionally light or skipped, and which 2–3 concepts you'd recommend studying first.
 
-**Stop. Wait for the user's next instruction.** Do NOT auto-implement.
+**Stop. Wait for the user's next instruction.** They'll typically pick a concept to drill on, ask for an exercise, or request a revision. Do NOT auto-quiz, auto-revise, or implement anything.
