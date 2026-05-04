@@ -177,6 +177,41 @@ For chapters 2–9, use this structure every time:
   shows maturity, not defensiveness. Own the limitation.
   Explain the reasoning. Show what you'd do differently.
 
+  5. Per-concept structure
+  Inside the opening narrative and inside model answers,
+  when you introduce an architectural concept whose rule
+  isn't self-evident, write it in four short parts:
+
+    Shape    — name the parts; one sentence each
+    Rule     — the ordering, constraint, or invariant
+               that holds the parts together
+    Failure  — what concretely breaks when the rule
+               is violated; a specific scenario,
+               not an abstract risk
+    Contrast — where the same problem is solved
+               differently elsewhere in this system,
+               and the constraint that distinguishes them
+
+  This structure is introduced as a meta-section at the
+  top of Chapter 2 (see Ch 2 below) and applies to every
+  non-trivial concept in chapters 2 through 12. Reserve
+  the full four-part treatment for concepts where the
+  rule isn't obvious — trivial decisions ("we use
+  TypeScript strict mode") don't need four parts;
+  forcing them in makes the document feel bureaucratic.
+
+  Voice rules (apply to all chapter prose):
+    → State decisions, not hopes. "Writes happen before
+      render" reads stronger than "we try to write
+      before render where possible." Hedging language
+      ("ideally," "in most cases," "we believe") signals
+      that the rule isn't actually enforced.
+    → Use concrete nouns. "The cursor position" is
+      reviewable; "user interaction state" is not.
+      If a noun couldn't be pointed at in running code,
+      it's too abstract.
+    → Keep sentences short. Specificity beats length.
+
 Chapter topics:
 
   Ch 2 — System architecture
@@ -184,6 +219,127 @@ Chapter topics:
   The core architectural decisions and their rationale.
   What the system optimises for and what it gives up.
   How it would need to change at scale.
+
+  IMPORTANT — open Chapter 2 with an "Explaining
+  Concepts" meta-section BEFORE any project-specific
+  content. This section establishes the four-part
+  Shape / Rule / Failure mode / Contrast structure
+  that every subsequent non-trivial concept (in this
+  chapter and the next ten) follows. Reproduce the
+  content below verbatim — the four parts and their
+  definitions are fixed; the worked example may be
+  swapped for one drawn from this project if a clean
+  one exists.
+
+  ───── meta-section content (reproduce in the output) ─────
+
+  ## Explaining Concepts
+
+  Architectural concepts in this guide follow a
+  consistent explanation structure so each one can
+  stand on its own and be understood without prior
+  context.
+
+  ### Structure
+
+  Every concept is introduced in four parts:
+
+  **1. The shape.** Name the parts and give each one
+  a single job. One sentence per part is enough — the
+  goal is to establish the vocabulary before reasoning
+  about it. If a part needs a paragraph to define,
+  it's probably two parts.
+
+  **2. The rule.** State the ordering, constraint,
+  or invariant that holds the parts together. This is
+  the load-bearing sentence. Most architectural
+  mistakes are violations of a rule that was never
+  stated explicitly, so naming it makes the design
+  reviewable.
+
+  **3. The failure mode.** Describe what goes wrong
+  when the rule is violated. Use a concrete scenario,
+  not an abstract risk — "if X happens between step 2
+  and step 3, Y is lost" beats "this could lead to
+  inconsistency." The failure mode is what justifies
+  the rule; without it, the rule looks arbitrary.
+
+  **4. The contrast.** Show where the same problem is
+  solved differently elsewhere in the system, and why.
+  Two patterns that look contradictory usually aren't
+  — they're responses to different constraints. Naming
+  the constraint that distinguishes them turns "we did
+  it two ways" into "we did it the right way twice."
+
+  ### Why This Structure
+
+  Each part answers a question an informed reader will
+  ask:
+
+  - *What are the pieces?* → the shape
+  - *How do they fit?* → the rule
+  - *What happens if they don't?* → the failure mode
+  - *Why not do it the other way?* → the contrast
+
+  Skipping any of the four leaves a gap the reader has
+  to fill in themselves, and they'll fill it in wrong.
+  Skipping the failure mode is the most common mistake
+  — it makes the design read like preference rather
+  than necessity.
+
+  ### Voice
+
+  State decisions, not hopes. "Writes happen before
+  render" reads stronger than "we try to write before
+  render where possible." Hedging language ("ideally,"
+  "in most cases," "we believe") signals to the reader
+  that the rule isn't actually enforced, which means
+  it isn't actually a rule.
+
+  Use concrete nouns over abstract ones. "The cursor
+  position" is reviewable; "user interaction state"
+  is not. If a noun in the spec couldn't be pointed
+  at in the running code, it's probably too abstract.
+
+  Keep sentences short. Architectural prose earns its
+  weight from specificity, not sentence length.
+
+  ### Worked Example
+
+  A concept written in this structure looks like:
+
+  > **Shape.** The system has three layers: A holds
+  > fast-changing values, B holds what renders, C
+  > holds what survives a crash.
+  >
+  > **Rule.** On every change, A and C update before B.
+  >
+  > **Failure mode.** The naive order updates B first
+  > and persists to C in an effect. If the component
+  > unmounts between the two, the change is lost.
+  > Inverting the order makes durability independent
+  > of the component lifecycle.
+  >
+  > **Contrast.** Other operations in the system defer
+  > persistence until an explicit commit. That pattern
+  > works when the user has a clear "done" gesture.
+  > This one doesn't — there's no explicit commit per
+  > change — so persistence has to be eager.
+
+  Four short paragraphs, one per part. A reader who's
+  never seen the system can follow it; a reader who
+  has can review it.
+
+  ───── end meta-section content ─────
+
+  After the meta-section, proceed with the actual
+  Chapter 2 content (full request flow, core
+  architectural decisions, what's optimised for vs
+  given up, how it changes at scale). Write every
+  non-trivial concept in the four-part shape just
+  introduced. Skip the structure for trivial decisions
+  — over-applying it makes the document feel
+  bureaucratic.
 
   Ch 3 — Frontend engineering
   Component tree diagram. State management strategy.
