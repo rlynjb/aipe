@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Closing the feedback loop — AIPE Prompting</title>
+  <title>Always describe three states — AIPE Prompting</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet" />
@@ -1012,7 +1012,7 @@
 <header>
   <div class="header-left">
     <a href="index.html" class="logo">aipe / <span>prompting</span></a>
-    <h1>Closing the feedback loop</h1>
+    <h1>Always describe three states</h1>
     <p>AI prompt engineering for app builders</p>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
@@ -1028,34 +1028,16 @@
 <a href="index.html" class="sidebar-link">← Back to index</a>
 <div class="sidebar-section">Prompting</div>
 <a href="quick-reference.html" class="sidebar-link">Quick reference</a>
-<button class="sidebar-group-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Writing specs</span><span class="chevron">›</span></button>
-<div class="sidebar-group-items">
-  <a href="writing-specs.html" class="sidebar-link">Overview</a>
-  <a href="writing-specs.html#plan" class="sidebar-link" data-tab-link="plan">Plan</a>
-  <a href="writing-specs.html#implementing" class="sidebar-link" data-tab-link="implementing">Feature</a>
-  <a href="writing-specs.html#bugreport" class="sidebar-link" data-tab-link="bugreport">Debugging</a>
-  <a href="writing-specs.html#curriculum" class="sidebar-link" data-tab-link="curriculum">Curriculum</a>
-  <a href="writing-specs.html#interview" class="sidebar-link" data-tab-link="interview">Interview</a>
-  <a href="writing-specs.html#refining" class="sidebar-link" data-tab-link="refining">Audit</a>
-  <a href="writing-specs.html#testing" class="sidebar-link" data-tab-link="testing">Testing</a>
-  <a href="writing-specs.html#userstories" class="sidebar-link" data-tab-link="userstories">User stories</a>
-  <a href="writing-specs.html#refactor" class="sidebar-link" data-tab-link="refactor">Refactor</a>
-  <a href="writing-specs.html#migration" class="sidebar-link" data-tab-link="migration">Migration</a>
-  <a href="writing-specs.html#performance" class="sidebar-link" data-tab-link="performance">Performance</a>
-  <a href="writing-specs.html#prompteng" class="sidebar-link" data-tab-link="prompteng">Prompt engineering</a>
-  <a href="writing-specs.html#onboarding" class="sidebar-link" data-tab-link="onboarding">Onboarding</a>
-  <a href="writing-specs.html#integration" class="sidebar-link" data-tab-link="integration">Integration</a>
-</div>
-<a href="closing-feedback-loop.html" class="sidebar-link active">Closing the feedback loop</a>
-<button class="sidebar-group-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Reference sections</span><span class="chevron">›</span></button>
-<div class="sidebar-group-items">
+<a href="closing-feedback-loop.html" class="sidebar-link">Closing the feedback loop</a>
+<button class="sidebar-group-btn open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Reference sections</span><span class="chevron">›</span></button>
+<div class="sidebar-group-items open">
   <a href="what-pe-actually-is.html" class="sidebar-link">01 — What PE actually is</a>
   <a href="detail-vs-highlevel.html" class="sidebar-link">02 — Detail vs high-level</a>
   <a href="feature-implementation.html" class="sidebar-link">03 — Feature impl order</a>
   <a href="two-layer-prompt.html" class="sidebar-link">04 — Two-layer prompt</a>
   <a href="three-user-paths.html" class="sidebar-link">05 — Three user paths</a>
   <a href="interaction-flow.html" class="sidebar-link">06 — Interaction flow</a>
-  <a href="three-states.html" class="sidebar-link">07 — Three states</a>
+  <a href="three-states.html" class="sidebar-link active">07 — Three states</a>
   <a href="workflow.html" class="sidebar-link">08 — Workflow</a>
   <a href="analysing-app.html" class="sidebar-link">09 — Analysing an app</a>
 </div>
@@ -1068,34 +1050,16 @@
 <a href="index.html" class="sidebar-link">← Back to index</a>
 <div class="sidebar-section">Prompting</div>
 <a href="quick-reference.html" class="sidebar-link">Quick reference</a>
-<button class="sidebar-group-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Writing specs</span><span class="chevron">›</span></button>
-<div class="sidebar-group-items">
-  <a href="writing-specs.html" class="sidebar-link">Overview</a>
-  <a href="writing-specs.html#plan" class="sidebar-link" data-tab-link="plan">Plan</a>
-  <a href="writing-specs.html#implementing" class="sidebar-link" data-tab-link="implementing">Feature</a>
-  <a href="writing-specs.html#bugreport" class="sidebar-link" data-tab-link="bugreport">Debugging</a>
-  <a href="writing-specs.html#curriculum" class="sidebar-link" data-tab-link="curriculum">Curriculum</a>
-  <a href="writing-specs.html#interview" class="sidebar-link" data-tab-link="interview">Interview</a>
-  <a href="writing-specs.html#refining" class="sidebar-link" data-tab-link="refining">Audit</a>
-  <a href="writing-specs.html#testing" class="sidebar-link" data-tab-link="testing">Testing</a>
-  <a href="writing-specs.html#userstories" class="sidebar-link" data-tab-link="userstories">User stories</a>
-  <a href="writing-specs.html#refactor" class="sidebar-link" data-tab-link="refactor">Refactor</a>
-  <a href="writing-specs.html#migration" class="sidebar-link" data-tab-link="migration">Migration</a>
-  <a href="writing-specs.html#performance" class="sidebar-link" data-tab-link="performance">Performance</a>
-  <a href="writing-specs.html#prompteng" class="sidebar-link" data-tab-link="prompteng">Prompt engineering</a>
-  <a href="writing-specs.html#onboarding" class="sidebar-link" data-tab-link="onboarding">Onboarding</a>
-  <a href="writing-specs.html#integration" class="sidebar-link" data-tab-link="integration">Integration</a>
-</div>
-<a href="closing-feedback-loop.html" class="sidebar-link active">Closing the feedback loop</a>
-<button class="sidebar-group-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Reference sections</span><span class="chevron">›</span></button>
-<div class="sidebar-group-items">
+<a href="closing-feedback-loop.html" class="sidebar-link">Closing the feedback loop</a>
+<button class="sidebar-group-btn open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Reference sections</span><span class="chevron">›</span></button>
+<div class="sidebar-group-items open">
   <a href="what-pe-actually-is.html" class="sidebar-link">01 — What PE actually is</a>
   <a href="detail-vs-highlevel.html" class="sidebar-link">02 — Detail vs high-level</a>
   <a href="feature-implementation.html" class="sidebar-link">03 — Feature impl order</a>
   <a href="two-layer-prompt.html" class="sidebar-link">04 — Two-layer prompt</a>
   <a href="three-user-paths.html" class="sidebar-link">05 — Three user paths</a>
   <a href="interaction-flow.html" class="sidebar-link">06 — Interaction flow</a>
-  <a href="three-states.html" class="sidebar-link">07 — Three states</a>
+  <a href="three-states.html" class="sidebar-link active">07 — Three states</a>
   <a href="workflow.html" class="sidebar-link">08 — Workflow</a>
   <a href="analysing-app.html" class="sidebar-link">09 — Analysing an app</a>
 </div>
@@ -1103,178 +1067,51 @@
   </nav>
   <div class="content-area">
     <main>
-<p class="section-label" id="s10">Closing the feedback loop</p>
+<p class="section-label" id="s07">07 — Always describe these three states</p>
 
   <div class="card">
-    <p class="card-title">Make the AI the sensor, not you</p>
-    <p class="body-text">The most powerful shift in AI-assisted development is removing yourself as the middleman between the AI and observable reality. Instead of observing what happens, describing it to the AI, and waiting for a fix — you instrument the system so the AI can observe directly, reason from evidence, and close the loop itself.</p>
+    <p class="card-title">What AI skips by default</p>
+    <p class="body-text">When AI implements a feature, it imagines a user arriving at a fully-loaded screen with existing data, doing exactly one thing, and leaving. It rarely imagines the screen before any data exists, what happens when an action fails, or what the user sees when they come back. These three states account for most of the missing UI in any first implementation.</p>
     <div class="why">
       <p class="why-label">Why it matters</p>
-      <p>When you describe a bug, the AI builds a mental model of what might be wrong and fixes that model — not the actual bug. When the AI observes directly, it works from evidence. That's the difference between guessing and diagnosing.</p>
+      <p>These aren't edge cases — they're states every user hits on their first session, on a bad connection, or on their second visit. Shipping without them means users hit blank screens, broken layouts, or stale data.</p>
     </div>
-    <div class="callout">
-      Instead of: <strong style="color:var(--text)">you observe → you describe → AI fixes → repeat</strong><br>
-      You do: <strong style="color:var(--success)">AI instruments → AI runs → AI observes → AI fixes</strong>
+    <div class="state-block">
+      <span class="tag">Empty / zero state</span>
+      <p class="state-desc">The screen before any data exists — first-time user, cleared list, no results. Without this, UI often renders nothing or crashes on null data.</p>
+      <p class="state-eg">e.g. "If entry.blocks is empty, show placeholder: 'Tap to start writing…' — no widgets, no timestamp gap visible"</p>
     </div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">The language-agnostic principle</p>
-    <p class="body-text">This applies at every level of software development — not just debugging. Any time you find yourself acting as the middleman between the AI and something observable, ask: can the AI observe this directly instead?</p>
-<div class="code-block"><span class="hl">Code level</span>
-  <span class="arr">→</span> AI reads logs instead of you describing errors
-  <span class="arr">→</span> AI runs the test suite instead of you reporting failures
-  <span class="arr">→</span> AI traces execution instead of you explaining flow
-
-<span class="hl">System level</span>
-  <span class="arr">→</span> AI reads metrics instead of you reporting slowness
-  <span class="arr">→</span> AI inspects DB state instead of you querying manually
-  <span class="arr">→</span> AI checks network traces instead of you describing requests
-
-<span class="hl">Product level</span>
-  <span class="arr">→</span> AI emulates user interaction instead of you clicking through
-  <span class="arr">→</span> AI audits accessibility instead of you tabbing manually
-  <span class="arr">→</span> AI reviews API contracts instead of you testing with Postman
-
-<span class="hl">Architecture level</span>
-  <span class="arr">→</span> AI reviews its own output before you see it
-  <span class="arr">→</span> AI validates its assumptions against the codebase
-  <span class="arr">→</span> AI checks its fix didn't break adjacent things</div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">The three forms it takes</p>
-    <div style="display:flex;flex-direction:column;gap:0">
-      <div class="state-block" style="padding:.75rem 0">
-        <span class="tag">Instrumentation</span>
-        <p class="state-desc">Add observability to the system — logs, traces, snapshots — so the AI can read real signals. What you do in the Debugging spec Step 1.</p>
-        <p class="state-eg">e.g. "Add structured logs at every state transition before touching the bug"</p>
+    <div class="state-block">
+      <span class="tag">Error / edge state</span>
+      <p class="state-desc">When an action fails, is slow, or is attempted more than once. Without this, errors either show nothing or crash the UI silently.</p>
+      <p class="state-eg">e.g. "If save fails: show inline error below the entry, keep all content intact, show retry button — do not navigate away"</p>
+    </div>
+    <div class="state-block">
+      <span class="tag">Re-entry behaviour</span>
+      <p class="state-desc">What the user sees when they return — after refreshing, closing the app, or navigating back. Without this, state is either lost or stale.</p>
+      <p class="state-eg">e.g. "On re-open: restore scroll position, reload from Notion API, show loading skeleton while fetching"</p>
+    </div>
+    <div class="do-dont" style="margin-top:.875rem">
+      <div class="dont-block">
+        <p class="do-label">✗ Don't</p>
+<div class="code-block"><span class="bad">Show a list of journal entries</span></div>
+        <p style="font-size:12px;color:var(--danger);margin-top:6px;">What shows if there are none? What if fetch fails? What if they return after a week?</p>
       </div>
-      <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
-        <span class="tag">Emulation</span>
-        <p class="state-desc">The AI simulates a role — user, attacker, screen reader — and observes what happens. What you discovered when you told Claude Code to emulate user interaction.</p>
-        <p class="state-eg">e.g. "Emulate a user clicking through the checkout flow and log every state change"</p>
-      </div>
-      <div class="state-block" style="padding:.75rem 0;border-top:1px solid var(--border)">
-        <span class="tag">Self-evaluation</span>
-        <p class="state-desc">The AI checks its own work against defined criteria before returning it to you. Closes the loop between implementation and verification.</p>
-        <p class="state-eg">e.g. "Before showing me the fix, re-run the reproduction steps and confirm the logs show the correct path"</p>
+      <div class="do-block">
+        <p class="do-label">✓ Do</p>
+<div class="code-block"><span class="ok">Show a list of journal entries.
+Zero state: "No entries yet" + CTA.
+Error: "Couldn't load" + retry,
+  show cached data if available.
+Re-entry: reload on focus, show
+  skeleton while fetching.</span></div>
       </div>
     </div>
+    <div class="callout good">Naming all three states catches ~70% of edge case bugs before you run the code.</div>
   </div>
 
-  <div class="card">
-    <p class="card-title">Where this fits in agentic patterns</p>
-    <p class="body-text">Closing the feedback loop is part of a broader set of language-agnostic agentic patterns — ways of structuring AI work so it can complete more of the loop autonomously.</p>
-<div class="code-block"><span class="hl">Observation</span>    <span class="cm">make the AI the sensor          ← this section</span>
-<span class="hl">Planning</span>       <span class="cm">make the AI decompose before executing</span>
-<span class="hl">Reflection</span>     <span class="cm">make the AI evaluate its own output</span>
-<span class="hl">Memory</span>         <span class="cm">give the AI persistent context   ← .buffr/</span>
-<span class="hl">Tool use</span>       <span class="cm">give the AI actions beyond text generation</span></div>
-    <div class="callout info">The Debugging spec in section 12 is the practical application of the observation pattern. The .buffr/ memory bank is the practical application of the memory pattern. You've been building agentic infrastructure without necessarily calling it that.</div>
-  </div>
 
-  <div class="card">
-    <p class="card-title">Reusable instruction — instrumentation</p>
-    <p class="body-text">Use this before any debugging or investigation session. Give it to Claude Code before describing the bug. Do not ask it to fix anything yet.</p>
-<div class="code-block"><span class="hl">Before we touch anything, make [feature/area]
-observable so we can work from evidence.</span>
-
-Add structured logging at:
-  <span class="arr">→</span> Every state transition
-     <span class="cm">{ event, prev_state, next_state, timestamp, input }</span>
-  <span class="arr">→</span> Every external call (API, DB, LLM, network)
-     <span class="cm">{ call, input, output, duration_ms, error? }</span>
-  <span class="arr">→</span> Every branch point that affects this flow
-     <span class="cm">{ condition, value, branch_taken }</span>
-  <span class="arr">→</span> Full state snapshot before and after the
-     operation we're investigating
-
-Output to: <span class="cm">[console / log file / debug panel]</span>
-
-<span class="hl">Rules</span>
-  - Do not fix anything yet — instrumentation only
-  - Logs must include timestamps and unique event names
-  - Remove all debug logs after the investigation is done</div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">Reusable instruction — emulation</p>
-    <p class="body-text">Use this to have Claude Code simulate a user, attacker, or any role that interacts with your app — instead of you manually running through it and describing what you saw.</p>
-<div class="code-block"><span class="hl">Emulate [role: user / attacker / screen reader /
-API consumer] interacting with [feature].</span>
-
-Simulate this exact sequence:
-  <span class="arr">→</span> [step 1]
-  <span class="arr">→</span> [step 2]
-  <span class="arr">→</span> [step 3 — this is where I think it breaks]
-
-At each step, log:
-  <span class="arr">→</span> What action was taken
-  <span class="arr">→</span> What state the app was in before
-  <span class="arr">→</span> What state it's in after
-  <span class="arr">→</span> Any error, unexpected branch, or missing handler
-
-<span class="hl">After the simulation</span>
-  → Tell me exactly where execution diverged
-    from what I would expect
-  → Do not fix anything — observation only</div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">Reusable instruction — self-evaluation</p>
-    <p class="body-text">Use this after Claude Code produces a fix, feature, or output — before you review it. Forces it to validate its own work against the criteria that matter to you.</p>
-<div class="code-block"><span class="hl">Before showing me the result, evaluate your own output
-against these criteria:</span>
-
-  <span class="arr">→</span> Does it cover the happy path?         <span class="cm">[ ]</span>
-  <span class="arr">→</span> Does it handle the unhappy path?      <span class="cm">[ ]</span>
-  <span class="arr">→</span> Does it handle the weird path?        <span class="cm">[ ]</span>
-  <span class="arr">→</span> Does it respect all the constraints?  <span class="cm">[ ]</span>
-  <span class="arr">→</span> Could it break anything adjacent?     <span class="cm">[ ]</span>
-
-<span class="hl">Format your self-evaluation as:</span>
-  Pass / Fail per criterion
-  If any fail: what specifically fails and why
-  If all pass: confirm and show the result
-
-<span class="hl">Do not show me the result until the evaluation is done.</span></div>
-  </div>
-
-  <div class="card">
-    <p class="card-title">Reusable instruction — full loop</p>
-    <p class="body-text">The complete autonomous loop. Use this when you want Claude Code to investigate, diagnose, and fix with minimal back-and-forth. Works best when you've already instrumented the area.</p>
-<div class="code-block"><span class="hl">Run the full observation loop on [feature/bug]:</span>
-
-<span class="hl">Step 1 — Instrument</span>
-Add structured logging to every relevant state
-transition and external call. Do not fix anything.
-
-<span class="hl">Step 2 — Emulate</span>
-Simulate [user action / reproduction steps].
-Run through the instrumented code and collect
-the full log output.
-
-<span class="hl">Step 3 — Diagnose</span>
-Read the logs. Identify:
-  → Where execution first diverged from expected
-  → The root cause (not the symptom)
-  → The minimal fix
-  → What else could break if you apply it
-
-<span class="hl">Step 4 — Confirm</span>
-Tell me your diagnosis and proposed fix.
-Wait for my approval before making any changes.
-
-<span class="hl">Step 5 — Fix and verify</span>
-Apply the fix. Re-run the emulation.
-Confirm logs now show the correct path.
-Remove all debug instrumentation.
-Run the test suite.</div>
-    <div class="callout good" style="margin-top:.875rem">This is the loop that replaces "I clicked through the app and it broke, here's what I saw." You describe the scenario once — Claude Code runs it, observes it, diagnoses it, fixes it, and verifies it.</div>
-  </div>
-
-  <!-- 01 -->
+  <!-- 08 -->
     </main>
     <footer>
       <p>aipe — AI Product Engineering curriculum</p>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>What prompt engineering is — AIPE Prompting</title>
+  <title>Two-layer prompt structure — AIPE Prompting</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet" />
@@ -1012,7 +1012,7 @@
 <header>
   <div class="header-left">
     <a href="index.html" class="logo">aipe / <span>prompting</span></a>
-    <h1>What prompt engineering is</h1>
+    <h1>Two-layer prompt structure</h1>
     <p>AI prompt engineering for app builders</p>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
@@ -1028,31 +1028,13 @@
 <a href="index.html" class="sidebar-link">← Back to index</a>
 <div class="sidebar-section">Prompting</div>
 <a href="quick-reference.html" class="sidebar-link">Quick reference</a>
-<button class="sidebar-group-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Writing specs</span><span class="chevron">›</span></button>
-<div class="sidebar-group-items">
-  <a href="writing-specs.html" class="sidebar-link">Overview</a>
-  <a href="writing-specs.html#plan" class="sidebar-link" data-tab-link="plan">Plan</a>
-  <a href="writing-specs.html#implementing" class="sidebar-link" data-tab-link="implementing">Feature</a>
-  <a href="writing-specs.html#bugreport" class="sidebar-link" data-tab-link="bugreport">Debugging</a>
-  <a href="writing-specs.html#curriculum" class="sidebar-link" data-tab-link="curriculum">Curriculum</a>
-  <a href="writing-specs.html#interview" class="sidebar-link" data-tab-link="interview">Interview</a>
-  <a href="writing-specs.html#refining" class="sidebar-link" data-tab-link="refining">Audit</a>
-  <a href="writing-specs.html#testing" class="sidebar-link" data-tab-link="testing">Testing</a>
-  <a href="writing-specs.html#userstories" class="sidebar-link" data-tab-link="userstories">User stories</a>
-  <a href="writing-specs.html#refactor" class="sidebar-link" data-tab-link="refactor">Refactor</a>
-  <a href="writing-specs.html#migration" class="sidebar-link" data-tab-link="migration">Migration</a>
-  <a href="writing-specs.html#performance" class="sidebar-link" data-tab-link="performance">Performance</a>
-  <a href="writing-specs.html#prompteng" class="sidebar-link" data-tab-link="prompteng">Prompt engineering</a>
-  <a href="writing-specs.html#onboarding" class="sidebar-link" data-tab-link="onboarding">Onboarding</a>
-  <a href="writing-specs.html#integration" class="sidebar-link" data-tab-link="integration">Integration</a>
-</div>
 <a href="closing-feedback-loop.html" class="sidebar-link">Closing the feedback loop</a>
 <button class="sidebar-group-btn open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Reference sections</span><span class="chevron">›</span></button>
 <div class="sidebar-group-items open">
-  <a href="what-pe-actually-is.html" class="sidebar-link active">01 — What PE actually is</a>
+  <a href="what-pe-actually-is.html" class="sidebar-link">01 — What PE actually is</a>
   <a href="detail-vs-highlevel.html" class="sidebar-link">02 — Detail vs high-level</a>
   <a href="feature-implementation.html" class="sidebar-link">03 — Feature impl order</a>
-  <a href="two-layer-prompt.html" class="sidebar-link">04 — Two-layer prompt</a>
+  <a href="two-layer-prompt.html" class="sidebar-link active">04 — Two-layer prompt</a>
   <a href="three-user-paths.html" class="sidebar-link">05 — Three user paths</a>
   <a href="interaction-flow.html" class="sidebar-link">06 — Interaction flow</a>
   <a href="three-states.html" class="sidebar-link">07 — Three states</a>
@@ -1068,31 +1050,13 @@
 <a href="index.html" class="sidebar-link">← Back to index</a>
 <div class="sidebar-section">Prompting</div>
 <a href="quick-reference.html" class="sidebar-link">Quick reference</a>
-<button class="sidebar-group-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Writing specs</span><span class="chevron">›</span></button>
-<div class="sidebar-group-items">
-  <a href="writing-specs.html" class="sidebar-link">Overview</a>
-  <a href="writing-specs.html#plan" class="sidebar-link" data-tab-link="plan">Plan</a>
-  <a href="writing-specs.html#implementing" class="sidebar-link" data-tab-link="implementing">Feature</a>
-  <a href="writing-specs.html#bugreport" class="sidebar-link" data-tab-link="bugreport">Debugging</a>
-  <a href="writing-specs.html#curriculum" class="sidebar-link" data-tab-link="curriculum">Curriculum</a>
-  <a href="writing-specs.html#interview" class="sidebar-link" data-tab-link="interview">Interview</a>
-  <a href="writing-specs.html#refining" class="sidebar-link" data-tab-link="refining">Audit</a>
-  <a href="writing-specs.html#testing" class="sidebar-link" data-tab-link="testing">Testing</a>
-  <a href="writing-specs.html#userstories" class="sidebar-link" data-tab-link="userstories">User stories</a>
-  <a href="writing-specs.html#refactor" class="sidebar-link" data-tab-link="refactor">Refactor</a>
-  <a href="writing-specs.html#migration" class="sidebar-link" data-tab-link="migration">Migration</a>
-  <a href="writing-specs.html#performance" class="sidebar-link" data-tab-link="performance">Performance</a>
-  <a href="writing-specs.html#prompteng" class="sidebar-link" data-tab-link="prompteng">Prompt engineering</a>
-  <a href="writing-specs.html#onboarding" class="sidebar-link" data-tab-link="onboarding">Onboarding</a>
-  <a href="writing-specs.html#integration" class="sidebar-link" data-tab-link="integration">Integration</a>
-</div>
 <a href="closing-feedback-loop.html" class="sidebar-link">Closing the feedback loop</a>
 <button class="sidebar-group-btn open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Reference sections</span><span class="chevron">›</span></button>
 <div class="sidebar-group-items open">
-  <a href="what-pe-actually-is.html" class="sidebar-link active">01 — What PE actually is</a>
+  <a href="what-pe-actually-is.html" class="sidebar-link">01 — What PE actually is</a>
   <a href="detail-vs-highlevel.html" class="sidebar-link">02 — Detail vs high-level</a>
   <a href="feature-implementation.html" class="sidebar-link">03 — Feature impl order</a>
-  <a href="two-layer-prompt.html" class="sidebar-link">04 — Two-layer prompt</a>
+  <a href="two-layer-prompt.html" class="sidebar-link active">04 — Two-layer prompt</a>
   <a href="three-user-paths.html" class="sidebar-link">05 — Three user paths</a>
   <a href="interaction-flow.html" class="sidebar-link">06 — Interaction flow</a>
   <a href="three-states.html" class="sidebar-link">07 — Three states</a>
@@ -1103,62 +1067,46 @@
   </nav>
   <div class="content-area">
     <main>
-<p class="section-label" id="s01">01 — What prompt engineering actually is</p>
+<p class="section-label" id="s04">04 — Two-layer prompt structure</p>
 
   <div class="card">
-    <p class="card-title">The 80 / 20 rule</p>
-    <p class="body-text">Most people treat prompt engineering as a wording problem — how do I phrase this so the AI does what I want? That's the last 20%. The first 80% is structural: what information, constraints, and context are you giving the model to reason against? A well-structured brief produces correct output even with casual wording. A vague brief produces wrong output no matter how carefully you phrase it.</p>
+    <p class="card-title">Intent + constraints</p>
+    <p class="body-text">For any prompt — whether a one-liner or a full spec — two layers must both be present: what you want and why (intent), and what the output must or must not do (constraints). Intent without constraints produces output that's directionally right but full of assumptions. Constraints without intent produces something technically correct that solves the wrong problem.</p>
     <div class="why">
       <p class="why-label">Why it matters</p>
-      <p>AI is a contractor. A contractor with a vague brief builds the wrong thing politely. Give them a tight brief — data model, behaviour, edge cases, constraints — and they'll build the right thing even if you spoke to them casually.</p>
+      <p>Pseudocode describes <em>how</em>. Intent + constraints describe <em>what</em> and <em>why</em>. The AI is better at filling in the how than you might expect — but it can't read your mind on the what and why.</p>
     </div>
-    <div class="layer-list">
-      <div class="layer-row">
-        <div class="layer-body">
-          <p class="layer-name">Context setting</p>
-          <p class="layer-desc">Data model, system design, codebase info</p>
-          <div class="bar-wrap"><div class="bar" style="width:90%;background:var(--info)"></div></div>
-        </div>
-        <span class="layer-badge badge-correct">determines correctness</span>
+    <p class="col-label" style="margin-bottom:.5rem">Layer 1 — Intent</p>
+<div class="code-block"><span class="cm">What you want and why (1–3 sentences).
+Describe the goal, not the steps.</span></div>
+    <p class="col-label" style="margin:.875rem 0 .5rem">Layer 2 — Constraints</p>
+<div class="code-block"><span class="arr">-</span> Must do X
+<span class="arr">-</span> Must not do Y
+<span class="arr">-</span> Edge case: if Z, then...
+<span class="arr">-</span> Must match existing pattern in [file]</div>
+    <div class="do-dont">
+      <div class="dont-block">
+        <p class="do-label">✗ Don't</p>
+<div class="code-block"><span class="bad">Add validation to the form</span></div>
+        <p style="font-size:12px;color:var(--danger);margin-top:6px;">Which fields? What rules? What happens on failure? All guessed.</p>
       </div>
-      <div class="layer-row">
-        <div class="layer-body">
-          <p class="layer-name">Task framing</p>
-          <p class="layer-desc">Intent + constraints (two-layer structure)</p>
-          <div class="bar-wrap"><div class="bar" style="width:75%;background:var(--info)"></div></div>
-        </div>
-        <span class="layer-badge badge-correct">determines correctness</span>
-      </div>
-      <div class="layer-row">
-        <div class="layer-body">
-          <p class="layer-name">Behaviour specification</p>
-          <p class="layer-desc">Interaction flow, three paths, edge cases</p>
-          <div class="bar-wrap"><div class="bar" style="width:60%;background:var(--info)"></div></div>
-        </div>
-        <span class="layer-badge badge-correct">determines correctness</span>
-      </div>
-      <div class="layer-row">
-        <div class="layer-body">
-          <p class="layer-name">Output shaping</p>
-          <p class="layer-desc">Format, length, tone, code style</p>
-          <div class="bar-wrap"><div class="bar" style="width:35%;background:var(--border2)"></div></div>
-        </div>
-        <span class="layer-badge badge-read">determines readability</span>
-      </div>
-      <div class="layer-row">
-        <div class="layer-body">
-          <p class="layer-name">Wording / phrasing</p>
-          <p class="layer-desc">What most people think prompt engineering is</p>
-          <div class="bar-wrap"><div class="bar" style="width:15%;background:var(--border2)"></div></div>
-        </div>
-        <span class="layer-badge badge-read">determines readability</span>
+      <div class="do-block">
+        <p class="do-label">✓ Do</p>
+<div class="code-block"><span class="ok">Add validation to the log entry
+form so users can't submit empty.
+
+- Email: valid format required
+- Title: 3–80 chars
+- Error: inline message below field,
+  do not clear existing input
+- Submit stays enabled always</span></div>
       </div>
     </div>
-    <div class="callout info">For multi-session work, prompt engineering is really <strong>spec writing</strong>. Better spec = fewer bugs, less context re-established each session. This is what the <strong>.dev/ folder</strong> in buffr is for — persistent context that travels between Claude.ai and Claude Code sessions.</div>
+    <div class="callout">Use pseudocode only when you have a specific algorithm in mind. For UI/UX flows, interaction flow prompting (section 06) is more effective.</div>
   </div>
 
 
-  <!-- 02 -->
+  <!-- 05 -->
     </main>
     <footer>
       <p>aipe — AI Product Engineering curriculum</p>

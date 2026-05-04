@@ -1,261 +1,1046 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Product Engineering Curriculum — AI Product Engineering</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompting Cheatsheet — AIPE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0c0c0e;
+      --bg2:     #111115;
+      --bg3:     #18181e;
+      --bg4:     #1e1e26;
+      --border:  #2a2a34;
+      --border2: #3a3a48;
+      --text:    #e8e6e0;
+      --muted:   #888898;
+      --dim:     #444458;
+      --gold:    #e8d5b0;
+      --gold2:   #c8b080;
+      --info:    #5b9cf6;
+      --success: #4eca8b;
+      --warn:    #f0a04a;
+      --danger:  #e05c6a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 2rem 1.5rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .logo span { color: var(--gold); }
+
+    header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: -.01em;
+      line-height: 1.1;
+    }
+
+    header p {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: .04em;
+    }
+
+    .header-left { display: flex; flex-direction: column; gap: 6px; }
+
+    .header-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--gold);
+      background: rgba(232,213,176,.07);
+      border: 1px solid rgba(232,213,176,.15);
+      padding: 3px 10px;
+      display: inline-block;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      align-self: flex-start;
+    }
+
+    /* ── Layout ── */
+    main {
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 1px;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 2.5rem 0 .75rem;
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+    .section-label:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      animation: fadeUp .4s ease both;
+    }
+    .card + .card { border-top: none; }
+
+    .card-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--gold2);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: .875rem;
+    }
+
+    /* ── Body text ── */
+    .body-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: .875rem;
+    }
+
+    /* ── Why it matters ── */
+    .why {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--gold);
+      padding: 10px 14px;
+      margin-bottom: .875rem;
+    }
+    .why-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .why p { font-size: 13px; color: var(--gold2); line-height: 1.6; }
+
+    /* ── Do / Don't ── */
+    .do-dont {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      margin-bottom: .875rem;
+    }
+    @media (max-width: 580px) { .do-dont { grid-template-columns: 1fr; } }
+
+    .do-block, .dont-block { padding: 12px 14px; }
+    .do-block   { background: rgba(78,202,139,.05);  border: 1px solid rgba(78,202,139,.15); }
+    .dont-block { background: rgba(224,92,106,.05);  border: 1px solid rgba(224,92,106,.15); border-left: none; }
+    @media (max-width: 580px) {
+      .dont-block { border-left: 1px solid rgba(224,92,106,.15); border-top: none; }
+    }
+
+    .do-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .do-block   .do-label { color: var(--success); }
+    .dont-block .do-label { color: var(--danger); }
+    .do-block   .code-block { border-color: rgba(78,202,139,.15);  border-left-color: rgba(78,202,139,.3); }
+    .dont-block .code-block { border-color: rgba(224,92,106,.15);  border-left-color: rgba(224,92,106,.3); }
+
+    /* ── Example block ── */
+    .example {
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--border2);
+      margin-bottom: .875rem;
+    }
+    .example-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 8px 14px 0;
+    }
+    .example .code-block {
+      border: none;
+      border-left: none;
+      background: transparent;
+      margin: 0;
+      padding: 8px 14px 12px;
+    }
+
+    /* ── Two-col ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: .875rem;
+    }
+    @media (max-width: 540px) { .two-col { grid-template-columns: 1fr; gap: 1rem; } }
+
+    .col-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: .5rem;
+    }
+
+    .item {
+      font-size: 13px;
+      color: var(--muted);
+      padding-left: 14px;
+      position: relative;
+      margin: 4px 0;
+      line-height: 1.5;
+    }
+    .item::before { content: '—'; position: absolute; left: 0; color: var(--dim); }
+
+    /* ── Callouts ── */
+    .callout {
+      border-left: 2px solid var(--gold);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--gold2);
+      background: rgba(232,213,176,.04);
+      line-height: 1.6;
+    }
+    .callout.warn  { border-color: var(--warn);    color: var(--warn);    background: rgba(240,160,74,.04); }
+    .callout.info  { border-color: var(--info);    color: var(--info);    background: rgba(91,156,246,.04); }
+    .callout.good  { border-color: var(--success); color: var(--success); background: rgba(78,202,139,.04); }
+    .callout + * { margin-top: .875rem; }
+    * + .callout  { margin-top: .875rem; }
+
+    /* ── Divider ── */
+    hr { border: none; border-top: 1px solid var(--border); margin: .875rem 0; }
+
+    /* ── Steps ── */
+    .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: .875rem; }
+    .step-row { display: flex; gap: 14px; align-items: flex-start; padding: .75rem 0; }
+    .step-row + .step-row { border-top: 1px solid var(--border); }
+    .step-num {
+      width: 22px; height: 22px;
+      border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted);
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .step-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .step-desc  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    /* ── Code block ── */
+    .code-block {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--border2);
+      padding: 12px 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.8;
+      white-space: pre;
+      overflow-x: auto;
+      margin: .5rem 0;
+    }
+    .code-block .hl  { color: var(--gold); }
+    .code-block .cm  { color: var(--dim); font-style: italic; }
+    .code-block .arr { color: var(--gold2); }
+    .code-block .ok  { color: var(--success); }
+    .code-block .bad { color: var(--danger); }
+
+    /* ── Pills ── */
+    .pill {
+      display: inline-block;
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      padding: 3px 10px; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 5px;
+    }
+    .pill-happy   { background: rgba(78,202,139,.1);  color: var(--success); border: 1px solid rgba(78,202,139,.2); }
+    .pill-unhappy { background: rgba(224,92,106,.1);  color: var(--danger);  border: 1px solid rgba(224,92,106,.2); }
+    .pill-weird   { background: rgba(240,160,74,.1);  color: var(--warn);    border: 1px solid rgba(240,160,74,.2); }
+
+    /* ── Tags ── */
+    .tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      padding: 3px 9px; background: var(--bg3);
+      border: 1px solid var(--border); color: var(--muted);
+      letter-spacing: .04em; margin: 2px 3px 2px 0;
+      white-space: nowrap;
+    }
+
+    /* ── Layer bars ── */
+    .layer-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: .875rem; }
+    .layer-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 9px 12px; background: var(--bg3); border: 1px solid var(--border);
+    }
+    .layer-body { flex: 1; }
+    .layer-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .layer-desc { font-size: 11px; color: var(--dim); font-family: 'DM Mono', monospace; }
+    .bar-wrap   { width: 100%; height: 2px; background: var(--border); margin-top: 6px; }
+    .bar        { height: 2px; }
+    .layer-badge {
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      padding: 2px 8px; white-space: nowrap; flex-shrink: 0; letter-spacing: .04em;
+    }
+    .badge-correct { background: rgba(91,156,246,.08);  color: var(--info);  border: 1px solid rgba(91,156,246,.15); }
+    .badge-read    { background: var(--bg3); color: var(--dim); border: 1px solid var(--border); }
+
+    /* ── Path blocks ── */
+    .path-block { padding: .75rem 0; }
+    .path-block + .path-block { border-top: 1px solid var(--border); }
+    .path-desc { font-size: 13px; color: var(--muted); margin: 4px 0 8px; line-height: 1.5; }
+    .path-examples { display: flex; flex-wrap: wrap; gap: 4px; }
+
+    /* ── State blocks ── */
+    .state-block { padding: .75rem 0; }
+    .state-block + .state-block { border-top: 1px solid var(--border); }
+    .state-desc { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 4px 0 6px; }
+    .state-eg   { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--dim); line-height: 1.6; }
+
+    /* ── Workflow ── */
+    .workflow-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: .875rem; }
+    .wf-tag {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      padding: 4px 12px; border: 1px solid; letter-spacing: .04em;
+    }
+    .wf-tag.ai   { color: var(--info);    border-color: rgba(91,156,246,.3);  background: rgba(91,156,246,.06); }
+    .wf-tag.code { color: var(--success); border-color: rgba(78,202,139,.3);  background: rgba(78,202,139,.06); }
+    .wf-arrow    { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--dim); }
+    .wf-label    { font-size: 12px; color: var(--muted); }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card:nth-child(1)  { animation-delay: .04s; }
+    .card:nth-child(2)  { animation-delay: .08s; }
+    .card:nth-child(3)  { animation-delay: .12s; }
+    .card:nth-child(4)  { animation-delay: .16s; }
+    .card:nth-child(5)  { animation-delay: .20s; }
+    .card:nth-child(6)  { animation-delay: .24s; }
+    .card:nth-child(7)  { animation-delay: .28s; }
+    .card:nth-child(8)  { animation-delay: .32s; }
+    .card:nth-child(9)  { animation-delay: .36s; }
+    .card:nth-child(10) { animation-delay: .40s; }
+    .card:nth-child(11) { animation-delay: .44s; }
+    .card:nth-child(12) { animation-delay: .48s; }
+    @media (prefers-reduced-motion: reduce) { .card { animation: none; } }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1px;
+      animation: fadeUp .3s ease both;
+    }
+
+    .toc-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--gold2);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: .875rem;
+    }
+
+    .toc-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      list-style: none;
+    }
+
+    @media (max-width: 520px) {
+      .toc-list { grid-template-columns: 1fr; }
+    }
+
+    .toc-list li a {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 7px 10px;
+      text-decoration: none;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      transition: border-color .15s, background .15s;
+    }
+
+    .toc-list li a:hover {
+      background: var(--bg4);
+      border-color: var(--border2);
+    }
+
+    .toc-list li a:hover .toc-num { color: var(--gold); }
+    .toc-list li a:hover .toc-text { color: var(--text); }
+
+    .toc-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      flex-shrink: 0;
+      transition: color .15s;
+    }
+
+    .toc-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.3;
+      transition: color .15s;
+    }
+
+    /* ── Mapping table ── */
+    .map-table { width: 100%; border-collapse: collapse; margin-bottom: .875rem; }
+
+    .map-table thead tr {
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .map-table thead th {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      text-align: left;
+      font-weight: 400;
+    }
+
+    .map-table thead th:first-child { padding-left: 0; }
+
+    .map-table tbody tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .map-table tbody tr:last-child { border-bottom: none; }
+
+    .map-table tbody tr:hover { background: var(--bg3); }
+
+    .map-table td {
+      padding: 10px 10px;
+      vertical-align: top;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .map-table td:first-child { padding-left: 0; }
+
+    .map-table .col-technique {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--gold2);
+      white-space: nowrap;
+    }
+
+    .map-table .col-cheatsheet {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .map-table .col-cheatsheet a {
+      color: var(--text);
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .map-table .col-cheatsheet a:hover {
+      color: var(--gold);
+      border-bottom-color: var(--gold2);
+    }
+
+    .map-table .col-desc {
+      color: var(--muted);
+    }
+
+    .map-table .col-where {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+
+    .map-table .sec-ref {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--info);
+      background: rgba(91,156,246,.08);
+      border: 1px solid rgba(91,156,246,.15);
+      padding: 1px 6px;
+      text-decoration: none;
+      margin: 1px 2px 1px 0;
+    }
+    .map-table .sec-ref:hover { background: rgba(91,156,246,.15); }
+
+    @media (max-width: 640px) {
+      .map-table thead { display: none; }
+      .map-table tbody tr { display: block; padding: .75rem 0; }
+      .map-table td { display: block; padding: 2px 0; }
+      .map-table .col-technique { margin-bottom: 4px; }
+      .map-table .col-where { margin-top: 4px; }
+    }
+
+    /* ── Quick picker ── */
+    .picker-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      margin-bottom: .875rem;
+    }
+
+    @media (max-width: 560px) {
+      .picker-grid { grid-template-columns: 1fr; }
+    }
+
+    .picker-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+    }
+
+    .picker-usecase {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .picker-icon {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--gold);
+      background: rgba(232,213,176,.08);
+      border: 1px solid rgba(232,213,176,.12);
+      padding: 1px 6px;
+      flex-shrink: 0;
+    }
+
+    .picker-techniques {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .picker-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .picker-arrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--gold2);
+      flex-shrink: 0;
+    }
+
+    .picker-tech {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--info);
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+
+    .picker-tech:hover {
+      color: var(--gold);
+      text-decoration: underline;
+    }
+
+    .picker-note {
+      font-size: 11px;
+      color: var(--dim);
+      line-height: 1.4;
+    }
+
+    /* ── Tabs ── */
+    .tabs-shell {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+    }
+
+    .tab-bar-wrap {
+      position: relative;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-bar-wrap::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 40px;
+      background: linear-gradient(to right, transparent, var(--bg2));
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity .2s;
+    }
+
+    .tab-bar-wrap.no-fade::after { opacity: 0; }
+
+    .tab-bar {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-bar::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--dim);
+      background: none;
+      border: none;
+      border-right: 1px solid var(--border);
+      padding: 12px 18px;
+      cursor: pointer;
+      transition: color .15s, background .15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-height: 44px;
+    }
+
+    .tab-btn:last-child { border-right: none; }
+    .tab-btn:hover { color: var(--muted); background: var(--bg3); }
+
+    .tab-btn.active {
+      color: var(--gold);
+      background: var(--bg3);
+      border-bottom: 2px solid var(--gold);
+      margin-bottom: -1px;
+    }
+
+    .tab-panel { display: none; padding: 1.25rem 1.5rem; }
+    .tab-panel.active { display: block; }
+
+    .tab-intro {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-group-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--gold2);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin: 1.25rem 0 .625rem;
+    }
+
+    .tab-group-label:first-of-type { margin-top: 0; }
+
+    /* map table inside tab needs no outer border */
+    .tab-panel .map-table { margin-top: .5rem; }
+
+    /* ── Spec steps ── */
+    .spec-step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: .875rem 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .spec-step:first-of-type { border-top: none; }
+
+    .spec-tool {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .spec-tool-chat {
+      color: var(--info);
+      background: rgba(91,156,246,.08);
+      border: 1px solid rgba(91,156,246,.2);
+    }
+
+    .spec-tool-code {
+      color: var(--success);
+      background: rgba(78,202,139,.08);
+      border: 1px solid rgba(78,202,139,.2);
+    }
+
+    .spec-body { flex: 1; }
+
+    .spec-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: .625rem;
+    }
+
+    .spec-save {
+      font-size: 11px;
+      color: var(--dim);
+      font-family: 'DM Mono', monospace;
+      margin-top: .5rem;
+    }
+
+    /* ── Sidebar ── */
+    .page-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 100vh;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 0 2rem;
+      background: var(--bg2);
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+    .sidebar-section {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 1.25rem 1.25rem .4rem;
+    }
+
+    .sidebar-section:first-child { padding-top: .5rem; }
+
+    .sidebar-link {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      padding: .4rem 1.25rem;
+      border-left: 2px solid transparent;
+      transition: color .15s, background .15s, border-color .15s;
+      line-height: 1.4;
+    }
+
+    .sidebar-link:hover {
+      color: var(--text);
+      background: rgba(255,255,255,.03);
+    }
+
+    .sidebar-link.active {
+      color: var(--gold);
+      border-left-color: var(--gold);
+      background: rgba(232,213,176,.05);
+    }
+
+    /* Expandable group */
+    .sidebar-group-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: .4rem 1.25rem;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      text-align: left;
+      border-left: 2px solid transparent;
+      transition: color .15s, background .15s;
+    }
+
+    .sidebar-group-btn:hover { color: var(--text); background: rgba(255,255,255,.03); }
+
+    .sidebar-group-btn .chevron {
+      font-size: 10px;
+      color: var(--dim);
+      transition: transform .2s;
+      flex-shrink: 0;
+    }
+
+    .sidebar-group-btn.open .chevron { transform: rotate(90deg); }
+
+    .sidebar-group-items {
+      display: none;
+      padding-left: .75rem;
+    }
+
+    .sidebar-group-items.open { display: block; }
+
+    .sidebar-group-items .sidebar-link {
+      font-size: 12px;
+      color: var(--dim);
+      padding: .3rem 1.25rem;
+    }
+
+    .sidebar-group-items .sidebar-link:hover { color: var(--muted); }
+    .sidebar-group-items .sidebar-link.active { color: var(--gold2); border-left-color: var(--gold2); }
+
+    /* Mobile sidebar drawer */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      z-index: 200;
+    }
+
+    .sidebar-overlay.open { display: block; }
+
+    .sidebar-drawer {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 260px;
+      height: 100vh;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      z-index: 201;
+      transition: left .25s ease;
+      padding: 1rem 0 2rem;
+    }
+
+    .sidebar-drawer.open { left: 0; }
+
+    .drawer-close {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: .5rem 1rem .75rem;
+    }
+
+    .drawer-close button {
+      background: none;
+      border: none;
+      color: var(--dim);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .drawer-close button:hover { color: var(--text); }
+
+    .menu-btn {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+    }
+
+    .menu-btn:hover { color: var(--text); border-color: var(--border2); }
+
+    .content-area {
+      min-width: 0;
+      padding: 2rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: .5rem;
+    }
+    footer p { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: .06em; }
+    footer a  { color: var(--gold2); text-decoration: none; }
+    footer a:hover { color: var(--gold); }
+    /* ── Mobile ── */
+    @media (max-width: 700px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .menu-btn { display: flex; }
+      .content-area { padding: 1rem; }
+    }
+
+    @media (max-width: 600px) {
+
+      /* Header */
+      header {
+        padding: 1.25rem 1rem 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .5rem;
+      }
+
+      header h1 { font-size: 1.75rem; }
+
+      .header-tag { align-self: flex-start; }
+
+      /* Main */
+      main { padding: 1rem; gap: 1px; }
+
+      /* Section labels */
+      .section-label { padding: 1.75rem 0 .625rem; }
+
+      /* Cards */
+      .card { padding: 1rem; }
+
+      /* Code blocks — allow horizontal scroll */
+      .code-block {
+        font-size: 11px;
+        overflow-x: auto;
+        white-space: pre;
+      }
+
+      /* Two col → single */
+      .two-col { grid-template-columns: 1fr; gap: .875rem; }
+
+      /* Do/dont → single */
+      .do-dont { grid-template-columns: 1fr; }
+      .dont-block { border-left: 1px solid rgba(224,92,106,.15); border-top: none; }
+
+      /* Picker grid → single */
+      .picker-grid { grid-template-columns: 1fr; }
+
+      /* Layer rows — stack badge below bar */
+      .layer-row { flex-wrap: wrap; gap: 6px; }
+      .layer-badge { width: 100%; text-align: left; }
+
+      /* Step rows — tighten */
+      .step-row { gap: 10px; }
+      .step-num { width: 20px; height: 20px; font-size: 9px; }
+
+      /* Spec steps — stack tool badge above body */
+      .spec-step { flex-direction: column; gap: 8px; }
+      .spec-tool { align-self: flex-start; }
+
+      /* Map table — already handled at 640px, ensure padding */
+      .map-table td { font-size: 12px; }
+
+      /* Workflow row — wrap */
+      .workflow-row { gap: 6px; }
+      .wf-label { font-size: 11px; }
+
+      /* Path blocks */
+      .path-examples { gap: 3px; }
+      .tag { font-size: 9px; padding: 2px 7px; }
+
+      /* State blocks */
+      .state-header { flex-wrap: wrap; }
+      .state-eg { font-size: 11px; }
+
+      /* Tabs */
+      .tab-btn { font-size: 10px; padding: 10px 12px; }
+      .tab-panel { padding: 1rem; }
+      .tab-intro { font-size: 12px; }
+      .tab-group-label { margin: 1rem 0 .5rem; }
+
+      /* Footer */
+      footer {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .25rem;
+      }
+    }
+
+
+    .index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; margin-top: 1.5rem; }
+    .index-card { display: block; background: var(--bg2); border: 1px solid var(--border); padding: 1.25rem 1.5rem; text-decoration: none; transition: background .15s, border-color .15s; }
+    .index-card:hover { background: var(--bg3); border-color: var(--border2); }
+    .index-card-title { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold2); margin-bottom: .5rem; letter-spacing: .04em; }
+    .index-card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .index-intro { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 640px; margin-bottom: .5rem; }
+  </style>
 </head>
 <body>
-
-<div class="scroll-progress" id="scrollProgress"></div>
-
-<button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Open navigation">&#9776;</button>
-<div class="mobile-overlay" id="mobileOverlay"></div>
-
-<!-- SIDEBAR -->
-<nav class="sidebar" id="sidebar">
-  <div class="sidebar-logo"><a href="index.html" style="text-decoration:none;"><span>AI Curriculum v6</span></a></div>
-
-  <div class="nav-group">
-    <div class="nav-group-label">Overview</div>
-    <a class="nav-item active" href="index.html">Introduction</a>
-    <a class="nav-item" href="tooling.html">Claude Tools Ecosystem</a>
+<header>
+  <div class="header-left">
+    <a href="index.html" class="logo">aipe / <span>prompting</span></a>
+    <h1>Prompting Cheatsheet</h1>
+    <p>AI prompt engineering for app builders</p>
   </div>
-
-  <div class="nav-group">
-    <div class="nav-group-label">Applied AI Track</div>
-    <a class="nav-item" href="phase-0.html">Phase 0 · Applied AI Tools</a>
+  <span class="header-tag">Reference</span>
+</header>
+<div style="padding:2rem">
+  <p class="index-intro">A practical reference for AI-assisted app development.</p>
+  <div class="index-grid">
+<a href="quick-reference.html" class="index-card"><p class="index-card-title">Quick reference</p><p class="index-card-desc">Use case picker, technique mapping, and all reference sections. Start here.</p></a>
+<a href="closing-feedback-loop.html" class="index-card"><p class="index-card-title">Closing the feedback loop</p><p class="index-card-desc">Make the AI the sensor. Instrumentation, emulation, and self-evaluation patterns.</p></a>
+<a href="what-pe-actually-is.html" class="index-card"><p class="index-card-title">01 — What PE actually is</p><p class="index-card-desc">The 80/20 rule. Wording is the last 20%.</p></a>
+<a href="detail-vs-highlevel.html" class="index-card"><p class="index-card-title">02 — Detail vs high-level</p><p class="index-card-desc">When to go deep vs stay broad.</p></a>
+<a href="feature-implementation.html" class="index-card"><p class="index-card-title">03 — Feature implementation</p><p class="index-card-desc">System → behaviour → UI. Never start with UI.</p></a>
+<a href="two-layer-prompt.html" class="index-card"><p class="index-card-title">04 — Two-layer prompt</p><p class="index-card-desc">Intent + constraints.</p></a>
+<a href="three-user-paths.html" class="index-card"><p class="index-card-title">05 — Three user paths</p><p class="index-card-desc">Happy, unhappy, and weird paths.</p></a>
+<a href="interaction-flow.html" class="index-card"><p class="index-card-title">06 — Interaction flow</p><p class="index-card-desc">Narrate the full UX including failure.</p></a>
+<a href="three-states.html" class="index-card"><p class="index-card-title">07 — Three states</p><p class="index-card-desc">Empty, error, and re-entry.</p></a>
+<a href="workflow.html" class="index-card"><p class="index-card-title">08 — Workflow</p><p class="index-card-desc">Claude.ai for spec. Claude Code for implementation.</p></a>
+<a href="analysing-app.html" class="index-card"><p class="index-card-title">09 — Analysing an app</p><p class="index-card-desc">Questions to ask before writing any prompt.</p></a>
   </div>
-
-  <div class="nav-group">
-    <div class="nav-group-label">LLM Track — buffr</div>
-    <a class="nav-item" href="phase-1.html">Phase 1 · LLM Integration</a>
-    <a class="nav-item" href="phase-2.html">Phase 2 · Backend &amp; API</a>
-    <a class="nav-item" href="phase-3.html">Phase 3 · Agentic Systems</a>
-    <a class="nav-item" href="phase-4.html">Phase 4 · Production</a>
-    <a class="nav-item" href="phase-5.html">Phase 5 · RAG &amp; Embeddings</a>
-  </div>
-
-  <div class="nav-group">
-    <div class="nav-group-label">ML Track — contrl</div>
-    <a class="nav-item" href="phase-6.html">Phase 6 · MediaPipe &amp; ML</a>
-  </div>
-
-  <div class="nav-group">
-    <div class="nav-group-label">Projects &amp; Revenue</div>
-    <a class="nav-item" href="projects.html">Project Ideas &amp; Revenue</a>
-  </div>
-
-  <div class="nav-group">
-    <div class="nav-group-label">Foundations</div>
-    <a class="nav-item" href="math.html">Math &amp; Algorithms</a>
-    <a class="nav-item" href="dsa.html">Data Structures &amp; Algorithms</a>
-    <a class="nav-item" href="reading.html">Reading List</a>
-  </div>
-
-  <div class="nav-group">
-    <div class="nav-group-label">Prep</div>
-    <a class="nav-item" href="interview.html">Interview Prep</a>
-  </div>
-
-  <div class="nav-group">
-    <div class="nav-group-label">Resources</div>
-    <a class="nav-item" href="prompting-cheatsheet.html">Prompting Cheatsheet ↗</a>
-  </div>
-</nav>
-
-
-<!-- MAIN -->
-<main class="main">
-
-    <!-- HERO -->
-  <div class="hero">
-    <div class="hero-eyebrow">// curriculum · v6.0 · updated 2026-03-20 · 3 tracks · 8 phases · 5 projects · passive income path</div>
-    <h1>AI Product<br><em>Engineering</em></h1>
-    <p class="hero-sub">A practical curriculum built on your own codebases. Three concentric tracks: Applied AI tools (outermost, highest leverage), LLM Engineering (middle), Applied ML (core). Frontend developer → AI Product Engineer → passive income.</p>
-    <div class="track-pills">
-      <span class="pill pill-orange"><span class="pill-dot"></span>Applied AI · Tools & Automation</span>
-      <span class="pill pill-teal"><span class="pill-dot"></span>buffr · LLM Engineering</span>
-      <span class="pill pill-purple"><span class="pill-dot"></span>contrl · Applied ML</span>
-    </div>
-  </div>
-
-    <!-- PROGRESS BAR -->
-  <div class="progress-bar">
-    <a class="pb-phase p0" href="phase-0.html" style="text-decoration:none;color:inherit;">
-      <div class="pb-num">00</div><span class="pb-label">Applied AI</span>
-    </a>
-    <a class="pb-phase p1" href="phase-1.html" style="text-decoration:none;color:inherit;">
-      <div class="pb-num">01</div><span class="pb-label">LLM Integration</span>
-    </a>
-    <a class="pb-phase p2" href="phase-2.html" style="text-decoration:none;color:inherit;">
-      <div class="pb-num">02</div><span class="pb-label">Backend &amp; API</span>
-    </a>
-    <a class="pb-phase p3" href="phase-3.html" style="text-decoration:none;color:inherit;">
-      <div class="pb-num">03</div><span class="pb-label">Agentic Systems</span>
-    </a>
-    <a class="pb-phase p4" href="phase-4.html" style="text-decoration:none;color:inherit;">
-      <div class="pb-num">04</div><span class="pb-label">Production</span>
-    </a>
-    <a class="pb-phase p5" href="phase-5.html" style="text-decoration:none;color:inherit;">
-      <div class="pb-num">05</div><span class="pb-label">RAG + Embeddings</span>
-    </a>
-    <a class="pb-phase p6" href="phase-6.html" style="text-decoration:none;color:inherit;">
-      <div class="pb-num">06</div><span class="pb-label">MediaPipe + ML</span>
-    </a>
-  </div>
-
-  <!-- CONTENT -->
-  <div class="content">
-
-    <div class="phase-block visible" id="phase-overview">
-      <div class="section">
-        <h3>How to use this curriculum</h3>
-        <p>Every concept ties back to real code in buffr, contrl, loopd, or your Twitch/Notion projects. No abstract exercises. Three tracks cover different layers of the AI product landscape — concentric circles, not separate paths.</p>
-        <table class="concept-table">
-          <tr><th></th><th>Applied AI</th><th>LLM Engineering</th><th>Applied ML</th></tr>
-          <tr><td>Focus</td><td>Use AI to ship 10× faster</td><td>Build products on LLMs</td><td>Train/deploy ML models</td></tr>
-          <tr><td>Tool</td><td>Claude Code, MCP</td><td>Claude API, LangChain</td><td>MediaPipe, TF.js</td></tr>
-          <tr><td>Projects</td><td>All</td><td>buffr, Notion, loopd</td><td>contrl, Twitch</td></tr>
-          <tr><td>Revenue</td><td>Freelance, templates</td><td>SaaS, API products</td><td>Premium features</td></tr>
-        </table>
-      </div>
-
-      <div class="section">
-        <h3>The three tracks — concentric circles</h3>
-        <div class="ascii-diagram">
-          <div class="asc-title">Track Architecture — Outermost = Highest Leverage</div>
-          <pre>
-  ┌───────────────────────────────────────────────────────────────────┐
-  │  <span class="asc-note">APPLIED AI TOOLS</span>  (Phase 0)                                     │
-  │  Claude Code · CLAUDE.md · MCP · Skills · Hooks · Subagents      │
-  │  Applies to ALL projects. Immediate 10× productivity.            │
-  │                                                                   │
-  │  ┌───────────────────────────────────────────────────────────┐   │
-  │  │  <span class="asc-label">LLM ENGINEERING</span>  (Phases 1–5)                            │   │
-  │  │  API · Chains · Tool use · RAG · Evals · Streaming       │   │
-  │  │  Build products ON TOP of LLMs.                           │   │
-  │  │                                                           │   │
-  │  │  ┌───────────────────────────────────────────────────┐   │   │
-  │  │  │  <span class="asc-ok">APPLIED ML</span>  (Phase 6)                           │   │   │
-  │  │  │  MediaPipe · Signal processing · On-device AI     │   │   │
-  │  │  └───────────────────────────────────────────────────┘   │   │
-  │  └───────────────────────────────────────────────────────────┘   │
-  └───────────────────────────────────────────────────────────────────┘
-
-  <span class="asc-dim">Start from the outside, work inward. Most solo devs get maximum ROI
-  staying in the outer two rings and pulling from the inner ring only when needed.</span></pre>
-        </div>
-      </div>
-
-      <div class="section">
-        <h3>The mindset shift</h3>
-        <div class="mindset-grid">
-          <div class="mindset-cell header fe">Frontend thinking</div>
-          <div class="mindset-cell header ai">AI product thinking</div>
-          <div class="mindset-cell">
-            <div class="mindset-row"><span class="arrow">→</span>Deterministic: same input = same output ALWAYS</div>
-            <div class="mindset-row"><span class="arrow">→</span>Test with assertions: <code>expect(x).toBe(y)</code></div>
-            <div class="mindset-row"><span class="arrow">→</span>Debug with <code>console.log</code></div>
-            <div class="mindset-row"><span class="arrow">→</span>Ship pixel-perfect UI</div>
-            <div class="mindset-row"><span class="arrow">→</span>Optimise bundle size</div>
-          </div>
-          <div class="mindset-cell">
-            <div class="mindset-row"><span class="arrow">→</span>Probabilistic: same input = similar but different output</div>
-            <div class="mindset-row"><span class="arrow">→</span>Test with evaluations: <code>score(output) > 0.8</code></div>
-            <div class="mindset-row"><span class="arrow">→</span>Debug with prompt iteration and tracing</div>
-            <div class="mindset-row"><span class="arrow">→</span>Ship "good enough" with guardrails</div>
-            <div class="mindset-row"><span class="arrow">→</span>Optimise token usage and latency</div>
-          </div>
-        </div>
-        <p style="margin-top:16px;">Your biggest advantage: <strong>you already build products</strong>. Most ML engineers can train models but struggle to ship user-facing products. You're coming from the product side and adding AI capabilities — exactly what the industry needs.</p>
-      </div>
-
-      <div class="section">
-        <h3>All phases at a glance</h3>
-        <div class="phase-cards">
-          <div class="phase-card" onclick="window.location.href='phase-0.html'">
-            <div class="pc-num label-orange">Phase 0 · Ongoing</div>
-            <div class="pc-title">Applied AI Tools & Automation</div>
-            <div class="pc-desc">Claude Code mastery, CLAUDE.md, skills, hooks, MCP servers</div>
-          </div>
-          <div class="phase-card" onclick="window.location.href='phase-1.html'">
-            <div class="pc-num label-teal">Phase 1 · Months 1–2</div>
-            <div class="pc-title">LLM Integration & Chain Architecture</div>
-            <div class="pc-desc">Provider abstraction, chain patterns, prompt engineering</div>
-          </div>
-          <div class="phase-card" onclick="window.location.href='phase-2.html'">
-            <div class="pc-num label-blue">Phase 2 · Months 2–3</div>
-            <div class="pc-title">Backend Architecture & API Design</div>
-            <div class="pc-desc">Serverless trade-offs, REST design, storage patterns, TOCTOU</div>
-          </div>
-          <div class="phase-card" onclick="window.location.href='phase-3.html'">
-            <div class="pc-num label-purple">Phase 3 · Months 3–5</div>
-            <div class="pc-title">Agentic Systems & Tool Use</div>
-            <div class="pc-desc">Tool registry, MCP, orchestrator pattern, observation loops</div>
-          </div>
-          <div class="phase-card" onclick="window.location.href='phase-4.html'">
-            <div class="pc-num label-coral">Phase 4 · Months 5–8</div>
-            <div class="pc-title">Reliability, Evals & Production</div>
-            <div class="pc-desc">Streaming (SSE), eval-driven dev, model routing, cost optimisation</div>
-          </div>
-          <div class="phase-card" onclick="window.location.href='phase-5.html'">
-            <div class="pc-num label-amber">Phase 5 · Months 8–12</div>
-            <div class="pc-title">RAG, Embeddings & Systems Thinking</div>
-            <div class="pc-desc">Vector search, pgvector, semantic search, failure modes</div>
-          </div>
-          <div class="phase-card" onclick="window.location.href='phase-6.html'">
-            <div class="pc-num label-green">Phase 6 · Months 6–12</div>
-            <div class="pc-title">MediaPipe & Signal Processing</div>
-            <div class="pc-desc">contrl ML track — landmarks, rep counting, custom models</div>
-          </div>
-          <div class="phase-card" onclick="window.location.href='projects.html'">
-            <div class="pc-num label-pink">Revenue Track</div>
-            <div class="pc-title">Project Ideas & Passive Income</div>
-            <div class="pc-desc">Notion tools, SaaS, templates, consulting — mapped to your projects</div>
-          </div>
-          <div class="phase-card" onclick="window.location.href='math.html'">
-            <div class="pc-num" style="color:#60a5fa;">Foundations</div>
-            <div class="pc-title">Math & Algorithms</div>
-            <div class="pc-desc">Dot product, cosine similarity, softmax, attention, EMA — with formulas</div>
-          </div>
-          <div class="phase-card" onclick="window.location.href='dsa.html'">
-            <div class="pc-num" style="color:#34d399;">Foundations</div>
-            <div class="pc-title">Data Structures & Algorithms</div>
-            <div class="pc-desc">Hash maps, queues, graphs, trees, sliding windows — only your stack</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-  </div><!-- /content -->
-</main>
-
-<script>
-  function toggleAccordion(header) {
-    const body = header.nextElementSibling;
-    const chevron = header.querySelector('.exercise-chevron, .interview-chevron');
-    const isOpen = body.classList.contains('open');
-    body.classList.toggle('open', !isOpen);
-    if (chevron) chevron.classList.toggle('open', !isOpen);
-    header.classList.toggle('open', !isOpen);
-  }
-
-  window.addEventListener('scroll', () => {
-    const doc = document.documentElement;
-    const pct = window.scrollY / (doc.scrollHeight - doc.clientHeight);
-    document.getElementById('scrollProgress').style.transform = `scaleX(${pct})`;
-  });
-  const navToggle = document.getElementById("mobileNavToggle");
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("mobileOverlay");
-  function closeMobileNav() { sidebar.classList.remove("open"); overlay.classList.remove("open"); }
-  navToggle.addEventListener("click", () => { sidebar.classList.toggle("open"); overlay.classList.toggle("open"); });
-  overlay.addEventListener("click", closeMobileNav);
-  sidebar.querySelectorAll(".nav-item").forEach(link => link.addEventListener("click", closeMobileNav));
-</script>
-
+</div>
+<footer>
+  <p>aipe — AI Product Engineering curriculum</p>
+  <p><a href="index.html">← back to AIPE</a></p>
+</footer>
 </body>
 </html>

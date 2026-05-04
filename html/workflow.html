@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prompting Cheatsheet — AIPE</title>
+  <title>Workflow — AIPE Prompting</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet" />
@@ -1005,43 +1005,154 @@
     }
 
 
-    .index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; margin-top: 1.5rem; }
-    .index-card { display: block; background: var(--bg2); border: 1px solid var(--border); padding: 1.25rem 1.5rem; text-decoration: none; transition: background .15s, border-color .15s; }
-    .index-card:hover { background: var(--bg3); border-color: var(--border2); }
-    .index-card-title { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold2); margin-bottom: .5rem; letter-spacing: .04em; }
-    .index-card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
-    .index-intro { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 640px; margin-bottom: .5rem; }
   </style>
 </head>
 <body>
+
 <header>
   <div class="header-left">
     <a href="index.html" class="logo">aipe / <span>prompting</span></a>
-    <h1>Prompting Cheatsheet</h1>
+    <h1>Workflow</h1>
     <p>AI prompt engineering for app builders</p>
   </div>
-  <span class="header-tag">Reference</span>
+  <div style="display:flex;align-items:center;gap:10px">
+    <button class="menu-btn" id="menu-btn">☰ Menu</button>
+    <span class="header-tag">Reference</span>
+  </div>
 </header>
-<div style="padding:2rem">
-  <p class="index-intro">A practical reference for AI-assisted app development.</p>
-  <div class="index-grid">
-<a href="quick-reference.html" class="index-card"><p class="index-card-title">Quick reference</p><p class="index-card-desc">Use case picker, technique mapping, and all reference sections. Start here.</p></a>
-<a href="writing-specs.html" class="index-card"><p class="index-card-title">Writing specs for your app</p><p class="index-card-desc">Plan, feature, debugging, curriculum, interview, audit, testing, user stories, refactor, migration, performance, prompt eng, onboarding, integration.</p></a>
-<a href="closing-feedback-loop.html" class="index-card"><p class="index-card-title">Closing the feedback loop</p><p class="index-card-desc">Make the AI the sensor. Instrumentation, emulation, and self-evaluation patterns.</p></a>
-<a href="what-pe-actually-is.html" class="index-card"><p class="index-card-title">01 — What PE actually is</p><p class="index-card-desc">The 80/20 rule. Wording is the last 20%.</p></a>
-<a href="detail-vs-highlevel.html" class="index-card"><p class="index-card-title">02 — Detail vs high-level</p><p class="index-card-desc">When to go deep vs stay broad.</p></a>
-<a href="feature-implementation.html" class="index-card"><p class="index-card-title">03 — Feature implementation</p><p class="index-card-desc">System → behaviour → UI. Never start with UI.</p></a>
-<a href="two-layer-prompt.html" class="index-card"><p class="index-card-title">04 — Two-layer prompt</p><p class="index-card-desc">Intent + constraints.</p></a>
-<a href="three-user-paths.html" class="index-card"><p class="index-card-title">05 — Three user paths</p><p class="index-card-desc">Happy, unhappy, and weird paths.</p></a>
-<a href="interaction-flow.html" class="index-card"><p class="index-card-title">06 — Interaction flow</p><p class="index-card-desc">Narrate the full UX including failure.</p></a>
-<a href="three-states.html" class="index-card"><p class="index-card-title">07 — Three states</p><p class="index-card-desc">Empty, error, and re-entry.</p></a>
-<a href="workflow.html" class="index-card"><p class="index-card-title">08 — Workflow</p><p class="index-card-desc">Claude.ai for spec. Claude Code for implementation.</p></a>
-<a href="analysing-app.html" class="index-card"><p class="index-card-title">09 — Analysing an app</p><p class="index-card-desc">Questions to ask before writing any prompt.</p></a>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="sidebar-drawer" id="sidebar-drawer">
+  <div class="drawer-close"><button id="drawer-close">✕</button></div>
+  <div class="sidebar-section">Navigation</div>
+<a href="index.html" class="sidebar-link">← Back to index</a>
+<div class="sidebar-section">Prompting</div>
+<a href="quick-reference.html" class="sidebar-link">Quick reference</a>
+<a href="closing-feedback-loop.html" class="sidebar-link">Closing the feedback loop</a>
+<button class="sidebar-group-btn open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Reference sections</span><span class="chevron">›</span></button>
+<div class="sidebar-group-items open">
+  <a href="what-pe-actually-is.html" class="sidebar-link">01 — What PE actually is</a>
+  <a href="detail-vs-highlevel.html" class="sidebar-link">02 — Detail vs high-level</a>
+  <a href="feature-implementation.html" class="sidebar-link">03 — Feature impl order</a>
+  <a href="two-layer-prompt.html" class="sidebar-link">04 — Two-layer prompt</a>
+  <a href="three-user-paths.html" class="sidebar-link">05 — Three user paths</a>
+  <a href="interaction-flow.html" class="sidebar-link">06 — Interaction flow</a>
+  <a href="three-states.html" class="sidebar-link">07 — Three states</a>
+  <a href="workflow.html" class="sidebar-link active">08 — Workflow</a>
+  <a href="analysing-app.html" class="sidebar-link">09 — Analysing an app</a>
+</div>
+
+</div>
+
+<div class="page-layout">
+  <nav class="sidebar" id="desktop-sidebar">
+    <div class="sidebar-section">Navigation</div>
+<a href="index.html" class="sidebar-link">← Back to index</a>
+<div class="sidebar-section">Prompting</div>
+<a href="quick-reference.html" class="sidebar-link">Quick reference</a>
+<a href="closing-feedback-loop.html" class="sidebar-link">Closing the feedback loop</a>
+<button class="sidebar-group-btn open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span>Reference sections</span><span class="chevron">›</span></button>
+<div class="sidebar-group-items open">
+  <a href="what-pe-actually-is.html" class="sidebar-link">01 — What PE actually is</a>
+  <a href="detail-vs-highlevel.html" class="sidebar-link">02 — Detail vs high-level</a>
+  <a href="feature-implementation.html" class="sidebar-link">03 — Feature impl order</a>
+  <a href="two-layer-prompt.html" class="sidebar-link">04 — Two-layer prompt</a>
+  <a href="three-user-paths.html" class="sidebar-link">05 — Three user paths</a>
+  <a href="interaction-flow.html" class="sidebar-link">06 — Interaction flow</a>
+  <a href="three-states.html" class="sidebar-link">07 — Three states</a>
+  <a href="workflow.html" class="sidebar-link active">08 — Workflow</a>
+  <a href="analysing-app.html" class="sidebar-link">09 — Analysing an app</a>
+</div>
+
+  </nav>
+  <div class="content-area">
+    <main>
+<p class="section-label" id="s08">08 — Workflow</p>
+
+  <div class="card">
+    <p class="card-title">Claude.ai → Claude Code</p>
+    <p class="body-text">The two tools serve different phases of the same process. Claude.ai is for thinking — designing, deciding, writing the spec. Claude Code is for building — implementing the spec with full codebase context. The cheatsheet above describes what goes into each phase. The <code style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold2);">.dev/</code> folder bridges the two by persisting context between sessions so you never have to re-explain your project.</p>
+    <div class="why">
+      <p class="why-label">Why it matters</p>
+      <p>Skipping the design phase and going straight to Claude Code means writing a spec in code rather than plain language — which is slower, harder to revise, and produces more throwaway work.</p>
+    </div>
+    <div class="workflow-row">
+      <span class="wf-tag ai">Claude.ai</span>
+      <span class="wf-label">System design + interaction flow + spec</span>
+      <span class="wf-arrow">→</span>
+      <span class="wf-tag code">Claude Code</span>
+      <span class="wf-label">Implementation with tight spec + all three paths</span>
+    </div>
+    <div class="do-dont">
+      <div class="dont-block">
+        <p class="do-label">✗ Don't</p>
+<div class="code-block"><span class="bad">[Claude Code]
+Add a tap-to-edit feature to
+the journal entry component</span></div>
+        <p style="font-size:12px;color:var(--danger);margin-top:6px;">Jumping straight to implementation without a spec. Multiple correction cycles ahead.</p>
+      </div>
+      <div class="do-block">
+        <p class="do-label">✓ Do</p>
+<div class="code-block"><span class="ok">[Claude.ai]
+Design tap-to-edit for journal
+entries → produce spec
+
+[Claude Code]
+Implement from .dev/journal.md
+Data model + flow defined there</span></div>
+      </div>
+    </div>
+    <div class="callout">The better your spec coming out of Claude.ai, the fewer correction cycles in Claude Code. Time spent designing is always faster than time spent debugging.</div>
+  </div>
+
+
+  <!-- 09 -->
+    </main>
+    <footer>
+      <p>aipe — AI Product Engineering curriculum</p>
+      <p><a href="index.html">← back to index</a></p>
+    </footer>
   </div>
 </div>
-<footer>
-  <p>aipe — AI Product Engineering curriculum</p>
-  <p><a href="../index.html">← back to AIPE</a></p>
-</footer>
+
+<script>
+
+  // Mobile drawer
+  const overlay  = document.getElementById('sidebar-overlay');
+  const drawer   = document.getElementById('sidebar-drawer');
+  const menuBtn  = document.getElementById('menu-btn');
+  const closeBtn = document.getElementById('drawer-close');
+
+  if (menuBtn)  menuBtn.addEventListener('click',  () => { drawer.classList.add('open'); overlay.classList.add('open'); });
+  if (closeBtn) closeBtn.addEventListener('click', () => { drawer.classList.remove('open'); overlay.classList.remove('open'); });
+  if (overlay)  overlay.addEventListener('click',  () => { drawer.classList.remove('open'); overlay.classList.remove('open'); });
+
+  // Tab shells
+  function updateFade(bar) {
+    const wrap = bar.closest('.tab-bar-wrap');
+    if (!wrap) return;
+    const atEnd = bar.scrollLeft + bar.clientWidth >= bar.scrollWidth - 4;
+    wrap.classList.toggle('no-fade', atEnd);
+  }
+
+  document.querySelectorAll('.tabs-shell').forEach(shell => {
+    const bar = shell.querySelector('.tab-bar');
+    if (bar) { updateFade(bar); bar.addEventListener('scroll', () => updateFade(bar)); }
+    shell.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        shell.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        shell.querySelectorAll('.tab-panel').forEach(p => {
+          p.classList.remove('active');
+          if (p.dataset.panel === target) p.classList.add('active');
+        });
+        btn.classList.add('active');
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        if (bar) updateFade(bar);
+      });
+    });
+  });
+
+</script>
 </body>
 </html>
