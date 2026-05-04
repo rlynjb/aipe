@@ -57,34 +57,67 @@ ${CODEX_PLUGIN_ROOT}/specs/interview.md
 
 If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for `specs/interview.md` upward from this file's location.
 
-## Step 4 — Compose the filled spec
+## Step 4 — Plan the prep guide
 
-Apply the template structure to the project context and the user's intent (`$ARGUMENTS`). Use your own model — this is what you're already doing in this conversation, no external API call.
+The interview spec is a book-style prep guide. It is too long and too structured to compose as one blob. Plan to generate and save it **chapter by chapter** into a directory of per-chapter markdown files.
 
-Rules:
-- Replace every `[bracket placeholder]` with concrete content.
-- All file names and paths must match the actual project (from the context files).
-- Constraints sections must reflect real project constraints, not generic advice.
-- Output ONLY the filled spec body — no preamble, no commentary.
+Apply the template structure (loaded in Step 3) and the project context to the user's intent (`$ARGUMENTS`). The template defines 13 sections:
 
-## Step 5 — Save the spec
+- Preface
+- Chapters 1 through 11
+- Appendix
+
+Each section should be grounded in concrete details from the project context: real file names, real decisions, real constraints. No generic advice. No placeholder brackets.
+
+## Step 5 — Determine the output directory
 
 Compute the slug from `$ARGUMENTS`: lowercase, replace non-alphanumerics with `-`, collapse repeats, trim to 60 chars. If empty, use `spec`.
 
-Path: `.aipe/specs/interview/<slug>.md`
+Directory: `.aipe/specs/interview/<slug>/`
 
-If that file already exists, append an ISO timestamp: `.aipe/specs/interview/<slug>-<YYYY-MM-DDTHH-MM-SS>.md`. **Never overwrite.**
+If the directory already exists, append an ISO timestamp: `.aipe/specs/interview/<slug>-<YYYY-MM-DDTHH-MM-SS>/`. **Never overwrite.**
 
-Create parent directories as needed and write the filled spec.
+Create the directory.
 
-## Step 6 — Report + stop
+## Step 6 — Generate and save each chapter sequentially
+
+For each row in the table below: compose only that chapter's content, applying the template's per-chapter structure (opening narrative → ASCII diagram → 3 questions labelled `[mid]` `[senior]` `[arch]` → model answers → "the hard question"), then immediately Write it to the named file before moving on.
+
+| File | Section |
+|---|---|
+| `00-preface.md` | Preface: What this project is really about |
+| `01-system-architecture.md` | Chapter 1: System architecture |
+| `02-frontend-engineering.md` | Chapter 2: Frontend engineering |
+| `03-backend-and-api-design.md` | Chapter 3: Backend and API design |
+| `04-ai-engineering.md` | Chapter 4: AI engineering |
+| `05-data-modelling.md` | Chapter 5: Data modelling |
+| `06-reliability-and-error-handling.md` | Chapter 6: Reliability and error handling |
+| `07-developer-process.md` | Chapter 7: Developer process |
+| `08-ownership-and-judgment.md` | Chapter 8: Ownership and judgment |
+| `09-data-structures-and-algorithms.md` | Chapter 9: Data structures and algorithms |
+| `10-what-id-do-differently.md` | Chapter 10: What I'd do differently |
+| `11-defending-ai-assisted-work.md` | Chapter 11: Defending AI-assisted work |
+| `12-appendix-complexity-cheat-sheet.md` | Appendix: Complexity cheat sheet |
+
+If a chapter doesn't apply to this project (e.g., Chapter 4 — AI engineering — for a project with no AI surface), still write the file but keep it short and explicit about why ("this project has no AI component; if asked, the answer to lean on is …").
+
+## Step 7 — Generate the table of contents
+
+After all 13 chapter files are written, create `README.md` in the same directory containing:
+
+- Title: `# Interview prep: <intent from $ARGUMENTS>`
+- One sentence describing the project being defended.
+- A markdown list linking to all 13 files in order, each with a 1-line summary drawn from the chapter you actually wrote (not the template's generic description).
+
+## Step 8 — Report + stop
 
 Print exactly:
 
 ```
-✓ Spec saved to <path>
+✓ Interview prep guide saved to .aipe/specs/interview/<slug>/
+  13 chapters + README.md table of contents
 ```
 
-Then give a 3-sentence summary of what the spec covers (the main sections, the key decisions baked in, any open questions the user might want to clarify).
+Then a 3-sentence summary: what the project under defence is, which chapters were most substantive given the project's actual surface area, and which chapters are intentionally light (e.g., no DB → Chapter 5 is brief).
 
-**Stop. Wait for the user's next instruction.** Do NOT auto-implement.
+**Stop. Wait for the user's next instruction.** They'll typically pick a chapter to drill on, request a revision, or ask for a quiz. Do NOT auto-quiz or auto-revise.
