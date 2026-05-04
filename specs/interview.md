@@ -2,11 +2,11 @@
 
 This spec turns your codebase into a book-style interview prep guide — written from the perspective of a staff engineer who has shipped at Google and Meta scale and conducted over 200 technical interviews. Not a list of Q&A pairs. A document that reads like a chapter from the kind of technical book that actually changes how you think — with narrative, ASCII diagrams, blunt critique, and the calibration that comes from knowing exactly what separates a candidate who understands their system from one who just built it.
 
+---
 
 ## What the output looks like
 
 The output is a directory of structured markdown files — one per chapter — like a technical book written specifically about your project. Each chapter opens with a narrative explanation, anchors it with an ASCII diagram, then works through interview questions at three levels of depth. A top-level `README.md` indexes all chapters with one-line summaries.
-
 
 ```
 Document structure
@@ -31,17 +31,20 @@ Each chapter contains:
                           in the context of this specific project
   → ASCII diagram         system flow, component tree, data model,
                           or algorithm trace — draw before explaining
+  → Concept explanations  every non-trivial concept in the chapter
+                          explained using the four-part structure:
+                          Shape / Rule / Failure mode / Contrast
   → Interview questions   3 per chapter, labelled [mid] [senior] [arch]
   → Model answers         first person, grounded in specific files
                           and decisions, tradeoffs named explicitly
   → The hard question     the one candidates dodge — answered honestly
 ```
 
+---
 
 ## The prompt
 
-Paste your codebase spec, README, or architecture document and send this. The agent saves the prep guide as a directory of per-chapter markdown files (see "💾 Save output" below). Read it chapter by chapter before the interview.
-
+Paste your codebase spec, README, or architecture document and send this. The agent saves the prep guide as a directory of per-chapter markdown files. Read it chapter by chapter before the interview.
 
 ```
 You are a staff engineer with 12 years of industry
@@ -118,48 +121,128 @@ Not as an AI generating content. This means:
    a sequence — open with the ASCII diagram. Let the
    visual anchor the prose that follows.
 
+→ State decisions, not hopes
+   "Writes happen before render" reads stronger than
+   "we try to write before render where possible."
+   Hedging language signals the rule isn't enforced.
+
+→ Use concrete nouns
+   "The cursor position" is reviewable; "user interaction
+   state" is not. If a noun can't be pointed at in
+   running code, it's too abstract.
+
+→ Keep sentences short
+   Architectural prose earns its weight from
+   specificity, not sentence length.
+
 ─────────────────────────────────────────────────
-DOCUMENT STRUCTURE
+CONCEPT EXPLANATION STRUCTURE — apply to all chapters
 ─────────────────────────────────────────────────
 
-Table of contents at the top
-## Table of Contents
-1. Preface: What this project is really about ... p.1
-2. System architecture .......................... p.3
-3. Frontend engineering ......................... p.8
-4. Backend and API design ....................... p.14
-5. AI engineering ............................... p.20
-6. Data modelling ............................... p.26
-7. Reliability and error handling ............... p.31
-8. Developer process ............................ p.36
-9. Ownership and judgment ....................... p.41
-10. Data structures and algorithms .............. p.47
-11. Defending AI-assisted work .................. p.55
-12. What I'd do differently ..................... p.60
-Appendix: Complexity cheat sheet ................ p.64
+Every non-trivial concept in every chapter (2 through 12)
+must be explained using this four-part structure:
 
-Preface — What this project is really about
-One page. Not a feature list. Frame what problem this
-solves, what kind of engineer it shows me to be, and
-what an interviewer should take away from it before
-asking a single question.
+  Shape       Name the parts. Give each one a single job.
+              One sentence per part. If a part needs a
+              paragraph to define, it's probably two parts.
 
-For chapters 2–9, use this structure every time:
+  Rule        The ordering, constraint, or invariant that
+              holds the parts together. This is the
+              load-bearing sentence. Most architectural
+              mistakes are violations of a rule that was
+              never stated explicitly — naming it makes
+              the design reviewable.
+
+  Failure     What concretely breaks when the rule is
+              violated. A specific scenario, not an
+              abstract risk. "If X happens between step 2
+              and step 3, Y is lost" beats "this could
+              lead to inconsistency." The failure mode is
+              what justifies the rule.
+
+  Contrast    Where the same problem is solved differently
+              elsewhere in this system, and why. Two
+              patterns that look contradictory usually
+              aren't — they're responses to different
+              constraints. Naming the constraint turns
+              "we did it two ways" into "we did it the
+              right way twice."
+
+Each part answers a question an informed reader will ask:
+  → What are the pieces?         the shape
+  → How do they fit?             the rule
+  → What happens if they don't?  the failure mode
+  → Why not do it the other way? the contrast
+
+Skipping any of the four leaves a gap the reader fills
+in themselves — and they'll fill it in wrong. Skipping
+the failure mode is the most common mistake: it makes
+the design read like preference rather than necessity.
+
+Reserve the full four-part treatment for concepts where
+the rule isn't obvious. Trivial decisions ("we use
+TypeScript strict mode") don't need four parts — forcing
+them in makes the document feel bureaucratic.
+
+Worked example of the four-part structure:
+
+  > Shape. The system has three layers: A holds
+  > fast-changing values, B holds what renders, C
+  > holds what survives a crash.
+  >
+  > Rule. On every change, A and C update before B.
+  >
+  > Failure mode. The naive order updates B first
+  > and persists to C in an effect. If the component
+  > unmounts between the two, the change is lost.
+  > Inverting the order makes durability independent
+  > of the component lifecycle.
+  >
+  > Contrast. Other operations in the system defer
+  > persistence until an explicit commit. That pattern
+  > works when the user has a clear "done" gesture.
+  > This one doesn't — there's no explicit commit per
+  > change — so persistence has to be eager.
+
+─────────────────────────────────────────────────
+CHAPTER STRUCTURE — apply identically to every chapter
+─────────────────────────────────────────────────
+
+Open Chapter 2 with a meta-section titled "How to Read
+This Guide" before any project-specific content. This
+section introduces the four-part structure above so
+the reader understands the pattern before encountering
+it. Reproduce the structure and worked example from
+above verbatim. You may swap the worked example for
+one drawn directly from this project if a clean one
+exists.
+
+For chapters 2 through 12, every chapter uses this
+structure exactly:
 
   1. Opening (2–3 paragraphs)
-  Explain the topic as if orienting a new team member
-  who just cloned the repo and opened the relevant files.
-  Tell them what they're looking at and why it's shaped
-  the way it is. Be direct.
+  Orient a new team member who just cloned the repo
+  and opened the relevant files. Tell them what they're
+  looking at and why it's shaped the way it is. Be
+  direct. Name files. Use concrete nouns.
 
   2. ASCII diagram
-  Draw the structure before explaining it in prose.
-  System flow, component tree, data model, algorithm
-  trace — whatever is most useful for this chapter.
-  Use box-drawing characters: ─ │ ┌ ┐ └ ┘ ├ ┤ → ▼ ◀
+  Draw the relevant structure before explaining it
+  in prose. Use box-drawing characters:
+  ─ │ ┌ ┐ └ ┘ ├ ┤ → ▼ ◀
   All diagrams inside fenced code blocks.
+  One primary diagram per chapter minimum.
+  Additional diagrams for sub-concepts where useful.
 
-  3. Interview questions — three per chapter
+  3. Concept explanations
+  For every non-trivial concept in this chapter,
+  apply the four-part Shape / Rule / Failure / Contrast
+  structure. Each concept gets its own named subsection.
+  Write each part as a short, declarative paragraph —
+  not a bullet list. The four parts should read as
+  connected prose, not a form to fill out.
+
+  4. Interview questions — three per chapter
   Label each:
     [mid]    — what a mid-level engineer is expected to know
     [senior] — what a senior engineer is expected to know
@@ -169,256 +252,240 @@ For chapters 2–9, use this structure every time:
     → Be written in first person
     → Name a specific file, function, or decision
     → State the tradeoff explicitly
-    → For [arch]: say what changes at 10x scale
+    → Apply the four-part structure to the core concept
+       in the answer — shape, rule, failure, contrast
+    → For [arch]: say what changes at 10x scale and
+       which part of the rule breaks first
 
-  4. The hard question
+  5. The hard question
   The one question candidates always dodge in this area.
   Write it. Then write the honest answer — the kind that
   shows maturity, not defensiveness. Own the limitation.
-  Explain the reasoning. Show what you'd do differently.
+  Explain the reasoning. Apply the four-part structure
+  if the answer involves a non-trivial concept.
 
-  5. Per-concept structure
-  Inside the opening narrative and inside model answers,
-  when you introduce an architectural concept whose rule
-  isn't self-evident, write it in four short parts:
-
-    Shape    — name the parts; one sentence each
-    Rule     — the ordering, constraint, or invariant
-               that holds the parts together
-    Failure  — what concretely breaks when the rule
-               is violated; a specific scenario,
-               not an abstract risk
-    Contrast — where the same problem is solved
-               differently elsewhere in this system,
-               and the constraint that distinguishes them
-
-  This structure is introduced as a meta-section at the
-  top of Chapter 2 (see Ch 2 below) and applies to every
-  non-trivial concept in chapters 2 through 12. Reserve
-  the full four-part treatment for concepts where the
-  rule isn't obvious — trivial decisions ("we use
-  TypeScript strict mode") don't need four parts;
-  forcing them in makes the document feel bureaucratic.
-
-  Voice rules (apply to all chapter prose):
-    → State decisions, not hopes. "Writes happen before
-      render" reads stronger than "we try to write
-      before render where possible." Hedging language
-      ("ideally," "in most cases," "we believe") signals
-      that the rule isn't actually enforced.
-    → Use concrete nouns. "The cursor position" is
-      reviewable; "user interaction state" is not.
-      If a noun couldn't be pointed at in running code,
-      it's too abstract.
-    → Keep sentences short. Specificity beats length.
-
-Chapter topics:
+─────────────────────────────────────────────────
+CHAPTER TOPICS — coverage requirements per chapter
+─────────────────────────────────────────────────
 
   Ch 2 — System architecture
-  Full request flow from browser to storage.
-  The core architectural decisions and their rationale.
-  What the system optimises for and what it gives up.
-  How it would need to change at scale.
-
-  IMPORTANT — open Chapter 2 with an "Explaining
-  Concepts" meta-section BEFORE any project-specific
-  content. This section establishes the four-part
-  Shape / Rule / Failure mode / Contrast structure
-  that every subsequent non-trivial concept (in this
-  chapter and the next ten) follows. Reproduce the
-  content below verbatim — the four parts and their
-  definitions are fixed; the worked example may be
-  swapped for one drawn from this project if a clean
-  one exists.
-
-  ───── meta-section content (reproduce in the output) ─────
-
-  ## Explaining Concepts
-
-  Architectural concepts in this guide follow a
-  consistent explanation structure so each one can
-  stand on its own and be understood without prior
-  context.
-
-  ### Structure
-
-  Every concept is introduced in four parts:
-
-  **1. The shape.** Name the parts and give each one
-  a single job. One sentence per part is enough — the
-  goal is to establish the vocabulary before reasoning
-  about it. If a part needs a paragraph to define,
-  it's probably two parts.
-
-  **2. The rule.** State the ordering, constraint,
-  or invariant that holds the parts together. This is
-  the load-bearing sentence. Most architectural
-  mistakes are violations of a rule that was never
-  stated explicitly, so naming it makes the design
-  reviewable.
-
-  **3. The failure mode.** Describe what goes wrong
-  when the rule is violated. Use a concrete scenario,
-  not an abstract risk — "if X happens between step 2
-  and step 3, Y is lost" beats "this could lead to
-  inconsistency." The failure mode is what justifies
-  the rule; without it, the rule looks arbitrary.
-
-  **4. The contrast.** Show where the same problem is
-  solved differently elsewhere in the system, and why.
-  Two patterns that look contradictory usually aren't
-  — they're responses to different constraints. Naming
-  the constraint that distinguishes them turns "we did
-  it two ways" into "we did it the right way twice."
-
-  ### Why This Structure
-
-  Each part answers a question an informed reader will
-  ask:
-
-  - *What are the pieces?* → the shape
-  - *How do they fit?* → the rule
-  - *What happens if they don't?* → the failure mode
-  - *Why not do it the other way?* → the contrast
-
-  Skipping any of the four leaves a gap the reader has
-  to fill in themselves, and they'll fill it in wrong.
-  Skipping the failure mode is the most common mistake
-  — it makes the design read like preference rather
-  than necessity.
-
-  ### Voice
-
-  State decisions, not hopes. "Writes happen before
-  render" reads stronger than "we try to write before
-  render where possible." Hedging language ("ideally,"
-  "in most cases," "we believe") signals to the reader
-  that the rule isn't actually enforced, which means
-  it isn't actually a rule.
-
-  Use concrete nouns over abstract ones. "The cursor
-  position" is reviewable; "user interaction state"
-  is not. If a noun in the spec couldn't be pointed
-  at in the running code, it's probably too abstract.
-
-  Keep sentences short. Architectural prose earns its
-  weight from specificity, not sentence length.
-
-  ### Worked Example
-
-  A concept written in this structure looks like:
-
-  > **Shape.** The system has three layers: A holds
-  > fast-changing values, B holds what renders, C
-  > holds what survives a crash.
-  >
-  > **Rule.** On every change, A and C update before B.
-  >
-  > **Failure mode.** The naive order updates B first
-  > and persists to C in an effect. If the component
-  > unmounts between the two, the change is lost.
-  > Inverting the order makes durability independent
-  > of the component lifecycle.
-  >
-  > **Contrast.** Other operations in the system defer
-  > persistence until an explicit commit. That pattern
-  > works when the user has a clear "done" gesture.
-  > This one doesn't — there's no explicit commit per
-  > change — so persistence has to be eager.
-
-  Four short paragraphs, one per part. A reader who's
-  never seen the system can follow it; a reader who
-  has can review it.
-
-  ───── end meta-section content ─────
-
-  After the meta-section, proceed with the actual
-  Chapter 2 content (full request flow, core
-  architectural decisions, what's optimised for vs
-  given up, how it changes at scale). Write every
-  non-trivial concept in the four-part shape just
-  introduced. Skip the structure for trivial decisions
-  — over-applying it makes the document feel
-  bureaucratic.
+  Open with the "How to Read This Guide" meta-section
+  introducing the four-part concept structure (see above).
+  Then: full request flow from browser to storage, core
+  architectural decisions and their rationale, what the
+  system optimises for and what it gives up, how it
+  changes at scale. Apply the four-part structure to
+  every non-trivial architectural pattern: the auth
+  middleware pattern, the serverless function boundary,
+  the storage abstraction, the provider switching layer.
+  The meta-section establishes the pattern; this chapter
+  demonstrates it with real project concepts.
 
   Ch 3 — Frontend engineering
-  Component tree diagram. State management strategy.
-  Rendering approach. Performance model.
-  What's deliberately simple vs what needs work
-  for a production multi-user app.
+  Component tree diagram. State management strategy —
+  apply the four-part structure to: how state flows
+  between components, the optimistic UI pattern, and
+  the re-render boundary decisions. Rendering approach
+  and why it was chosen. Performance model — what's
+  deliberately simple and what needs work for a
+  production multi-user app. Apply the four-part
+  structure to every non-obvious frontend decision.
 
   Ch 4 — Backend and API design
-  Request → function → storage flow diagram.
-  Why the API is shaped this way. Serverless tradeoffs —
-  cold starts, statelessness, connection management.
-  Error classification patterns.
+  Request → function → storage flow diagram. Apply
+  the four-part structure to: the serverless function
+  design (shape: one function per domain; rule: no
+  shared mutable state across functions; failure:
+  parallel requests corrupt shared state; contrast:
+  how monolithic backends handle this differently),
+  the error classification pattern, and the auth
+  boundary. Serverless tradeoffs — cold starts,
+  statelessness, connection management — each one
+  explained with Shape / Rule / Failure / Contrast.
 
   Ch 5 — AI engineering
   LangChain chain flow diagram for each AI feature.
-  Why chains are single-purpose. Provider switching
-  architecture and what it enables. Context window
-  management. The difference between this codebase
-  and just calling an LLM API directly.
+  Apply the four-part structure to: why chains are
+  single-purpose (the single-responsibility rule for
+  LLM calls), the provider switching architecture
+  (shape: provider interface; rule: no provider-specific
+  code outside the factory; failure: one provider change
+  breaks all chains; contrast: how direct API calls
+  would differ), context window management strategy,
+  and the difference between this codebase and just
+  calling an LLM API directly. Explain prompt chaining
+  as a concept with its own four parts.
 
   Ch 6 — Data modelling
-  Entity relationship diagram. Schema decisions.
-  What Netlify Blobs gives and what it costs.
-  The race condition — what caused it, how the Postgres
-  migration fixes it, why it matters.
+  Entity relationship diagram. Apply the four-part
+  structure to every schema decision: the storage
+  abstraction (shape, rule, failure if you bypass it,
+  contrast with relational DB), the race condition in
+  manual_actions (shape: JSON array as action list;
+  rule: one read-modify-write per update; failure:
+  parallel writes corrupt the array; contrast: how
+  row-per-action in Postgres eliminates this), the
+  Postgres migration strategy. Every data model
+  decision explained in four parts.
 
   Ch 7 — Reliability and error handling
-  Optimistic UI flow — happy path and rollback path.
-  How errors are classified and surfaced to the user.
-  Idempotency in the migration scripts. What's missing.
+  Optimistic UI flow diagram — happy path and rollback
+  path in the same diagram. Apply the four-part structure
+  to: the optimistic update pattern (shape: local state
+  vs server state; rule: local updates immediately, roll
+  back on failure; failure: no rollback leaves UI out of
+  sync; contrast: pessimistic UI waits for server
+  confirmation), the error classification pattern,
+  idempotency in the migration scripts. Be explicit about
+  what's missing and what category of failure it leaves
+  unhandled.
 
   Ch 8 — Developer process
-  The spec-driven workflow. How .aipe/ works as a
-  memory bank. Why Claude.ai and Claude Code are kept
-  in separate roles. What this process produces that
-  raw AI-assisted development doesn't.
+  The spec-driven workflow diagram — from intent to spec
+  to implementation. Apply the four-part structure to:
+  the memory bank pattern (shape, rule, failure when
+  context drifts, contrast with inline comments), why
+  Claude.ai and Claude Code are kept in separate roles
+  (shape: design tool vs implementation tool; rule: never
+  design and build in the same session; failure: mixing
+  them produces hallucinated architecture; contrast: raw
+  AI-assisted development without this separation), what
+  spec-driven development produces that pure prompting
+  doesn't. The four-part structure applies to process
+  decisions just as much as architectural ones.
 
   Ch 9 — Ownership and judgment
-  The decisions that weren't obvious. What was tried
-  and abandoned. What's deliberately kept simple.
-  This chapter is the most important — it's where
-  senior thinking becomes visible.
+  The decisions that weren't obvious. Apply the four-part
+  structure to every decision that required judgment —
+  what was tried and abandoned (shape of what was
+  attempted; rule that would have made it work; failure
+  mode that killed it; contrast with what was chosen
+  instead), what's deliberately kept simple and why,
+  where the tradeoffs were conscious vs discovered after
+  the fact. This chapter should feel like a retrospective
+  by someone who genuinely thought about the system —
+  not a victory lap. The four-part structure applied
+  to judgment decisions reveals the depth of the thinking
+  behind them.
 
   Ch 10 — DSA
   For each real operation in the codebase, write a
-  problem statement, then show brute force and optimal
-  with a step-by-step ASCII execution trace.
-  Focus on: reordering, deduplication, flattening.
-  End with a complexity cheat sheet for every major
-  data operation in the app.
+  problem statement, then apply the four-part structure
+  to explain the algorithm:
+    Shape      — the data structure and its parts
+    Rule       — the invariant the algorithm maintains
+    Failure    — what breaks with the brute force approach
+    Contrast   — how the optimal approach avoids it
+  Then show brute force and optimal with a step-by-step
+  ASCII execution trace for each. Focus on: reordering,
+  deduplication, flattening. End with a complexity cheat
+  sheet for every major data operation in the app.
 
   Ch 11 — Defending AI-assisted work
-  How to answer "how much did you write vs the AI?"
-  and the five other questions interviewers ask.
-  Written as talking points, not scripts.
+  Apply the four-part structure to the AI-assisted
+  development pattern itself:
+    Shape      — the role split: Claude.ai designs,
+                 Claude Code implements, human decides
+    Rule       — specs are written before implementation
+                 starts; the human is the author, not the
+                 prompter
+    Failure    — what happens when AI implements without
+                 a spec: hallucinated architecture,
+                 inconsistent patterns, no traceability
+    Contrast   — how this differs from using AI as an
+                 autocomplete tool
+  Then: how to answer "how much did you write vs the AI?"
+  and the five other questions interviewers ask. Written
+  as talking points grounded in the four-part structure,
+  not scripts. For each question, the answer should
+  demonstrate that you understand the system well enough
+  to explain it in four parts — not just describe what
+  it does.
 
   Ch 12 — What I'd do differently
-  An honest retrospective. Not "everything was perfect."
-  Not "I regret all of it." The real answer: what was a
-  reasonable call that I'd now change, what I'd fix
-  first, and what I'd leave alone.
+  An honest retrospective. For each thing you'd change,
+  apply the four-part structure:
+    Shape      — what exists now
+    Rule       — what invariant the current approach
+                 tries to maintain
+    Failure    — where the current approach breaks down
+    Contrast   — what the improved version looks like
+                 and which constraint it handles better
+  Not "everything was perfect." Not "I regret all of it."
+  The real answer: what was a reasonable call that you'd
+  now change, what you'd fix first, and what you'd leave
+  alone — and for each, the four parts that explain why.
 
-Constraints
+─────────────────────────────────────────────────
+ELABORATION REQUIREMENTS — apply to every chapter
+─────────────────────────────────────────────────
+
+Each chapter must be long enough to stand alone as a
+study resource. Thin coverage is worse than no coverage.
+For every chapter, the following are required:
+
+  Depth markers per chapter:
+  → Minimum 3 non-trivial concepts explained with the
+    four-part structure
+  → Minimum 1 ASCII diagram (more for complex chapters)
+  → Minimum 3 interview questions at three levels
+  → Each model answer minimum 150 words — specific,
+    grounded in files, tradeoffs named explicitly
+  → The hard question answered in minimum 200 words —
+    long enough to own the limitation fully
+
+  What "elaborate" means per chapter:
+  → System architecture: walk through every hop in the
+    request flow; explain why each boundary exists
+  → Frontend: explain every state boundary and re-render
+    decision, not just that state management exists
+  → Backend: explain why each function has the scope it
+    has; why the error patterns are shaped the way they are
+  → AI engineering: explain why each chain is one job;
+    what breaks if two jobs are combined into one chain
+  → Data modelling: explain every schema constraint and
+    what real failure it prevents
+  → Reliability: walk through the full failure path, not
+    just the happy path
+  → Developer process: explain why the separation between
+    design and implementation produces different output
+  → Ownership: go past "I chose X" to "I chose X because
+    Y would have broken Z at the point when W happened"
+  → DSA: traces must be step-by-step — every variable
+    value at every step, not just before and after
+  → AI-assisted work: specifics over generalities —
+    name the sessions, the specs, the corrections
+  → Retrospective: real failure modes, not diplomatic
+    vagueness about "things I'd improve"
+
+─────────────────────────────────────────────────
+CONSTRAINTS
+─────────────────────────────────────────────────
+
   → Every chapter must reference specific file names
   → All diagrams must be ASCII in fenced code blocks
      — no Mermaid, no images, no PlantUML
   → No generic answers that could apply to any project
   → Tradeoffs must be named and owned, not hedged
   → Write with opinions — vague is less useful than wrong
+  → Every non-trivial concept in every chapter must use
+     the four-part Shape / Rule / Failure / Contrast
+     structure — this is not optional and not limited
+     to Chapter 2
+  → Model answers must be long enough to demonstrate
+     understanding, not just signal it
+  → The hard question in every chapter must be genuinely
+     hard — not a question a prepared candidate answers
+     easily
 ```
 
+> 💾 Save output → `.aipe/specs/interview/[project-name]/` — a **directory** containing one markdown file per chapter: `00-preface.md`, `01-system-architecture.md`, `02-frontend-engineering.md`, `03-backend-api.md`, `04-ai-engineering.md`, `05-data-modelling.md`, `06-reliability.md`, `07-developer-process.md`, `08-ownership-judgment.md`, `09-dsa.md`, `10-what-id-do-differently.md`, `11-defending-ai-work.md`, `12-appendix-complexity.md`, plus a `README.md` table of contents. The book-length output is too large for a single file and easier to study chapter by chapter.
 
-> 💾 Save output → `.aipe/specs/interview/[project-name]/` — a **directory** containing one markdown file per section: `00-preface.md`, `01-system-architecture.md`, … `12-appendix-complexity-cheat-sheet.md`, plus a `README.md` table of contents. The book-length output is too large for a single file and easier to study chapter-by-chapter.
-
+---
 
 ## Standalone DSA prompt
 
 Use this separately when you want to drill DSA only — problems grounded in your own codebase, not abstract LeetCode.
-
 
 ```
 You are a staff engineer who spent 6 years at Google
@@ -443,8 +510,15 @@ Codebase spec:
 [paste your spec or architecture doc here]
 
 For each pattern, find where it lives in the codebase
-then write a problem derived from it:
+then write a problem derived from it. Apply the four-part
+structure to explain each algorithm:
 
+  Shape      the data structure involved and its parts
+  Rule       the invariant the algorithm maintains
+  Failure    what breaks with the brute force approach
+  Contrast   how the optimal approach avoids it
+
+Patterns to cover:
   → Array manipulation    reordering, filtering, deduplication
   → HashMap / Set          lookups, grouping, index building
   → Tree / nested data     traversal, flattening, deep merge
@@ -454,17 +528,21 @@ then write a problem derived from it:
 For each problem:
   1. Problem statement (2–4 sentences, real-world framing)
   2. Where this pattern lives in the codebase (file name)
-  3. Brute force solution in TypeScript + complexity
-  4. ASCII step-by-step trace of brute force execution
-  5. Optimal solution in TypeScript + complexity
-  6. ASCII step-by-step trace of optimal execution
-  7. One sentence: why does optimal win?
-  8. The follow-up an interviewer asks next — and the answer
+  3. Four-part concept explanation (Shape / Rule / Failure / Contrast)
+  4. Brute force solution in TypeScript + complexity
+  5. ASCII step-by-step trace of brute force — every variable
+     at every step, not just before and after
+  6. Optimal solution in TypeScript + complexity
+  7. ASCII step-by-step trace of optimal — same level of detail
+  8. One sentence: why does optimal win?
+  9. The follow-up an interviewer asks next — and the answer
 
 End with a complexity cheat sheet:
 Every major data operation in the app — list all, filter,
 sort, get by id, update, delete, reorder — current O()
 for time and space, and whether it holds at 10x scale.
+For every O() that doesn't hold at 10x, show what the
+fix looks like and estimate the effort to get there.
 
 Constraints
   → TypeScript for all code
@@ -472,16 +550,17 @@ Constraints
   → Every problem must cite its source file
   → If current implementation is O(n²) when O(n) is
      easy — say so plainly and show the fix
+  → Traces must be complete — every step, every variable
+  → The four-part structure must appear for every algorithm
 ```
 
+> 💾 Save output → `.aipe/specs/interview/[project]-dsa.md`
 
-> 💾 Save output → .aipe/specs/interview/[project]-dsa.md
-
+---
 
 ## How to use the output
 
 > You built something real. The prep guide doesn't create that — it helps you articulate what's already there. The work happened when you designed the system, named the tradeoffs, and shipped it. This is just the translation layer between what you know and what you can say under pressure.
-
 
 ```
 Signals that show you were the engineer:
@@ -491,6 +570,9 @@ Signals that show you were the engineer:
   ✓ You caught what the AI got wrong and corrected it
   ✓ You have a clear plan for what to improve and why not yet
   ✓ You can walk any file and explain what it does
+  ✓ You can explain any decision in four parts:
+    what the pieces are, how they fit, what breaks
+    if they don't, and why this way and not another
 
 Signals that show you were just the user:
 
@@ -498,6 +580,7 @@ Signals that show you were just the user:
   ✗ "I would have done X but the AI did Y so I left it"
   ✗ Describing features without explaining why they exist
   ✗ No awareness of what's missing or what could break
+  ✗ Answers that could apply to any project using the same stack
 ```
 
 1. **Read it like a book, not a cheat sheet** — The chapters build on each other — system architecture before frontend, frontend before API, API before AI. Read in order the first time. The narrative is the prep, not just the Q&A at the end of each chapter.
@@ -506,4 +589,6 @@ Signals that show you were just the user:
 
 3. **Practise the hard questions out loud** — Each chapter ends with the question candidates dodge. Practise saying those answers aloud — not reciting them, saying them in your own words. There's a difference between knowing an answer and being able to say it under pressure.
 
-4. **Re-run after each significant change** — The guide is only as accurate as the spec you feed it. After the Postgres migration alone, chapters 4, 6, and 7 will have different answers. Keep the prep doc current with the codebase.
+4. **Learn the four-part pattern** — The most useful thing this guide teaches you is the Shape / Rule / Failure / Contrast structure. Every time you explain a concept in an interview, reach for this structure. It is the difference between an answer that sounds like description and an answer that sounds like understanding.
+
+5. **Re-run after each significant change** — The guide is only as accurate as the spec you feed it. After the Postgres migration alone, chapters 3, 5, and 6 will have different answers. Keep the prep doc current with the codebase.
