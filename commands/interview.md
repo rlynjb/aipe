@@ -61,13 +61,20 @@ If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to sea
 
 The interview spec is a book-style prep guide. It is too long and too structured to compose as one blob. Plan to generate and save it **chapter by chapter** into a directory of per-chapter markdown files.
 
-Apply the template structure (loaded in Step 3) and the project context to the user's intent (`$ARGUMENTS`). The template defines 13 sections:
+Apply the template structure (loaded in Step 3) and the project context to the user's intent (`$ARGUMENTS`). The template defines 13 files: Preface + 11 chapters + Appendix.
 
-- Preface
-- Chapters 1 through 11
-- Appendix
+Two requirements from the template that drive every chapter:
 
-Each section should be grounded in concrete details from the project context: real file names, real decisions, real constraints. No generic advice. No placeholder brackets.
+1. **Four-part concept structure (Shape / Rule / Failure / Contrast).** Every non-trivial concept in chapters 2–12 must be explained in this shape — not as a bullet list, as four short connected paragraphs. The template's `## Explaining Concepts` meta-section (rendered at the top of `01-system-architecture.md`) defines it; subsequent chapters apply it. Skip the structure for trivial decisions ("we use TypeScript strict mode") — forcing it makes the document feel bureaucratic.
+
+2. **Elaboration requirements per chapter.**
+   - At least 3 non-trivial concepts explained with the four-part structure.
+   - At least 1 ASCII diagram (more for complex chapters).
+   - 3 interview questions, one each at `[mid]` / `[senior]` / `[arch]`.
+   - Each model answer ≥ 150 words, named files / functions / decisions.
+   - The hard question answered in ≥ 200 words.
+
+Every chapter is grounded in concrete details from the project context: real file names, real decisions, real constraints. No generic advice. No placeholder brackets. No hedging language.
 
 ## Step 5 — Determine the output directory
 
@@ -81,25 +88,27 @@ Create the directory.
 
 ## Step 6 — Generate and save each chapter sequentially
 
-For each row in the table below: compose only that chapter's content, applying the template's per-chapter structure (opening narrative → ASCII diagram → 3 questions labelled `[mid]` `[senior]` `[arch]` → model answers → "the hard question"), then immediately Write it to the named file before moving on.
+For each row in the table below: compose only that chapter's content, applying the chapter shape from the template (Opening → ASCII diagram → Concept explanations using the four-part structure → 3 interview questions labelled `[mid]` `[senior]` `[arch]` with model answers → the hard question), then immediately Write it to the named file before moving on.
 
 | File | Section |
 |---|---|
 | `00-preface.md` | Preface: What this project is really about |
-| `01-system-architecture.md` | Chapter 1: System architecture |
+| `01-system-architecture.md` | Chapter 1: System architecture (open with the `## Explaining Concepts` meta-section before any project-specific content) |
 | `02-frontend-engineering.md` | Chapter 2: Frontend engineering |
-| `03-backend-and-api-design.md` | Chapter 3: Backend and API design |
+| `03-backend-api.md` | Chapter 3: Backend and API design |
 | `04-ai-engineering.md` | Chapter 4: AI engineering |
 | `05-data-modelling.md` | Chapter 5: Data modelling |
-| `06-reliability-and-error-handling.md` | Chapter 6: Reliability and error handling |
+| `06-reliability.md` | Chapter 6: Reliability and error handling |
 | `07-developer-process.md` | Chapter 7: Developer process |
-| `08-ownership-and-judgment.md` | Chapter 8: Ownership and judgment |
-| `09-data-structures-and-algorithms.md` | Chapter 9: Data structures and algorithms |
+| `08-ownership-judgment.md` | Chapter 8: Ownership and judgment |
+| `09-dsa.md` | Chapter 9: Data structures and algorithms |
 | `10-what-id-do-differently.md` | Chapter 10: What I'd do differently |
-| `11-defending-ai-assisted-work.md` | Chapter 11: Defending AI-assisted work |
-| `12-appendix-complexity-cheat-sheet.md` | Appendix: Complexity cheat sheet |
+| `11-defending-ai-work.md` | Chapter 11: Defending AI-assisted work |
+| `12-appendix-complexity.md` | Appendix: Complexity cheat sheet |
 
-If a chapter doesn't apply to this project (e.g., Chapter 4 — AI engineering — for a project with no AI surface), still write the file but keep it short and explicit about why ("this project has no AI component; if asked, the answer to lean on is …").
+The template names the specific concepts each chapter must apply the four-part structure to (e.g., for Chapter 1 — auth middleware pattern, serverless function boundary, storage abstraction, provider switching). Read those carefully and let them drive each chapter's content.
+
+If a chapter doesn't apply to this project (e.g., Chapter 4 — AI engineering — for a project with no AI surface), still write the file but keep it short and explicit about why ("this project has no AI component; if asked, the answer to lean on is …"). Don't fabricate concepts to hit the 3-concept minimum.
 
 ## Step 7 — Generate the table of contents
 
