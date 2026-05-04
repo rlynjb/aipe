@@ -5,7 +5,7 @@ This spec turns your codebase into a book-style interview prep guide — written
 
 ## What the output looks like
 
-The output is a structured markdown document organised as chapters — like a technical book written specifically about your project. Each chapter opens with a narrative explanation, anchors it with an ASCII diagram, then works through interview questions at three levels of depth.
+The output is a directory of structured markdown files — one per chapter — like a technical book written specifically about your project. Each chapter opens with a narrative explanation, anchors it with an ASCII diagram, then works through interview questions at three levels of depth. A top-level `README.md` indexes all chapters with one-line summaries.
 
 
 ```
@@ -40,7 +40,7 @@ Each chapter contains:
 
 ## The prompt
 
-Paste your codebase spec, README, or architecture document and send this. Save the output as your prep guide and read it before the interview.
+Paste your codebase spec, README, or architecture document and send this. The agent saves the prep guide as a directory of per-chapter markdown files (see "💾 Save output" below). Read it chapter by chapter before the interview.
 
 
 ```
@@ -256,7 +256,7 @@ Constraints
 ```
 
 
-> 💾 Save output → .aipe/specs/interview/[project-name].md
+> 💾 Save output → `.aipe/specs/interview/[project-name]/` — a **directory** containing one markdown file per section: `00-preface.md`, `01-system-architecture.md`, … `12-appendix-complexity-cheat-sheet.md`, plus a `README.md` table of contents. The book-length output is too large for a single file and easier to study chapter-by-chapter.
 
 
 ## Standalone DSA prompt

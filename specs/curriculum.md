@@ -12,7 +12,7 @@ A reusable prompt spec that turns any working codebase into a structured learnin
 
 ## Prompt template
 
-Paste your codebase spec or architecture doc, then send this prompt. The output is a structured curriculum doc you can save and study from.
+Paste your codebase spec or architecture doc, then send this prompt. The output is a directory of structured curriculum markdown files (one per category, plus an ordered learning path and a `README.md` index) you can save and study from.
 
 
 ```
@@ -71,7 +71,7 @@ Constraints
 ```
 
 
-> 💾 Save output → .aipe/specs/curriculum.md
+> 💾 Save output → `.aipe/specs/curriculum/[project-name]/` — a **directory** containing per-category chapter files (`00-overview.md`, `01-agentic-ai.md`, `02-systems-thinking.md`, `03-thinking-in-code.md`, `04-ai-product-engineering.md`, `05-language-agnostic.md`), an ordered `06-curriculum-path.md`, and a `README.md` index with a flat concept map.
 
 
 ## Example concepts it extracts — buffr
@@ -94,7 +94,7 @@ Lives in the Neon DB migration plan (Phases 3–5). Write to both stores, verify
 
 > This spec is reusable across any codebase, any language, any stack. The output changes — the prompt doesn't.
 
-1. **Save as curriculum doc** — Save to .aipe/specs/curriculum.md. Update it as the codebase grows — new features surface new concepts.
+1. **Save as a curriculum directory** — Save under `.aipe/specs/curriculum/[project-name]/` (one file per category, plus the learning path and a `README.md` index). Update individual chapter files as the codebase grows — new features surface new concepts in their respective categories.
 
 2. **Study one concept at a time** — Read the explanation, find it in the code, then explain it back in your own words without looking. That's the test.
 
