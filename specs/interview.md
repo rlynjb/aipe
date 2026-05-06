@@ -44,9 +44,129 @@ Each chapter contains:
 
 ## The prompt
 
-Paste your codebase spec, README, or architecture document and send this. The agent saves the prep guide as a directory of per-chapter markdown files. Read it chapter by chapter before the interview.
+Before running, the tool checks for an existing interview guide:
 
 ```
+Check order:
+  1. .aipe/specs/interview/[project-name]/   ← directory
+  2. .aipe/specs/interview/[project-name].md ← single file (legacy)
+
+If found  → run UPDATE MODE (see below) — do not recreate
+If not found → run CREATE MODE — generate the full guide
+```
+
+Paste your codebase spec, README, or architecture document and send this. The agent either creates the prep guide fresh or updates the existing one depending on what it finds. Read it chapter by chapter before the interview.
+
+```
+─────────────────────────────────────────────────
+STEP 0 — CHECK FOR EXISTING GUIDE BEFORE ANYTHING
+─────────────────────────────────────────────────
+
+Before generating anything, check whether an interview
+prep guide already exists for this project.
+
+Check in this order:
+  1. .aipe/specs/interview/[project-name]/   ← directory
+  2. .aipe/specs/interview/[project-name].md ← single file
+
+If either exists:
+  → Do NOT regenerate the guide from scratch
+  → Run UPDATE MODE (defined below)
+  → Stop here and do not proceed to CREATE MODE
+
+If neither exists:
+  → Run CREATE MODE (the full prompt below)
+
+─────────────────────────────────────────────────
+UPDATE MODE — runs when existing guide is found
+─────────────────────────────────────────────────
+
+You are the same staff engineer. You wrote this guide.
+You are returning to it after the codebase has changed.
+Your job is not to rewrite it — your job is to make it
+accurate again without losing the depth already there.
+
+Step 1 — Read the existing guide
+Read every chapter file in the existing directory
+(or the single .md file if that's what exists).
+Build a mental model of what the guide currently says:
+which decisions it explains, which diagrams it contains,
+which tradeoffs it names, which files it references.
+
+Step 2 — Read the current context
+Read the project spec or context file provided.
+Identify what has changed since the guide was written:
+  → New files or modules added
+  → Removed or renamed files
+  → Changed data models or schema
+  → New dependencies or swapped libraries
+  → New features or removed features
+  → Changed architectural decisions
+  → New phases completed or started
+
+Step 3 — Diff the guide against the codebase
+For every chapter in the existing guide, identify:
+  → What is now outdated (references stale files,
+    describes decisions that have changed, explains
+    patterns that no longer exist)
+  → What is now missing (new concepts introduced by
+    the codebase changes that the guide doesn't cover)
+  → What is still accurate (leave these alone)
+  → What is partially accurate (update the specific
+    section, not the whole chapter)
+
+Step 4 — Output a change plan before editing
+Before modifying any file, output a structured summary:
+
+  Changes detected:
+  ─────────────────
+  Chapter 01 — System architecture
+    Outdated: [what specifically is stale and why]
+    Missing:  [what new content is needed]
+    Action:   [update section X / add concept Y / no change]
+
+  Chapter 03 — Backend and API design
+    Outdated: [...]
+    Missing:  [...]
+    Action:   [...]
+
+  [continue for every chapter]
+
+  Wait for user to confirm before proceeding with edits.
+  If user types "yes", apply all changes.
+  If user types a chapter number, update only that chapter.
+
+Step 5 — Apply changes (after confirmation)
+For every chapter marked for update:
+  → Edit only the sections identified as outdated or missing
+  → Do not rewrite accurate sections
+  → Maintain the existing voice and structure
+  → Apply the four-part Shape / Rule / Failure / Contrast
+    structure to any new concepts added
+  → Update the README.md table of contents if chapter
+    summaries have changed
+  → Append a changelog entry at the bottom of each
+    updated chapter file:
+
+    ---
+    Last updated: [date]
+    Changes: [one-line summary of what changed and why]
+
+Step 6 — Report what was changed
+After all edits are complete, output:
+
+  Update complete
+  ───────────────
+  Chapters updated: [list]
+  Chapters unchanged: [list]
+  New concepts added: [list with chapter]
+  Stale content removed: [list with chapter]
+  Files referenced that no longer exist: [list — needs manual review]
+
+─────────────────────────────────────────────────
+CREATE MODE — runs only when no existing guide found
+─────────────────────────────────────────────────
+
 You are a staff engineer with 12 years of industry
 experience. You spent the first 8 years at Google and
 Meta, working on distributed systems and developer
@@ -479,7 +599,9 @@ CONSTRAINTS
      easily
 ```
 
-> 💾 Save output → `.aipe/specs/interview/[project-name]/` — a **directory** containing one markdown file per chapter: `00-preface.md`, `01-system-architecture.md`, `02-frontend-engineering.md`, `03-backend-api.md`, `04-ai-engineering.md`, `05-data-modelling.md`, `06-reliability.md`, `07-developer-process.md`, `08-ownership-judgment.md`, `09-dsa.md`, `10-what-id-do-differently.md`, `11-defending-ai-work.md`, `12-appendix-complexity.md`, plus a `README.md` table of contents. The book-length output is too large for a single file and easier to study chapter by chapter.
+> 💾 **Create mode:** Save to `.aipe/specs/interview/[project-name]/` — one markdown file per chapter: `00-preface.md`, `01-system-architecture.md`, `02-frontend-engineering.md`, `03-backend-api.md`, `04-ai-engineering.md`, `05-data-modelling.md`, `06-reliability.md`, `07-developer-process.md`, `08-ownership-judgment.md`, `09-dsa.md`, `10-what-id-do-differently.md`, `11-defending-ai-work.md`, `12-appendix-complexity.md`, plus a `README.md` table of contents.
+>
+> 💾 **Update mode:** Edit files in place within the existing directory. Append a changelog entry to each updated file. Do not create new chapter files unless a chapter was missing entirely.
 
 ---
 
@@ -591,4 +713,6 @@ Signals that show you were just the user:
 
 4. **Learn the four-part pattern** — The most useful thing this guide teaches you is the Shape / Rule / Failure / Contrast structure. Every time you explain a concept in an interview, reach for this structure. It is the difference between an answer that sounds like description and an answer that sounds like understanding.
 
-5. **Re-run after each significant change** — The guide is only as accurate as the spec you feed it. After the Postgres migration alone, chapters 3, 5, and 6 will have different answers. Keep the prep doc current with the codebase.
+5. **Re-run after each significant change** — The guide is only as accurate as the spec you feed it. After the Postgres migration alone, chapters 3, 5, and 6 will have different answers. Re-running detects the existing guide automatically and updates only what changed — it does not start over.
+
+6. **Review the change plan before confirming** — When update mode runs, it outputs a diff of what's outdated and what's missing before touching any file. Read it. If a chapter is marked for update that shouldn't be, say so before confirming. You control what gets changed.
