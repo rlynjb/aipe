@@ -67,6 +67,7 @@ Tab completion: type `/aipe:` and tab to see all 14 spec types.
 | `/aipe:debugging` | A bug keeps coming back |
 | `/aipe:curriculum` | Turning a codebase into a learning resource |
 | `/aipe:interview` | Defending a project in an interview |
+| `/aipe:study` | Understanding a codebase as a visual reference (system design, DSA, AI engineering) |
 | `/aipe:audit` | Reviewing existing code before adding to it |
 | `/aipe:testing` | Writing or improving tests |
 | `/aipe:user-stories` | Rewriting tasks in different personas |
@@ -89,6 +90,7 @@ The templates are plain markdown in [`specs/`](specs/) — read them directly to
 | `.aipe/specs/<type-plural>/<slug>.md` | Generated specs — also typically committed |
 | `.aipe/specs/interview/<slug>/` | Interview prep guides — saved as a directory of per-chapter files (`00-preface.md`, `01-system-architecture.md`, …, `README.md`) since the output is book-length |
 | `.aipe/specs/curriculum/<slug>/` | Curriculum learning resources — saved as a directory of per-category chapter files (`00-overview.md`, `01-agentic-ai.md`, …, `06-curriculum-path.md`, `README.md`) for the same reason |
+| `.aipe/specs/study/<slug>/` | Visual study guides — 4-file directory: `00-overview.md`, `01-system-design.md`, `02-dsa.md`, `03-ai-engineering.md`. Diagrams-first, designed for skimming, no README (headers within files are the navigation) |
 | `~/.config/aipe/global/*.md` | Cross-project context — your identity, default stack, skills, conventions |
 
 Global files are optional. Project context is what makes the difference between a generic spec and one that names your real files and constraints.
