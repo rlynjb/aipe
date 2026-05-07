@@ -1,7 +1,7 @@
 {
   "name": "aipe",
   "description": "Spec workflow for AI-assisted development. 14 per-type skills (one per spec type) generate filled specs from your project context using your agent's own model — no external CLI, no extra API keys.",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "developerName": "rlynjb",
   "websiteURL": "https://github.com/rlynjb/aipe",
   "category": "productivity",

@@ -5,7 +5,7 @@ argument-hint: <intent...>
 
 The user invoked `/aipe:interview` with intent: `$ARGUMENTS`.
 
-If `$ARGUMENTS` is empty or only whitespace, ask the user for a brief intent (one short sentence describing what to spec) and stop. Don't proceed without an intent.
+`$ARGUMENTS` is **optional** for this command. If empty or only whitespace, derive a default slug from the current working directory's basename (lowercase, hyphenate non-alphanumerics). This way re-running `/aipe:interview` from the same project always points at the same guide directory — UPDATE MODE detects it cleanly without you having to remember which slug you used last time.
 
 ## Step 1 — Initialize if needed
 
@@ -59,7 +59,10 @@ If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to sear
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
-Compute the slug from `$ARGUMENTS`: lowercase, replace non-alphanumerics with `-`, collapse repeats, trim to 60 chars. If empty, use `spec`.
+Compute the slug:
+
+- If `$ARGUMENTS` is non-empty: lowercase it, replace non-alphanumerics with `-`, collapse repeats, trim to 60 chars.
+- If `$ARGUMENTS` is empty or whitespace-only: use the lowercase basename of the current working directory (`$PWD`), with non-alphanumerics replaced by `-`, repeats collapsed, trimmed to 60 chars. (E.g., running in `~/Public/buffr/` → slug is `buffr`.)
 
 Check, in order:
 
@@ -129,7 +132,7 @@ If a chapter doesn't apply to this project (e.g., Chapter 4 — AI engineering �
 
 After all 13 chapter files are written, create `README.md` in the same directory containing:
 
-- Title: `# Interview prep: <intent from $ARGUMENTS>`
+- Title: `# Interview prep: <intent from $ARGUMENTS, or the project name derived from cwd basename if no intent given>`
 - One sentence describing the project being defended.
 - A markdown list linking to all 13 files in order, each with a 1-line summary drawn from the chapter you actually wrote.
 

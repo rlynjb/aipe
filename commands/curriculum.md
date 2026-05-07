@@ -5,7 +5,7 @@ argument-hint: <intent...>
 
 The user invoked `/aipe:curriculum` with intent: `$ARGUMENTS`.
 
-If `$ARGUMENTS` is empty or only whitespace, ask the user for a brief intent (one short sentence describing what to spec) and stop. Don't proceed without an intent.
+`$ARGUMENTS` is **optional** for this command. If empty or only whitespace, derive a default slug from the current working directory's basename (lowercase, hyphenate non-alphanumerics). This way re-running `/aipe:curriculum` from the same project always points at the same curriculum directory.
 
 ## Step 1 — Initialize if needed
 
@@ -73,7 +73,10 @@ Plan to walk these in order: for each category, identify the concepts present in
 
 ## Step 5 — Determine the output directory
 
-Compute the slug from `$ARGUMENTS`: lowercase, replace non-alphanumerics with `-`, collapse repeats, trim to 60 chars. If empty, use `spec`.
+Compute the slug:
+
+- If `$ARGUMENTS` is non-empty: lowercase it, replace non-alphanumerics with `-`, collapse repeats, trim to 60 chars.
+- If `$ARGUMENTS` is empty or whitespace-only: use the lowercase basename of the current working directory (`$PWD`), with non-alphanumerics replaced by `-`, repeats collapsed, trimmed to 60 chars. (E.g., running in `~/Public/buffr/` → slug is `buffr`.)
 
 Directory: `.aipe/specs/curriculum/<slug>/`
 
@@ -117,7 +120,7 @@ After all 6 category chapters are written, create `06-curriculum-path.md` contai
 
 After the curriculum-path chapter exists, create `README.md` in the same directory containing:
 
-- Title: `# Curriculum: <intent from $ARGUMENTS>`
+- Title: `# Curriculum: <intent from $ARGUMENTS, or the project name derived from cwd basename if no intent given>`
 - One sentence describing the codebase being studied.
 - A markdown list linking to all 7 files in order, each with a 1-line summary drawn from what you actually wrote (not the template's generic descriptions).
 - A flat **concept index** at the bottom: every concept you covered, with its category, difficulty, and a link to its chapter section.
