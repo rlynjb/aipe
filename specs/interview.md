@@ -48,11 +48,13 @@ Before running, the tool checks for an existing interview guide:
 
 ```
 Check order:
-  1. .aipe/specs/interview/[project-name]/   ← directory
-  2. .aipe/specs/interview/[project-name].md ← single file (legacy)
+  1. .aipe/specs/interview/00-preface.md (or any chapter file)  ← canonical
+  2. .aipe/specs/interview/<some-slug>/                          ← legacy (v1.5–v1.6)
+  3. .aipe/specs/interview/<some-name>.md                        ← legacy (v1.1)
 
-If found  → run UPDATE MODE (see below) — do not recreate
-If not found → run CREATE MODE — generate the full guide
+If found  → run UPDATE MODE (see below) — do not recreate.
+            Legacy layouts are migrated to canonical on first update.
+If not found → run CREATE MODE — generate the full guide.
 ```
 
 Paste your codebase spec, README, or architecture document and send this. The agent either creates the prep guide fresh or updates the existing one depending on what it finds. Read it chapter by chapter before the interview.
@@ -66,10 +68,12 @@ Before generating anything, check whether an interview
 prep guide already exists for this project.
 
 Check in this order:
-  1. .aipe/specs/interview/[project-name]/   ← directory
-  2. .aipe/specs/interview/[project-name].md ← single file
+  1. .aipe/specs/interview/00-preface.md (or any other chapter file
+     directly inside .aipe/specs/interview/)               ← canonical
+  2. .aipe/specs/interview/<some-slug>/                     ← legacy v1.5–v1.6
+  3. .aipe/specs/interview/<some-name>.md                   ← legacy v1.1
 
-If either exists:
+If any exists:
   → Do NOT regenerate the guide from scratch
   → Run UPDATE MODE (defined below)
   → Stop here and do not proceed to CREATE MODE
@@ -599,7 +603,7 @@ CONSTRAINTS
      easily
 ```
 
-> 💾 **Create mode:** Save to `.aipe/specs/interview/[project-name]/` — one markdown file per chapter: `00-preface.md`, `01-system-architecture.md`, `02-frontend-engineering.md`, `03-backend-api.md`, `04-ai-engineering.md`, `05-data-modelling.md`, `06-reliability.md`, `07-developer-process.md`, `08-ownership-judgment.md`, `09-dsa.md`, `10-what-id-do-differently.md`, `11-defending-ai-work.md`, `12-appendix-complexity.md`, plus a `README.md` table of contents.
+> 💾 **Create mode:** Save to `.aipe/specs/interview/` — one markdown file per chapter, directly at this path: `00-preface.md`, `01-system-architecture.md`, `02-frontend-engineering.md`, `03-backend-api.md`, `04-ai-engineering.md`, `05-data-modelling.md`, `06-reliability.md`, `07-developer-process.md`, `08-ownership-judgment.md`, `09-dsa.md`, `10-what-id-do-differently.md`, `11-defending-ai-work.md`, `12-appendix-complexity.md`, plus a `README.md` table of contents. One interview prep guide per project; `.aipe/` is already per-project so no slug subdirectory is needed.
 >
 > 💾 **Update mode:** Edit files in place within the existing directory. Append a changelog entry to each updated file. Do not create new chapter files unless a chapter was missing entirely.
 

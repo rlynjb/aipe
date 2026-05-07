@@ -88,7 +88,7 @@ The templates are plain markdown in [`specs/`](specs/) — read them directly to
 |-------|------|
 | `.aipe/project/context.md`, `rules.md`, `stack.md` | Per-project context — committed to the repo, edited as the codebase evolves |
 | `.aipe/specs/<type-plural>/<slug>.md` | Generated specs — also typically committed |
-| `.aipe/specs/interview/<slug>/` | Interview prep guides — saved as a directory of per-chapter files (`00-preface.md`, `01-system-architecture.md`, …, `README.md`) since the output is book-length |
+| `.aipe/specs/interview/` | Interview prep guide — 13 chapter files (`00-preface.md`, `01-system-architecture.md`, …, `12-appendix-complexity.md`) plus `README.md` directly at this path. One guide per project (no slug subdirectory). |
 | `.aipe/specs/curriculum/<slug>/` | Curriculum learning resources — saved as a directory of per-category chapter files (`00-overview.md`, `01-agentic-ai.md`, …, `06-curriculum-path.md`, `README.md`) for the same reason |
 | `.aipe/specs/study/` | Visual study guide — `00-overview.md` at root + nested section directories `01-system-design/`, `02-dsa/`, `03-ai-engineering/` each with a `README.md` index plus one file per concept (e.g., `01-request-flow.md`, `02-auth-boundary.md`, …). One study guide per project. |
 | `~/.config/aipe/global/*.md` | Cross-project context — your identity, default stack, skills, conventions |

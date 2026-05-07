@@ -1,11 +1,10 @@
 ---
 description: Prepare to defend a project in an interview (auto-detects existing guide and updates only what changed)
-argument-hint: <intent...>
 ---
 
-The user invoked `/aipe:interview` with intent: `$ARGUMENTS`.
+The user invoked `/aipe:interview`.
 
-`$ARGUMENTS` is **optional** for this command. If empty or only whitespace, derive a default slug from the current working directory's basename (lowercase, hyphenate non-alphanumerics). This way re-running `/aipe:interview` from the same project always points at the same guide directory — UPDATE MODE detects it cleanly without you having to remember which slug you used last time.
+This command takes **no arguments**. There is one interview prep guide per project, saved at `.aipe/specs/interview/`. Since `.aipe/` is already per-project, no extra slug is needed. Re-running `/aipe:interview` from the same project always points at the same directory — UPDATE MODE detects it cleanly.
 
 ## Step 1 — Initialize if needed
 
@@ -32,7 +31,7 @@ If `.aipe/project/context.md` does NOT exist in the current working directory:
    - public API surface, schema fields, ...
    ```
 
-3. Print: `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:interview $ARGUMENTS.`
+3. Print: `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:interview.`
 4. **Stop. Don't proceed.** The user needs to fill in real context first.
 
 ## Step 2 — Load context
@@ -59,19 +58,16 @@ If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to sear
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
-Compute the slug:
+Check whether `.aipe/specs/interview/` already contains a prep guide. The signal is the presence of any of the 13 chapter files (`00-preface.md` through `12-appendix-complexity.md`) directly inside, OR a `README.md` at that level.
 
-- If `$ARGUMENTS` is non-empty: lowercase it, replace non-alphanumerics with `-`, collapse repeats, trim to 60 chars.
-- If `$ARGUMENTS` is empty or whitespace-only: use the lowercase basename of the current working directory (`$PWD`), with non-alphanumerics replaced by `-`, repeats collapsed, trimmed to 60 chars. (E.g., running in `~/Public/buffr/` → slug is `buffr`.)
+Also check for legacy formats from earlier versions:
 
-Check, in order:
+- `.aipe/specs/interview/<anything>/` — directory with a slug (v1.5.0–v1.6.x format)
+- `.aipe/specs/interview/<anything>.md` — single file (v1.1.0 and earlier)
 
-1. `.aipe/specs/interview/<slug>/` — directory (current format)
-2. `.aipe/specs/interview/<slug>.md` — single file (legacy format from v1.1.0 and earlier)
+**If any of those exist → go to UPDATE MODE (Step 5U onward). Do NOT regenerate from scratch.**
 
-**If either exists → go to UPDATE MODE (Step 5U onward). Do NOT regenerate from scratch.**
-
-**If neither exists → go to CREATE MODE (Step 5C onward).**
+**If none exists → go to CREATE MODE (Step 5C onward).**
 
 ---
 
@@ -83,7 +79,7 @@ Runs only when no existing guide is found.
 
 The interview spec is a book-style prep guide. Too long and too structured for one blob. Plan to generate and save it **chapter by chapter** into a directory of per-chapter markdown files.
 
-Apply the template's structure (loaded in Step 3) and the project context to the user's intent (`$ARGUMENTS`). The template defines 13 files: Preface + 11 chapters + Appendix.
+Apply the template's structure (loaded in Step 3) and the project context. The template defines 13 files: Preface + 11 chapters + Appendix.
 
 Two requirements from the template that drive every chapter:
 
@@ -100,7 +96,7 @@ Every chapter is grounded in concrete details from the project context: real fil
 
 ## Step 6C — Create the output directory
 
-Directory: `.aipe/specs/interview/<slug>/`
+Directory: `.aipe/specs/interview/`
 
 Create it. (We're guaranteed to be here only if Step 4 confirmed it didn't already exist.)
 
@@ -132,7 +128,7 @@ If a chapter doesn't apply to this project (e.g., Chapter 4 — AI engineering �
 
 After all 13 chapter files are written, create `README.md` in the same directory containing:
 
-- Title: `# Interview prep: <intent from $ARGUMENTS, or the project name derived from cwd basename if no intent given>`
+- Title: `# Interview prep: <project name derived from the cwd basename, or from .aipe/project/context.md if it names the project>`
 - One sentence describing the project being defended.
 - A markdown list linking to all 13 files in order, each with a 1-line summary drawn from the chapter you actually wrote.
 
@@ -141,7 +137,7 @@ After all 13 chapter files are written, create `README.md` in the same directory
 Print exactly:
 
 ```
-✓ Interview prep guide created at .aipe/specs/interview/<slug>/
+✓ Interview prep guide created at .aipe/specs/interview/
   13 chapters + README.md table of contents
 ```
 
@@ -157,9 +153,13 @@ Runs when Step 4 found an existing guide. Goal: make the guide accurate again wi
 
 ## Step 5U — Read the existing guide
 
-If a directory exists at `.aipe/specs/interview/<slug>/`: read every `.md` file inside it (chapters + README.md).
+The guide may be in one of three layouts. Identify which:
 
-If only a legacy single file exists at `.aipe/specs/interview/<slug>.md`: read it. Treat it as a single-file guide for diff purposes; you'll split it into per-chapter files during Step 8U if updates are confirmed.
+- **Canonical (current)**: chapter files directly in `.aipe/specs/interview/` (e.g., `00-preface.md`, `01-system-architecture.md`, ..., `12-appendix-complexity.md`, `README.md`). Read every `.md` file.
+- **Legacy slug-subdirectory (v1.5.0–v1.6.x)**: chapter files inside `.aipe/specs/interview/<some-slug>/`. Read every `.md` file inside the slug subdirectory. Note the slug name — you'll migrate to canonical layout in Step 8U.
+- **Legacy single-file (v1.1.0 and earlier)**: `.aipe/specs/interview/<some-name>.md`. Read it as one document. You'll split it into 13 chapter files in Step 8U.
+
+Build a mental model of what the guide currently says — chapters, decisions, diagrams, tradeoffs, file references — regardless of which layout you found it in.
 
 Build a mental model of what the guide currently contains: which decisions it explains, which diagrams it has, which tradeoffs it names, which files it references.
 
@@ -188,7 +188,7 @@ Look for the kinds of changes flagged in the template:
 Print a structured summary in this exact shape:
 
 ```
-Changes detected for .aipe/specs/interview/<slug>/
+Changes detected for .aipe/specs/interview/
 ─────────────────────────────────────────────────
 
 Chapter 01 — System architecture
@@ -228,7 +228,12 @@ Run only after the user replies "yes" or with a chapter number. For each chapter
   Changes: <one-line summary of what changed and why>
   ```
 
-If the existing guide was a legacy single `.aipe/specs/interview/<slug>.md` file: split it into the 13-file directory layout from CREATE MODE while applying updates, then delete the legacy single file. The split happens once on first update; future updates edit per-chapter files in place.
+**Legacy migration on first update:**
+
+- If the existing guide was in `.aipe/specs/interview/<some-slug>/`: move the chapter files (and `README.md`) up to `.aipe/specs/interview/` directly while applying updates, then `rmdir` the now-empty slug subdirectory. Future updates edit canonical layout in place.
+- If the existing guide was a single `.aipe/specs/interview/<some-name>.md`: split it into the 13 chapter files of the canonical layout while applying updates, then delete the legacy single file.
+
+After either migration, the guide is in canonical layout and subsequent UPDATE runs are simple in-place edits.
 
 Do NOT create new chapter files unless a chapter was missing entirely (e.g., the legacy single file lacked an Appendix, or the directory had no `04-ai-engineering.md` because the project didn't have AI when the guide was first written).
 
@@ -237,7 +242,7 @@ Do NOT create new chapter files unless a chapter was missing entirely (e.g., the
 Print:
 
 ```
-Update complete for .aipe/specs/interview/<slug>/
+Update complete for .aipe/specs/interview/
 ─────────────────────────────────────────────────
 Chapters updated:           <list, e.g. 03, 06>
 Chapters unchanged:         <list>
