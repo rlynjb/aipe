@@ -65,7 +65,6 @@ Tab completion: type `/aipe:` and tab to see all 14 spec types.
 | `/aipe:plan` | Multi-phase project that spans sessions |
 | `/aipe:feature` | Building something new |
 | `/aipe:debugging` | A bug keeps coming back |
-| `/aipe:curriculum` | Turning a codebase into a learning resource |
 | `/aipe:interview` | Defending a project in an interview |
 | `/aipe:study` | Understanding a codebase as a visual reference (system design, DSA, AI engineering) |
 | `/aipe:audit` | Reviewing existing code before adding to it |
@@ -89,7 +88,6 @@ The templates are plain markdown in [`specs/`](specs/) — read them directly to
 | `.aipe/project/context.md`, `rules.md`, `stack.md` | Per-project context — committed to the repo, edited as the codebase evolves |
 | `.aipe/specs/<type-plural>/<slug>.md` | Generated specs — also typically committed |
 | `.aipe/specs/interview/` | Interview prep guide — 13 chapter files (`00-preface.md`, `01-system-architecture.md`, …, `12-appendix-complexity.md`) plus `README.md` directly at this path. One guide per project (no slug subdirectory). |
-| `.aipe/specs/curriculum/<slug>/` | Curriculum learning resources — saved as a directory of per-category chapter files (`00-overview.md`, `01-agentic-ai.md`, …, `06-curriculum-path.md`, `README.md`) for the same reason |
 | `.aipe/specs/study/` | Visual study guide — `00-overview.md` at root + nested section directories `01-system-design/`, `02-dsa/`, `03-ai-engineering/` each with a `README.md` index plus one file per concept (e.g., `01-request-flow.md`, `02-auth-boundary.md`, …). One study guide per project. |
 | `~/.config/aipe/global/*.md` | Cross-project context — your identity, default stack, skills, conventions |
 
