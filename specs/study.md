@@ -25,30 +25,60 @@ This spec asks: "Do you actually understand this?"
 ## What the output looks like
 
 ```
-Study guide structure
+Study guide directory structure
 
-  ├── 00-overview.md          one-page map of the whole system
-  ├── 01-system-design.md     architecture, flows, boundaries
-  ├── 02-dsa.md               data structures and algorithms
-  │                           grounded in real app operations
-  └── 03-ai-engineering.md    LLM integration, agents, chains
+  study/[project-name]/
+  │
+  ├── 00-overview.md              one-page system map + legend
+  │
+  ├── 01-system-design/           one file per pattern found
+  │   ├── README.md               index of all patterns in this section
+  │   ├── 01-request-flow.md
+  │   ├── 02-auth-boundary.md
+  │   ├── 03-serverless-functions.md
+  │   ├── 04-storage-layer.md
+  │   ├── 05-api-design.md
+  │   └── 06-provider-abstraction.md
+  │       (+ any other patterns found in the codebase)
+  │
+  ├── 02-dsa/                     one file per operation found
+  │   ├── README.md               index + complexity cheat sheet
+  │   ├── 01-reordering.md
+  │   ├── 02-deduplication.md
+  │   ├── 03-flattening.md
+  │   ├── 04-sorting.md
+  │   └── 05-lookups.md
+  │       (+ any other operations found in the codebase)
+  │
+  └── 03-ai-engineering/          one file per pattern found
+      ├── README.md               index of all AI patterns
+      ├── 01-what-an-llm-is.md
+      ├── 02-prompt-chaining.md
+      ├── 03-context-window.md
+      ├── 04-provider-abstraction.md
+      ├── 05-agents-vs-chains.md
+      ├── 06-tool-calling.md
+      ├── 07-rag.md
+      └── 08-ai-features-in-this-app.md
+          (+ any other patterns found in the codebase)
 
-Each section contains:
-  → Visual map first         ASCII diagram before any text
-  → Skim-friendly headers    you can find anything in 10 seconds
-  → Concept cards            one concept per block, self-contained
-  → Pseudocode               shows the logic without the noise
-  → ASCII execution traces   step-by-step for every algorithm
-  → Decisions + tradeoffs    why it's this way, not another way
-  → Bullet points            for lists, comparisons, quick facts
-  → No jargon without diagrams  every term is shown, not just named
+Each file contains:
+  → Visual map          diagram before any text
+  → Quick summary       3 bullet points — what, why, tradeoff
+  → Concept block       the full explanation with diagrams,
+                        pseudocode, execution traces
+  → Elaborate block     deeper context — where this pattern
+                        comes from, what problem it was invented
+                        to solve, how it connects to adjacent
+                        concepts, what to read next
+  → See also            links to related files in this guide
 ```
 
 ---
 
 ## The prompt
 
-Paste your codebase spec, README, or architecture document and send this. The agent generates a study guide directory at `.aipe/specs/study/`.
+Paste your codebase spec, README, or architecture document and send this. The agent generates a study guide directory at `.aipe/specs/study/[project-name]/`.
 
 ```
 You are a developer educator with 10 years of experience
@@ -108,6 +138,169 @@ READING EXPERIENCE — the non-negotiables
   Don't separate "here's the concept" from "here's why
   it's done this way." The why is part of the what.
   Every non-trivial decision gets one line on the tradeoff.
+
+─────────────────────────────────────────────────
+FILE STRUCTURE — one file per pattern or operation
+─────────────────────────────────────────────────
+
+Do not write one large file per section. Write one file
+per pattern (system design), one file per operation (DSA),
+one file per AI pattern (AI engineering).
+
+Each file is named with a number prefix and the concept
+name in kebab-case:
+  01-request-flow.md
+  02-auth-boundary.md
+  03-serverless-functions.md
+
+Each section directory (01-system-design/, 02-dsa/,
+03-ai-engineering/) must have a README.md that:
+  → Lists every file in the directory with one-line description
+  → For DSA: includes the full complexity cheat sheet table
+  → For AI: includes the AI features table
+  → For system design: includes the full system map diagram
+
+Every individual concept file uses this structure exactly:
+
+  # [Concept name]
+
+  > [One sentence — what this is and why it matters in
+  > this codebase. The reader should know if they need
+  > this file from this one line alone.]
+
+  **See also:** → [related file] · → [related file]
+
+  ---
+
+  ## Quick summary
+  - **What:** [one bullet — what this pattern is]
+  - **Why here:** [one bullet — what constraint it solves]
+  - **Tradeoff:** [one bullet — what it gives up]
+
+  ---
+
+  ## [Concept name] — diagram
+
+  [Primary diagram — always first, always labelled]
+
+  ---
+
+  ## How it works
+
+  [Prose — 2–3 short paragraphs max. Direct language.
+   No jargon without a prior diagram showing it.
+   Write like explaining to a colleague who asked
+   "how does this actually work?"]
+
+  [Secondary diagrams, pseudocode, or execution traces
+   as needed to explain the mechanics]
+
+  ---
+
+  ## In this codebase
+
+  [Where exactly this pattern lives — file name, function
+   name, or line reference. Show the relevant code shape
+   in pseudocode if it clarifies the implementation.]
+
+  ---
+
+  ## Elaborate
+
+  [See elaborate block definition below]
+
+  ---
+
+  ## Tradeoffs
+
+  [Comparison table or bullet list — what this approach
+   gives, what it costs, what the alternative would be
+   and when you'd choose it instead]
+
+─────────────────────────────────────────────────
+THE ELABORATE BLOCK — required in every file
+─────────────────────────────────────────────────
+
+The elaborate block is the bridge between what this
+codebase does and why the pattern exists in the world.
+It answers the question a curious reader asks after
+understanding the immediate explanation: "where did
+this come from and what else should I know?"
+
+Every concept file ends with an elaborate block.
+Structure it as:
+
+  ## Elaborate
+
+  ### Where this pattern comes from
+  [2–3 sentences on the origin — what problem the
+   industry was trying to solve when this pattern
+   was invented or named. Not a history lesson —
+   just enough context to make the pattern feel
+   inevitable rather than arbitrary.]
+
+  ### The deeper principle
+  [The generalised insight behind this specific pattern.
+   What would you take away from this if you never used
+   this codebase again? Name the principle explicitly.
+   Show it with a diagram or comparison if it has structure.]
+
+  ### Where this breaks down
+  [When this pattern stops being the right choice.
+   Concrete conditions — "when X exceeds Y" or "when
+   Z is required". A pattern without its limits is
+   just dogma.]
+
+  ### What to explore next
+  - [Related concept] → [one line on how it connects]
+  - [Adjacent pattern] → [one line on how it connects]
+  - [More advanced version] → [one line on how it connects]
+
+Example of an elaborate block done right:
+
+  ## Elaborate
+
+  ### Where this pattern comes from
+  Serverless functions emerged from the observation that
+  most web applications spend 90% of their time doing
+  nothing — waiting for requests. Always-on servers pay
+  for that idle time. The serverless model bills only
+  for the milliseconds a function runs, which aligns
+  cost with actual usage at low scale.
+
+  ### The deeper principle
+  Stateless compute. The principle is that a function
+  should be a pure transformation: given the same input,
+  it returns the same output, regardless of what ran
+  before it. This is the same principle behind pure
+  functions in functional programming — just applied
+  to infrastructure.
+
+  ┌──────────────────────────────────────────────┐
+  │  Stateless function                          │
+  │                                              │
+  │  Request → [function] → Response            │
+  │                                              │
+  │  No memory of previous requests.            │
+  │  No shared state between invocations.       │
+  └──────────────────────────────────────────────┘
+
+  ### Where this breaks down
+  When you need low-latency on every request — cold
+  starts add 100–400ms on first invocation, which is
+  acceptable for user-triggered actions but not for
+  real-time features. When you need persistent
+  connections (WebSockets, long-running jobs). When
+  you have heavy computation that exceeds the function
+  timeout limit.
+
+  ### What to explore next
+  - Edge functions → serverless but runs closer to the
+    user, lower latency, more constraints
+  - Connection pooling → how databases handle the
+    stateless connection problem at scale
+  - Worker queues → how long-running jobs are handled
+    when serverless timeouts are a constraint
 
 ─────────────────────────────────────────────────
 DIAGRAM RULES — apply to every diagram
@@ -651,32 +844,61 @@ CONSTRAINTS
 → Diagrams must be readable without surrounding prose
 → All diagrams in fenced code blocks with box-drawing chars
 → No Mermaid, no images, no PlantUML
+→ Each section (system design, DSA, AI) saved as a subdirectory
+   of named files — one file per pattern or operation found
+→ Every file must have a README.md index in its directory
+→ Every concept file must include an Elaborate block
 ```
 
-> 💾 Save output → `.aipe/specs/study/` containing:
-> `00-overview.md`, `01-system-design.md`, `02-dsa.md`, `03-ai-engineering.md`
+> 💾 Save output → `.aipe/specs/study/[project-name]/` with this structure:
 >
-> One study guide per project. Since `.aipe/` is already per-project, no extra slug is needed to disambiguate guides.
+> ```
+> study/[project-name]/
+>   00-overview.md
+>   01-system-design/
+>     README.md                ← index of all pattern files
+>     01-[pattern-name].md
+>     02-[pattern-name].md
+>     ...
+>   02-dsa/
+>     README.md                ← index + complexity cheat sheet
+>     01-[operation-name].md
+>     02-[operation-name].md
+>     ...
+>   03-ai-engineering/
+>     README.md                ← index of all AI pattern files
+>     01-[pattern-name].md
+>     02-[pattern-name].md
+>     ...
+> ```
+>
+> Pattern and operation names come from what's actually found in the codebase — not a fixed list. Name each file after the concept it explains. Use kebab-case.
 
 ---
 
 ## Check for existing guide
 
-Before generating, check whether a study guide already exists at `.aipe/specs/study/`.
+Before generating, check whether a study guide already exists at `.aipe/specs/study/[project-name]/`.
 
 ```
 If found:
-  → Read existing guide
-  → Diff against current context
-  → Output change summary: what's outdated, what's missing
+  → Read all existing files in all subdirectories
+  → Diff each file against current context
+  → Output change summary per file:
+      01-system-design/03-serverless-functions.md
+        Outdated: references Netlify Blobs, now Neon Postgres
+        Missing:  connection pooling section
+        Action:   update "In this codebase" + add elaborate link
   → Wait for confirmation before editing
-  → Edit only changed sections — not the whole guide
+  → Edit only the specific sections identified — not whole files
+  → Add new files if new patterns are found in the codebase
+  → Update README.md indexes if files were added or removed
   → Append to each updated file:
-    ---
-    Updated: [date] — [one-line summary of what changed]
+      ---
+      Updated: [date] — [one-line summary of what changed]
 
 If not found:
-  → Generate full guide
+  → Generate full guide with subdirectory structure
 ```
 
 ---
