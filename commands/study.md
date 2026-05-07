@@ -1,11 +1,10 @@
 ---
 description: Visual study guide for system design, DSA, and AI engineering — diagrams, pseudocode, traces (auto-detects existing guide and updates only what changed)
-argument-hint: <intent...>
 ---
 
-The user invoked `/aipe:study` with intent: `$ARGUMENTS`.
+The user invoked `/aipe:study`.
 
-`$ARGUMENTS` is **optional** for this command. If empty or only whitespace, derive a default slug from the current working directory's basename (lowercase, hyphenate non-alphanumerics). This way re-running `/aipe:study` from the same project always points at the same study directory — UPDATE MODE detects it cleanly without you having to remember which slug you used last time.
+This command takes **no arguments**. There is one study guide per project, saved at `.aipe/specs/study/`. Since `.aipe/` is already per-project, no extra slug is needed to disambiguate guides. Re-running `/aipe:study` from the same project always points at the same directory — UPDATE MODE detects it cleanly.
 
 ## Step 1 — Initialize if needed
 
@@ -32,7 +31,7 @@ If `.aipe/project/context.md` does NOT exist in the current working directory:
    - public API surface, schema fields, ...
    ```
 
-3. Print: `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:study $ARGUMENTS.`
+3. Print: `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:study.`
 4. **Stop. Don't proceed.** The user needs to fill in real context first.
 
 ## Step 2 — Load context
@@ -59,16 +58,13 @@ If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to sea
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
-Compute the slug:
+Check whether `.aipe/specs/study/` already contains any of the four study chapter files (`00-overview.md`, `01-system-design.md`, `02-dsa.md`, `03-ai-engineering.md`).
 
-- If `$ARGUMENTS` is non-empty: lowercase it, replace non-alphanumerics with `-`, collapse repeats, trim to 60 chars.
-- If `$ARGUMENTS` is empty or whitespace-only: use the lowercase basename of the current working directory (`$PWD`), with non-alphanumerics replaced by `-`, repeats collapsed, trimmed to 60 chars. (E.g., running in `~/Public/buffr/` → slug is `buffr`.)
+**If any exist → go to UPDATE MODE (Step 5U onward). Do NOT regenerate from scratch.**
 
-Check whether `.aipe/specs/study/<slug>/` already exists.
+**If none exist → go to CREATE MODE (Step 5C onward).**
 
-**If it exists → go to UPDATE MODE (Step 5U onward). Do NOT regenerate from scratch.**
-
-**If it does not exist → go to CREATE MODE (Step 5C onward).**
+(The `.aipe/specs/study/` directory itself may exist as an empty placeholder created by Step 1; that's not the same as having a guide already. Check for the actual chapter files.)
 
 ---
 
@@ -80,7 +76,7 @@ Runs only when no existing study guide is found.
 
 The study spec produces a visual reference — diagrams first, prose second, designed for skimming. It is **not** an interview prep guide (that's `/aipe:interview`). The study guide explains the codebase so a reader can understand it; the interview guide prepares you to defend it under pressure.
 
-Apply the template's structure (loaded in Step 3) and the project context to the user's intent (`$ARGUMENTS`). The template defines exactly **4 files**: an overview + system design + DSA + AI engineering.
+Apply the template's structure (loaded in Step 3) and the project context. The template defines exactly **4 files**: an overview + system design + DSA + AI engineering.
 
 The non-negotiables from the template:
 
@@ -98,9 +94,9 @@ Every chapter is grounded in concrete details from the project context: real fil
 
 ## Step 6C — Create the output directory
 
-Directory: `.aipe/specs/study/<slug>/`
+Directory: `.aipe/specs/study/`
 
-Create it. (We're guaranteed to be here only if Step 4 confirmed it didn't already exist.)
+Create it (`mkdir -p` is fine; the directory may already exist as a sibling to other spec types but lacks the chapter files).
 
 ## Step 7C — Generate and save each chapter sequentially
 
@@ -122,7 +118,7 @@ If the codebase has no AI surface, still write `03-ai-engineering.md` but keep i
 Print exactly:
 
 ```
-✓ Study guide created at .aipe/specs/study/<slug>/
+✓ Study guide created at .aipe/specs/study/
   4 files: 00-overview, 01-system-design, 02-dsa, 03-ai-engineering
 ```
 
@@ -138,7 +134,7 @@ Runs when Step 4 found an existing study guide. Goal: make the guide accurate ag
 
 ## Step 5U — Read the existing guide
 
-Read every `.md` file inside `.aipe/specs/study/<slug>/` (the 4 chapter files; there's no README.md for study). Build a mental model of what the guide currently shows: which diagrams it contains, which operations it covers in DSA, which AI patterns it explains.
+Read every `.md` file inside `.aipe/specs/study/` (the 4 chapter files; there's no README.md for study). Build a mental model of what the guide currently shows: which diagrams it contains, which operations it covers in DSA, which AI patterns it explains.
 
 ## Step 6U — Diff the guide against the current codebase
 
@@ -165,7 +161,7 @@ Look for the kinds of changes the template flags:
 Print a structured summary in this exact shape:
 
 ```
-Changes detected for .aipe/specs/study/<slug>/
+Changes detected for .aipe/specs/study/
 ─────────────────────────────────────────────────
 
 00-overview.md
@@ -208,7 +204,7 @@ Run only after the user replies "yes" or with a file name. For each file approve
 Print:
 
 ```
-Update complete for .aipe/specs/study/<slug>/
+Update complete for .aipe/specs/study/
 ─────────────────────────────────────────────────
 Files updated:        <list, e.g. 02-dsa, 03-ai-engineering>
 Files unchanged:      <list>

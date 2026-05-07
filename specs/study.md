@@ -48,7 +48,7 @@ Each section contains:
 
 ## The prompt
 
-Paste your codebase spec, README, or architecture document and send this. The agent generates a study guide directory at `.aipe/specs/study/[project-name]/`.
+Paste your codebase spec, README, or architecture document and send this. The agent generates a study guide directory at `.aipe/specs/study/`.
 
 ```
 You are a developer educator with 10 years of experience
@@ -653,14 +653,16 @@ CONSTRAINTS
 → No Mermaid, no images, no PlantUML
 ```
 
-> 💾 Save output → `.aipe/specs/study/[project-name]/` containing:
+> 💾 Save output → `.aipe/specs/study/` containing:
 > `00-overview.md`, `01-system-design.md`, `02-dsa.md`, `03-ai-engineering.md`
+>
+> One study guide per project. Since `.aipe/` is already per-project, no extra slug is needed to disambiguate guides.
 
 ---
 
 ## Check for existing guide
 
-Before generating, check whether a study guide already exists at `.aipe/specs/study/[project-name]/`.
+Before generating, check whether a study guide already exists at `.aipe/specs/study/`.
 
 ```
 If found:
