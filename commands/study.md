@@ -1,10 +1,10 @@
 ---
-description: Visual study guide for system design, DSA, and AI engineering — diagrams, pseudocode, traces (auto-detects existing guide and updates only what changed)
+description: Visual study guide for system design, DSA, and AI engineering — diagrams-first, one file per concept, with section indexes (auto-detects existing guide and updates only what changed)
 ---
 
 The user invoked `/aipe:study`.
 
-This command takes **no arguments**. There is one study guide per project, saved at `.aipe/specs/study/`. Since `.aipe/` is already per-project, no extra slug is needed to disambiguate guides. Re-running `/aipe:study` from the same project always points at the same directory — UPDATE MODE detects it cleanly.
+This command takes **no arguments**. There is one study guide per project, saved at `.aipe/specs/study/`. Since `.aipe/` is already per-project, no extra slug is needed. Re-running `/aipe:study` from the same project always points at the same directory — UPDATE MODE detects it cleanly.
 
 ## Step 1 — Initialize if needed
 
@@ -58,13 +58,13 @@ If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to sea
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
-Check whether `.aipe/specs/study/` already contains any of the four study chapter files (`00-overview.md`, `01-system-design.md`, `02-dsa.md`, `03-ai-engineering.md`).
+Check whether `.aipe/specs/study/` already contains the study layout. The signal is the presence of `00-overview.md` at the root, OR any file inside `01-system-design/`, `02-dsa/`, or `03-ai-engineering/`.
 
-**If any exist → go to UPDATE MODE (Step 5U onward). Do NOT regenerate from scratch.**
+**If any of those exist → go to UPDATE MODE (Step 5U onward). Do NOT regenerate from scratch.**
 
 **If none exist → go to CREATE MODE (Step 5C onward).**
 
-(The `.aipe/specs/study/` directory itself may exist as an empty placeholder created by Step 1; that's not the same as having a guide already. Check for the actual chapter files.)
+(The `.aipe/specs/study/` directory itself may exist as a placeholder; that's not the same as having a guide already.)
 
 ---
 
@@ -76,55 +76,145 @@ Runs only when no existing study guide is found.
 
 The study spec produces a visual reference — diagrams first, prose second, designed for skimming. It is **not** an interview prep guide (that's `/aipe:interview`). The study guide explains the codebase so a reader can understand it; the interview guide prepares you to defend it under pressure.
 
-Apply the template's structure (loaded in Step 3) and the project context. The template defines exactly **4 files**: an overview + system design + DSA + AI engineering.
+Apply the template's structure (loaded in Step 3) and the project context. The output is a **nested directory of per-concept files**, not flat-per-section files.
 
 The non-negotiables from the template:
 
 1. **Visual before verbal.** Every concept opens with a diagram (ASCII box-drawing characters in fenced code blocks). If a concept can't be diagrammed, use pseudocode. If neither, a comparison table. Prose is the last resort and still comes after at least one visual.
-2. **Skim-first structure.** Every individual concept gets its own `###` header — not just major sections. A reader should be able to find any concept in under 10 seconds by scanning headers.
-3. **Self-contained blocks.** A reader who jumps to any section should not need to have read prior sections to understand what's there. Cross-references are fine; required reading order is not.
-4. **Every algorithm gets a step-by-step execution trace** — every variable at every step, not just before/after. This is the most valuable part of the DSA section.
+2. **Skim-first structure.** Every individual concept gets its own `###` header — and its own file. A reader should be able to find any concept in under 10 seconds by scanning the section's `README.md` index.
+3. **Self-contained blocks.** A reader who jumps to any file should not need to have read prior files to understand it. Cross-references via "**See also:**" links are fine; required reading order is not.
+4. **Every algorithm gets a step-by-step execution trace** — every variable at every step, not just before/after.
 5. **Decisions and tradeoffs inline.** The why is part of the what. Every non-trivial decision gets one line on the tradeoff.
+6. **Every concept file ends with an Elaborate block** — Where this pattern comes from / The deeper principle / Where this breaks down / What to explore next.
 
 Diagrams use box-drawing characters: `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ → ← ↑ ↓ ◀ ▶ ▲ ▼`. No Mermaid, no images, no PlantUML.
 
 Every term must be shown before it's used (jargon without a diagram is forbidden).
 
-Every chapter is grounded in concrete details from the project context: real file names, real operations, real data shapes. No abstract examples — use the actual data the app operates on for the DSA section.
+Every file is grounded in concrete details from the project context: real file names, real operations, real data shapes.
 
-## Step 6C — Create the output directory
+## Step 6C — Plan the file inventory
 
-Directory: `.aipe/specs/study/`
+Identify the patterns/operations to cover per section by walking the project context. Assign each a kebab-case file name with a numeric prefix (in dependency / reading order):
 
-Create it (`mkdir -p` is fine; the directory may already exist as a sibling to other spec types but lacks the chapter files).
+- **`01-system-design/`** — every significant architectural pattern in the codebase. Likely candidates: request flow, authentication boundary, serverless functions, storage layer, API design, provider abstraction. Add any others present in the codebase. Skip ones that don't apply.
+- **`02-dsa/`** — every meaningful operation in the codebase. Likely candidates: reordering, deduplication, flattening, sorting, lookups, filtering, grouping, diffing. Add any others; skip ones that don't apply.
+- **`03-ai-engineering/`** — universal AI concepts plus project-specific usage. Default set (include if AI is used at all): `01-what-an-llm-is`, `02-prompt-chaining`, `03-context-window`, `04-provider-abstraction`, `05-agents-vs-chains`, `06-tool-calling`, `07-rag`, `08-ai-features-in-this-app`. Add others if present. If the codebase has no AI surface, write only `08-ai-features-in-this-app.md` with a brief "no AI in this codebase" note and skip the rest.
 
-## Step 7C — Generate and save each chapter sequentially
+## Step 7C — Create the directory structure
 
-For each row below: compose only that chapter's content following the template's section requirements, then immediately Write it to the named file before moving on.
+Create:
 
-| File | Section | What goes in it |
-|---|---|---|
-| `00-overview.md` | System Overview | One full-system diagram with every layer and connection labelled. Bullet legend (one line per component: what it is, what it does, what it talks to). **No prose paragraphs in this file.** |
-| `01-system-design.md` | System Design | Every significant architectural pattern in this codebase. Per concept: diagram → "What it is" / "Why it's used here" / "Tradeoff" (one sentence each) → optional pseudocode and/or comparison table. Concepts: request flow, auth boundary, serverless functions, storage layer, API design, provider abstraction (if present), and any others surfaced by the project context. |
-| `02-dsa.md` | Data Structures and Algorithms | Every algorithm or data structure grounded in a real operation from THIS codebase. Per operation: real operation + file → the actual data shape → brute force pseudocode + execution trace + complexity → optimal pseudocode + execution trace + complexity → comparison table → "When brute force is fine". End with a complexity cheat sheet (every major data operation in the app, time/space, and whether it holds at 10× scale). |
-| `03-ai-engineering.md` | AI Engineering | Every AI pattern in this codebase. Concepts: what an LLM actually is (IO model, not architecture), prompt chaining (single-purpose vs multi-purpose), context window (visualised as a fixed container), provider abstraction (factory diagram), agents vs chains (linear vs loop diagrams), tool calling (mechanics, not concept), RAG (pattern diagram), and a table of how this codebase uses AI specifically. |
+```
+.aipe/specs/study/
+.aipe/specs/study/01-system-design/
+.aipe/specs/study/02-dsa/
+.aipe/specs/study/03-ai-engineering/
+```
 
-**No README.md** — the headers within each file are the navigation. The four file names ARE the table of contents.
+(Use `mkdir -p`.)
 
-If the codebase has no AI surface, still write `03-ai-engineering.md` but keep it brief and explicit ("This codebase has no LLM/agent component. If you add one, here's the patterns to reach for: …"). Don't fabricate AI usage.
+## Step 8C — Generate `00-overview.md`
 
-## Step 8C — Report + stop
+One full-system diagram + bullet legend (one line per component: what it is, what it does, what it talks to). **No prose paragraphs.** Save to `.aipe/specs/study/00-overview.md`.
+
+## Step 9C — Generate per-concept files in each section
+
+For each section (`01-system-design/`, `02-dsa/`, `03-ai-engineering/`), iterate the inventory from Step 6C. Compose ONE file per concept. Save immediately before moving to the next.
+
+Every concept file uses this exact structure:
+
+```markdown
+# [Concept name]
+
+> [One sentence — what this is and why it matters in this codebase. The reader should know if they need this file from this one line alone.]
+
+**See also:** → [related-file] · → [related-file]
+
+---
+
+## Quick summary
+- **What:** [one bullet — what this pattern is]
+- **Why here:** [one bullet — what constraint it solves]
+- **Tradeoff:** [one bullet — what it gives up]
+
+---
+
+## [Concept name] — diagram
+
+[Primary diagram — always first, always labelled, ASCII box-drawing in a fenced code block]
+
+---
+
+## How it works
+
+[Prose — 2–3 short paragraphs max. Direct language. No jargon without a prior diagram showing it.]
+
+[Secondary diagrams, pseudocode, or execution traces as needed]
+
+---
+
+## In this codebase
+
+[Where exactly this pattern lives — file name, function, line reference. Pseudocode of the relevant code shape if it clarifies.]
+
+---
+
+## Elaborate
+
+### Where this pattern comes from
+[2–3 sentences on the origin — what problem the industry was trying to solve when this pattern was invented. Just enough to make the pattern feel inevitable rather than arbitrary.]
+
+### The deeper principle
+[The generalised insight. What would you take away if you never used this codebase again? Name the principle. Show with a diagram or comparison if it has structure.]
+
+### Where this breaks down
+[Concrete conditions when this pattern stops being the right choice. "When X exceeds Y" or "when Z is required". A pattern without limits is just dogma.]
+
+### What to explore next
+- [Related concept] → [one line on how it connects]
+- [Adjacent pattern] → [one line on how it connects]
+- [More advanced version] → [one line on how it connects]
+
+---
+
+## Tradeoffs
+
+[Comparison table or bullet list — what this approach gives, what it costs, what the alternative would be and when you'd choose it instead]
+```
+
+For DSA files (in `02-dsa/`), the **How it works** section additionally must contain:
+- The actual data structure shape from this codebase
+- Brute force pseudocode + execution trace + complexity
+- Optimal pseudocode + execution trace + complexity (with the "insight" — what brute force misses)
+- Comparison table: brute force vs optimal at multiple scales
+- "When brute force is fine" — sometimes it is
+
+## Step 10C — Generate section README indexes
+
+After all per-concept files in a section are written, create that section's `README.md`:
+
+- **`01-system-design/README.md`** — index of pattern files (one-line description each), plus the full system map diagram from `00-overview.md` for quick reference.
+- **`02-dsa/README.md`** — index of operation files (one-line each), plus the full **complexity cheat sheet** table (every major data operation in the app, time/space, "holds at 10×?"). For every operation that doesn't hold at 10×: one-line fix and estimated effort.
+- **`03-ai-engineering/README.md`** — index of AI pattern files (one-line each), plus the **AI features table** (Feature → Pattern used → Why this pattern).
+
+The section READMEs are the navigation. They're the first thing a reader opens when they enter a section.
+
+## Step 11C — Report + stop
 
 Print exactly:
 
 ```
 ✓ Study guide created at .aipe/specs/study/
-  4 files: 00-overview, 01-system-design, 02-dsa, 03-ai-engineering
+  00-overview.md
+  01-system-design/  (<N> files + README.md)
+  02-dsa/            (<N> files + README.md)
+  03-ai-engineering/ (<N> files + README.md)
 ```
 
 Then a 3-sentence summary: what the codebase being studied is, which section was richest given the actual surface area, and any operations in the DSA section that are currently O(n²) where O(n) is easy (since the spec asks for these to be flagged plainly).
 
-**Stop. Wait for the user's next instruction.** They'll typically pick a section to skim, ask for a deeper trace, or ask which operation to fix first. Do NOT auto-fix or auto-revise.
+**Stop. Wait for the user's next instruction.** They'll typically pick a concept file to drill on, ask for a deeper trace, or ask which operation to fix first. Do NOT auto-fix or auto-revise.
 
 ---
 
@@ -134,18 +224,23 @@ Runs when Step 4 found an existing study guide. Goal: make the guide accurate ag
 
 ## Step 5U — Read the existing guide
 
-Read every `.md` file inside `.aipe/specs/study/` (the 4 chapter files; there's no README.md for study). Build a mental model of what the guide currently shows: which diagrams it contains, which operations it covers in DSA, which AI patterns it explains.
+Walk `.aipe/specs/study/` recursively. Read every `.md` file in:
+
+- the root (`00-overview.md`)
+- `01-system-design/` (README.md + every per-pattern file)
+- `02-dsa/` (README.md + every per-operation file)
+- `03-ai-engineering/` (README.md + every per-pattern file)
+
+Build a mental model of what the guide currently covers per file: the diagrams, the operations, the AI patterns, the tradeoffs.
 
 ## Step 6U — Diff the guide against the current codebase
 
-Re-read the project context loaded in Step 2 — that's "the codebase as of now". Compare against what each of the 4 study files says.
+Re-read the project context loaded in Step 2 — that's "the codebase as of now". For every existing concept file, identify:
 
-For every file, identify:
-
-- **Outdated** — diagrams that reference stale layers, operations that no longer exist, AI patterns the codebase no longer uses
-- **Missing** — new architecture, new operations, new AI patterns the guide doesn't yet cover
+- **Outdated** — diagrams referencing stale layers, operations that no longer exist as described, AI patterns the codebase no longer uses, file/function references that have moved
+- **Missing within an existing file** — sections of an existing concept that need new content (e.g., a tradeoff table that lacks the new alternative)
+- **New concepts not yet covered** — patterns/operations introduced by codebase changes that have no file yet
 - **Still accurate** — leave these alone
-- **Partially accurate** — update the specific concept block, not the whole file
 
 Look for the kinds of changes the template flags:
 
@@ -153,7 +248,7 @@ Look for the kinds of changes the template flags:
 - Changed data models or storage backends
 - New / swapped libraries (especially AI providers)
 - New features or removed features
-- Changed architectural decisions (e.g., serverless → server, single-provider → multi-provider)
+- Changed architectural decisions
 - New operations the DSA section should cover
 
 ## Step 7U — Output the change plan and STOP for confirmation
@@ -165,20 +260,23 @@ Changes detected for .aipe/specs/study/
 ─────────────────────────────────────────────────
 
 00-overview.md
-  Outdated: <e.g. layer X removed, but still in the system diagram>
+  Outdated: <e.g. layer X removed but still in the system diagram>
   Missing:  <e.g. new background-jobs layer not on the map>
   Action:   <update diagram + bullet legend / no change>
 
-02-dsa.md
-  Outdated: <e.g. reorder-actions complexity is now O(n) but trace shows old O(n²) version>
-  Missing:  <e.g. new diff operation in src/lib/diff/ not covered>
-  Action:   <update one concept + add new concept block>
+01-system-design/03-serverless-functions.md
+  Outdated: <e.g. references Netlify Blobs, but storage moved to Neon Postgres>
+  Missing:  <e.g. connection pooling section>
+  Action:   <update "In this codebase" + add elaborate link>
+
+02-dsa/                          (NEW FILES)
+  + 06-diff-operation.md         <new operation in src/lib/diff/ — add a file>
 
 [continue for every file that needs work; SKIP files that don't]
 
 ─────────────────────────────────────────────────
 Reply "yes" to apply all changes.
-Reply with a file name (e.g. "02-dsa") to update only that file.
+Reply with a path (e.g. "02-dsa/01-reordering" or just "02-dsa") to update only that scope.
 Reply "no" to abort.
 ```
 
@@ -186,18 +284,21 @@ Reply "no" to abort.
 
 ## Step 8U — Apply changes (after user confirms)
 
-Run only after the user replies "yes" or with a file name. For each file approved:
+Run only after the user replies "yes" or with a scoped path. For each file approved:
 
 - Edit only the sections identified as outdated or missing.
 - Do NOT rewrite accurate sections.
-- Maintain the existing voice and visual-first structure (diagram before prose, `###` per concept, self-contained blocks).
+- Maintain the existing voice and per-concept file structure (Title → blockquote summary → See also → Quick summary → diagram → How it works → In this codebase → Elaborate → Tradeoffs).
 - Apply the template's diagram + pseudocode + trace requirements to any new concepts you add.
+- If new concept files are added: also update the relevant section `README.md` index AND any cross-section "See also" links that should point at them.
 - Append a changelog entry at the bottom of each updated file:
 
   ```
   ---
   Updated: <today's ISO date, e.g. 2026-05-07> — <one-line summary of what changed and why>
   ```
+
+- For new files added: instead of a changelog entry, just include the standard concept file structure (the file is new, so no "updated" history yet).
 
 ## Step 9U — Report + stop
 
@@ -206,10 +307,11 @@ Print:
 ```
 Update complete for .aipe/specs/study/
 ─────────────────────────────────────────────────
-Files updated:        <list, e.g. 02-dsa, 03-ai-engineering>
-Files unchanged:      <list>
-New concepts added:   <list with file, e.g. "diff operation (02-dsa)">
-Stale content removed: <list with file>
+Files updated:        <list, e.g. 01-system-design/03-serverless-functions, 02-dsa/01-reordering>
+Files added:          <list, e.g. 02-dsa/06-diff-operation>
+Files unchanged:      <count or list>
+Section READMEs
+  reindexed:          <list of READMEs touched>
 File references that
   no longer exist:    <list — these need manual review>
 ```
