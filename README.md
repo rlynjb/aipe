@@ -1,6 +1,6 @@
 # aipe
 
-Spec workflow for AI-assisted development. 14 prompt templates that turn a one-line intent + your project context into a filled, structured spec your coding agent can implement from.
+Spec workflow for AI-assisted development. 13 prompt templates that turn a one-line intent + your project context into a filled, structured spec your coding agent can implement from.
 
 aipe ships as a **plugin** for both Claude Code and Codex CLI. There is no separate binary to install — the agent in your session does the work using its own model.
 
@@ -74,7 +74,6 @@ Tab completion: type `/aipe:` and tab to see all 14 spec types.
 | `/aipe:migration` | Changing a schema, dependency, or storage layer |
 | `/aipe:performance` | Diagnosing speed or bundle issues |
 | `/aipe:prompt-engineering` | Fixing AI output quality |
-| `/aipe:onboarding` | Generating context docs for a new codebase |
 | `/aipe:integration` | Connecting an external service |
 
 The templates are plain markdown in [`specs/`](specs/) — read them directly to see what each one produces.

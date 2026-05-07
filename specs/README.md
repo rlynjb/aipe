@@ -19,7 +19,6 @@ Paste directly into Claude.ai or Claude Code.
 | [migration.md](migration.md) | Changing a schema, dependency, or storage layer |
 | [performance.md](performance.md) | Diagnosing speed or bundle size issues |
 | [prompt-engineering.md](prompt-engineering.md) | Fixing AI output quality |
-| [onboarding.md](onboarding.md) | Generating context docs for a new codebase |
 | [integration.md](integration.md) | Connecting an external service |
 
 ## How to use
