@@ -67,10 +67,18 @@ Each file contains:
   → Quick summary       3 bullet points — what, why, tradeoff
   → Concept block       the full explanation with diagrams,
                         pseudocode, execution traces
+  → In this codebase   exact file path, function name,
+                        line range — always present
   → Elaborate block     deeper context — where this pattern
                         comes from, what problem it was invented
                         to solve, how it connects to adjacent
                         concepts, what to read next
+  → Tradeoffs           comparison table or bullets
+  → Interview defense   questions, model answers, one-line anchors
+  → Validate block      4 levels: reconstruct → explain →
+                        apply to scenario → defend decision.
+                        Every level references real file paths
+                        and line numbers from the codebase.
   → See also            links to related files in this guide
 ```
 
@@ -199,9 +207,24 @@ Every individual concept file uses this structure exactly:
 
   ## In this codebase
 
-  [Where exactly this pattern lives — file name, function
-   name, or line reference. Show the relevant code shape
-   in pseudocode if it clarifies the implementation.]
+  [Where exactly this pattern lives. Required for every file:]
+
+  **File:** `path/to/file.ts`
+  **Function / class:** `functionName()` or `ClassName`
+  **Line range:** L[start]–L[end] (e.g. L42–L67)
+
+  Link format for GitHub:
+  `[functionName](https://github.com/[owner]/[repo]/blob/main/path/to/file.ts#L42-L67)`
+
+  Show the relevant code in pseudocode or a trimmed
+  real snippet if it clarifies the implementation.
+  Do not paste large blocks — show the shape, not
+  the full implementation.
+
+  If multiple files are involved, list all of them:
+  **Entry point:** `netlify/functions/projects.ts` L12–L34
+  **Storage:**     `netlify/functions/lib/storage/projects.ts` L5–L28
+  **Types:**       `src/lib/types.ts` L14–L22
 
   ---
 
@@ -222,6 +245,12 @@ Every individual concept file uses this structure exactly:
   ## Interview defense
 
   [See interview defense block definition below]
+
+  ---
+
+  ## Validate your understanding
+
+  [See validate block definition below]
 
 ─────────────────────────────────────────────────
 THE ELABORATE BLOCK — required in every file
@@ -479,6 +508,212 @@ Example of an interview defense block done right:
   - "The tradeoff was infrastructure simplicity now
      for potential rearchitecture later — the plan for
      later already exists."
+
+─────────────────────────────────────────────────
+THE VALIDATE BLOCK — required in every file
+─────────────────────────────────────────────────
+
+The validate block sits at the end of every concept
+file, after the interview defense block. Its job is
+to close the gap between reading and knowing.
+
+Most study stops at reading. The validate block forces
+the reader to produce something — a drawing, an
+explanation, an answer — which is the only reliable
+test of whether understanding is real or just
+recognition. Each level builds on the last. Do not
+skip levels.
+
+Every concept file ends with a validate block.
+Structure it as:
+
+  ## Validate your understanding
+
+  ### Level 1 — Reconstruct the diagram
+  Close this file. Open a blank document or whiteboard.
+  Draw the primary diagram from memory. Label every
+  box and every arrow.
+
+  Open the file. Compare.
+
+  ✓ Pass: your diagram matches the structure and labels
+  ✗ Fail: re-read the diagram section, wait 10 minutes,
+          try again. Do not move to Level 2 until you pass.
+
+  ### Level 2 — Explain it out loud
+  Explain [concept name] to an imaginary colleague who
+  just asked "how does this work in your project?"
+  No notes. Under 90 seconds.
+
+  Checkpoints — did you:
+  - Name the specific file or function?
+    → [file reference from "In this codebase" section]
+  - Say why this approach was chosen over the alternative?
+  - Name the tradeoff in one sentence?
+
+  If you skipped any: you described it, you didn't
+  understand it. Describing is not the same thing.
+
+  ### Level 3 — Apply it to a new scenario
+  Answer this without looking at the file:
+
+  [One scenario per concept — generated from the actual
+   pattern. Not a textbook question. A situation that
+   would arise in a real project using this codebase.
+   Examples by concept type:
+
+   Serverless:     "A user reports the first request
+                    after lunch is always slower than
+                    the rest. What's happening and what
+                    are your three options?"
+
+   Reorder (DSA):  "You need to reorder 50,000 items
+                    instead of 50. Does the current
+                    implementation in [file L##–L##]
+                    hold? What breaks first?"
+
+   Prompt chain:   "The summarise chain starts returning
+                    malformed JSON intermittently. Walk
+                    through how you'd debug it using only
+                    what's in [file L##–L##]."
+
+   Provider abs:   "A new LLM provider launches with
+                    better pricing. What do you need to
+                    touch to swap it in? What do you
+                    not touch?"]
+
+  Write your answer. 3–5 sentences minimum.
+  Then open [specific file, specific lines] and check
+  whether your answer matches what the code actually does.
+
+  ### Level 4 — Defend the decision you'd change
+  Pick the biggest tradeoff from the tradeoffs section.
+  Answer in writing:
+
+  "If you were starting this project today with the
+   same constraints, would you make the same decision?
+   Why or why not? If you'd change it, what would you
+   do instead and what would that cost?"
+
+  Reference the actual code when you answer:
+  → Point to [file] to support what exists
+  → Point to what would need to change if you chose
+    the alternative
+
+  There is no right answer. The point is specificity.
+  Vague answers mean you don't know the code well enough
+  to have an opinion about it yet.
+
+  ### Quick check — code reference test
+  Without opening any files, answer:
+  - What file does this pattern live in?
+  - What is the function or class name?
+  - Approximately what line range?
+
+  Then open the file and verify.
+
+  ✓ Pass: you named the file correctly
+  ✓ Pass: you named the function or class correctly
+  ✗ Fail on lines: that's fine — line numbers change.
+                   File and function are what matter.
+
+  If you failed the file name: re-read the
+  "In this codebase" section and return to Level 1.
+
+Example of a validate block done right:
+
+  ## Validate your understanding
+
+  ### Level 1 — Reconstruct the diagram
+  Close this file. Draw the serverless function request
+  flow from memory — browser to storage and back.
+  Label what happens at each hop.
+
+  Open the file. Check:
+  ✓ Did you include the auth middleware hop?
+  ✓ Did you label the Netlify Blobs layer separately
+    from the function layer?
+  ✓ Did you show the response path, not just the request?
+
+  ### Level 2 — Explain it out loud
+  Explain serverless functions to a colleague who asked
+  "why don't we just use a regular server?" No notes.
+  Under 90 seconds.
+
+  Checkpoints:
+  - Did you mention cold starts? (the real cost)
+  - Did you mention statelessness? (the real constraint)
+  - Did you say what traffic pattern makes serverless
+    the right call vs the wrong call?
+  - Did you reference netlify/functions/ as where this
+    lives in the actual project?
+
+  ### Level 3 — Apply it to a new scenario
+  "A user reports that after they haven't used the app
+   for two hours, the first action feels slow — but
+   only the first one. Subsequent actions are fast.
+   What's happening? Look at
+   `netlify/functions/projects.ts` L1–L15.
+   Does anything in there explain it?"
+
+  Write your answer. Then open the file and verify
+  whether the cold start behaviour is visible in the
+  function initialisation code.
+
+  ### Level 4 — Defend the decision you'd change
+  "If you were starting today and expected 100 concurrent
+   users from day one, would you still use Netlify
+   Functions? What would you change in
+   `netlify/functions/lib/storage/` if you switched to
+   an always-on server with a persistent connection pool?"
+
+  ### Quick check — code reference test
+  Without opening any files:
+  - Where does the auth middleware live?
+  - What file handles project CRUD?
+  - What's the Netlify Blobs storage wrapper called?
+
+  Open and verify.
+
+─────────────────────────────────────────────────
+CODE REFERENCE RULES — apply throughout
+─────────────────────────────────────────────────
+
+Every concept file must include real file and line
+references wherever the pattern or operation lives
+in the codebase. These references serve two purposes:
+the reader can jump directly to the code, and the
+validate block can send the reader back to verify
+their answers against the real implementation.
+
+Reference format:
+  `path/to/file.ts` L[start]–L[end]
+
+GitHub link format (use when codebase is on GitHub):
+  [function name](https://github.com/[owner]/[repo]/blob/main/path/to/file.ts#L42-L67)
+
+Rules:
+  → Every "In this codebase" section must include at
+    least one file path with line range
+  → Every Level 3 scenario in the validate block must
+    reference the specific file and lines the reader
+    should check their answer against
+  → Every Level 4 question must point to the file
+    that would need to change if the alternative
+    was chosen
+  → If a pattern spans multiple files, list all of them
+    with the role each file plays
+  → Line ranges must be accurate at time of generation
+    — if lines shift during future updates, the
+    "Updated" changelog entry must note it
+
+What to reference:
+  System design patterns → the function file, the
+    storage wrapper, the middleware — each separately
+  DSA operations → the exact function that performs
+    the operation, including line range
+  AI patterns → the chain file, the provider factory,
+    the prompt file — each separately
 
 ─────────────────────────────────────────────────
 DIAGRAM RULES — apply to every diagram
@@ -1026,6 +1261,13 @@ CONSTRAINTS
    of named files — one file per pattern or operation found
 → Every file must have a README.md index in its directory
 → Every concept file must include an Elaborate block
+→ Every concept file must include an Interview defense block
+→ Every concept file must include a Validate block
+→ Every "In this codebase" section must include file path
+   and line range — no concept file without a code reference
+→ Every Level 3 validate scenario must reference the specific
+   file and lines the reader checks their answer against
+→ Every concept file must include an Interview defense block
 ```
 
 > 💾 Save output → `.aipe/specs/study/[project-name]/` with this structure:
@@ -1088,5 +1330,9 @@ If not found:
 **Diagrams before prose.** Every concept opens with a diagram. If you understand the diagram, the prose is optional. Read the prose only when the diagram raises a question.
 
 **Traces are the point.** The execution traces in the DSA section are the most valuable part of the document. Don't skip them. A trace shows you exactly what a computer does at every step — that's what most explanations skip.
+
+**Validate before moving on.** After each concept file, run through the validate block before opening the next one. Level 1 takes two minutes. Level 4 takes ten. Both are faster than re-reading a concept you only half-understood the first time.
+
+**Open the code.** Every validate scenario sends you back to a specific file and line range. Open it. Read the actual code. The study guide explains what the code does — the code is the ground truth. Seeing both together is what turns comprehension into fluency.
 
 **Come back to it.** This is a reference, not a one-time read. The complexity cheat sheet alone is worth returning to every time you add a new data operation. The AI patterns section is worth re-reading every time you add a new feature that uses the model.
