@@ -217,6 +217,12 @@ Every individual concept file uses this structure exactly:
    gives, what it costs, what the alternative would be
    and when you'd choose it instead]
 
+  ---
+
+  ## Interview defense
+
+  [See interview defense block definition below]
+
 ─────────────────────────────────────────────────
 THE ELABORATE BLOCK — required in every file
 ─────────────────────────────────────────────────
@@ -301,6 +307,178 @@ Example of an elaborate block done right:
     stateless connection problem at scale
   - Worker queues → how long-running jobs are handled
     when serverless timeouts are a constraint
+
+─────────────────────────────────────────────────
+THE INTERVIEW DEFENSE BLOCK — required in every file
+─────────────────────────────────────────────────
+
+The interview defense block sits at the end of every
+concept file after tradeoffs. Its job is direct: take
+what the reader just learned and show them exactly how
+an interviewer will probe it — and how to answer without
+freezing.
+
+This is not a repeat of the interview spec. The study
+guide explains the concept. The interview defense block
+turns that understanding into a conversation the reader
+can have under pressure. The difference between knowing
+something and being able to say it confidently is
+usually just having seen the question before.
+
+Every concept file ends with an interview defense block.
+Structure it as:
+
+  ## Interview defense
+
+  ### What an interviewer is really asking
+  [One paragraph. Behind every technical question is a
+   softer question: do you understand the tradeoffs, or
+   did you just use this because everyone else does?
+   Name what the interviewer is actually probing for.
+   This reframe makes the questions easier to answer —
+   because the reader knows what game is being played.]
+
+  ### Likely questions
+
+  [List every question an interviewer would plausibly
+   ask about this specific concept as it appears in
+   this codebase. Not generic — grounded in the actual
+   implementation. Label each question with the level
+   it tests:]
+
+    [mid]    — implementation knowledge
+    [senior] — decision-making and tradeoffs
+    [arch]   — system-level consequences and scale
+
+  For each question, provide:
+    Q: [the question, written exactly as an interviewer
+        would say it — direct, slightly uncomfortable]
+
+    A: [Model answer in first person. 3–5 sentences.
+        Must include:
+        → the decision that was made (specific, not vague)
+        → the constraint that drove it
+        → the tradeoff that was accepted
+        → what would change at scale or under different
+           constraints
+        Written at the level the question label indicates.]
+
+  ### The question candidates always dodge
+  [One question per concept that trips people up — the
+   one where candidates either get defensive, go vague,
+   or pivot to something they're more comfortable with.
+   Write the question. Then write the honest answer that
+   owns the limitation without apologising for it.
+   This answer should be longer than the others —
+   it's the one that separates candidates who
+   understand from candidates who built.]
+
+  ### One-line anchors
+  [3–5 short, memorable statements about this concept
+   that the reader can hold in their head walking into
+   the interview. Not definitions — conclusions.
+   The kind of thing you'd say to demonstrate you've
+   thought about this, not just used it.]
+
+  Example:
+  - "Serverless is cheap at low scale and forces
+     stateless design — both of which were right for
+     this stage of the project."
+  - "Cold starts are a real cost but an acceptable one
+     when the alternative is provisioning a server for
+     traffic that doesn't exist yet."
+  - "The constraint isn't the platform — it's that I
+     need to justify a server before I have the load
+     that requires one."
+
+Example of an interview defense block done right:
+
+  ## Interview defense
+
+  ### What an interviewer is really asking
+  When an interviewer asks about serverless functions,
+  they're not asking you to explain what AWS Lambda is.
+  They're asking: did you choose this deliberately, or
+  did you just use it because Netlify made it easy?
+  The answer they want to hear is a decision — what
+  you got, what you gave up, and when you'd choose
+  something different.
+
+  ### Likely questions
+
+  [mid] Q: What is a serverless function and how does
+           it differ from a traditional server?
+
+        A: A serverless function is a process that starts
+           on request and stops when it's done. There's no
+           always-on server — the platform starts the
+           process, runs the function, and tears it down.
+           The key difference is state: a traditional server
+           can hold things in memory between requests; a
+           serverless function starts fresh every time.
+           In this project, each Netlify function handles
+           one domain — auth, projects, sessions — and
+           holds no state between calls.
+
+  [senior] Q: Why did you choose Netlify Functions over
+              a dedicated Node.js server?
+
+           A: At this scale and traffic pattern, a dedicated
+              server would have been idle 95% of the time.
+              Netlify Functions gave me zero infrastructure
+              to manage and billing aligned with actual usage.
+              The tradeoff is cold starts — the first request
+              after a period of inactivity takes 100–400ms
+              longer. I accepted that because this is a
+              single-user developer tool, not a latency-
+              sensitive consumer product. If I needed
+              sub-100ms consistent response times, I'd
+              reconsider.
+
+  [arch] Q: How would this architecture change if you
+            needed to support 10,000 concurrent users?
+
+         A: Three things would break first. Cold starts
+            would become a user-facing latency problem at
+            scale — you'd need provisioned concurrency or
+            a move to always-on compute. The Netlify Blobs
+            storage layer isn't designed for concurrent
+            writes at volume — the migration to Neon
+            Postgres addresses this. And the single-user
+            JWT auth model would need to become a proper
+            multi-tenant system with per-user isolation.
+            The function logic itself is mostly fine —
+            stateless design scales horizontally without
+            changes to the function code.
+
+  ### The question candidates always dodge
+  Q: If Netlify Functions have cold starts and you can't
+     hold state, why not just use a simple Express server?
+
+  A: Honestly, for a production multi-user app with
+     consistent traffic, I would. The cold start cost is
+     real and the statelessness forces workarounds for
+     anything session-like. But I'm building a single-user
+     developer tool with sporadic usage — there's no
+     traffic to justify an always-on server, and there's
+     no team to operate one. The constraint isn't
+     technical capability; it's that I'm one person and
+     Netlify Functions let me ship a working backend in
+     an afternoon without touching infrastructure. That's
+     the right call at this scale. The migration plan to
+     Postgres exists precisely because I know which
+     constraints will change as the product grows.
+
+  ### One-line anchors
+  - "Serverless matched my traffic pattern — sporadic
+     single-user usage with no idle-time cost."
+  - "Cold starts are acceptable for a dev tool; they
+     wouldn't be for a consumer product."
+  - "Statelessness was a constraint I designed around,
+     not a limitation I ran into by accident."
+  - "The tradeoff was infrastructure simplicity now
+     for potential rearchitecture later — the plan for
+     later already exists."
 
 ─────────────────────────────────────────────────
 DIAGRAM RULES — apply to every diagram
