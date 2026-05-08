@@ -86,6 +86,7 @@ The non-negotiables from the template:
 4. **Every algorithm gets a step-by-step execution trace** — every variable at every step, not just before/after.
 5. **Decisions and tradeoffs inline.** The why is part of the what. Every non-trivial decision gets one line on the tradeoff.
 6. **Every concept file ends with an Elaborate block** — Where this pattern comes from / The deeper principle / Where this breaks down / What to explore next.
+7. **Every concept file ends with an Interview defense block** AFTER the Tradeoffs section — What an interviewer is really asking / Likely questions (each labelled `[mid]` `[senior]` `[arch]`) / The question candidates always dodge / One-line anchors. This turns the concept understanding into a conversation the reader can have under pressure.
 
 Diagrams use box-drawing characters: `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ → ← ↑ ↓ ◀ ▶ ▲ ▼`. No Mermaid, no images, no PlantUML.
 
@@ -181,6 +182,37 @@ Every concept file uses this exact structure:
 ## Tradeoffs
 
 [Comparison table or bullet list — what this approach gives, what it costs, what the alternative would be and when you'd choose it instead]
+
+---
+
+## Interview defense
+
+### What an interviewer is really asking
+[One paragraph. Behind every technical question is a softer question: do you understand the tradeoffs, or did you just use this because everyone else does? Name what the interviewer is actually probing for. This reframe makes the questions easier to answer — the reader knows what game is being played.]
+
+### Likely questions
+
+[Every question an interviewer would plausibly ask about this specific concept as it appears in this codebase. Not generic — grounded in the actual implementation. Label each:]
+
+  [mid]    — implementation knowledge
+  [senior] — decision-making and tradeoffs
+  [arch]   — system-level consequences and scale
+
+[For each question:]
+
+  Q: [the question, written as an interviewer would say it — direct, slightly uncomfortable]
+  A: [Model answer in first person. 3–5 sentences. Must include:
+      → the decision that was made (specific, not vague)
+      → the constraint that drove it
+      → the tradeoff that was accepted
+      → what would change at scale or under different constraints
+      Written at the level the question label indicates.]
+
+### The question candidates always dodge
+[One question per concept that trips people up. Write the question. Then write the honest answer that owns the limitation without apologising for it. Longer than the others — separates candidates who understand from candidates who built.]
+
+### One-line anchors
+[3–5 short, memorable statements about this concept that the reader can hold in their head walking into the interview. Not definitions — conclusions. The kind of thing you'd say to demonstrate you've thought about this, not just used it.]
 ```
 
 For DSA files (in `02-dsa/`), the **How it works** section additionally must contain:
