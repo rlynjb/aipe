@@ -87,6 +87,8 @@ The non-negotiables from the template:
 5. **Decisions and tradeoffs inline.** The why is part of the what. Every non-trivial decision gets one line on the tradeoff.
 6. **Every concept file ends with an Elaborate block** — Where this pattern comes from / The deeper principle / Where this breaks down / What to explore next.
 7. **Every concept file ends with an Interview defense block** AFTER the Tradeoffs section — What an interviewer is really asking / Likely questions (each labelled `[mid]` `[senior]` `[arch]`) / The question candidates always dodge / One-line anchors. This turns the concept understanding into a conversation the reader can have under pressure.
+8. **Every concept file ends with a Validate block** AFTER the Interview defense section — 4 levels (Reconstruct the diagram → Explain it out loud → Apply it to a new scenario → Defend the decision you'd change) plus a "Quick check — code reference test". Each level builds on the last; do not skip levels. Level 3 must reference the specific file and line range the reader checks their answer against. The validate block closes the gap between reading and knowing.
+9. **Every "In this codebase" section must include a real code reference** — `**File:**` + `**Function / class:**` + `**Line range:**` (e.g., `L42–L67`). For multi-file patterns, list every file with the role each plays. No concept file ships without a code reference; the validate block depends on it for Level 3 and Level 4 to send the reader back to specific code.
 
 Diagrams use box-drawing characters: `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ → ← ↑ ↓ ◀ ▶ ▲ ▼`. No Mermaid, no images, no PlantUML.
 
@@ -157,7 +159,19 @@ Every concept file uses this exact structure:
 
 ## In this codebase
 
-[Where exactly this pattern lives — file name, function, line reference. Pseudocode of the relevant code shape if it clarifies.]
+Required for every file:
+
+**File:** `path/to/file.ts`
+**Function / class:** `functionName()` or `ClassName`
+**Line range:** L42–L67
+
+If multiple files are involved, list all of them with the role each plays:
+
+**Entry point:** `netlify/functions/projects.ts` L12–L34
+**Storage:**     `netlify/functions/lib/storage/projects.ts` L5–L28
+**Types:**       `src/lib/types.ts` L14–L22
+
+Show the relevant code shape in pseudocode or a trimmed real snippet if it clarifies the implementation. Do not paste large blocks — show the shape, not the full implementation. If the codebase is on GitHub, prefer GitHub link format: `[functionName](https://github.com/owner/repo/blob/main/path/to/file.ts#L42-L67)`.
 
 ---
 
@@ -213,6 +227,57 @@ Every concept file uses this exact structure:
 
 ### One-line anchors
 [3–5 short, memorable statements about this concept that the reader can hold in their head walking into the interview. Not definitions — conclusions. The kind of thing you'd say to demonstrate you've thought about this, not just used it.]
+
+---
+
+## Validate your understanding
+
+### Level 1 — Reconstruct the diagram
+Close this file. Open a blank document or whiteboard. Draw the primary diagram from memory. Label every box and every arrow.
+
+Open the file. Compare.
+
+✓ Pass: your diagram matches the structure and labels
+✗ Fail: re-read the diagram section, wait 10 minutes, try again. Do not move to Level 2 until you pass.
+
+### Level 2 — Explain it out loud
+Explain [concept name] to an imaginary colleague who just asked "how does this work in your project?" No notes. Under 90 seconds.
+
+Checkpoints — did you:
+- Name the specific file or function?  → [file reference from "In this codebase" section]
+- Say why this approach was chosen over the alternative?
+- Name the tradeoff in one sentence?
+
+If you skipped any: you described it, you didn't understand it.
+
+### Level 3 — Apply it to a new scenario
+Answer this without looking at the file:
+
+[One project-specific scenario — generated from the actual pattern, grounded in the project context. Not a textbook question. A situation that would arise in a real project using this codebase.]
+
+Write your answer. 3–5 sentences minimum. Then open `[file at line range]` and check whether your answer matches what the code actually does.
+
+### Level 4 — Defend the decision you'd change
+Pick the biggest tradeoff from the Tradeoffs section. Answer in writing:
+
+"If you were starting this project today with the same constraints, would you make the same decision? Why or why not? If you'd change it, what would you do instead and what would that cost?"
+
+Reference the actual code:
+→ Point to `[file]` to support what exists
+→ Point to what would need to change if you chose the alternative
+
+There is no right answer. The point is specificity. Vague answers mean you don't know the code well enough to have an opinion about it yet.
+
+### Quick check — code reference test
+Without opening any files, answer:
+- What file does this pattern live in?
+- What is the function or class name?
+- Approximately what line range?
+
+Then open the file and verify.
+
+✓ Pass: you named the file and function correctly
+✗ Fail on lines: that's fine — line numbers change. File and function are what matter.
 ```
 
 For DSA files (in `02-dsa/`), the **How it works** section additionally must contain:
@@ -284,12 +349,13 @@ For every existing concept file, run TWO diffs:
   4. `## Quick summary` (3 bullets: What / Why here / Tradeoff)
   5. `## [Concept] — diagram` (primary diagram)
   6. `## How it works`
-  7. `## In this codebase`
+  7. `## In this codebase` (must contain `**File:**`, `**Function / class:**`, `**Line range:**` — code reference is mandatory)
   8. `## Elaborate` (with subsections: Where this pattern comes from / The deeper principle / Where this breaks down / What to explore next)
   9. `## Tradeoffs`
   10. `## Interview defense` (with subsections: What an interviewer is really asking / Likely questions / The question candidates always dodge / One-line anchors)
+  11. `## Validate your understanding` (with subsections: Level 1 — Reconstruct the diagram / Level 2 — Explain it out loud / Level 3 — Apply it to a new scenario / Level 4 — Defend the decision you'd change / Quick check — code reference test)
 
-  If any of those is missing, flag it as "Missing section: `<section name>`" — not as a content-update issue.
+  If any of those is missing, flag it as "Missing section: `<section name>`" — not as a content-update issue. Also flag an "In this codebase" section that exists but lacks the structured code reference (no `**File:**` / `**Function / class:**` / `**Line range:**` lines) as "Missing code reference in: `## In this codebase`" — same fix path: append the structured fields with values drawn from the project context.
 
 For each file, sum the findings from both diffs. Files that are clean on both diffs are **still accurate** — leave them alone.
 
@@ -339,7 +405,8 @@ Reply "no" to abort.
 Run only after the user replies "yes" or with a scoped path. For each file approved:
 
 - Edit only the sections identified as outdated, content-missing, or structurally absent.
-- For **structurally absent sections** (e.g., `## Interview defense` not present at all), append the section in the correct order — it must follow the canonical sequence: Title → blockquote → See also → Quick summary → diagram → How it works → In this codebase → Elaborate → Tradeoffs → Interview defense.
+- For **structurally absent sections** (e.g., `## Validate your understanding` not present at all), append the section in the correct order — the canonical sequence is: Title → blockquote → See also → Quick summary → diagram → How it works → In this codebase → Elaborate → Tradeoffs → Interview defense → Validate your understanding.
+- For an **"In this codebase" section missing the structured code reference**, append `**File:**` / `**Function / class:**` / `**Line range:**` lines using values drawn from the project context. The Validate block's Level 3 and Level 4 reference back into this section, so a missing code reference cascades into validate-block-incompleteness.
 - Do NOT rewrite accurate sections.
 - Maintain the existing voice and per-concept file structure.
 - Apply the template's diagram + pseudocode + trace requirements to any new concepts you add.

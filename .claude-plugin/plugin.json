@@ -1,7 +1,7 @@
 {
   "name": "aipe",
   "description": "Spec workflow for AI-assisted development. 13 per-type slash commands (one per spec type) generate filled specs from your project context using your agent's own model — no external CLI, no extra API keys.",
-  "version": "1.11.1",
+  "version": "1.12.0",
   "author": { "name": "rlynjb" },
   "homepage": "https://github.com/rlynjb/aipe",
   "repository": "https://github.com/rlynjb/aipe",
