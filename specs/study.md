@@ -219,9 +219,58 @@ Every individual concept file uses this structure exactly:
   ---
 
   ## Quick summary
-  - **What:** [one bullet — what this pattern is]
-  - **Why here:** [one bullet — what constraint it solves]
-  - **Tradeoff:** [one bullet — what it gives up]
+
+  This section is the TL;DR for skim-readers. A reader who
+  opens this file, glances at the diagram, and reads only
+  Quick summary should walk away with three concrete things:
+  the pattern named with its shape in this codebase, the
+  specific project constraint it solves, and the cost being
+  paid for that solution. Generic answers ("for flexibility",
+  "for performance", "for scalability") are banned — every
+  bullet must reference a real project constraint, file, or
+  decision.
+
+  Each bullet is two sentences. The first names the thing,
+  the second grounds it in this codebase or this constraint.
+  Concrete nouns over abstract ones; specific over generic;
+  declarative over hedging.
+
+  - **What:** Two sentences.
+    Sentence 1: the pattern named.
+    Sentence 2: its shape in this codebase — what the parts
+    are and how they connect. Avoid pure definitions like
+    "the Strategy pattern is..."; describe the shape
+    concretely as it appears here. Example: "A factory
+    function returns one of three concrete LLM clients
+    behind a shared interface, so call sites never depend
+    on which provider runs."
+
+  - **Why here:** Two sentences.
+    Sentence 1: the specific project constraint that drove
+    this choice. Not "for flexibility" — name what would
+    have broken otherwise. Examples: "the team has no SRE",
+    "user data must survive a device wipe", "model pricing
+    changes monthly", "this runs on a phone, not a server".
+    Sentence 2: what would have broken if the obvious
+    alternative had been chosen instead.
+
+  - **Checklist step:** [System-design files only — see
+    SECTION 01's mental checklist. Tag with one or more
+    of the 6 steps: `2 (Request flow) + 4 (State ownership)`.
+    Omit this bullet entirely for `02-dsa/` and
+    `03-ai-engineering/` files.]
+
+  - **Tradeoff:** Two sentences.
+    Sentence 1: the specific cost this approach pays — a
+    measurable thing, not a vague one. "Two layers of
+    indirection on every chain call" beats "added
+    complexity".
+    Sentence 2: the condition under which that cost stops
+    being acceptable. Examples: "fine until traffic
+    exceeds 1M calls/day", "fine until the team grows past
+    six engineers", "fine until offline support becomes
+    a requirement". A tradeoff without its breakpoint is
+    just a complaint.
 
   ---
 

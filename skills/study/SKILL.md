@@ -145,10 +145,13 @@ Every concept file uses this exact structure:
 ---
 
 ## Quick summary
-- **What:** [one bullet — what this pattern is]
-- **Why here:** [one bullet — what constraint it solves]
-- **Checklist step:** [system-design files only — `N (step name)` from the 6-step mental checklist; one or more steps separated by `+`. Omit this bullet entirely for `02-dsa/` and `03-ai-engineering/` files.]
-- **Tradeoff:** [one bullet — what it gives up]
+
+This section is the TL;DR for skim-readers. A reader who reads only Quick summary should walk away with three concrete things: the pattern named with its shape in this codebase, the specific project constraint it solves, and the cost being paid for that solution. Generic answers (`for flexibility`, `for performance`, `for scalability`) are banned — every bullet must reference a real project constraint, file, or decision. Each bullet is two sentences: the first names the thing, the second grounds it in this codebase or this constraint.
+
+- **What:** Two sentences. First: the pattern named. Second: its shape in this codebase — what the parts are and how they connect. Avoid pure definitions; describe the shape concretely as it appears here.
+- **Why here:** Two sentences. First: the specific project constraint that drove this choice (not "for flexibility" — name what would have broken otherwise). Second: what the obvious alternative would have broken instead.
+- **Checklist step:** [system-design files only — `N (step name)` from the 6-step mental checklist; one or more steps separated by `+` (e.g., `2 (Request flow) + 4 (State ownership)`). Omit this bullet entirely for `02-dsa/` and `03-ai-engineering/` files.]
+- **Tradeoff:** Two sentences. First: the specific cost this approach pays — a measurable thing, not a vague one. Second: the condition under which that cost stops being acceptable (e.g., "fine until traffic exceeds 1M calls/day", "fine until offline support becomes a requirement"). A tradeoff without its breakpoint is just a complaint.
 
 ---
 
