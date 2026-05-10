@@ -10,7 +10,6 @@ Paste directly into Claude.ai or Claude Code.
 | [plan.md](plan.md) | Starting a multi-phase project with Claude Code |
 | [feature.md](feature.md) | Building something new |
 | [debugging.md](debugging.md) | A bug keeps coming back |
-| [interview.md](interview.md) | Preparing to defend a project in an interview |
 | [study.md](study.md) | Understanding a codebase as a visual study guide |
 | [audit.md](audit.md) | Reviewing existing code before adding features |
 | [testing.md](testing.md) | Writing or improving tests |
