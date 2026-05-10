@@ -70,9 +70,14 @@ Each file contains:
   → Why care            hook + zoom-out — grabs attention,
                         then names the pattern in general
                         terms outside this codebase
-  → Visual map          diagram before any deeper text
-  → Concept block       the full explanation with diagrams,
-                        pseudocode, execution traces
+  → How it works        prose walkthrough of the mechanics,
+                        2–3 short paragraphs with inline
+                        secondary diagrams, pseudocode, or
+                        execution traces where needed
+  → Primary diagram     recap visual after the mechanics —
+                        labels every box, every arrow, and
+                        every architectural layer (UI, Service,
+                        Storage, etc.) the system has
   → In this codebase   exact file path, function name,
                         line range — always present
   → Elaborate block     deeper context — where this pattern
@@ -92,7 +97,7 @@ Each file contains:
   → See also            links to related files in this guide
 
 Reading flow per file:
-  hook → zoom out → details → tradeoffs → recap → check
+  hook → zoom out → mechanics → diagram → tradeoffs → recap → check
 ```
 
 ---
@@ -161,11 +166,14 @@ READING EXPERIENCE — the non-negotiables
   header, it's buried.
 
 → Visual before verbal
-  Every concept gets a diagram before prose.
-  If you can't diagram it, pseudocode it.
-  If you can't pseudocode it, use a comparison table.
-  Prose alone is the last resort — and still comes
-  after at least one visual.
+  Every concept has a primary diagram. It sits after
+  How it works as the recap visual — a reader who
+  only looks at it should grasp the structure.
+  Inside How it works, never let jargon land in a
+  paragraph without a secondary visual (small diagram,
+  pseudocode block, comparison table, or execution
+  trace) anchoring it in the same paragraph. Prose
+  alone is the last resort.
 
 → Self-contained concept blocks
   Each concept block must stand alone. A reader who
@@ -235,13 +243,14 @@ Every individual concept file uses this structure exactly:
 
   The file flow is intentional. Why care zooms out — the
   concept in general, independent of this codebase.
-  Diagram and How it works fill in the mechanics.
+  How it works walks the mechanics in prose; the diagram
+  follows as the recap visual for what was just described.
   In this codebase points at the lines. Tradeoffs name
   what was given up. Quick summary recaps everything in
   one block — the concept plus the key points worth
   carrying away. Validate proves the reader actually
-  got it. Hook → zoom out → details → tradeoffs →
-  recap → check.
+  got it. Hook → zoom out → mechanics → diagram →
+  tradeoffs → recap → check.
 
   Structure: two short paragraphs. No file paths. No
   project nouns. A reader who has never seen this
@@ -290,11 +299,11 @@ Every individual concept file uses this structure exactly:
     keep-alive, thread pools. The recognition hook: "oh,
     that's the same thing as X."
 
-  End on a sentence that hands off to the diagram and
-  How it works: "Here's how that actually works in this
-  codebase." Or: "The diagram below shows the shape it
-  takes here." Or similar — explicit handoff, so the
-  reader knows the zoom-in is coming.
+  End on a sentence that hands off to How it works:
+  "Here's how that actually works in this codebase."
+  Or: "How it shows up here is in the next block."
+  Or similar — explicit handoff, so the reader knows
+  the mechanics are coming.
 
   ### What this block is not
 
@@ -326,26 +335,38 @@ Every individual concept file uses this structure exactly:
   > abstraction (DOM, native, server — same component
   > tree), in database drivers (Postgres, MySQL, SQLite
   > behind the same query API), and in storage SDKs (S3,
-  > GCS, R2 behind the same upload call). The diagram
-  > below shows the shape it takes in this codebase.
-
-  ---
-
-  ## [Concept name] — diagram
-
-  [Primary diagram — always first, always labelled]
+  > GCS, R2 behind the same upload call). How it works
+  > in this codebase is in the next block.
 
   ---
 
   ## How it works
 
   [Prose — 2–3 short paragraphs max. Direct language.
-   No jargon without a prior diagram showing it.
    Write like explaining to a colleague who asked
    "how does this actually work?"]
 
   [Secondary diagrams, pseudocode, or execution traces
-   as needed to explain the mechanics]
+   inline where they earn their place. The reader should
+   never encounter a piece of jargon without a visual
+   anchoring it within the same paragraph.]
+
+  End with a sentence that hands off to the primary
+  diagram: "The full picture is below." Or: "Here's
+  the diagram of the whole flow." The diagram that
+  follows is the recap visual — it shows everything
+  the prose just walked through, in one frame.
+
+  ---
+
+  ## [Concept name] — diagram
+
+  [Primary diagram — comes after How it works as the
+   recap visual. Labels every box, every arrow, and
+   every architectural layer (UI, Service, Storage, etc.)
+   where the system has them. Stands alone — a reader
+   who only looks at this diagram should grasp the
+   structure without reading the prose above.]
 
   ---
 
@@ -1045,9 +1066,41 @@ Every diagram must:
   → Have a title line above it
   → Be inside a fenced code block
   → Label every box and every arrow
+  → Label every architectural layer it spans —
+     UI layer, Service layer, Storage layer, Network
+     boundary, Provider layer, etc. A diagram that
+     crosses a boundary without naming the boundary
+     hides the most important thing it could show.
+     Use a left-margin label, a horizontal divider with
+     the layer name, or grouped boxes inside a labelled
+     band — whichever fits the diagram's shape.
   → Show direction of data flow explicitly
   → Be readable without the surrounding prose
     (the diagram is the explanation, not an illustration)
+
+Layer labeling — worked example:
+
+  Request flow with layers
+
+  ┌─ UI layer ──────────────────────────────────┐
+  │  Browser   →   React component              │
+  └─────────────────────────────────────────────┘
+              │
+              ▼  HTTP POST /api/sessions
+  ┌─ Service layer ─────────────────────────────┐
+  │  Netlify function   →   Auth middleware     │
+  │                     →   Handler             │
+  └─────────────────────────────────────────────┘
+              │
+              ▼  storage.set(key, value)
+  ┌─ Storage layer ─────────────────────────────┐
+  │  Netlify Blobs                              │
+  └─────────────────────────────────────────────┘
+
+  The bands make the boundaries reviewable. Without
+  them, the reader sees boxes and arrows; with them,
+  they see where the network sits, where auth sits,
+  where the data finally lands.
 
 Types of diagrams to use per situation:
 
@@ -1188,13 +1241,15 @@ codebase. For each concept, use this block structure:
 
   ### [Concept name]
 
-  [Diagram — always first]
-
   What it is: one sentence.
   Why it's used here: one sentence naming the constraint
                       it solves.
   Checklist step: which of the six steps this lives in.
   Tradeoff: one sentence — what this gives up.
+
+  [Diagram — comes after the four lines above, as the
+   recap visual. Labels every layer the system has
+   (UI, Service, Storage, etc.).]
 
   [Optional pseudocode if the concept has a sequence]
 
@@ -1630,7 +1685,12 @@ FORMATTING RULES — apply throughout
 CONSTRAINTS
 ─────────────────────────────────────────────────
 
-→ Every concept must have a diagram or pseudocode before prose
+→ Every concept has a primary diagram that follows
+   How it works as the recap visual
+→ Every paragraph inside How it works that introduces
+   jargon must anchor it with a secondary visual in the
+   same paragraph (small diagram, pseudocode, comparison
+   table, or execution trace)
 → Every algorithm must have a step-by-step execution trace
    showing every variable at every step — not just before/after
 → Every tradeoff must be named in one sentence

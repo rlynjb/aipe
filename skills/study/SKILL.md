@@ -80,7 +80,7 @@ Apply the template's structure (loaded in Step 3) and the project context. The o
 
 The non-negotiables from the template:
 
-1. **Visual before verbal.** Every concept opens with a diagram (ASCII box-drawing characters in fenced code blocks). If a concept can't be diagrammed, use pseudocode. If neither, a comparison table. Prose is the last resort and still comes after at least one visual.
+1. **Visual before verbal — but the primary diagram is the recap.** Every concept has ONE primary diagram (ASCII box-drawing in a fenced code block) that sits AFTER `## How it works` as the recap visual — a reader who only looks at it should grasp the structure. Inside `## How it works`, every paragraph that introduces jargon must anchor it with a secondary visual in the same paragraph: a small diagram, a pseudocode block, a comparison table, or an execution trace. Prose alone is the last resort. The primary diagram must label every architectural layer it spans — UI layer, Service layer, Storage layer, Network boundary, Provider layer — using a left-margin label, a horizontal divider with the layer name, or grouped boxes inside a labelled band.
 2. **Skim-first structure.** Every individual concept gets its own `###` header — and its own file. A reader should be able to find any concept in under 10 seconds by scanning the section's `README.md` index.
 3. **Self-contained blocks.** A reader who jumps to any file should not need to have read prior files to understand it. Cross-references via "**See also:**" links are fine; required reading order is not.
 4. **Every algorithm gets a step-by-step execution trace** — every variable at every step, not just before/after.
@@ -95,13 +95,13 @@ The non-negotiables from the template:
 
 12. **Voice: state decisions, not hopes.** Hedging language (`this might`, `could potentially`, `tends to`) is banned. If something is a tradeoff, name it. If something is suboptimal, say so plainly — then explain why it was still the right call at the time. The reader should feel a senior colleague is explaining over coffee, not a textbook.
 
-13. **Every concept file includes a "Why care" block** immediately after `**See also:**` and BEFORE the diagram. Two short paragraphs. No file paths, no project nouns — that's the test of a real zoom-out.
+13. **Every concept file includes a "Why care" block** immediately after `**See also:**` and BEFORE `## How it works`. Two short paragraphs. No file paths, no project nouns — that's the test of a real zoom-out.
     - **Paragraph 1 — the hook.** One opening sentence that grabs attention. Pick whichever of these three angles fits best:
       - **The everyday problem they've already hit** ("You've copied a file in your terminal and watched the second one start before the first one finished — that's the same problem this pattern solves at scale.")
       - **The surprising claim** ("Most of the speed in a modern web app comes from not doing work, not from doing it faster.")
       - **The scenario that ends in a question** ("Two users open the same document, both edit the title, both hit save within a second of each other. What does the server show next? That's the question this pattern answers.")
       Then 1–2 sentences naming the underlying problem in plain English.
-    - **Paragraph 2 — the zoom out.** 3–5 sentences. Name the pattern, state what it does in general terms, place it in the family of problems it belongs to, and name 1–2 other places the same pattern shows up (React's renderer abstraction, Postgres drivers, HTTP keep-alive, thread pools). End with an explicit handoff to the diagram and How it works ("Here's how that actually works in this codebase." / "The diagram below shows the shape it takes here.").
+    - **Paragraph 2 — the zoom out.** 3–5 sentences. Name the pattern, state what it does in general terms, place it in the family of problems it belongs to, and name 1–2 other places the same pattern shows up (React's renderer abstraction, Postgres drivers, HTTP keep-alive, thread pools). End with an explicit handoff to How it works ("Here's how that actually works in this codebase." / "How it shows up here is in the next block.").
     What Why care is NOT: not a definition dump (definitions belong in How it works); not a tradeoff discussion (Tradeoffs has its own block); not codebase-specific (file paths and project nouns are banned here); not long (past two short paragraphs and it competes with How it works).
 
 14. **Quick summary is the RECAP block, positioned after Tradeoffs and before Interview defense.** Not the zoom-in. By the time the reader gets here, they've seen the hook, the diagram, the mechanics, the codebase references, and the tradeoffs. Quick summary collapses all of that into a one-paragraph recap plus a bulleted key-point list. It's the block the reader returns to in three weeks to remember what this file was about. **No new information** — everything in Quick summary must already appear earlier in the file.
@@ -159,7 +159,7 @@ Every concept file uses this exact structure:
 
 ## Why care
 
-The hook. Make the reader want to read the next thing. The file flow is hook → zoom out → details → tradeoffs → recap → check, and this block opens it. Two short paragraphs. **No file paths. No project nouns.** A reader who has never seen this codebase should understand this block fully.
+The hook. Make the reader want to read the next thing. The file flow is hook → zoom out → mechanics → diagram → tradeoffs → recap → check, and this block opens it. Two short paragraphs. **No file paths. No project nouns.** A reader who has never seen this codebase should understand this block fully.
 
 ### Paragraph 1 — the hook
 
@@ -175,7 +175,7 @@ Then 1–2 sentences naming the underlying problem in plain English. Concrete no
 
 3–5 sentences. Name the pattern, state what it does in general terms, place it in the family of problems it belongs to, and name 1–2 other places the same pattern shows up — React's renderer abstraction, Postgres drivers, HTTP keep-alive, thread pools. That's the recognition hook: *"oh, that's the same thing as X."*
 
-End on a sentence that hands off to the diagram and How it works: "Here's how that actually works in this codebase." / "The diagram below shows the shape it takes here." Or similar — explicit handoff, so the reader knows the zoom-in is coming.
+End on a sentence that hands off to How it works: "Here's how that actually works in this codebase." / "How it shows up here is in the next block." Or similar — explicit handoff, so the reader knows the mechanics are coming.
 
 **What Why care is NOT:**
 - Not a definition dump (definitions belong in How it works).
@@ -185,17 +185,40 @@ End on a sentence that hands off to the diagram and How it works: "Here's how th
 
 ---
 
-## [Concept name] — diagram
+## How it works
 
-[Primary diagram — always first, always labelled, ASCII box-drawing in a fenced code block]
+[Prose — 2–3 short paragraphs max. Direct language. Write like explaining to a colleague who asked "how does this actually work?"]
+
+[Secondary diagrams, pseudocode, or execution traces **inline** where they earn their place. The reader should never encounter a piece of jargon without a visual anchoring it within the same paragraph — a small diagram, a pseudocode block, a comparison table, or an execution trace.]
+
+End with a sentence that hands off to the primary diagram: "The full picture is below." / "Here's the diagram of the whole flow." The diagram that follows is the recap visual — it shows everything the prose just walked through, in one frame.
 
 ---
 
-## How it works
+## [Concept name] — diagram
 
-[Prose — 2–3 short paragraphs max. Direct language. No jargon without a prior diagram showing it.]
+[Primary diagram — comes AFTER How it works as the recap visual. ASCII box-drawing in a fenced code block. Labels every box, every arrow, and **every architectural layer** the system spans (UI layer, Service layer, Storage layer, Network boundary, Provider layer — whichever apply). Use a left-margin label, a horizontal divider with the layer name, or grouped boxes inside a labelled band. Stands alone — a reader who only looks at this diagram should grasp the structure without reading the prose above. Example shape:]
 
-[Secondary diagrams, pseudocode, or execution traces as needed]
+```
+Request flow with layers
+
+┌─ UI layer ──────────────────────────────────┐
+│  Browser   →   React component              │
+└─────────────────────────────────────────────┘
+            │
+            ▼  HTTP POST /api/sessions
+┌─ Service layer ─────────────────────────────┐
+│  Netlify function   →   Auth middleware     │
+│                     →   Handler             │
+└─────────────────────────────────────────────┘
+            │
+            ▼  storage.set(key, value)
+┌─ Storage layer ─────────────────────────────┐
+│  Netlify Blobs                              │
+└─────────────────────────────────────────────┘
+```
+
+The labelled bands make the boundaries reviewable. Without them the reader sees boxes and arrows; with them they see where the network sits, where auth sits, where the data finally lands.
 
 ---
 
@@ -418,13 +441,13 @@ For every existing concept file, run TWO diffs:
   2. **Subtitle block** — `**Industry name(s):**` line + `**Type:**` line (added v1.13.0)
   3. `> One-sentence blockquote summary`
   4. `**See also:**` line
-  5. `## Why care` (added v1.18.0, replaces v1.17.0's `## In plain English`; two short paragraphs — Paragraph 1 the hook, Paragraph 2 the zoom-out + recognition hook + explicit handoff to the diagram and How it works; no file paths or project nouns)
-  6. `## [Concept] — diagram` (primary diagram)
-  7. `## How it works`
+  5. `## Why care` (added v1.18.0, replaces v1.17.0's `## In plain English`; two short paragraphs — Paragraph 1 the hook, Paragraph 2 the zoom-out + recognition hook + explicit handoff to How it works; no file paths or project nouns; the handoff target changed in v1.20.0 — was "diagram and How it works" in v1.19.0, now just "How it works")
+  6. `## How it works` (moved BEFORE the primary diagram in v1.20.0; 2–3 short paragraphs; every paragraph that introduces jargon must anchor it with a secondary visual in the same paragraph — small diagram, pseudocode, comparison table, or execution trace; ends with an explicit handoff sentence to the primary diagram, e.g. "The full picture is below.")
+  7. `## [Concept] — diagram` (moved AFTER How it works in v1.20.0 as the recap visual; must label every architectural layer it spans — UI / Service / Storage / Network boundary / Provider — using left-margin labels, horizontal dividers with layer names, or grouped boxes inside labelled bands)
   8. `## In this codebase` (must contain `**File:**`, `**Function / class:**`, `**Line range:**` — code reference is mandatory)
   9. `## Elaborate` (with subsections: Where this pattern comes from / The deeper principle / Where this breaks down / What to explore next)
   10. `## Tradeoffs`
-  11. `## Quick summary` (moved to RECAP position in v1.19.0 — was after Why care in v1.18.0; now after Tradeoffs, before Interview defense). Two parts: Part 1 is a one-paragraph concept recap (3–5 sentences covering what the pattern is, how it shows up in this codebase, the constraint that forced it, the cost paid). Part 2 is 3–6 short declarative key-point bullets mixing shape / rule / tradeoff (system-design files include one bullet naming the checklist step(s) the pattern lives in). No new information — everything must already appear earlier in the file.
+  11. `## Quick summary` (RECAP position since v1.19.0 — after Tradeoffs, before Interview defense). Two parts: Part 1 is a one-paragraph concept recap (3–5 sentences covering what the pattern is, how it shows up in this codebase, the constraint that forced it, the cost paid). Part 2 is 3–6 short declarative key-point bullets mixing shape / rule / tradeoff (system-design files include one bullet naming the checklist step(s) the pattern lives in). No new information — everything must already appear earlier in the file.
   12. `## Interview defense` (with subsections: What an interviewer is really asking / Likely questions / The question candidates always dodge / One-line anchors)
   13. `## Validate your understanding` (with subsections: Level 1 / Level 2 / Level 3 / Level 4 / Quick check)
 
@@ -433,15 +456,20 @@ For every existing concept file, run TWO diffs:
   Also flag these specific structural-gap variants:
   - "Missing subtitle block (Industry name(s) + Type)" — when the file has the H1 and blockquote but no `**Industry name(s):**` / `**Type:**` lines between them.
   - "Missing code reference in: `## In this codebase`" — when the section exists but lacks the structured `**File:**` / `**Function / class:**` / `**Line range:**` lines.
-  - "Missing Why care block" — when the section is absent or incomplete. Required: two short paragraphs (Paragraph 1 the hook, Paragraph 2 the zoom-out with an explicit handoff to the diagram and How it works). No file paths, no project nouns — that's the test of a real zoom-out.
-  - "Quick summary in wrong position (still after Why care)" — flag any v1.18.0-shape Quick summary that sits between Why care and the diagram. It must be MOVED to after Tradeoffs and before Interview defense, AND RESHAPED from the bullet-only zoom-in form to the v1.19.0 recap form (Part 1 concept-recap paragraph + Part 2 key-point bullets).
-  - "Why care still hands off to Quick summary" — flag any Why care paragraph 2 whose closing sentence says "Quick summary below" or similar. The handoff target is now the diagram and How it works.
+  - "Missing Why care block" — when the section is absent or incomplete. Required: two short paragraphs (Paragraph 1 the hook, Paragraph 2 the zoom-out with an explicit handoff to How it works). No file paths, no project nouns — that's the test of a real zoom-out.
+  - "Primary diagram in wrong position (still before How it works)" — flag any file where `## [Concept] — diagram` sits before `## How it works`. In v1.20.0 the order swapped: How it works walks the mechanics in prose first, then the primary diagram appears as the recap visual. The fix is to SWAP the two sections.
+  - "Primary diagram missing architectural-layer labels" — flag any primary diagram that crosses a system boundary (UI ↔ Service, Service ↔ Storage, app ↔ Provider) without naming the boundary. The diagram must label each layer it spans using a left-margin label, a horizontal divider with the layer name, or grouped boxes inside a labelled band.
+  - "How it works missing in-paragraph anchors" — flag any `## How it works` paragraph that introduces jargon without a secondary visual in the same paragraph (small diagram, pseudocode block, comparison table, or execution trace). Prose-only paragraphs that introduce new terms are not allowed.
+  - "How it works missing handoff sentence to the primary diagram" — flag any `## How it works` block that ends without an explicit handoff line ("The full picture is below." / "Here's the diagram of the whole flow." / similar).
+  - "Quick summary in wrong position (still after Why care)" — flag any v1.18.0-shape Quick summary that sits between Why care and How it works/diagram. It must be MOVED to after Tradeoffs and before Interview defense, AND RESHAPED from the bullet-only zoom-in form to the v1.19.0+ recap form (Part 1 concept-recap paragraph + Part 2 key-point bullets).
+  - "Why care still hands off to Quick summary or to the diagram" — flag any Why care paragraph 2 whose closing sentence says "Quick summary below" (v1.18.0 wording) or "diagram below" / "diagram and How it works" (v1.19.0 wording). The handoff target is now How it works alone.
   - **Note on legacy guides:**
     - Files generated under **v1.17.0** may contain `## In plain English` (with the three sub-sections `### The question` / `### The answer in one breath` / `### Where you'd see this elsewhere`) instead of the new `## Why care`. Treat as "Section to be replaced: `## In plain English` → `## Why care`" — use the existing content as source material when collapsing the three sub-sections into the two new paragraphs.
     - Files generated under **v1.17.0** in `02-dsa/` and `03-ai-engineering/` may use Quick summary Variant B (`**Data shape:**` / `**Operation:**` / etc.) or Variant C (`**The chain:**` / etc.). Those variants were removed in v1.18.0 and the whole block has since moved + reshaped in v1.19.0. Treat as "Quick summary to be migrated to v1.19.0 recap form (paragraph + key points) AND moved to after Tradeoffs" — preserve the old bullet content as raw material for the new recap sentences and key-point bullets.
     - Files generated under **v1.18.0** have Quick summary in the WRONG position (between Why care and the diagram) and in the WRONG shape (single zoom-in bullet list of `**What:**` / `**Why here:**` / `**Checklist step:**` / `**Tradeoff:**`). Treat as "Quick summary to be moved (to after Tradeoffs) AND reshaped (to Part 1 recap paragraph + Part 2 key-point bullets)". The v1.18.0 bullet content is reusable material — `**What:**` and `**Why here:**` feed Part 1's "what the pattern is" and "how it shows up here" sentences; `**Tradeoff:**` feeds Part 1's "constraint" and "cost" sentences; `**Checklist step:**` becomes one of Part 2's key-point bullets.
+    - Files generated under **v1.19.0** have the primary diagram in the WRONG position (still before `## How it works`) and a Why care paragraph 2 whose handoff sentence points at "the diagram and How it works". v1.20.0 swapped the order — How it works comes first, primary diagram follows as recap visual — and the Why care handoff now points at How it works alone. Treat as "Sections to be reordered: `## How it works` and `## [Concept] — diagram` must be SWAPPED so How it works is first". Also: append a handoff sentence at the end of How it works pointing at the primary diagram below; add architectural-layer labels to the primary diagram if it crosses any layer boundary; rewrite the Why care paragraph 2 closing sentence to hand off to How it works only.
 
-  All variants are fixed the same way: insert/replace the structured fields in their canonical position, with values drawn from the project context and from existing-block content where present.
+  All variants are fixed the same way: insert/replace/reorder the structured fields in their canonical position, with values drawn from the project context and from existing-block content where present.
 
 For each file, sum the findings from both diffs. Files that are clean on both diffs are **still accurate** — leave them alone.
 
@@ -491,16 +519,20 @@ Reply "no" to abort.
 Run only after the user replies "yes" or with a scoped path. For each file approved:
 
 - Edit only the sections identified as outdated, content-missing, or structurally absent.
-- For **structurally absent sections**, append the section in canonical order. The current sequence is: Title → **Subtitle (Industry name(s) + Type)** → blockquote → See also → **Why care** → diagram → How it works → In this codebase → Elaborate → Tradeoffs → **Quick summary (recap form)** → Interview defense → Validate your understanding.
+- For **structurally absent sections**, append the section in canonical order. The current sequence is: Title → **Subtitle (Industry name(s) + Type)** → blockquote → See also → **Why care** → **How it works** → **[Concept] — diagram (recap visual, labels every layer)** → In this codebase → Elaborate → Tradeoffs → **Quick summary (recap form)** → Interview defense → Validate your understanding.
 - For a **missing subtitle block**, insert two lines immediately after the H1 and before the blockquote:
   - `**Industry name(s):**` followed by formal/widely-recognised names this pattern goes by (or `— (project-specific composition of [X] + [Y])` if none).
   - `**Type:**` followed by one of `Industry standard` / `Language-agnostic` / `Industry standard · Language-agnostic` / `Project-specific`.
   Pick the labels from your understanding of the concept; do not require the user to choose. The reader can correct it later if needed.
 - For an **"In this codebase" section missing the structured code reference**, append `**File:**` / `**Function / class:**` / `**Line range:**` lines using values drawn from the project context. The Validate block's Level 3 and Level 4 reference back into this section, so a missing code reference cascades into validate-block-incompleteness.
-- For a **Why care block missing or incomplete**, insert (or complete) the section between the `**See also:**` line and the `## [Concept] — diagram` heading. Two short paragraphs required: paragraph 1 is the hook (one opening sentence from the three angles: everyday problem / surprising claim / scenario ending in question, then 1–2 sentences naming the underlying problem). Paragraph 2 is the zoom-out (3–5 sentences naming the pattern, the family of problems, 1–2 other places it shows up, ending with an explicit handoff to the diagram and How it works like "Here's how that actually works in this codebase." or "The diagram below shows the shape it takes here."). No file paths, no project nouns inside this block.
-- For a **Why care block whose closing sentence still hands off to Quick summary** (v1.18.0 wording), rewrite only that closing sentence so it hands off to the diagram and How it works instead. Leave the rest of paragraph 2 alone if the content is otherwise correct.
-- For a **legacy `## In plain English` block (v1.17.0 shape)**, REPLACE the section with `## Why care`. Collapse the three sub-sections into two paragraphs: paragraph 1 turns "The question" into the hook (rephrase the question as one of the three angles), paragraph 2 fuses "The answer in one breath" + "Where you'd see this elsewhere" into a single zoom-out paragraph with an explicit handoff sentence pointing at the diagram and How it works. Old content is reusable as source material.
-- For a **Quick summary in the v1.18.0 position and shape** (still sitting between Why care and the diagram, as a bullet list of `**What:**` / `**Why here:**` / `**Checklist step:**` / `**Tradeoff:**`), do BOTH: (a) DELETE the block from its old position between Why care and the diagram, and (b) INSERT a new Quick summary block in the v1.19.0 recap form between Tradeoffs and Interview defense. The v1.19.0 recap form has two parts: **Part 1** is a single paragraph of 3–5 sentences (what the pattern is / how it shows up in this codebase / the constraint that forced it / the cost being paid); **Part 2** is 3–6 short declarative key-point bullets mixing shape / rule / tradeoff. For system-design files, include one bullet in Part 2 that names the checklist step(s) the pattern lives in. Reuse the v1.18.0 bullet content as raw material: `**What:**`'s second sentence feeds Part 1's "how it shows up here" sentence; `**Why here:**` feeds Part 1's "constraint" sentence; `**Tradeoff:**` feeds Part 1's "cost" sentence; `**Checklist step:**` becomes the system-design checklist-step bullet in Part 2.
+- For a **Why care block missing or incomplete**, insert (or complete) the section between the `**See also:**` line and `## How it works`. Two short paragraphs required: paragraph 1 is the hook (one opening sentence from the three angles: everyday problem / surprising claim / scenario ending in question, then 1–2 sentences naming the underlying problem). Paragraph 2 is the zoom-out (3–5 sentences naming the pattern, the family of problems, 1–2 other places it shows up, ending with an explicit handoff to How it works like "Here's how that actually works in this codebase." or "How it shows up here is in the next block."). No file paths, no project nouns inside this block.
+- For a **Why care block whose closing sentence hands off to the wrong place** — either "Quick summary below" (v1.18.0 wording) or "diagram below" / "diagram and How it works" (v1.19.0 wording) — rewrite only that closing sentence so it hands off to How it works alone. Leave the rest of paragraph 2 alone if the content is otherwise correct.
+- For a **primary diagram in the v1.19.0 position** (sitting before `## How it works`), SWAP the two sections so `## How it works` comes first and `## [Concept] — diagram` follows as the recap visual. Do not rewrite either section's content during the swap; just reorder them.
+- For a **`## How it works` block missing a handoff sentence to the primary diagram**, append one closing sentence pointing at the diagram below ("The full picture is below." / "Here's the diagram of the whole flow." / similar).
+- For a **`## How it works` paragraph that introduces jargon without an in-paragraph visual**, add a secondary visual inside that paragraph: a small diagram, a pseudocode block, a comparison table, or an execution trace — whichever earns its place. The rule is that no piece of jargon lands in a paragraph without a visual anchoring it in the same paragraph.
+- For a **primary diagram missing architectural-layer labels** (the diagram crosses a UI ↔ Service, Service ↔ Storage, or app ↔ Provider boundary without naming it), add the layer labels. Use whichever shape fits: a left-margin label, a horizontal divider with the layer name, or grouped boxes inside a labelled band (`┌─ Service layer ──┐ ... └────────────┘`). Pick the labels from the system map in `00-overview.md` so the bands match the layers the system actually has.
+- For a **legacy `## In plain English` block (v1.17.0 shape)**, REPLACE the section with `## Why care`. Collapse the three sub-sections into two paragraphs: paragraph 1 turns "The question" into the hook (rephrase the question as one of the three angles), paragraph 2 fuses "The answer in one breath" + "Where you'd see this elsewhere" into a single zoom-out paragraph with an explicit handoff sentence pointing at How it works. Old content is reusable as source material.
+- For a **Quick summary in the v1.18.0 position and shape** (still sitting between Why care and the diagram/How it works, as a bullet list of `**What:**` / `**Why here:**` / `**Checklist step:**` / `**Tradeoff:**`), do BOTH: (a) DELETE the block from its old position, and (b) INSERT a new Quick summary block in the v1.19.0 recap form between Tradeoffs and Interview defense. The v1.19.0 recap form has two parts: **Part 1** is a single paragraph of 3–5 sentences (what the pattern is / how it shows up in this codebase / the constraint that forced it / the cost being paid); **Part 2** is 3–6 short declarative key-point bullets mixing shape / rule / tradeoff. For system-design files, include one bullet in Part 2 that names the checklist step(s) the pattern lives in. Reuse the v1.18.0 bullet content as raw material: `**What:**`'s second sentence feeds Part 1's "how it shows up here" sentence; `**Why here:**` feeds Part 1's "constraint" sentence; `**Tradeoff:**` feeds Part 1's "cost" sentence; `**Checklist step:**` becomes the system-design checklist-step bullet in Part 2.
 - For a **legacy Quick summary Variant B or C (v1.17.0 shape)** in `02-dsa/` or `03-ai-engineering/` files, treat it the same as the v1.18.0 case: DELETE from old position, INSERT v1.19.0 recap form after Tradeoffs. Map the legacy bullets through the v1.18.0 → v1.19.0 path (Variant B's `**Operation:**` → Part 1's "what the pattern is" sentence; `**Breakpoint:**` → Part 1's "constraint" sentence; etc.). Preserve old prose as material; drop the variant-specific labels.
 - If the **system-design `README.md` is missing the 6-step mental checklist**, append it after the existing index. Tag each listed pattern with its checklist step(s) so the section README is the unified framework view.
 - Do NOT rewrite accurate sections.
