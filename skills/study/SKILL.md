@@ -91,6 +91,10 @@ The non-negotiables from the template:
 9. **Every "In this codebase" section must include a real code reference** — `**File:**` + `**Function / class:**` + `**Line range:**` (e.g., `L42–L67`). For multi-file patterns, list every file with the role each plays. No concept file ships without a code reference; the validate block depends on it for Level 3 and Level 4 to send the reader back to specific code.
 10. **Every concept file opens with a two-line subtitle** directly under the H1 and BEFORE the blockquote summary. Two fields: `**Industry name(s):**` (formal/widely-recognised names this pattern goes by, comma-separated; or `— (project-specific composition of [X] + [Y])` if no formal name) and `**Type:**` (one of: `Industry standard` / `Language-agnostic` / `Industry standard · Language-agnostic` / `Project-specific`). The subtitle's job is to give the reader the vocabulary they'd use to describe this concept to other devs in conversation — so the listener can do a one-second pattern lookup instead of needing three paragraphs of context.
 
+11. **Every concept file in `01-system-design/` includes a "Checklist step" tag** as a 4th bullet in the Quick summary section. The template defines a 6-step mental checklist for system design — `1. Data model`, `2. Request / response flow`, `3. Caching layers`, `4. State ownership`, `5. Failure handling`, `6. Scale concerns`. Each pattern lives in one or more steps; tag accordingly (e.g., `**Checklist step:** 2 (Request flow) + 4 (State ownership)`). This anchors every system-design concept in the unified framework so the reader builds one mental model across the section instead of treating each pattern as standalone trivia. The `02-dsa/` and `03-ai-engineering/` files do NOT use this field — it is system-design-only.
+
+12. **Voice: state decisions, not hopes.** Hedging language (`this might`, `could potentially`, `tends to`) is banned. If something is a tradeoff, name it. If something is suboptimal, say so plainly — then explain why it was still the right call at the time. The reader should feel a senior colleague is explaining over coffee, not a textbook.
+
 Diagrams use box-drawing characters: `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ → ← ↑ ↓ ◀ ▶ ▲ ▼`. No Mermaid, no images, no PlantUML.
 
 Every term must be shown before it's used (jargon without a diagram is forbidden).
@@ -143,6 +147,7 @@ Every concept file uses this exact structure:
 ## Quick summary
 - **What:** [one bullet — what this pattern is]
 - **Why here:** [one bullet — what constraint it solves]
+- **Checklist step:** [system-design files only — `N (step name)` from the 6-step mental checklist; one or more steps separated by `+`. Omit this bullet entirely for `02-dsa/` and `03-ai-engineering/` files.]
 - **Tradeoff:** [one bullet — what it gives up]
 
 ---
@@ -295,7 +300,7 @@ For DSA files (in `02-dsa/`), the **How it works** section additionally must con
 
 After all per-concept files in a section are written, create that section's `README.md`:
 
-- **`01-system-design/README.md`** — index of pattern files (one-line description each), plus the full system map diagram from `00-overview.md` for quick reference.
+- **`01-system-design/README.md`** — index of pattern files (one-line description each), plus the full system map diagram from `00-overview.md` for quick reference, plus the **6-step mental checklist** (Data model / Request flow / Caching / State ownership / Failure handling / Scale concerns) reproduced verbatim from the template, with each listed pattern tagged by which step(s) it lives in. The mental checklist is what binds the section into a unified framework — readers should see it on entry, before opening any individual pattern file.
 - **`02-dsa/README.md`** — index of operation files (one-line each), plus the full **complexity cheat sheet** table (every major data operation in the app, time/space, "holds at 10×?"). For every operation that doesn't hold at 10×: one-line fix and estimated effort.
 - **`03-ai-engineering/README.md`** — index of AI pattern files (one-line each), plus the **AI features table** (Feature → Pattern used → Why this pattern).
 
@@ -362,11 +367,12 @@ For every existing concept file, run TWO diffs:
 
   If any of those is missing, flag it as "Missing section: `<section name>`" — not as a content-update issue.
 
-  Also flag two specific structural-gap variants:
+  Also flag three specific structural-gap variants:
   - "Missing subtitle block (Industry name(s) + Type)" — when the file has the H1 and blockquote but no `**Industry name(s):**` / `**Type:**` lines between them.
   - "Missing code reference in: `## In this codebase`" — when the section exists but lacks the structured `**File:**` / `**Function / class:**` / `**Line range:**` lines.
+  - "Missing Checklist step bullet in `## Quick summary`" — applies ONLY to files inside `01-system-design/`. The Quick summary section in those files must contain a `**Checklist step:**` bullet referencing one or more of the 6 mental-checklist steps. If the bullet is absent, flag it. The same gap should NOT be flagged for files in `02-dsa/` or `03-ai-engineering/` — they use the original 3-bullet Quick summary.
 
-  Both are fixed the same way: append the missing structured fields in their canonical position, with values drawn from the project context.
+  All three are fixed the same way: append the missing structured fields in their canonical position, with values drawn from the project context.
 
 For each file, sum the findings from both diffs. Files that are clean on both diffs are **still accurate** — leave them alone.
 
@@ -422,6 +428,8 @@ Run only after the user replies "yes" or with a scoped path. For each file appro
   - `**Type:**` followed by one of `Industry standard` / `Language-agnostic` / `Industry standard · Language-agnostic` / `Project-specific`.
   Pick the labels from your understanding of the concept; do not require the user to choose. The reader can correct it later if needed.
 - For an **"In this codebase" section missing the structured code reference**, append `**File:**` / `**Function / class:**` / `**Line range:**` lines using values drawn from the project context. The Validate block's Level 3 and Level 4 reference back into this section, so a missing code reference cascades into validate-block-incompleteness.
+- For a **system-design file missing the Checklist step bullet**, insert a `**Checklist step:**` bullet in the Quick summary section between `**Why here:**` and `**Tradeoff:**`. Pick the step(s) (1–6) from the agent's understanding of which mental-checklist step(s) the pattern lives in (Data model / Request flow / Caching / State ownership / Failure handling / Scale concerns). Multiple steps are allowed and common — e.g., a storage layer pattern lives in step 1 (Data model) and step 3 (Caching).
+- If the **system-design `README.md` is missing the 6-step mental checklist**, append it after the existing index. Tag each listed pattern with its checklist step(s) so the section README is the unified framework view.
 - Do NOT rewrite accurate sections.
 - Maintain the existing voice and per-concept file structure.
 - Apply the template's diagram + pseudocode + trace requirements to any new concepts you add.
