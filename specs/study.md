@@ -63,6 +63,10 @@ Study guide directory structure
           (+ any other patterns found in the codebase)
 
 Each file contains:
+  → Subtitle            industry name(s) + type label
+                        (Industry standard / Language-agnostic /
+                         Project-specific) — so other devs
+                        catch on with one-second lookup
   → Visual map          diagram before any text
   → Quick summary       3 bullet points — what, why, tradeoff
   → Concept block       the full explanation with diagrams,
@@ -172,6 +176,15 @@ Every individual concept file uses this structure exactly:
 
   # [Concept name]
 
+  **Industry name(s):** [formal/widely-recognised names this
+                          pattern goes by, e.g. "Strategy pattern,
+                          Adapter pattern". If the pattern has no
+                          formal name, write "— (project-specific
+                          composition)".]
+  **Type:** [one of: "Industry standard" | "Language-agnostic" |
+             "Industry standard · Language-agnostic" |
+             "Project-specific"]
+
   > [One sentence — what this is and why it matters in
   > this codebase. The reader should know if they need
   > this file from this one line alone.]
@@ -251,6 +264,96 @@ Every individual concept file uses this structure exactly:
   ## Validate your understanding
 
   [See validate block definition below]
+
+─────────────────────────────────────────────────
+THE SUBTITLE — required in every file
+─────────────────────────────────────────────────
+
+Every concept file opens with a two-line subtitle directly
+under the H1 title and BEFORE the blockquote summary. Its
+job is to let the reader explain this concept to other
+technical developers using vocabulary they will recognise
+immediately.
+
+  ## Why the subtitle matters
+
+  When you describe a concept in conversation, the listener
+  is doing a fast lookup: "have I seen this pattern before,
+  and what is it called?" If you can name the formal pattern,
+  the listener catches on in one second instead of three
+  paragraphs. The subtitle makes that vocabulary visible.
+
+  ## The two fields
+
+  **Industry name(s):**
+    The formal, widely-recognised names this pattern goes by
+    in software engineering literature and practice. List
+    every reasonable mapping. If the pattern has no formal
+    name (e.g., it is a project-specific composition of
+    multiple known patterns), write
+    "— (project-specific composition of [X] + [Y])".
+
+    Examples:
+      → Provider abstraction → "Strategy pattern, Adapter
+                                 pattern, Provider pattern"
+      → Optimistic UI        → "Optimistic concurrency control,
+                                 client-side speculation"
+      → Connection pooling   → "Resource pool pattern,
+                                 connection pool pattern"
+
+  **Type:**
+    One of four labels that tells the reader whether the
+    concept transfers to other contexts:
+
+      Industry standard
+        Has a recognised name in textbooks, blog posts, or
+        industry conferences. Other devs will know the term.
+
+      Language-agnostic
+        The principle behind the pattern transfers across
+        stacks and languages. Implementations differ but
+        the rule is the same.
+
+      Industry standard · Language-agnostic
+        Both. The pattern has a formal name AND the principle
+        transfers. Most architectural patterns are this.
+
+      Project-specific
+        Emergent in this codebase. No widely-recognised name.
+        Worth knowing because it shows up here, but the
+        reader should not expect to encounter it elsewhere
+        as a named pattern.
+
+  ## Worked example
+
+  ### Provider abstraction (a serverless LLM service)
+
+    # Provider abstraction
+    **Industry name(s):** Strategy pattern, Adapter pattern, Provider pattern
+    **Type:** Industry standard · Language-agnostic
+
+    > Switching layer that lets the caller pick which LLM
+    > provider runs without changing any chain code.
+
+  ### Reorder-by-rebuild (a project-specific operation)
+
+    # Reorder-by-rebuild
+    **Industry name(s):** — (project-specific composition of
+                              hash-map indexing + position
+                              rewrite)
+    **Type:** Project-specific
+
+    > Reorders a list of N items by building an id→item map,
+    > rewriting positions in newOrder pass-order, and
+    > returning the sorted result.
+
+  ## Where to read the subtitle
+
+  Skimming the section README is one path. The other is
+  scanning subtitles directly: a reader can skim a folder of
+  concept files and decide which to open by reading subtitles
+  alone. Industry-standard patterns deserve a quick read-through;
+  project-specific compositions deserve a deeper one.
 
 ─────────────────────────────────────────────────
 THE ELABORATE BLOCK — required in every file
@@ -1260,6 +1363,8 @@ CONSTRAINTS
 → Each section (system design, DSA, AI) saved as a subdirectory
    of named files — one file per pattern or operation found
 → Every file must have a README.md index in its directory
+→ Every concept file must include a Subtitle (Industry name(s)
+   + Type label) directly under the H1, before the blockquote
 → Every concept file must include an Elaborate block
 → Every concept file must include an Interview defense block
 → Every concept file must include a Validate block
