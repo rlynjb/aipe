@@ -70,9 +70,6 @@ Each file contains:
   → Why care            hook + zoom-out — grabs attention,
                         then names the pattern in general
                         terms outside this codebase
-  → Quick summary       zoom-in — the pattern's shape in
-                        this codebase, the constraint that
-                        forced it, the tradeoff accepted
   → Visual map          diagram before any deeper text
   → Concept block       the full explanation with diagrams,
                         pseudocode, execution traces
@@ -83,6 +80,10 @@ Each file contains:
                         to solve, how it connects to adjacent
                         concepts, what to read next
   → Tradeoffs           comparison table or bullets
+  → Quick summary       recap — one-paragraph concept summary
+                        plus 3–6 bulleted key points to
+                        carry away. The block you return to
+                        in three weeks to remember the file.
   → Interview defense   questions, model answers, one-line anchors
   → Validate block      4 levels: reconstruct → explain →
                         apply to scenario → defend decision.
@@ -91,7 +92,7 @@ Each file contains:
   → See also            links to related files in this guide
 
 Reading flow per file:
-  hook → zoom out → zoom in → details → check
+  hook → zoom out → details → tradeoffs → recap → check
 ```
 
 ---
@@ -234,11 +235,13 @@ Every individual concept file uses this structure exactly:
 
   The file flow is intentional. Why care zooms out — the
   concept in general, independent of this codebase.
-  Quick summary zooms in — what this pattern looks like
-  here specifically. Diagram and How it works fill in
-  the mechanics. In this codebase points at the lines.
-  Validate proves the reader actually got it. Hook →
-  zoom out → zoom in → details → check.
+  Diagram and How it works fill in the mechanics.
+  In this codebase points at the lines. Tradeoffs name
+  what was given up. Quick summary recaps everything in
+  one block — the concept plus the key points worth
+  carrying away. Validate proves the reader actually
+  got it. Hook → zoom out → details → tradeoffs →
+  recap → check.
 
   Structure: two short paragraphs. No file paths. No
   project nouns. A reader who has never seen this
@@ -287,18 +290,18 @@ Every individual concept file uses this structure exactly:
     keep-alive, thread pools. The recognition hook: "oh,
     that's the same thing as X."
 
-  End on a sentence that hands off to Quick summary:
-  "Here's what that looks like in this codebase."
-  Or: "The shape it takes here is in Quick summary
-  below." Or similar — explicit handoff, so the reader
-  knows the zoom-in is coming.
+  End on a sentence that hands off to the diagram and
+  How it works: "Here's how that actually works in this
+  codebase." Or: "The diagram below shows the shape it
+  takes here." Or similar — explicit handoff, so the
+  reader knows the zoom-in is coming.
 
   ### What this block is not
 
   - Not a definition dump. Definitions go in How it works.
   - Not a tradeoff discussion. Tradeoffs get their own block.
   - Not codebase-specific. File paths and project nouns
-    are banned here — they belong in Quick summary and
+    are banned here — they belong in How it works and
     In this codebase.
   - Not long. If it runs past two short paragraphs, it's
     competing with How it works instead of feeding into it.
@@ -323,64 +326,8 @@ Every individual concept file uses this structure exactly:
   > abstraction (DOM, native, server — same component
   > tree), in database drivers (Postgres, MySQL, SQLite
   > behind the same query API), and in storage SDKs (S3,
-  > GCS, R2 behind the same upload call). The shape it
-  > takes in this codebase is in Quick summary below.
-
-  ---
-
-  ## Quick summary
-
-  Why care zoomed out. This block zooms in. A reader who
-  opens this file, glances at the diagram, and reads only
-  Quick summary should walk away with three concrete things:
-  the pattern named with its shape in this codebase, the
-  specific project constraint it solves, and the cost being
-  paid for that solution. Generic answers ("for flexibility",
-  "for performance", "for scalability") are banned — every
-  bullet must reference a real project constraint, file, or
-  decision.
-
-  Each bullet is two sentences. The first names the thing,
-  the second grounds it in this codebase or this constraint.
-  Concrete nouns over abstract ones; specific over generic;
-  declarative over hedging.
-
-  - **What:** Two sentences.
-    Sentence 1: the pattern named.
-    Sentence 2: its shape in this codebase — what the parts
-    are and how they connect. Avoid pure definitions like
-    "the Strategy pattern is..."; describe the shape
-    concretely as it appears here. Example: "A factory
-    function returns one of three concrete LLM clients
-    behind a shared interface, so call sites never depend
-    on which provider runs."
-
-  - **Why here:** Two sentences.
-    Sentence 1: the specific project constraint that drove
-    this choice. Not "for flexibility" — name what would
-    have broken otherwise. Examples: "the team has no SRE",
-    "user data must survive a device wipe", "model pricing
-    changes monthly", "this runs on a phone, not a server".
-    Sentence 2: what would have broken if the obvious
-    alternative had been chosen instead.
-
-  - **Checklist step:** [System-design files only — see
-    SECTION 01's mental checklist. Tag with one or more
-    of the 6 steps: `2 (Request flow) + 4 (State ownership)`.
-    Omit this bullet entirely for `02-dsa/` and
-    `03-ai-engineering/` files.]
-
-  - **Tradeoff:** Two sentences.
-    Sentence 1: the specific cost this approach pays — a
-    measurable thing, not a vague one. "Two layers of
-    indirection on every chain call" beats "added
-    complexity".
-    Sentence 2: the condition under which that cost stops
-    being acceptable. Examples: "fine until traffic
-    exceeds 1M calls/day", "fine until the team grows past
-    six engineers", "fine until offline support becomes
-    a requirement". A tradeoff without its breakpoint is
-    just a complaint.
+  > GCS, R2 behind the same upload call). The diagram
+  > below shows the shape it takes in this codebase.
 
   ---
 
@@ -436,6 +383,91 @@ Every individual concept file uses this structure exactly:
   [Comparison table or bullet list — what this approach
    gives, what it costs, what the alternative would be
    and when you'd choose it instead]
+
+  ---
+
+  ## Quick summary
+
+  This block is the recap. By the time the reader gets
+  here, they've seen the hook, the diagram, the
+  mechanics, the codebase references, and the tradeoffs.
+  Quick summary collapses all of that into a one-paragraph
+  concept recap plus a bulleted list of the points worth
+  carrying away. It's the block the reader returns to in
+  three weeks when they need to remember what this file
+  was about.
+
+  Two parts, in this order. Recap paragraph first, then
+  key points. No new information — everything here must
+  already appear above.
+
+  ### Part 1 — concept recap (one paragraph)
+
+  Three to five sentences that summarise the concept in
+  prose. Cover:
+  - What the pattern is (one sentence — pulled from
+    Why care's paragraph 2).
+  - How it shows up in this codebase (one sentence —
+    pulled from How it works or In this codebase).
+  - The constraint that made it the right call here
+    (one sentence — pulled from Tradeoffs).
+  - The cost being paid for that choice (one sentence —
+    pulled from Tradeoffs).
+
+  Write it as if a colleague asked "wait, what's this
+  file about again?" — the answer they get without
+  scrolling.
+
+  Worked example for provider abstraction:
+
+  > Provider abstraction is the layer that lets a caller
+  > swap between interchangeable implementations behind
+  > a single interface. In this codebase, a factory
+  > function returns one of three LLM clients (Anthropic,
+  > OpenAI, local) and every chain calls through that
+  > interface — no call site knows which provider is
+  > running. The constraint that forced this was model
+  > pricing volatility: providers change prices monthly
+  > and the team wanted to switch without touching chain
+  > code. The cost is two layers of indirection on every
+  > call and a shared interface that lags behind any one
+  > provider's newest features.
+
+  ### Part 2 — key points to remember (3–6 bullets)
+
+  Short, declarative statements. The kind of thing the
+  reader could write on an index card. Each bullet
+  should be:
+  - One sentence — bullets that need two sentences
+    belong in How it works or Tradeoffs.
+  - A conclusion, not a definition — "X happens before Y"
+    not "X is a function that does Y".
+  - Specific to this codebase where it matters — generic
+    facts about the pattern belong in Why care.
+
+  Mix categories: at least one shape ("the parts and
+  how they connect"), at least one rule ("the invariant
+  this pattern maintains"), at least one tradeoff
+  ("the cost being paid"). A reader who skims only the
+  bullets should walk away with the shape, the rule,
+  and the cost.
+
+  Worked example for provider abstraction:
+
+  > - One factory function, three concrete clients,
+  >   one shared interface — every chain calls the
+  >   interface, never a client directly.
+  > - Provider selection happens once at startup based
+  >   on env var; chains never branch on provider.
+  > - Adding a new provider means implementing the
+  >   interface, not touching any chain code.
+  > - The shared interface is the lowest common
+  >   denominator of all three providers — newest
+  >   features from any one provider are invisible
+  >   to the chains.
+  > - Worth it when providers are commodities;
+  >   not worth it when one provider's unique
+  >   features are load-bearing.
 
   ---
 
@@ -1618,17 +1650,23 @@ CONSTRAINTS
 → Every concept file must include a Subtitle (Industry name(s)
    + Type label) directly under the H1, before the blockquote
 → Every concept file must include a Why care block
-   immediately after the blockquote and before Quick summary.
-   Two short paragraphs: paragraph 1 hooks attention,
-   paragraph 2 zooms out and places the pattern in its
-   family. No file paths, no project nouns — that's the
-   test of a real zoom-out. Ends with an explicit handoff
-   to Quick summary.
+   immediately after the blockquote and before the
+   diagram. Two short paragraphs: paragraph 1 hooks
+   attention, paragraph 2 zooms out and places the
+   pattern in its family. No file paths, no project
+   nouns — that's the test of a real zoom-out. Ends
+   with an explicit handoff to the diagram or
+   How it works.
 → Every concept file must include a Quick summary block
-   immediately after Why care. This is the zoom-in:
-   what, why here, (checklist step for system-design
-   files only), tradeoff. Every bullet must reference
-   a real project constraint, file, or decision.
+   immediately after Tradeoffs and before Interview
+   defense. Two parts in this order: (1) a one-paragraph
+   concept recap of 3–5 sentences covering what the
+   pattern is, how it shows up in this codebase, the
+   constraint that forced it, and the cost being paid;
+   (2) 3–6 short, declarative key points covering at
+   least one shape, one rule, and one tradeoff. No new
+   information — everything in Quick summary must
+   already appear earlier in the file.
 → Every concept file must include an Elaborate block
 → Every concept file must include an Interview defense block
 → Every concept file must include a Validate block
