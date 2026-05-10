@@ -95,17 +95,16 @@ The non-negotiables from the template:
 
 12. **Voice: state decisions, not hopes.** Hedging language (`this might`, `could potentially`, `tends to`) is banned. If something is a tradeoff, name it. If something is suboptimal, say so plainly — then explain why it was still the right call at the time. The reader should feel a senior colleague is explaining over coffee, not a textbook.
 
-13. **Every concept file includes an "In plain English" block** immediately after `**See also:**` and BEFORE `## Quick summary`. Three sub-sections:
-    - `### The question` — one sentence, the universal question this pattern answers (written as a question, no project nouns, no file paths).
-    - `### The answer in one breath` — two sentences max; the pattern's core idea, codebase-agnostic.
-    - `### Where you'd see this elsewhere` — 2–4 examples of where this same pattern shows up in other systems the reader has likely touched (React's renderer abstraction, HTTP keep-alive, thread pools, etc.). This is the recognition hook.
-    The block exists to anchor the reader's brain to the universal concept BEFORE the codebase-specific shape. Generic answers ("How do we improve flexibility?") and codebase-specific answers ("How does our system handle requests?") are both banned here — name the universal pattern question.
+13. **Every concept file includes a "Why care" block** immediately after `**See also:**` and BEFORE `## Quick summary`. Two short paragraphs. No file paths, no project nouns — that's the test of a real zoom-out.
+    - **Paragraph 1 — the hook.** One opening sentence that grabs attention. Pick whichever of these three angles fits best:
+      - **The everyday problem they've already hit** ("You've copied a file in your terminal and watched the second one start before the first one finished — that's the same problem this pattern solves at scale.")
+      - **The surprising claim** ("Most of the speed in a modern web app comes from not doing work, not from doing it faster.")
+      - **The scenario that ends in a question** ("Two users open the same document, both edit the title, both hit save within a second of each other. What does the server show next? That's the question this pattern answers.")
+      Then 1–2 sentences naming the underlying problem in plain English.
+    - **Paragraph 2 — the zoom out.** 3–5 sentences. Name the pattern, state what it does in general terms, place it in the family of problems it belongs to, and name 1–2 other places the same pattern shows up (React's renderer abstraction, Postgres drivers, HTTP keep-alive, thread pools). End with an explicit handoff to Quick summary ("Here's what that looks like in this codebase." / "The shape it takes here is in Quick summary below.").
+    What Why care is NOT: not a definition dump (definitions belong in How it works); not a tradeoff discussion (Tradeoffs has its own block); not codebase-specific (file paths and project nouns are banned here); not long (past two short paragraphs and it competes with How it works).
 
-14. **Quick summary uses one of three variants depending on the directory.** Each section asks different questions, so each gets a tailored block. The bullet labels and contents differ — pick by the directory the file lives in:
-    - **Variant A — `01-system-design/`:** `**What:**` / `**Why here:**` / `**Checklist step:**` / `**Tradeoff:**`. Architectural decisions: what was built, what constraint forced it, which checklist step it lives in, what was traded.
-    - **Variant B — `02-dsa/`:** `**Data shape:**` / `**Operation:**` / `**Complexity now:**` / `**Breakpoint:**`. Operations on data: real shape + size class, what's done to it, current Big-O, the scale at which it breaks.
-    - **Variant C — `03-ai-engineering/`:** `**The chain:**` / `**Why this shape:**` / `**Failure mode:**` / `**Cost:**`. Chains and prompts: single-job description + IO contract, what forced the topology, how it misbehaves and what's done about it, tokens-per-call and breakpoint cost.
-    Every bullet is two sentences (or one line for `Checklist step` / `Complexity now`). Generic answers banned across all three variants — every bullet must reference a real project constraint, file, or measurement.
+14. **Quick summary uses a single shape across all sections.** The bullets are `**What:**` / `**Why here:**` / `**Checklist step:**` (system-design files only — omit for DSA and AI files) / `**Tradeoff:**`. Two sentences per bullet (one line for `Checklist step`). Generic answers (`for flexibility`, `for performance`, `for scalability`) banned — every bullet must reference a real project constraint, file, or decision. Quick summary is the **zoom-in** after Why care's zoom-out: same reader, now landing in this codebase.
 
 Diagrams use box-drawing characters: `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ → ← ↑ ↓ ◀ ▶ ▲ ▼`. No Mermaid, no images, no PlantUML.
 
@@ -156,49 +155,44 @@ Every concept file uses this exact structure:
 
 ---
 
-## In plain English
+## Why care
 
-Anchor the reader's brain to the universal concept BEFORE describing how it shows up in this codebase. Three sub-blocks. No file paths, no project nouns inside this section.
+The hook. Make the reader want to read the next thing. The file flow is hook → zoom out → zoom in → details → check, and this block opens it. Two short paragraphs. **No file paths. No project nouns.** A reader who has never seen this codebase should understand this block fully.
 
-### The question
-[One sentence — the universal question a working engineer asks when they reach for this pattern. Written as a question, not a statement. Examples: "How do I swap one implementation for another without rewriting every call site?" / "How do I make the interface feel instant when the server takes 200ms to confirm?" / "How do I reorder a list of N items by a new order of IDs in linear time?". Banned: vague questions like "How do we improve flexibility?", or codebase-specific ones like "How does our system handle requests?".]
+### Paragraph 1 — the hook
 
-### The answer in one breath
-[Two sentences max. The pattern's core idea, codebase-agnostic. No mention of this project. Example for connection pooling: "Keep a pool of pre-opened connections warm and lend them out one at a time. The cost of opening is paid once at startup; every request after that borrows a connection that's already live."]
+One opening sentence that grabs attention. Pick whichever of these three angles fits the pattern best:
 
-### Where you'd see this elsewhere
-[2–4 bullet points naming other systems where this same pattern shows up. The recognition hook — "oh, that's the same thing as X." Pick examples the reader has likely touched. For provider abstraction: React's renderer abstraction (DOM/native/server) · Database drivers (Postgres/MySQL/SQLite behind the same interface) · Storage SDKs (S3/GCS/R2 behind the same SDK).]
+- **The everyday problem they've already hit** — e.g., "You've copied a file in your terminal and watched the second one start before the first one finished — that's the same problem this pattern solves at scale."
+- **The surprising claim** — e.g., "Most of the speed in a modern web app comes from not doing work, not from doing it faster."
+- **The scenario that ends in a question** — e.g., "Two users open the same document, both edit the title, both hit save within a second of each other. What does the server show next? That's the question this pattern answers."
+
+Then 1–2 sentences naming the underlying problem in plain English. Concrete nouns. No jargon before it's defined. The reader should finish this paragraph thinking *"huh, I want to know how that works."*
+
+### Paragraph 2 — the zoom out
+
+3–5 sentences. Name the pattern, state what it does in general terms, place it in the family of problems it belongs to, and name 1–2 other places the same pattern shows up — React's renderer abstraction, Postgres drivers, HTTP keep-alive, thread pools. That's the recognition hook: *"oh, that's the same thing as X."*
+
+End on a sentence that hands off to Quick summary: "Here's what that looks like in this codebase." / "The shape it takes here is in Quick summary below." Or similar — explicit handoff, so the reader knows the zoom-in is coming.
+
+**What Why care is NOT:**
+- Not a definition dump (definitions belong in How it works).
+- Not a tradeoff discussion (Tradeoffs has its own block).
+- Not codebase-specific (file paths and project nouns are banned here).
+- Not long (past two short paragraphs and it competes with How it works).
 
 ---
 
 ## Quick summary
 
-This section is the codebase-specific TL;DR. The "In plain English" block above answered the universal question; this block answers it for THIS project.
+Why care zoomed out. This block zooms in. A reader who opens this file, glances at the diagram, and reads only Quick summary should walk away with the pattern named with its shape in this codebase, the specific project constraint it solves, and the cost being paid. Generic answers (`for flexibility`, `for performance`, `for scalability`) are banned — every bullet must reference a real project constraint, file, or decision.
 
-A reader who opens this file, glances at the diagram, and reads only Quick summary should walk away with the pattern named in its shape here, the specific project constraint that made it the right call, and the cost being paid. Generic answers (`for flexibility`, `for performance`, `for scalability`) are banned — every bullet must reference a real project constraint, file, or measurement.
-
-The bullet labels and contents differ per section. Use the variant that matches the directory the file lives in.
-
-### Variant A — for `01-system-design/` files
+Each bullet is two sentences. The first names the thing, the second grounds it in this codebase or this constraint.
 
 - **What:** Two sentences. First: the pattern named. Second: its shape in this codebase — what the parts are and how they connect. Concrete shape, not pure definition.
 - **Why here:** Two sentences. First: the specific project constraint that drove this choice (not "for flexibility" — name what would have broken otherwise; e.g., "the team has no SRE", "user data must survive a device wipe", "model pricing changes monthly"). Second: what the obvious alternative would have broken instead.
-- **Checklist step:** One line. `N (step name)` from the 6-step mental checklist; one or more steps separated by `+` (e.g., `2 (Request flow) + 4 (State ownership)`).
+- **Checklist step:** [system-design files only — `N (step name)` from the 6-step mental checklist; one or more steps separated by `+` (e.g., `2 (Request flow) + 4 (State ownership)`). Omit this bullet entirely for `02-dsa/` and `03-ai-engineering/` files.]
 - **Tradeoff:** Two sentences. First: the specific cost this approach pays — measurable, not vague. Second: the condition under which that cost stops being acceptable. A tradeoff without its breakpoint is just a complaint.
-
-### Variant B — for `02-dsa/` files
-
-- **Data shape:** Two sentences. First: the actual structure this operates on — not generic "an array of items", the real shape from this codebase (e.g., "An array of `Action` objects, each with `{id, projectId, position, createdAt}`"). Second: the size class in practice (e.g., "typically under 100 items per project; one outlier has 800"). Size is what makes complexity a real question or a theoretical one.
-- **Operation:** Two sentences. First: what's being done to the data, in plain English (not "we manipulate the array" — say "reorder the array so positions match a new order of IDs"). Second: where in the user-facing app this operation runs (e.g., "every time the user drags an item in the project view"). This tells the reader why it matters.
-- **Complexity now:** One line. Current implementation's time and space, with the n it's measured against (e.g., `O(n²) time, O(1) space — where n is the number of actions in a project`). Add `(optimal)` or `(brute force — could be O(n))` so the reader knows where this sits.
-- **Breakpoint:** Two sentences. First: the concrete scale at which this stops being acceptable, with numbers grounded in actual data (e.g., "Fine at 100 items; visible lag at 1,000; unusable at 10,000"). Second: what the fix looks like in one phrase (not the full solution; e.g., "Build an id→item map once, then rewrite positions in a single pass"). If already optimal, write "No fix needed — already O(n) for this operation."
-
-### Variant C — for `03-ai-engineering/` files
-
-- **The chain:** Two sentences. First: what this chain does in one job — single verb (e.g., "Classifies a todo into one of seven modes", "Summarises a recording transcript into a three-beat caption"). Second: the inputs in and the output out — the contract, in concrete terms (e.g., "Input: raw transcript string + recent caption history. Output: JSON with hook/summary/reflection fields").
-- **Why this shape:** Two sentences. First: the constraint that forced this prompt structure or chain topology — not "for better outputs"; name what specifically went wrong without it (e.g., "single-call versions returned inconsistent tone across devices", "the model hallucinated todo categories that didn't exist"). Second: what the obvious alternative (one mega-prompt, no fallback, no classifier upstream) would have broken.
-- **Failure mode:** Two sentences. First: the specific way this chain misbehaves when it does (e.g., "Returns malformed JSON intermittently when the transcript exceeds 4k tokens"). Second: what the codebase does about it — retry, fall back to cheaper model, return a default, surface an error. If there's no handling, say so plainly: "Currently uncaught; surfaces as a 500."
-- **Cost:** Two sentences. First: tokens per call and dollars per 1,000 calls at current pricing (e.g., "~800 input + 200 output tokens; ~$0.12 per 1k calls at Sonnet 4 pricing"). If costs aren't measured, say so: "Not currently metered." Second: the condition under which this cost stops being acceptable (e.g., "fine at current solo use; would need batching at 10k calls/day").
 
 ---
 
@@ -406,11 +400,8 @@ For every existing concept file, run TWO diffs:
   2. **Subtitle block** — `**Industry name(s):**` line + `**Type:**` line (added v1.13.0)
   3. `> One-sentence blockquote summary`
   4. `**See also:**` line
-  5. `## In plain English` (added v1.17.0; with subsections: The question / The answer in one breath / Where you'd see this elsewhere)
-  6. `## Quick summary` — section-aware (added v1.17.0 variant split):
-     - In `01-system-design/`: **Variant A** — bullets `**What:**` / `**Why here:**` / `**Checklist step:**` / `**Tradeoff:**`
-     - In `02-dsa/`: **Variant B** — bullets `**Data shape:**` / `**Operation:**` / `**Complexity now:**` / `**Breakpoint:**`
-     - In `03-ai-engineering/`: **Variant C** — bullets `**The chain:**` / `**Why this shape:**` / `**Failure mode:**` / `**Cost:**`
+  5. `## Why care` (added v1.18.0, replaces v1.17.0's `## In plain English`; two short paragraphs — Paragraph 1 the hook, Paragraph 2 the zoom-out + recognition hook + explicit handoff to Quick summary; no file paths or project nouns)
+  6. `## Quick summary` — single shape across all sections (Quick-summary variants from v1.17.0 were removed in v1.18.0). Bullets: `**What:**` / `**Why here:**` / `**Checklist step:**` (system-design files only — omit for DSA and AI) / `**Tradeoff:**`. Every bullet two sentences (one line for Checklist step).
   7. `## [Concept] — diagram` (primary diagram)
   8. `## How it works`
   9. `## In this codebase` (must contain `**File:**`, `**Function / class:**`, `**Line range:**` — code reference is mandatory)
@@ -421,13 +412,13 @@ For every existing concept file, run TWO diffs:
 
   If any of those is missing, flag it as "Missing section: `<section name>`" — not as a content-update issue.
 
-  Also flag four specific structural-gap variants:
+  Also flag three specific structural-gap variants:
   - "Missing subtitle block (Industry name(s) + Type)" — when the file has the H1 and blockquote but no `**Industry name(s):**` / `**Type:**` lines between them.
   - "Missing code reference in: `## In this codebase`" — when the section exists but lacks the structured `**File:**` / `**Function / class:**` / `**Line range:**` lines.
-  - "Missing Quick summary variant" — when the Quick summary section exists but uses the wrong bullet labels for the file's directory. Each directory has a required variant: A for `01-system-design/` (`What` / `Why here` / `Checklist step` / `Tradeoff`), B for `02-dsa/` (`Data shape` / `Operation` / `Complexity now` / `Breakpoint`), C for `03-ai-engineering/` (`The chain` / `Why this shape` / `Failure mode` / `Cost`). A `02-dsa/` file with `**What:**` and `**Tradeoff:**` bullets is using Variant A's old shape and needs to be migrated to Variant B. Same for AI files using Variant A.
-  - "Missing In plain English block" — when the section is absent or incomplete (must have all three sub-blocks: The question / The answer in one breath / Where you'd see this elsewhere).
+  - "Missing Why care block" — when the section is absent or incomplete. Required: two short paragraphs (Paragraph 1 the hook, Paragraph 2 the zoom-out with an explicit handoff to Quick summary). No file paths, no project nouns — that's the test of a real zoom-out.
+  - **Note on legacy guides:** files generated under v1.17.0 may contain `## In plain English` (with the three sub-sections `### The question` / `### The answer in one breath` / `### Where you'd see this elsewhere`) instead of the new `## Why care`. Treat this as "Section to be replaced: `## In plain English` → `## Why care`" — same fix path as a missing block, but use the existing content as source material when collapsing the three sub-sections into the two new paragraphs. Also: legacy v1.17.0 files in `02-dsa/` and `03-ai-engineering/` may use Quick summary Variant B (`**Data shape:**` / `**Operation:**` / etc.) or Variant C (`**The chain:**` / etc.) — those variants were removed in v1.18.0. Treat as "Quick summary to be migrated to single shape (What / Why here / Tradeoff)" — preserve the old bullet content as material for the new bullets.
 
-  All four are fixed the same way: append/replace the missing structured fields in their canonical position, with values drawn from the project context.
+  All three are fixed the same way: append/replace the missing structured fields in their canonical position, with values drawn from the project context.
 
 For each file, sum the findings from both diffs. Files that are clean on both diffs are **still accurate** — leave them alone.
 
@@ -477,15 +468,16 @@ Reply "no" to abort.
 Run only after the user replies "yes" or with a scoped path. For each file approved:
 
 - Edit only the sections identified as outdated, content-missing, or structurally absent.
-- For **structurally absent sections**, append the section in canonical order. The current sequence is: Title → **Subtitle (Industry name(s) + Type)** → blockquote → See also → **In plain English** → Quick summary (variant by directory) → diagram → How it works → In this codebase → Elaborate → Tradeoffs → Interview defense → Validate your understanding.
+- For **structurally absent sections**, append the section in canonical order. The current sequence is: Title → **Subtitle (Industry name(s) + Type)** → blockquote → See also → **Why care** → Quick summary (single shape) → diagram → How it works → In this codebase → Elaborate → Tradeoffs → Interview defense → Validate your understanding.
 - For a **missing subtitle block**, insert two lines immediately after the H1 and before the blockquote:
   - `**Industry name(s):**` followed by formal/widely-recognised names this pattern goes by (or `— (project-specific composition of [X] + [Y])` if none).
   - `**Type:**` followed by one of `Industry standard` / `Language-agnostic` / `Industry standard · Language-agnostic` / `Project-specific`.
   Pick the labels from your understanding of the concept; do not require the user to choose. The reader can correct it later if needed.
 - For an **"In this codebase" section missing the structured code reference**, append `**File:**` / `**Function / class:**` / `**Line range:**` lines using values drawn from the project context. The Validate block's Level 3 and Level 4 reference back into this section, so a missing code reference cascades into validate-block-incompleteness.
-- For a **Quick summary using the wrong variant** (e.g., a `02-dsa/` file with `**What:**`/`**Tradeoff:**` bullets), rewrite the section to use the directory-appropriate variant (A/B/C as listed in Diff B). Do NOT just append the new bullets alongside the old — replace the bullet set entirely, drawing values from the project context. The old prose can be preserved as source material when filling in the new variant's bullets.
-- For an **"In plain English" block missing or incomplete**, insert (or complete) the section between the `**See also:**` line and `## Quick summary`. All three sub-blocks required: `### The question` (one universal question, no project nouns), `### The answer in one breath` (two sentences, codebase-agnostic), `### Where you'd see this elsewhere` (2–4 examples in other systems).
-- For a **system-design file (Variant A) missing the Checklist step bullet**, insert a `**Checklist step:**` bullet in Quick summary between `**Why here:**` and `**Tradeoff:**`. Pick the step(s) (1–6) from the agent's understanding of which mental-checklist step(s) the pattern lives in.
+- For a **Why care block missing or incomplete**, insert (or complete) the section between the `**See also:**` line and `## Quick summary`. Two short paragraphs required: paragraph 1 is the hook (one opening sentence from the three angles: everyday problem / surprising claim / scenario ending in question, then 1–2 sentences naming the underlying problem). Paragraph 2 is the zoom-out (3–5 sentences naming the pattern, the family of problems, 1–2 other places it shows up, ending with an explicit handoff to Quick summary like "Here's what that looks like in this codebase."). No file paths, no project nouns inside this block.
+- For a **legacy `## In plain English` block (v1.17.0 shape)**, REPLACE the section with `## Why care`. Collapse the three sub-sections into two paragraphs: paragraph 1 turns "The question" into the hook (rephrase the question as one of the three angles), paragraph 2 fuses "The answer in one breath" + "Where you'd see this elsewhere" into a single zoom-out paragraph with an explicit handoff sentence. Old content is reusable as source material.
+- For a **legacy Quick summary Variant B or C (v1.17.0 shape)** in `02-dsa/` or `03-ai-engineering/` files, REPLACE the bullet set with the v1.18.0 single shape: `**What:**` / `**Why here:**` / `**Tradeoff:**`. Map the old bullets to the new ones (e.g., Variant B's `**Operation:**` → `**What:**`'s shape sentence; `**Breakpoint:**` → `**Tradeoff:**`'s breakpoint sentence). Preserve the old prose as material; drop the variant-specific labels.
+- For a **system-design file missing the Checklist step bullet**, insert a `**Checklist step:**` bullet in Quick summary between `**Why here:**` and `**Tradeoff:**`. Pick the step(s) (1–6) from the agent's understanding of which mental-checklist step(s) the pattern lives in.
 - If the **system-design `README.md` is missing the 6-step mental checklist**, append it after the existing index. Tag each listed pattern with its checklist step(s) so the section README is the unified framework view.
 - Do NOT rewrite accurate sections.
 - Maintain the existing voice and per-concept file structure.
