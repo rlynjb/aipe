@@ -68,7 +68,14 @@ Each file contains:
                          Project-specific) — so other devs
                         catch on with one-second lookup
   → Visual map          diagram before any text
-  → Quick summary       3 bullet points — what, why, tradeoff
+  → In plain English   the question the pattern answers
+                        in any codebase — anchors the
+                        reader to the concept before the
+                        codebase-specific shape
+  → Quick summary       per-section bullets — system design,
+                        DSA, and AI engineering each ask
+                        different questions, each gets a
+                        tailored block
   → Concept block       the full explanation with diagrams,
                         pseudocode, execution traces
   → In this codebase   exact file path, function name,
@@ -218,22 +225,113 @@ Every individual concept file uses this structure exactly:
 
   ---
 
+  ## In plain English
+
+  Before this gets specific to the codebase, ask the
+  question the pattern answers in general — independent
+  of stack, language, or project. This block exists to
+  anchor the reader's brain to the concept before the
+  shape it takes here.
+
+  Structure: three short blocks, one per question. Plain
+  English. No file paths. No project nouns. A reader who
+  has never seen this codebase should understand the
+  block fully.
+
+  ### The question
+
+  One sentence — the universal question a working
+  engineer asks when they reach for this pattern.
+  Written as a question, not a statement.
+
+  Good examples:
+    Provider abstraction
+      → "How do I swap one implementation for another
+         without rewriting every call site?"
+
+    Optimistic UI
+      → "How do I make the interface feel instant when
+         the server takes 200ms to confirm?"
+
+    Connection pooling
+      → "How do I avoid paying the cost of opening a
+         database connection on every single request?"
+
+    Reorder-by-rebuild
+      → "How do I reorder a list of N items by a new
+         order of IDs in linear time?"
+
+    RAG
+      → "How do I get an LLM to answer questions about
+         data it was never trained on?"
+
+  Bad examples (banned):
+    → "How do we improve flexibility?"      (vague)
+    → "How does the system handle requests?" (no problem named)
+    → "What if we used X here?"              (not the universal question)
+
+  ### The answer in one breath
+
+  Two sentences max. The pattern's core idea, stated as
+  if explaining to a colleague who asked the question
+  above. No mention of this codebase yet — pure concept.
+
+  Example for connection pooling:
+    "Keep a pool of pre-opened connections warm and lend
+     them out one at a time. The cost of opening is paid
+     once at startup; every request after that borrows
+     a connection that's already live."
+
+  ### Where you'd see this elsewhere
+
+  Two to four examples of where this same pattern shows
+  up in other systems — preferably ones the reader has
+  likely touched or heard of. This is the recognition
+  hook: "oh, that's the same thing as X."
+
+  Examples:
+    Provider abstraction
+      → React's renderer abstraction (DOM, native, server)
+      → Database drivers (Postgres, MySQL, SQLite behind
+         the same interface)
+      → Storage SDKs (S3, GCS, R2 behind the same SDK)
+
+    Connection pooling
+      → HTTP keep-alive (the browser version)
+      → Thread pools in any backend runtime
+      → Object pools in game engines
+
+  ---
+
   ## Quick summary
 
-  This section is the TL;DR for skim-readers. A reader who
-  opens this file, glances at the diagram, and reads only
-  Quick summary should walk away with three concrete things:
-  the pattern named with its shape in this codebase, the
-  specific project constraint it solves, and the cost being
-  paid for that solution. Generic answers ("for flexibility",
-  "for performance", "for scalability") are banned — every
-  bullet must reference a real project constraint, file, or
-  decision.
+  This section is the codebase-specific TL;DR. The
+  "In plain English" block above answered the universal
+  question. This block answers it for this project.
+
+  A reader who opens this file, glances at the diagram,
+  and reads only Quick summary should walk away with
+  the pattern named in its shape here, the specific
+  project constraint that made it the right call, and
+  the cost being paid for that solution. Generic answers
+  ("for flexibility", "for performance", "for scalability")
+  are banned — every bullet must reference a real project
+  constraint, file, or decision.
 
   Each bullet is two sentences. The first names the thing,
   the second grounds it in this codebase or this constraint.
   Concrete nouns over abstract ones; specific over generic;
   declarative over hedging.
+
+  Three section-specific variants follow. Use the one
+  that matches the directory the file lives in.
+
+  ### Variant A — for 01-system-design/ files
+
+  System design files care about architectural decisions:
+  what was built, what constraint forced it, what step
+  of the system-design checklist it lives in, and what
+  was traded away.
 
   - **What:** Two sentences.
     Sentence 1: the pattern named.
@@ -254,11 +352,10 @@ Every individual concept file uses this structure exactly:
     Sentence 2: what would have broken if the obvious
     alternative had been chosen instead.
 
-  - **Checklist step:** [System-design files only — see
-    SECTION 01's mental checklist. Tag with one or more
-    of the 6 steps: `2 (Request flow) + 4 (State ownership)`.
-    Omit this bullet entirely for `02-dsa/` and
-    `03-ai-engineering/` files.]
+  - **Checklist step:** One line. See SECTION 01's mental
+    checklist. Tag with one or more of the 6 steps:
+    `2 (Request flow) + 4 (State ownership)`. If a pattern
+    spans multiple steps, list them in order.
 
   - **Tradeoff:** Two sentences.
     Sentence 1: the specific cost this approach pays — a
@@ -271,6 +368,112 @@ Every individual concept file uses this structure exactly:
     six engineers", "fine until offline support becomes
     a requirement". A tradeoff without its breakpoint is
     just a complaint.
+
+  ### Variant B — for 02-dsa/ files
+
+  DSA files care about operations on data: what the data
+  looks like, what's being done to it, how fast it is now,
+  and the point at which the current approach breaks.
+  Architectural tradeoffs are not the concern here —
+  complexity is.
+
+  - **Data shape:** Two sentences.
+    Sentence 1: the actual structure this operates on —
+    not a generic "an array of items", the real shape
+    from this codebase. Example: "An array of `Action`
+    objects, each with `{id, projectId, position, createdAt}`."
+    Sentence 2: the size class in practice — "typically
+    under 100 items per project; one outlier has 800".
+    Size is what makes complexity a real question or a
+    theoretical one.
+
+  - **Operation:** Two sentences.
+    Sentence 1: what's being done to the data, in plain
+    English. Not "we manipulate the array" — say
+    "reorder the array so positions match a new order
+    of IDs", or "deduplicate by id while keeping the
+    most recent record".
+    Sentence 2: where in the user-facing app this
+    operation runs — "every time the user drags an item
+    in the project view", "on every render of the
+    activity feed". This tells the reader why it matters.
+
+  - **Complexity now:** One line.
+    Current implementation's time and space, with the
+    n it's measured against: `O(n²) time, O(1) space —
+    where n is the number of actions in a project`.
+    Add `(optimal)` or `(brute force — could be O(n))`
+    so the reader knows where this sits without
+    reading further.
+
+  - **Breakpoint:** Two sentences.
+    Sentence 1: the concrete scale at which this stops
+    being acceptable. "Fine at 100 items; visible lag
+    at 1,000; unusable at 10,000." Numbers grounded in
+    the actual data, not generic Big-O thresholds.
+    Sentence 2: what the fix looks like in one phrase,
+    not the full solution. Example: "Build an
+    id→item map once, then rewrite positions in a
+    single pass." If the current implementation is
+    already optimal, write "No fix needed — already
+    O(n) for this operation."
+
+  ### Variant C — for 03-ai-engineering/ files
+
+  AI engineering files care about chains, prompts, and
+  model interactions: what job the chain does, what's
+  in its prompt, what breaks when the model misbehaves,
+  and what each call costs in tokens or dollars.
+  Architectural tradeoffs and Big-O are not the concern
+  here — prompt scope, failure modes, and cost are.
+
+  - **The chain:** Two sentences.
+    Sentence 1: what this chain does in one job. Single
+    verb. Examples: "Classifies a todo into one of seven
+    modes", "Summarises a recording transcript into a
+    three-beat caption", "Decides which tool to call
+    given the user's question".
+    Sentence 2: the inputs in and the output out — the
+    contract, in concrete terms. Example: "Input: raw
+    transcript string + recent caption history. Output:
+    JSON with hook/summary/reflection fields."
+
+  - **Why this shape:** Two sentences.
+    Sentence 1: the constraint that forced this prompt
+    structure or chain topology. Not "for better outputs"
+    — name what specifically went wrong without it.
+    Examples: "single-call versions returned inconsistent
+    tone across devices", "the model hallucinated todo
+    categories that didn't exist", "running cheap-model-
+    first cut cost by 80% with no quality loss on the
+    happy path".
+    Sentence 2: what would have broken if the obvious
+    alternative (one mega-prompt, no fallback, no
+    classifier upstream) had been used.
+
+  - **Failure mode:** Two sentences.
+    Sentence 1: the specific way this chain misbehaves
+    when it does. "Returns malformed JSON intermittently
+    when the transcript exceeds 4k tokens", "classifies
+    questions as todos when the user is venting",
+    "loops forever when no tool returns a clear answer".
+    Be concrete — name the failure, the trigger, the
+    symptom.
+    Sentence 2: what the codebase does about it — retry,
+    fall back to cheaper model, return a default,
+    surface an error. If there's no handling, say so
+    plainly. "Currently uncaught; surfaces as a 500."
+
+  - **Cost:** Two sentences.
+    Sentence 1: tokens per call and dollars per 1,000
+    calls at current pricing. "~800 input + 200 output
+    tokens; ~$0.12 per 1k calls at Sonnet 4 pricing."
+    If costs aren't measured, say so: "Not currently
+    metered."
+    Sentence 2: the condition under which this cost
+    stops being acceptable. "Fine at current solo use;
+    would need batching at 10k calls/day", "fine until
+    a free tier requires this chain on every signup".
 
   ---
 
@@ -1507,6 +1710,19 @@ CONSTRAINTS
 → Every file must have a README.md index in its directory
 → Every concept file must include a Subtitle (Industry name(s)
    + Type label) directly under the H1, before the blockquote
+→ Every concept file must include an In plain English block
+   immediately after the blockquote and before Quick summary —
+   with all three sub-blocks (The question, The answer in
+   one breath, Where you'd see this elsewhere). No file paths,
+   no project nouns inside this block.
+→ Every concept file must use the Quick summary variant
+   that matches its directory:
+     01-system-design/  → Variant A (what, why here,
+                          checklist step, tradeoff)
+     02-dsa/            → Variant B (data shape, operation,
+                          complexity now, breakpoint)
+     03-ai-engineering/ → Variant C (the chain, why this shape,
+                          failure mode, cost)
 → Every concept file must include an Elaborate block
 → Every concept file must include an Interview defense block
 → Every concept file must include a Validate block
@@ -1514,7 +1730,6 @@ CONSTRAINTS
    and line range — no concept file without a code reference
 → Every Level 3 validate scenario must reference the specific
    file and lines the reader checks their answer against
-→ Every concept file must include an Interview defense block
 ```
 
 > 💾 Save output → `.aipe/specs/study/[project-name]/` with this structure:
