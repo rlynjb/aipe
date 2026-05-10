@@ -91,7 +91,7 @@ The non-negotiables from the template:
 9. **Every "In this codebase" section must include a real code reference** — `**File:**` + `**Function / class:**` + `**Line range:**` (e.g., `L42–L67`). For multi-file patterns, list every file with the role each plays. No concept file ships without a code reference; the validate block depends on it for Level 3 and Level 4 to send the reader back to specific code.
 10. **Every concept file opens with a two-line subtitle** directly under the H1 and BEFORE the blockquote summary. Two fields: `**Industry name(s):**` (formal/widely-recognised names this pattern goes by, comma-separated; or `— (project-specific composition of [X] + [Y])` if no formal name) and `**Type:**` (one of: `Industry standard` / `Language-agnostic` / `Industry standard · Language-agnostic` / `Project-specific`). The subtitle's job is to give the reader the vocabulary they'd use to describe this concept to other devs in conversation — so the listener can do a one-second pattern lookup instead of needing three paragraphs of context.
 
-11. **Every concept file in `01-system-design/` includes a "Checklist step" tag** as a 4th bullet in the Quick summary section. The template defines a 6-step mental checklist for system design — `1. Data model`, `2. Request / response flow`, `3. Caching layers`, `4. State ownership`, `5. Failure handling`, `6. Scale concerns`. Each pattern lives in one or more steps; tag accordingly (e.g., `**Checklist step:** 2 (Request flow) + 4 (State ownership)`). This anchors every system-design concept in the unified framework so the reader builds one mental model across the section instead of treating each pattern as standalone trivia. The `02-dsa/` and `03-ai-engineering/` files do NOT use this field — it is system-design-only.
+11. **Every concept file in `01-system-design/` includes a "Checklist step" tag** as one bullet in the Summary section's Part 2 key-point list. The template defines a 6-step mental checklist for system design — `1. Data model`, `2. Request / response flow`, `3. Caching layers`, `4. State ownership`, `5. Failure handling`, `6. Scale concerns`. Each pattern lives in one or more steps; tag accordingly (e.g., `Lives in step 2 (Request flow) and step 4 (State ownership) of the system-design checklist`). This anchors every system-design concept in the unified framework so the reader builds one mental model across the section instead of treating each pattern as standalone trivia. The `02-dsa/` and `03-ai-engineering/` files do NOT use this field — it is system-design-only.
 
 12. **Voice: state decisions, not hopes.** Hedging language (`this might`, `could potentially`, `tends to`) is banned. If something is a tradeoff, name it. If something is suboptimal, say so plainly — then explain why it was still the right call at the time. The reader should feel a senior colleague is explaining over coffee, not a textbook.
 
@@ -104,9 +104,13 @@ The non-negotiables from the template:
     - **Paragraph 2 — the zoom out.** 3–5 sentences. Name the pattern, state what it does in general terms, place it in the family of problems it belongs to, and name 1–2 other places the same pattern shows up (React's renderer abstraction, Postgres drivers, HTTP keep-alive, thread pools). End with an explicit handoff to How it works ("Here's how that actually works in this codebase." / "How it shows up here is in the next block.").
     What Why care is NOT: not a definition dump (definitions belong in How it works); not a tradeoff discussion (Tradeoffs has its own block); not codebase-specific (file paths and project nouns are banned here); not long (past two short paragraphs and it competes with How it works).
 
-14. **Quick summary is the RECAP block, positioned after Tradeoffs and before Interview defense.** Not the zoom-in. By the time the reader gets here, they've seen the hook, the diagram, the mechanics, the codebase references, and the tradeoffs. Quick summary collapses all of that into a one-paragraph recap plus a bulleted key-point list. It's the block the reader returns to in three weeks to remember what this file was about. **No new information** — everything in Quick summary must already appear earlier in the file.
+14. **Summary is the RECAP block, positioned after Tradeoffs and before Interview defense.** (Renamed from "Quick summary" in v1.21.0.) Not the zoom-in. By the time the reader gets here, they've seen the hook, the diagram, the mechanics, the codebase references, and the tradeoffs. Summary collapses all of that into a one-paragraph recap plus a bulleted key-point list. It's the block the reader returns to in three weeks to remember what this file was about. **No new information** — everything in Summary must already appear earlier in the file.
     - **Part 1 — concept recap (one paragraph, 3–5 sentences).** Cover: what the pattern is (pulled from Why care's paragraph 2), how it shows up in this codebase (from How it works or In this codebase), the constraint that forced it (from Tradeoffs), the cost being paid (from Tradeoffs). Written as if a colleague asked "wait, what's this file about again?" — the answer they get without scrolling.
     - **Part 2 — key points to remember (3–6 bullets).** Short, declarative one-sentence statements. The kind of thing the reader could write on an index card. Each bullet: one sentence (longer belongs in How it works or Tradeoffs); a conclusion not a definition ("X happens before Y" not "X is a function that does Y"); specific to this codebase where it matters (generic facts about the pattern belong in Why care). Mix categories: at least one shape ("the parts and how they connect"), at least one rule ("the invariant this pattern maintains"), at least one tradeoff ("the cost being paid"). A reader who skims only the bullets walks away with the shape, the rule, and the cost.
+
+15. **Tradeoffs is a structured block, not a prose dump.** Required parts: (a) a comparison table with at least four cost dimensions across two columns — path taken vs the obvious alternative; (b) Sub-block 1 — what we gave up: 2–4 paragraphs walking each cost in concrete terms (files, line counts, ms, dollars, scenarios — never "added complexity"); (c) Sub-block 2 — what the alternative would have cost: same dimensions, counterfactual frame; (d) Sub-block 3 — the breakpoint: one paragraph naming a quantitative or event-shaped condition under which this choice stops being the right call. Sub-block 4 (what wasn't actually a tradeoff) is optional but valuable when the "obvious alternative" people might raise wasn't a real option. Cost-dimension catalog to consider: performance (ms/RPS/MB), money ($/mo, $/1k ops), complexity (files/lines/layers), cognitive load (mental models a contributor must hold), vendor lock-in (migration effort), debugging cost (how hard to localize a bug), hire-ability/onboarding (does a new engineer recognise this), failure blast radius (what else breaks when this breaks). **Tone:** own the cost or own the mistake — hedging language ("performance is acceptable but could be improved") is banned. A tradeoff without a breakpoint is just a complaint; a tradeoff with a breakpoint becomes a scheduled decision the team can revisit.
+
+16. **Interview defense answers carry diagrams.** Each Q&A in the Likely questions section gets a small ASCII diagram (5–10 lines, labelled, in a fenced block) sized to the question level: [mid] gets a **flow or shape diagram** (3–5 boxes showing what the thing does or how its parts connect); [senior] gets a **comparison diagram** (two-column table or side-by-side flows showing "what we picked" vs "what we didn't" with the tradeoff as the point); [arch] gets a **scale or boundary diagram** (what changes at 10×, often a layer diagram with one layer marked "breaks first"). The "question candidates always dodge" Q&A also gets a comparison diagram showing what was picked vs what the questioner suggested, with the full cost ledger. Skip the diagram only when the question is genuinely non-visual (e.g., "why TypeScript over JavaScript" — bullet tradeoffs suffice). The diagram is the visual the reader sketches on a whiteboard while they speak — the act of drawing is the practice.
 
 Diagrams use box-drawing characters: `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ → ← ↑ ↓ ◀ ▶ ▲ ▼`. No Mermaid, no images, no PlantUML.
 
@@ -260,13 +264,83 @@ Show the relevant code shape in pseudocode or a trimmed real snippet if it clari
 
 ## Tradeoffs
 
-[Comparison table or bullet list — what this approach gives, what it costs, what the alternative would be and when you'd choose it instead]
+Most architectural decisions are not about right vs wrong — they're about which costs you can afford to pay and which ones would have broken you. This block names both sides of the ledger so the reader sees the decision as a choice, not an obvious default. Open with a comparison table putting both paths' costs side by side, then walk each sub-block in prose. **Hedging language is banned** ("performance is acceptable but could be improved" → no). Own the cost or own the mistake.
+
+### Comparison table — both costs in one frame
+
+Two-column table. Left column: the path taken in this codebase. Right column: the obvious alternative. Each row is one cost dimension. Cover all that apply; at least four rows must be filled in:
+
+```
+┌──────────────────┬──────────────────┬──────────────────┐
+│ Cost dimension   │ Path taken       │ Alternative      │
+├──────────────────┼──────────────────┼──────────────────┤
+│ Build time       │ ...              │ ...              │
+│ Latency          │ ...              │ ...              │
+│ Dollars/month    │ ...              │ ...              │
+│ Complexity       │ ...              │ ...              │
+│ Team cog. load   │ ...              │ ...              │
+│ Vendor lock-in   │ ...              │ ...              │
+│ Debugging        │ ...              │ ...              │
+│ Hire-ability     │ ...              │ ...              │
+│ Migration cost   │ ...              │ ...              │
+│ Failure blast    │ ...              │ ...              │
+└──────────────────┴──────────────────┴──────────────────┘
+```
+
+A table with only "complexity" and "dollars" is the lazy version of this block.
+
+### Sub-block 1 — what we gave up
+
+2–4 short paragraphs. Walk the costs the path-taken column lists, one or two per paragraph, with the concrete shape of each cost. Not "added complexity" — say which file holds the extra layer, how many lines it adds, what a new contributor has to read before they can change it. Cost-dimension catalog and what "concrete" looks like:
+
+- **Performance cost** — latency in ms, throughput drop in RPS, memory in MB, payload in KB. "Adds ~40ms to every chain call from the factory indirection." Not "may impact performance."
+- **Money cost** — $/mo at current usage, $/1k operations, $/user. "$0.12 per 1k caption generations at current Sonnet 4 pricing; ~$8/month at solo usage."
+- **Complexity cost** — files added, lines added, layers between caller and callee, concepts a contributor must learn. "Three extra files in `lib/providers/`; one shared interface to read before adding any provider."
+- **Cognitive load** — how much of the codebase a contributor must keep in their head. "Anyone touching chains has to know which provider runs in which env."
+- **Vendor lock-in** — what breaks if the vendor disappears, raises prices, or deprecates the API. Quantify the migration, not just the risk. "Switching off Netlify Blobs requires rewriting every wrapper in `netlify/functions/lib/storage/` — about a week."
+- **Debugging cost** — how hard to find a bug when something goes wrong. "Rate-limit errors look identical across providers; you have to check the env var to know who's throttling you."
+- **Hire-ability/onboarding** — does a new engineer recognise the pattern or have to learn it? "Any React engineer recognises a context provider; almost no one recognises our custom chain-routing pattern — onboarding adds 1–2 days."
+- **Failure blast radius** — when this thing breaks, what else breaks with it? "All three providers sit behind the same factory; if the factory throws at startup, every chain in the app fails to load."
+
+Every cost named must point at a real file, a real number, or a real scenario. Generic costs ("added complexity", "some performance impact") are banned — they are the prose equivalent of shrugging.
+
+### Sub-block 2 — what the alternative would have cost
+
+2–4 short paragraphs. Same cost dimensions, applied to the path not taken. This is the half of the tradeoff most candidates skip — they describe what they pay without describing what they avoided paying.
+
+Frame as counterfactuals: "If we had used [alternative] instead, the cost would have been [concrete shape]."
+
+Example:
+
+> If we had hardcoded one provider into every chain, the up-front complexity cost would have been zero — no factory, no shared interface, no env-based routing. But the cost of switching providers later would have meant editing every chain file individually. With six chains in the codebase and the provider switch happening twice in the last year, that would have been twelve chain rewrites instead of two env flips.
+
+The alternative's cost is often invisible to people who never paid it. Make it visible.
+
+### Sub-block 3 — the breakpoint
+
+One short paragraph. Name the concrete condition under which the path taken stops being the right call. A tradeoff without a breakpoint is just a complaint; a tradeoff with a breakpoint becomes a scheduled decision the team can revisit.
+
+Good breakpoints are quantitative or event-shaped:
+
+- "Fine until traffic exceeds 1M chain calls/day — at that point the indirection cost becomes measurable and the factory should be inlined."
+- "Fine until the team grows past six engineers — at that point the cognitive load of the custom pattern exceeds the savings of provider switching."
+- "Fine until a single provider's unique features (caching, structured outputs) become load-bearing — at that point the lowest-common-denominator interface becomes the bottleneck."
+
+Bad breakpoints: "Fine for now." / "Fine until it isn't." / "Fine until we scale." / "Fine until requirements change." If you cannot name a real breakpoint, the decision was not a tradeoff — it was a guess. Say that openly rather than inventing a fake one.
+
+### Sub-block 4 — what wasn't actually a tradeoff (optional)
+
+One short paragraph, when relevant. Sometimes the "obvious alternative" people might raise wasn't a real option in the first place. Surfacing the non-options pre-empts wasted discussion and shows the reader you considered them.
+
+Example: "Redis was not a real alternative — we needed durable storage that survived restarts. Redis is in-memory by default; the AOF option would have meant operating Redis as a database, which is not what it's good at."
+
+Skip this sub-block when every plausible alternative was a real option. Forcing it in when nothing fits makes the document feel defensive.
 
 ---
 
-## Quick summary
+## Summary
 
-The recap. By the time the reader lands here they've seen the hook, the diagram, the mechanics, the codebase references, and the tradeoffs. Quick summary collapses all of that into a one-paragraph recap plus a bulleted key-point list. It is the block the reader returns to in three weeks to remember what this file was about. **No new information** — everything here must already appear earlier in the file.
+The recap. By the time the reader lands here they've seen the hook, the diagram, the mechanics, the codebase references, and the tradeoffs. Summary collapses all of that into a one-paragraph recap plus a bulleted key-point list. It is the block the reader returns to in three weeks to remember what this file was about. **No new information** — everything here must already appear earlier in the file.
 
 Two parts, in this order.
 
@@ -315,9 +389,18 @@ Mix categories. At least one **shape** ("the parts and how they connect"), at le
       → the tradeoff that was accepted
       → what would change at scale or under different constraints
       Written at the level the question label indicates.]
+  Diagram: [Small ASCII diagram (5–10 lines, labelled, fenced block) that supports the answer — the visual the reader can sketch on a whiteboard while they speak. Not a recap of the primary diagram. Match the type to the question level:]
+
+    [mid]    → flow or shape diagram: 3–5 boxes showing what the thing does or how its parts connect. "Here's what a request does, step by step."
+    [senior] → comparison diagram: two-column table or side-by-side flows showing "what we picked" vs "what we didn't, and why." The tradeoff is the point.
+    [arch]   → scale or boundary diagram: what changes at 10×, where the architecture breaks first, what layer would need replacing. Often a layer diagram with one layer marked "breaks first."
+
+  Skip the diagram only when the question is genuinely non-visual (e.g., "why TypeScript over JavaScript" → bullet tradeoffs, not a diagram). When in doubt, draw it — the act of drawing is the practice.
 
 ### The question candidates always dodge
 [One question per concept that trips people up. Write the question. Then write the honest answer that owns the limitation without apologising for it. Longer than the others — separates candidates who understand from candidates who built.]
+
+This question always gets a diagram. The dodge is usually a "why didn't you do X" question, so the visual is the comparison: what was picked, what was suggested, why the suggestion's cost was higher than it looks. Two-column table or side-by-side flows, with the full cost ledger.
 
 ### One-line anchors
 [3–5 short, memorable statements about this concept that the reader can hold in their head walking into the interview. Not definitions — conclusions. The kind of thing you'd say to demonstrate you've thought about this, not just used it.]
@@ -446,9 +529,9 @@ For every existing concept file, run TWO diffs:
   7. `## [Concept] — diagram` (moved AFTER How it works in v1.20.0 as the recap visual; must label every architectural layer it spans — UI / Service / Storage / Network boundary / Provider — using left-margin labels, horizontal dividers with layer names, or grouped boxes inside labelled bands)
   8. `## In this codebase` (must contain `**File:**`, `**Function / class:**`, `**Line range:**` — code reference is mandatory)
   9. `## Elaborate` (with subsections: Where this pattern comes from / The deeper principle / Where this breaks down / What to explore next)
-  10. `## Tradeoffs`
-  11. `## Quick summary` (RECAP position since v1.19.0 — after Tradeoffs, before Interview defense). Two parts: Part 1 is a one-paragraph concept recap (3–5 sentences covering what the pattern is, how it shows up in this codebase, the constraint that forced it, the cost paid). Part 2 is 3–6 short declarative key-point bullets mixing shape / rule / tradeoff (system-design files include one bullet naming the checklist step(s) the pattern lives in). No new information — everything must already appear earlier in the file.
-  12. `## Interview defense` (with subsections: What an interviewer is really asking / Likely questions / The question candidates always dodge / One-line anchors)
+  10. `## Tradeoffs` (restructured in v1.21.0 — was a one-line prose placeholder, now requires: a comparison table with at least four cost dimensions across two columns (path taken vs alternative); Sub-block 1 — what we gave up (2–4 paragraphs with concrete costs — files/ms/dollars/scenarios — never "added complexity"); Sub-block 2 — what the alternative would have cost (same dimensions, counterfactual frame); Sub-block 3 — the breakpoint (quantitative or event-shaped condition under which the choice stops being right); Sub-block 4 — what wasn't actually a tradeoff (optional). Tone: own the cost or own the mistake; hedging language is banned.)
+  11. `## Summary` (RENAMED in v1.21.0 — was `## Quick summary` in v1.19.0 and v1.20.0; same content shape. RECAP position — after Tradeoffs, before Interview defense. Two parts: Part 1 is a one-paragraph concept recap of 3–5 sentences; Part 2 is 3–6 short declarative key-point bullets mixing shape / rule / tradeoff. System-design files include one bullet naming the checklist step(s) the pattern lives in. No new information — everything must already appear earlier in the file.)
+  12. `## Interview defense` (with subsections: What an interviewer is really asking / Likely questions / The question candidates always dodge / One-line anchors). In v1.21.0, every Q&A in Likely questions gets a small ASCII diagram (5–10 lines, labelled) sized to the question level — [mid] gets a flow/shape diagram, [senior] gets a comparison diagram, [arch] gets a scale/boundary diagram. The dodge Q&A also gets a comparison diagram. Skip a diagram only when the question is genuinely non-visual.
   13. `## Validate your understanding` (with subsections: Level 1 / Level 2 / Level 3 / Level 4 / Quick check)
 
   If any of those is missing, flag it as "Missing section: `<section name>`" — not as a content-update issue.
@@ -461,15 +544,21 @@ For every existing concept file, run TWO diffs:
   - "Primary diagram missing architectural-layer labels" — flag any primary diagram that crosses a system boundary (UI ↔ Service, Service ↔ Storage, app ↔ Provider) without naming the boundary. The diagram must label each layer it spans using a left-margin label, a horizontal divider with the layer name, or grouped boxes inside a labelled band.
   - "How it works missing in-paragraph anchors" — flag any `## How it works` paragraph that introduces jargon without a secondary visual in the same paragraph (small diagram, pseudocode block, comparison table, or execution trace). Prose-only paragraphs that introduce new terms are not allowed.
   - "How it works missing handoff sentence to the primary diagram" — flag any `## How it works` block that ends without an explicit handoff line ("The full picture is below." / "Here's the diagram of the whole flow." / similar).
-  - "Quick summary in wrong position (still after Why care)" — flag any v1.18.0-shape Quick summary that sits between Why care and How it works/diagram. It must be MOVED to after Tradeoffs and before Interview defense, AND RESHAPED from the bullet-only zoom-in form to the v1.19.0+ recap form (Part 1 concept-recap paragraph + Part 2 key-point bullets).
+  - "Quick summary in wrong position (still after Why care)" — flag any v1.18.0-shape Quick summary that sits between Why care and How it works/diagram. It must be MOVED to after Tradeoffs and before Interview defense, RESHAPED to the v1.19.0+ recap form (Part 1 concept-recap paragraph + Part 2 key-point bullets), and RENAMED to `## Summary`.
+  - "Section renamed: `## Quick summary` → `## Summary`" — flag any file whose recap block heading is still `## Quick summary` (v1.19.0 and v1.20.0 wording). Rename the heading; content shape is unchanged.
+  - "Tradeoffs still in prose/bullet form" — flag any `## Tradeoffs` block that doesn't have the v1.21.0 structure: comparison table (≥4 cost dimensions) + Sub-block 1 "what we gave up" + Sub-block 2 "what the alternative would have cost" + Sub-block 3 "the breakpoint" (Sub-block 4 "what wasn't actually a tradeoff" is optional). Old prose/bullets become source material for Sub-block 1.
+  - "Tradeoffs missing breakpoint" — flag any Tradeoffs block whose breakpoint sub-block is vague ("fine for now", "fine until it isn't", "fine until we scale") or absent. The breakpoint must be quantitative or event-shaped, or the file must openly say "the decision was a guess, not a tradeoff."
+  - "Interview defense answers missing per-answer diagrams" — flag any Likely-questions Q&A without a small ASCII diagram (5–10 lines, fenced block, labelled) appropriate to the question level: flow/shape for [mid], comparison for [senior], scale/boundary for [arch]. Skip flagging only when the question is genuinely non-visual.
+  - "Dodge question missing comparison diagram" — flag any "The question candidates always dodge" block without a comparison diagram showing what was picked vs what the questioner suggested, with the full cost ledger.
   - "Why care still hands off to Quick summary or to the diagram" — flag any Why care paragraph 2 whose closing sentence says "Quick summary below" (v1.18.0 wording) or "diagram below" / "diagram and How it works" (v1.19.0 wording). The handoff target is now How it works alone.
   - **Note on legacy guides:**
     - Files generated under **v1.17.0** may contain `## In plain English` (with the three sub-sections `### The question` / `### The answer in one breath` / `### Where you'd see this elsewhere`) instead of the new `## Why care`. Treat as "Section to be replaced: `## In plain English` → `## Why care`" — use the existing content as source material when collapsing the three sub-sections into the two new paragraphs.
     - Files generated under **v1.17.0** in `02-dsa/` and `03-ai-engineering/` may use Quick summary Variant B (`**Data shape:**` / `**Operation:**` / etc.) or Variant C (`**The chain:**` / etc.). Those variants were removed in v1.18.0 and the whole block has since moved + reshaped in v1.19.0. Treat as "Quick summary to be migrated to v1.19.0 recap form (paragraph + key points) AND moved to after Tradeoffs" — preserve the old bullet content as raw material for the new recap sentences and key-point bullets.
     - Files generated under **v1.18.0** have Quick summary in the WRONG position (between Why care and the diagram) and in the WRONG shape (single zoom-in bullet list of `**What:**` / `**Why here:**` / `**Checklist step:**` / `**Tradeoff:**`). Treat as "Quick summary to be moved (to after Tradeoffs) AND reshaped (to Part 1 recap paragraph + Part 2 key-point bullets)". The v1.18.0 bullet content is reusable material — `**What:**` and `**Why here:**` feed Part 1's "what the pattern is" and "how it shows up here" sentences; `**Tradeoff:**` feeds Part 1's "constraint" and "cost" sentences; `**Checklist step:**` becomes one of Part 2's key-point bullets.
     - Files generated under **v1.19.0** have the primary diagram in the WRONG position (still before `## How it works`) and a Why care paragraph 2 whose handoff sentence points at "the diagram and How it works". v1.20.0 swapped the order — How it works comes first, primary diagram follows as recap visual — and the Why care handoff now points at How it works alone. Treat as "Sections to be reordered: `## How it works` and `## [Concept] — diagram` must be SWAPPED so How it works is first". Also: append a handoff sentence at the end of How it works pointing at the primary diagram below; add architectural-layer labels to the primary diagram if it crosses any layer boundary; rewrite the Why care paragraph 2 closing sentence to hand off to How it works only.
+    - Files generated under **v1.20.0** have `## Quick summary` (instead of `## Summary`), a placeholder-only `## Tradeoffs` block (one prose paragraph or a bullet list — no comparison table, no sub-blocks), and Interview-defense Q&A answers without per-answer diagrams. The v1.21.0 fixes are: (a) rename `## Quick summary` → `## Summary` (content unchanged); (b) expand `## Tradeoffs` from placeholder/bullets into the structured form (comparison table + sub-blocks 1, 2, 3, optional 4) — the old prose becomes raw material for Sub-block 1 "what we gave up"; (c) for each Likely-questions Q&A, add a small ASCII diagram matched to the question level (flow/shape for [mid], comparison for [senior], scale/boundary for [arch]); (d) for the dodge Q&A, add a comparison diagram showing what was picked vs the questioner's suggestion with the full cost ledger.
 
-  All variants are fixed the same way: insert/replace/reorder the structured fields in their canonical position, with values drawn from the project context and from existing-block content where present.
+  All variants are fixed the same way: insert/replace/reorder/restructure the affected fields in their canonical position, with values drawn from the project context and from existing-block content where present.
 
 For each file, sum the findings from both diffs. Files that are clean on both diffs are **still accurate** — leave them alone.
 
@@ -519,7 +608,7 @@ Reply "no" to abort.
 Run only after the user replies "yes" or with a scoped path. For each file approved:
 
 - Edit only the sections identified as outdated, content-missing, or structurally absent.
-- For **structurally absent sections**, append the section in canonical order. The current sequence is: Title → **Subtitle (Industry name(s) + Type)** → blockquote → See also → **Why care** → **How it works** → **[Concept] — diagram (recap visual, labels every layer)** → In this codebase → Elaborate → Tradeoffs → **Quick summary (recap form)** → Interview defense → Validate your understanding.
+- For **structurally absent sections**, append the section in canonical order. The current sequence is: Title → **Subtitle (Industry name(s) + Type)** → blockquote → See also → **Why care** → **How it works** → **[Concept] — diagram (recap visual, labels every layer)** → In this codebase → Elaborate → **Tradeoffs (comparison table + 4 sub-blocks)** → **Summary (recap form)** → **Interview defense (with per-answer diagrams)** → Validate your understanding.
 - For a **missing subtitle block**, insert two lines immediately after the H1 and before the blockquote:
   - `**Industry name(s):**` followed by formal/widely-recognised names this pattern goes by (or `— (project-specific composition of [X] + [Y])` if none).
   - `**Type:**` followed by one of `Industry standard` / `Language-agnostic` / `Industry standard · Language-agnostic` / `Project-specific`.
@@ -532,8 +621,13 @@ Run only after the user replies "yes" or with a scoped path. For each file appro
 - For a **`## How it works` paragraph that introduces jargon without an in-paragraph visual**, add a secondary visual inside that paragraph: a small diagram, a pseudocode block, a comparison table, or an execution trace — whichever earns its place. The rule is that no piece of jargon lands in a paragraph without a visual anchoring it in the same paragraph.
 - For a **primary diagram missing architectural-layer labels** (the diagram crosses a UI ↔ Service, Service ↔ Storage, or app ↔ Provider boundary without naming it), add the layer labels. Use whichever shape fits: a left-margin label, a horizontal divider with the layer name, or grouped boxes inside a labelled band (`┌─ Service layer ──┐ ... └────────────┘`). Pick the labels from the system map in `00-overview.md` so the bands match the layers the system actually has.
 - For a **legacy `## In plain English` block (v1.17.0 shape)**, REPLACE the section with `## Why care`. Collapse the three sub-sections into two paragraphs: paragraph 1 turns "The question" into the hook (rephrase the question as one of the three angles), paragraph 2 fuses "The answer in one breath" + "Where you'd see this elsewhere" into a single zoom-out paragraph with an explicit handoff sentence pointing at How it works. Old content is reusable as source material.
-- For a **Quick summary in the v1.18.0 position and shape** (still sitting between Why care and the diagram/How it works, as a bullet list of `**What:**` / `**Why here:**` / `**Checklist step:**` / `**Tradeoff:**`), do BOTH: (a) DELETE the block from its old position, and (b) INSERT a new Quick summary block in the v1.19.0 recap form between Tradeoffs and Interview defense. The v1.19.0 recap form has two parts: **Part 1** is a single paragraph of 3–5 sentences (what the pattern is / how it shows up in this codebase / the constraint that forced it / the cost being paid); **Part 2** is 3–6 short declarative key-point bullets mixing shape / rule / tradeoff. For system-design files, include one bullet in Part 2 that names the checklist step(s) the pattern lives in. Reuse the v1.18.0 bullet content as raw material: `**What:**`'s second sentence feeds Part 1's "how it shows up here" sentence; `**Why here:**` feeds Part 1's "constraint" sentence; `**Tradeoff:**` feeds Part 1's "cost" sentence; `**Checklist step:**` becomes the system-design checklist-step bullet in Part 2.
-- For a **legacy Quick summary Variant B or C (v1.17.0 shape)** in `02-dsa/` or `03-ai-engineering/` files, treat it the same as the v1.18.0 case: DELETE from old position, INSERT v1.19.0 recap form after Tradeoffs. Map the legacy bullets through the v1.18.0 → v1.19.0 path (Variant B's `**Operation:**` → Part 1's "what the pattern is" sentence; `**Breakpoint:**` → Part 1's "constraint" sentence; etc.). Preserve old prose as material; drop the variant-specific labels.
+- For a **Quick summary in the v1.18.0 position and shape** (still sitting between Why care and the diagram/How it works, as a bullet list of `**What:**` / `**Why here:**` / `**Checklist step:**` / `**Tradeoff:**`), do all THREE: (a) DELETE the block from its old position, (b) INSERT a new block in the v1.19.0+ recap form between Tradeoffs and Interview defense, and (c) NAME the new block `## Summary` (not `## Quick summary`). The recap form has two parts: **Part 1** is a single paragraph of 3–5 sentences (what the pattern is / how it shows up in this codebase / the constraint that forced it / the cost being paid); **Part 2** is 3–6 short declarative key-point bullets mixing shape / rule / tradeoff. For system-design files, include one bullet in Part 2 that names the checklist step(s). Reuse the v1.18.0 bullet content as raw material: `**What:**`'s second sentence feeds Part 1's "how it shows up here" sentence; `**Why here:**` feeds Part 1's "constraint" sentence; `**Tradeoff:**` feeds Part 1's "cost" sentence; `**Checklist step:**` becomes the system-design checklist-step bullet in Part 2.
+- For a **legacy Quick summary Variant B or C (v1.17.0 shape)** in `02-dsa/` or `03-ai-engineering/` files, treat it the same as the v1.18.0 case: DELETE from old position, INSERT v1.19.0+ recap form after Tradeoffs, NAME it `## Summary`. Map the legacy bullets through the v1.18.0 → v1.19.0 path (Variant B's `**Operation:**` → Part 1's "what the pattern is" sentence; `**Breakpoint:**` → Part 1's "constraint" sentence; etc.). Preserve old prose as material; drop the variant-specific labels.
+- For a **`## Quick summary` heading still in place** (v1.19.0/v1.20.0 files with the block already in the correct position and recap shape), simply rename the heading to `## Summary`. Do not touch the content.
+- For a **`## Tradeoffs` block still in placeholder/prose/bullet form** (no comparison table, no sub-blocks), restructure it to the v1.21.0 form: (a) insert a comparison table at the top with at least four cost dimensions, two columns (path taken vs alternative) — pick dimensions from the cost-dimension catalog (performance, money, complexity, cognitive load, vendor lock-in, debugging, hire-ability, failure blast); (b) Sub-block 1 — "what we gave up" — walk each cost in concrete terms (files, line counts, ms, dollars, scenarios); the old prose/bullets become source material for this sub-block; (c) Sub-block 2 — "what the alternative would have cost" — same dimensions, counterfactual frame; (d) Sub-block 3 — "the breakpoint" — quantitative or event-shaped; if no real breakpoint exists, say openly that the decision was a guess, not a tradeoff; (e) Sub-block 4 — "what wasn't actually a tradeoff" — only if a plausible-but-not-real alternative exists. Strip any hedging language ("performance is acceptable but could be improved" → either own the cost or own the mistake).
+- For a **`## Tradeoffs` block with a vague breakpoint** ("fine for now", "fine until it isn't", "fine until we scale", "fine until requirements change"), rewrite Sub-block 3 to give a concrete breakpoint — a number (chain calls/day, team size, dollar threshold) or a named event (provider's unique feature becomes load-bearing, offline support becomes a requirement). If no real breakpoint can be named, replace the sub-block with one sentence saying the decision was a guess rather than a tradeoff.
+- For **Interview-defense Likely questions Q&As missing per-answer diagrams**, add a small ASCII diagram (5–10 lines, fenced block, labelled) under each answer, matched to the question level: [mid] gets a flow/shape diagram (3–5 boxes showing the thing's behaviour or parts); [senior] gets a comparison diagram (two columns, "what we picked" vs "what we didn't", tradeoff as the point); [arch] gets a scale/boundary diagram (what changes at 10×, often a layer diagram with one layer marked "breaks first"). Skip adding a diagram only when the question is genuinely non-visual (rare).
+- For an **Interview-defense dodge Q&A missing a comparison diagram**, add a comparison diagram showing what was picked vs the questioner's suggestion, with the full cost ledger (build time, ops burden, idle cost, cold-start, right-when row). Two-column ASCII table, fenced block.
 - If the **system-design `README.md` is missing the 6-step mental checklist**, append it after the existing index. Tag each listed pattern with its checklist step(s) so the section README is the unified framework view.
 - Do NOT rewrite accurate sections.
 - Maintain the existing voice and per-concept file structure.
