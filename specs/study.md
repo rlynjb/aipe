@@ -1342,6 +1342,651 @@ Example of a validate block done right:
   Open and verify.
 
 ─────────────────────────────────────────────────
+WHAT TO EXPECT BY DISCIPLINE — reference catalog
+─────────────────────────────────────────────────
+
+This section is a reference, not a generator
+requirement. It exists for two reasons. First, when
+the spec is pointed at a new codebase, knowing what
+discipline it falls into ("this is a frontend SPA",
+"this is a backend service", "this is a full-stack
+app") helps predict which patterns will show up and
+therefore which concept files to expect. Second,
+when the reader is choosing what to study next,
+this section maps the patterns by where they live —
+so a frontend engineer pivoting toward full-stack
+knows which backend patterns to learn first.
+
+Use it as a checklist when scanning a new codebase:
+read the discipline subsection that matches, walk
+the pattern list, and note which patterns you find.
+The ones you find become concept files. The ones
+you don't find are gaps — either the codebase
+doesn't need them, or you're missing something
+worth investigating.
+
+Patterns are listed by frequency in real codebases,
+not alphabetically. The first few in each list are
+nearly universal; the bottom of each list is
+context-dependent.
+
+  ### Tech stack rule — applies to every concept file
+
+  Whenever a concept file references a tech choice
+  (in How it works, Tradeoffs, Interview defense, or
+  anywhere else), it names two things:
+
+    1. What this codebase actually uses. The real
+       library, framework, or service in the repo.
+       Reference the actual file or import line.
+
+    2. What the leading industry choice is today
+       (year of last spec update — see header). Pick
+       one of the two angles below depending on what
+       the concept is about, and label which angle
+       you used:
+
+         → Adoption-leading — the most-deployed-in-
+           production choice across real teams in 2026.
+           Use this when the concept file is about a
+           battle-tested pattern (auth, request flow,
+           DB access). What a senior engineer at a
+           Series B startup would default to.
+
+         → Innovation-leading — the choice that has
+           the most mindshare and momentum, likely
+           to lead in 1–2 years. Use this when the
+           concept is in a fast-moving area (AI
+           tooling, edge compute, type safety). What
+           a senior engineer at a frontier-tech
+           company is reaching for.
+
+  Both choices get a one-sentence "why it leads"
+  reason — not marketing, the specific thing that
+  makes it the leader (typed end-to-end, zero
+  config, server-component-native, edge-runtime-
+  compatible). Never claim a single tech "won";
+  call out where there is real disagreement.
+
+  If the codebase already uses the leading choice,
+  say so — and pick a credible runner-up to contrast
+  against, so the reader sees the alternative
+  landscape regardless of what the codebase picked.
+
+  This applies inside the concept files. The
+  discipline section's stack lists below are the
+  same idea applied at the catalog level — "in the
+  wild" vs "leading today".
+
+─────────────────────────────────────────────────
+FRONTEND
+─────────────────────────────────────────────────
+
+The shape of a frontend codebase. Boundaries to
+look for, layers to expect, patterns to study.
+
+  ┌──────────────────────────────────────────────────────┐
+  │ Typical frontend architecture                        │
+  └──────────────────────────────────────────────────────┘
+
+  ┌─ Browser ───────────────────────────────────────────┐
+  │                                                     │
+  │  ┌─ Routing layer ─────────────────────────────┐   │
+  │  │  URL → page component                       │   │
+  │  │  (React Router, Next.js routing, Vue Router)│   │
+  │  └─────────────────────────────────────────────┘   │
+  │                       │                             │
+  │                       ▼                             │
+  │  ┌─ Component tree ────────────────────────────┐   │
+  │  │  Layout → Page → Feature → Primitive        │   │
+  │  │  (composition, render props, slots)         │   │
+  │  └─────────────────────────────────────────────┘   │
+  │                       │                             │
+  │       ┌───────────────┼───────────────┐             │
+  │       ▼               ▼               ▼             │
+  │  ┌─────────┐    ┌─────────┐    ┌─────────────┐    │
+  │  │ Local   │    │ Form    │    │ Server      │    │
+  │  │ state   │    │ state   │    │ state cache │    │
+  │  │ (hooks) │    │ (RHF,   │    │ (RQ, SWR)   │    │
+  │  │         │    │ Formik) │    │             │    │
+  │  └─────────┘    └─────────┘    └──────┬──────┘    │
+  │                                       │            │
+  └───────────────────────────────────────│────────────┘
+                                          │ HTTP/WS
+                                          ▼
+                                    [API boundary]
+
+Patterns to look for, in order of how often you see them:
+
+  → Component composition
+    How components combine — children, slots, render
+    props, compound components. The big architectural
+    decision a frontend codebase makes early.
+
+  → Client routing
+    How URL changes map to view changes. SPA-style
+    (history API) vs file-based (Next.js, Remix).
+    Look for nested routes, dynamic params, route
+    guards.
+
+  → State ownership split
+    The most important pattern in any modern frontend:
+    server state (data from APIs, cached locally)
+    vs client state (UI state, form state, ephemeral)
+    vs URL state (filters, pagination, modals you can
+    share a link to). React Query and SWR are the
+    explicit acknowledgment that these are different.
+
+  → Forms and validation
+    How fields, errors, submission, and server-side
+    validation responses are wired together. React
+    Hook Form, Formik, native forms, Zod schemas.
+
+  → Optimistic UI
+    UI updates immediately, then reconciles with the
+    server. The pattern that makes apps feel instant.
+    Look for `mutate` calls that update cache before
+    the network responds.
+
+  → Code splitting and lazy loading
+    Routes loaded on demand, heavy components deferred.
+    Look for `lazy()` or dynamic imports.
+
+  → Rendering strategy
+    SSR vs SSG vs ISR vs CSR — which pages render
+    when, and why. Next.js makes this an explicit
+    per-route decision.
+
+  → Error boundaries
+    What happens when a component throws. Look for
+    `ErrorBoundary` wrappers, fallback UI, error
+    reporting hooks.
+
+  → Asset and bundle optimization
+    Image components, font loading strategy, bundle
+    analysis. Often the cheapest performance wins.
+
+  → Accessibility patterns
+    Focus management, ARIA labels, keyboard
+    navigation, screen reader text. Look for
+    `useFocusTrap`, headless UI libraries, semantic
+    HTML.
+
+Stacks in the wild vs leading today (2026):
+
+  ┌─ Common in real codebases ──────────────────────────┐
+  │                                                     │
+  │  Next.js (Pages Router) + Tailwind                  │
+  │    The dominant React stack of 2020–2023. Most      │
+  │    production apps Rein will see at jobs.           │
+  │                                                     │
+  │  Create React App + React Router + Redux            │
+  │    Older SPAs still in production. Active           │
+  │    migration target — CRA was deprecated in 2023.   │
+  │                                                     │
+  │  Vue 2 / Vue 3 Options API + Vuex                   │
+  │    Common in non-US enterprise and Asia-Pac. Where  │
+  │    "we have a Vue 2 monolith" interviews come from. │
+  │                                                     │
+  │  React Native (bare) + Redux                        │
+  │    Mobile apps built before Expo went universal.    │
+  │                                                     │
+  └─────────────────────────────────────────────────────┘
+
+  ┌─ Leading today (innovation-leading, 2026) ──────────┐
+  │                                                     │
+  │  Next.js (App Router) + Tailwind + shadcn/ui        │
+  │    Why it leads: server components ship less JS to  │
+  │    the client; the App Router co-locates data       │
+  │    fetching with routes; shadcn/ui is a copy-paste  │
+  │    component library (not a dependency), so teams   │
+  │    own their UI code.                               │
+  │                                                     │
+  │  React Native + Expo (managed)                      │
+  │    Why it leads: Expo Router brings file-based      │
+  │    routing to mobile; EAS handles builds and OTA    │
+  │    updates without touching Xcode/Android Studio.   │
+  │    The loopd stack — and now the default for new    │
+  │    React Native apps.                               │
+  │                                                     │
+  │  Vue 3 Composition API + Pinia                      │
+  │    Why it leads: Composition API matches React      │
+  │    hooks ergonomically; Pinia replaced Vuex as the  │
+  │    official state library with full TS support.     │
+  │                                                     │
+  │  Astro 5 + React/Svelte islands                     │
+  │    Why it leads: zero-JS by default for static      │
+  │    content, interactive islands where needed. The   │
+  │    content-site winner.                             │
+  │                                                     │
+  └─────────────────────────────────────────────────────┘
+
+  Real disagreement worth naming:
+    → App Router vs Pages Router — App Router leads
+      for new projects, but Pages Router is still
+      what most production codebases run on.
+    → shadcn/ui vs Material UI / Chakra — shadcn/ui
+      leads new starts; the others have larger
+      existing codebases and component coverage.
+
+─────────────────────────────────────────────────
+BACKEND
+─────────────────────────────────────────────────
+
+The shape of a backend codebase. Where requests
+land, how they traverse the system, where state
+lives.
+
+  ┌──────────────────────────────────────────────────────┐
+  │ Typical backend architecture                         │
+  └──────────────────────────────────────────────────────┘
+
+  Incoming request
+         │
+         ▼
+  ┌─ Edge / Gateway ────────────────────────────────────┐
+  │  TLS, rate limiting, WAF                            │
+  └──────────────────────────┬──────────────────────────┘
+                             │
+                             ▼
+  ┌─ Routing layer ─────────────────────────────────────┐
+  │  URL + method → handler                             │
+  └──────────────────────────┬──────────────────────────┘
+                             │
+                             ▼
+  ┌─ Middleware ────────────────────────────────────────┐
+  │  Auth → logging → validation → tracing              │
+  └──────────────────────────┬──────────────────────────┘
+                             │
+                             ▼
+  ┌─ Controller / Handler ──────────────────────────────┐
+  │  Parses input, calls service, formats output        │
+  └──────────────────────────┬──────────────────────────┘
+                             │
+                             ▼
+  ┌─ Service layer ─────────────────────────────────────┐
+  │  Business logic, transactions, cross-cutting calls  │
+  └──────────────────────────┬──────────────────────────┘
+                             │
+            ┌────────────────┼────────────────┐
+            ▼                ▼                ▼
+  ┌─────────────────┐ ┌─────────────┐ ┌──────────────┐
+  │ Repository / DB │ │ Cache layer │ │ Queue / jobs │
+  │ (ORM, query)    │ │ (Redis)     │ │ (BullMQ etc) │
+  └────────┬────────┘ └─────────────┘ └──────────────┘
+           │
+           ▼
+        Database
+
+Patterns to look for, in order of how often you see them:
+
+  → Request/response flow with layered handlers
+    Controller → service → repository (or handler →
+    use-case → store). The shape almost every backend
+    converges on. The discipline is keeping each
+    layer's job clear: parse, decide, persist.
+
+  → Authentication and authorization
+    Who you are (auth) and what you can do (authz).
+    JWT, session cookies, OAuth, API keys. Authz
+    is the harder pattern — look for role/permission
+    checks at the service layer, not the handler.
+
+  → Database access
+    ORM (Prisma, TypeORM, Drizzle, SQLAlchemy) vs
+    query builder (Kysely) vs raw SQL. Each is a
+    real tradeoff between safety, control, and
+    performance.
+
+  → Caching
+    HTTP cache, in-process LRU, Redis. The question
+    is always invalidation, not storage. Look for
+    cache-aside, write-through, or stale-while-
+    revalidate patterns.
+
+  → Background jobs and queues
+    What happens when a request can't finish in
+    200ms. BullMQ, Sidekiq, Celery, SQS. Look for
+    enqueue/worker split, retry policies, dead-letter
+    queues.
+
+  → Rate limiting
+    Per-IP, per-user, per-key. Token bucket, leaky
+    bucket, sliding window. Almost always at the
+    edge or middleware layer.
+
+  → Logging and observability
+    Structured logs, request IDs, distributed tracing,
+    metrics. The patterns that make production
+    debuggable. Look for OpenTelemetry, structured
+    JSON logs, request-scoped context.
+
+  → API design
+    REST (resources + verbs), GraphQL (one endpoint,
+    typed schema), gRPC/tRPC (typed RPC). The
+    decision shapes everything downstream.
+
+  → Database migrations
+    Versioned, ordered, irreversible-by-design.
+    Prisma Migrate, Alembic, Flyway. Look for the
+    migration directory before you look at the
+    schema.
+
+  → Connection pooling
+    Pre-opened DB connections, lent per-request.
+    Often invisible until it breaks at scale. Look
+    for pool config in the DB client setup.
+
+  → Error handling and retries
+    Where errors bubble, what gets retried, what gets
+    surfaced. Look for typed errors, retry-with-
+    backoff, idempotency keys.
+
+Stacks in the wild vs leading today (2026):
+
+  ┌─ Common in real codebases ──────────────────────────┐
+  │                                                     │
+  │  Node.js + Express + Postgres + Sequelize/TypeORM   │
+  │    The default JS backend stack of 2015–2022.       │
+  │    Most production Node services Rein will see.     │
+  │                                                     │
+  │  Python + Django + Postgres                         │
+  │    The most-deployed Python web stack. Common at    │
+  │    larger companies and government.                 │
+  │                                                     │
+  │  Ruby on Rails + Postgres                           │
+  │    Still the default at many YC-pedigree companies. │
+  │    Convention-over-configuration backbone.          │
+  │                                                     │
+  │  Java + Spring Boot + Postgres                      │
+  │    Enterprise default. What "we use Java" job       │
+  │    listings actually mean.                          │
+  │                                                     │
+  │  PHP + Laravel + MySQL                              │
+  │    The dominant non-JS web stack worldwide. More    │
+  │    of the public web than people in JS circles      │
+  │    realise.                                         │
+  │                                                     │
+  │  Serverless: Netlify Functions / AWS Lambda         │
+  │    Function-per-endpoint, stateless. The "no        │
+  │    infrastructure" stack — what buffr uses.         │
+  │                                                     │
+  └─────────────────────────────────────────────────────┘
+
+  ┌─ Leading today (adoption-leading, 2026) ────────────┐
+  │                                                     │
+  │  Node.js + Hono + Postgres + Drizzle                │
+  │    Why it leads: Hono is web-standard (uses Fetch   │
+  │    API) and runs on Node, Bun, Deno, Cloudflare     │
+  │    Workers, and edge runtimes unchanged. Drizzle    │
+  │    is a type-safe query builder — closer to SQL     │
+  │    than an ORM, with no schema-walking overhead.    │
+  │                                                     │
+  │  Python + FastAPI + Postgres + SQLAlchemy 2.0       │
+  │    Why it leads: typed async Python with first-     │
+  │    class OpenAPI generation; the default for AI-    │
+  │    adjacent backends because the Python LLM         │
+  │    ecosystem is years ahead of JS.                  │
+  │                                                     │
+  │  Go + chi or Echo + Postgres + sqlc                 │
+  │    Why it leads: compile-time type-safe SQL via     │
+  │    code generation; single static binary; minimal   │
+  │    runtime. The choice when latency and binary      │
+  │    size matter.                                     │
+  │                                                     │
+  │  Elixir + Phoenix + Postgres                        │
+  │    Why it leads in its niche: BEAM concurrency      │
+  │    handles long-lived connections and real-time     │
+  │    at scale that other stacks struggle with.        │
+  │    LiveView is a real alternative to SPAs.          │
+  │                                                     │
+  └─────────────────────────────────────────────────────┘
+
+  Real disagreement worth naming:
+    → ORM vs query builder vs raw SQL — Drizzle/sqlc
+      have momentum; Prisma still dominates new JS
+      projects; SQLAlchemy 2.0 is the Python winner.
+    → Express vs the alternatives — Express is still
+      where production lives, but every new Node
+      framework (Hono, Fastify, Elysia) outperforms
+      it on benchmarks; the migration cost is the
+      reason Express isn't dead yet.
+
+─────────────────────────────────────────────────
+FULL-STACK
+─────────────────────────────────────────────────
+
+The shape of a full-stack codebase. Where the
+client and server meet, and the patterns that
+live at the boundary.
+
+  ┌──────────────────────────────────────────────────────┐
+  │ Typical full-stack architecture                      │
+  └──────────────────────────────────────────────────────┘
+
+  ┌─ Client ────────────────────────────────────────────┐
+  │  Component tree                                     │
+  │      │                                              │
+  │      ├── Server state cache (React Query / SWR)    │
+  │      │       │                                      │
+  │      │       ▼                                      │
+  │      └── Mutations (optimistic → reconcile)        │
+  └───────────────────────│─────────────────────────────┘
+                          │
+                          │  typed contract
+                          │  (tRPC, GraphQL, OpenAPI,
+                          │   Next server actions)
+                          │
+  ┌───────────────────────│─────────────────────────────┐
+  │  API boundary                                       │
+  │     │                                               │
+  │     ├── Validation (Zod, schema)                    │
+  │     ├── Auth check                                  │
+  │     └── Handler / resolver / action                 │
+  │            │                                        │
+  └────────────│────────────────────────────────────────┘
+               │
+               ▼
+  ┌─ Server (same repo, same deploy) ───────────────────┐
+  │  Service layer → DB / external APIs                 │
+  └─────────────────────────────────────────────────────┘
+
+  The full-stack pattern is: one codebase, one
+  deployment, typed contract at the boundary, shared
+  schema validation, shared types.
+
+Patterns to look for. Some are frontend or backend
+patterns; what makes them full-stack is that they
+span the boundary.
+
+  → End-to-end type safety
+    The flagship full-stack pattern. tRPC, GraphQL
+    codegen, OpenAPI generators, Next.js server
+    actions. Types defined once, used on both
+    sides. The bug-prevention story.
+
+  → Shared validation schemas
+    Zod, Yup, or JSON Schema definitions used at
+    both the form (client) and the handler (server).
+    The pattern that makes "validate on both sides"
+    not a duplicated-code problem.
+
+  → Server-side rendering with data fetching
+    Loaders (Remix), getServerSideProps (Next Pages),
+    server components (Next App Router). The data
+    fetches on the server before the page renders;
+    client hydrates with the data already in place.
+
+  → Forms with server validation
+    Form submits to the server, server validates,
+    returns either success or typed errors, client
+    renders the errors next to the right fields.
+    React Hook Form + Zod + a server action is the
+    current default shape.
+
+  → Optimistic UI with server reconciliation
+    Client updates the cache instantly, sends the
+    mutation, reconciles with the server response.
+    React Query's `onMutate` / `onError` / `onSuccess`
+    is the canonical pattern. The thing that makes
+    apps feel native.
+
+  → Auth that spans client and server
+    Server stores the session, client reads it via
+    cookie. Auth checks run on the server for
+    security, and the client gets a typed user
+    object for UI. NextAuth/Auth.js, Clerk, Lucia.
+
+  → Real-time sync
+    WebSockets, Server-Sent Events, or polling
+    when sync matters. Look for subscription
+    patterns, reconnection logic, message ordering.
+
+  → Edge vs origin compute
+    What runs at the CDN edge (low-latency, limited
+    runtime) vs at the origin (full runtime, slower
+    cold start). Next.js middleware and edge runtime
+    make this a per-route decision.
+
+  → File uploads
+    Client → presigned URL → object storage → server
+    confirmation. Look for the three-hop pattern
+    rather than streaming files through the API.
+
+  → Background jobs triggered from the API
+    User action triggers a job; client polls or
+    subscribes for completion. The pattern for
+    anything that takes longer than a request.
+
+Stacks in the wild vs leading today (2026):
+
+  ┌─ Common in real codebases ──────────────────────────┐
+  │                                                     │
+  │  Next.js (Pages Router) + Prisma + Postgres         │
+  │    The default full-stack JS stack of 2021–2024.    │
+  │    `getServerSideProps`, API routes, Prisma.        │
+  │                                                     │
+  │  Rails + Hotwire / Turbo                            │
+  │    Server-rendered full-stack. Still the default    │
+  │    at many product companies (Shopify, Basecamp,    │
+  │    GitHub origins).                                 │
+  │                                                     │
+  │  Django + HTMX                                      │
+  │    The Python answer to Hotwire. Growing in adoption│
+  │    among teams reacting to SPA fatigue.             │
+  │                                                     │
+  │  Next.js + Notion API                               │
+  │    No DB layer in the codebase — Notion is the      │
+  │    database. The PLRI+ stack pattern; the buffr     │
+  │    architecture.                                    │
+  │                                                     │
+  │  MERN (Mongo + Express + React + Node)              │
+  │    The bootcamp default of the late 2010s. Still    │
+  │    in production at smaller startups.               │
+  │                                                     │
+  └─────────────────────────────────────────────────────┘
+
+  ┌─ Leading today (innovation-leading, 2026) ──────────┐
+  │                                                     │
+  │  Next.js (App Router) + Drizzle + Postgres +        │
+  │    Server Actions                                   │
+  │    Why it leads: server components send less JS;    │
+  │    server actions remove the "design an API"        │
+  │    step (form posts to a typed server function);    │
+  │    Drizzle gives type-safe queries without an ORM.  │
+  │    The current default starter for new full-stack   │
+  │    React projects.                                  │
+  │                                                     │
+  │  Remix + Drizzle + Postgres                         │
+  │    Why it leads: web-standards-first (forms, URLs,  │
+  │    HTTP), no API layer to design (loaders/actions   │
+  │    are the API), works on any JS runtime. The       │
+  │    "use the platform" stack.                        │
+  │                                                     │
+  │  T3: Next.js + tRPC + Drizzle + Auth.js + Tailwind  │
+  │    Why it leads: tRPC gives end-to-end TypeScript   │
+  │    inference across the network boundary — change   │
+  │    the server, the client errors at compile time.   │
+  │    The strongly-opinionated "no API to design"      │
+  │    approach.                                        │
+  │                                                     │
+  │  SvelteKit + Drizzle + Postgres                     │
+  │    Why it leads: smallest bundle sizes of any       │
+  │    major framework; the Svelte 5 reactivity model   │
+  │    is genuinely new (signals + compile-time         │
+  │    transforms). Same shape as Remix/Next loaders.   │
+  │                                                     │
+  │  Next.js + Vercel AI SDK + Anthropic/OpenAI         │
+  │    Why it leads: streaming LLM responses with       │
+  │    typed message structures; useChat hook handles   │
+  │    state. The default for full-stack apps with AI   │
+  │    features. What loopd or contrl's AI features     │
+  │    would be built on.                               │
+  │                                                     │
+  └─────────────────────────────────────────────────────┘
+
+  Real disagreement worth naming:
+    → Server Actions vs tRPC vs REST — Server Actions
+      lead for Next-only projects; tRPC leads for
+      teams that want explicit typed RPC; REST still
+      wins when the API must serve non-JS clients.
+    → Prisma vs Drizzle — Prisma has more adoption
+      and tooling; Drizzle has momentum, smaller
+      bundle, no schema-walking overhead. Real teams
+      pick on team familiarity, not pure technical
+      merit.
+    → ORM vs no-DB-in-codebase — most full-stack
+      apps use Postgres + an ORM. Notion-as-DB
+      (your PLRI+ pattern) is a smaller but real
+      camp; airtable-as-backend is the no-code
+      adjacent version.
+
+─────────────────────────────────────────────────
+CROSS-REFERENCE — what you see vs what it is
+─────────────────────────────────────────────────
+
+When scanning a new codebase, use this table to map
+visible signals to underlying patterns. The signal
+is what you spot first; the pattern is what it
+indicates.
+
+  ┌──────────────────────┬──────────────────────────────┐
+  │ If you see           │ You're looking at            │
+  ├──────────────────────┼──────────────────────────────┤
+  │ useQuery / useSWR    │ Server state cache pattern   │
+  │ useMutation +        │ Optimistic UI                │
+  │   onMutate           │                              │
+  │ <Suspense>           │ Async boundaries, code split │
+  │ middleware.ts        │ Edge logic / route guards    │
+  │ /api/ or /app/api/   │ Backend routes inside        │
+  │                      │   a frontend framework       │
+  │ server actions       │ Server-side mutations called │
+  │   ("use server")     │   from client components     │
+  │ schema.prisma        │ Type-safe ORM, migrations    │
+  │ drizzle.config.ts    │ Type-safe query builder      │
+  │ trpc/router.ts       │ End-to-end typed RPC         │
+  │ zod schemas in       │ Shared client+server         │
+  │   shared/            │   validation                 │
+  │ workers/ or          │ Background jobs              │
+  │   queues/            │                              │
+  │ redis client setup   │ Caching or queues or both    │
+  │ websocket / ws       │ Real-time sync               │
+  │ presigned URL code   │ Three-hop file upload        │
+  │ /providers/ folder   │ Provider abstraction         │
+  │   with > 1 impl      │   (LLMs, storage, etc.)      │
+  │ migrations/ folder   │ Schema versioning            │
+  │ middleware chains    │ Request-pipeline pattern     │
+  │ context provider     │ React-tree-wide state        │
+  │   at root            │                              │
+  │ loaders / actions    │ Remix or Next data pattern   │
+  │ getServerSideProps   │ SSR with per-request data    │
+  └──────────────────────┴──────────────────────────────┘
+
+If the codebase has a signal not in this table, that
+is a concept file worth writing — the unknown pattern
+is the one most worth studying.
+
+─────────────────────────────────────────────────
 CODE REFERENCE RULES — apply throughout
 ─────────────────────────────────────────────────
 
@@ -2090,6 +2735,15 @@ CONSTRAINTS
    and line range — no concept file without a code reference
 → Every Level 3 validate scenario must reference the specific
    file and lines the reader checks their answer against
+→ Every concept file that references a tech choice (library,
+   framework, service) must name both what this codebase
+   actually uses AND what the leading industry choice is
+   today. Label which angle the leader was chosen on
+   (adoption-leading or innovation-leading) and give a
+   one-sentence reason it leads — not marketing, the
+   specific technical thing that puts it in front. If the
+   codebase already uses the leader, name a credible
+   runner-up so the alternative landscape is still visible.
 ```
 
 > 💾 Save output → `.aipe/specs/study/[project-name]/` with this structure:
