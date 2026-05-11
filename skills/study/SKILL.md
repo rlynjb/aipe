@@ -58,7 +58,7 @@ If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to sear
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
-Check whether `.aipe/specs/study/` already contains the study layout. The signal is the presence of `00-overview.md` at the root, OR any file inside `01-system-design/`, `02-dsa/`, or `03-ai-engineering/`.
+Check whether `.aipe/specs/study/` already contains the study layout. The signal is the presence of `00-overview.md` at the root, OR any file inside `01-system-design/`, `02-dsa/`, `03-ai-engineering/`, or `04-machine-learning/`.
 
 **If any of those exist → go to UPDATE MODE (Step 5U onward). Do NOT regenerate from scratch.**
 
@@ -159,7 +159,27 @@ Assign each pattern a kebab-case file name with a numeric prefix (in dependency 
 
 - **`01-system-design/`** — every significant architectural pattern in the codebase. Likely candidates depend on the discipline: frontend (component composition, client routing, state-ownership split, optimistic UI, rendering strategy, error boundaries), backend (request/response flow with layered handlers, auth boundary, database access, caching, background jobs, rate limiting), full-stack (end-to-end type safety, shared validation, SSR-with-data-fetching, optimistic UI with server reconciliation, edge vs origin compute). Add any others present; skip ones that don't apply.
 - **`02-dsa/`** — every meaningful operation in the codebase. Likely candidates: reordering, deduplication, flattening, sorting, lookups, filtering, grouping, diffing. Add any others; skip ones that don't apply.
-- **`03-ai-engineering/`** — universal AI concepts plus project-specific usage. Default set (include if AI is used at all): `01-what-an-llm-is`, `02-prompt-chaining`, `03-context-window`, `04-provider-abstraction`, `05-agents-vs-chains`, `06-tool-calling`, `07-rag`, `08-ai-features-in-this-app`. Add others if present. If the codebase has no AI surface, write only `08-ai-features-in-this-app.md` with a brief "no AI in this codebase" note and skip the rest.
+- **`03-ai-engineering/`** — universal AI concepts plus project-specific usage. The template organizes patterns into sub-disciplines (loaded in Step 3 under "SECTION 03 — AI ENGINEERING"); walk each sub-discipline and include the patterns that apply. Default sub-disciplines and their patterns:
+  - **LLM foundations**: what an LLM is, tokenization, sampling parameters, structured outputs, streaming, token economics, heuristic-before-LLM, provider abstraction, user-override locks.
+  - **Prompt engineering**: anatomy of a production prompt, single-purpose chains, output mode mismatch, few-shot prompting, chain-of-thought, forbidden patterns / rotating formulas.
+  - **Context and prompts**: context window, lost-in-the-middle, prompt chaining.
+  - **Retrieval and RAG**: embeddings (geometrically), embedding model choice, chunking strategies, vector databases, dense vs sparse retrieval, hybrid retrieval with RRF, reranking with a cross-encoder, query rewriting / HyDE, stale embeddings, incremental indexing, RAG, GraphRAG.
+  - **Agents and tool use**: agents vs chains, tool calling, ReAct pattern, tool routing, agent memory, error recovery in agents.
+  - **Evals and observability (LLM)**: eval set types, eval methods, LLM-as-judge bias, LLM observability.
+  - **Production serving (LLM)**: LLM caching, LLM cost optimization, prompt injection, rate limiting and backpressure, retry and circuit breaker.
+  - **How this codebase uses AI**: AI features table, per-feature spec.
+
+  Number files in the order above (`01-what-an-llm-is`, `02-tokenization`, … `34-ai-features-in-this-app`). Skip patterns that genuinely don't apply to the codebase rather than writing thin placeholders. If the codebase has no AI surface at all, write only `34-ai-features-in-this-app.md` (or `01-ai-features-in-this-app.md` as a lone file) with a brief "no AI in this codebase" note and skip the rest.
+- **`04-machine-learning/`** — classical ML patterns the codebase uses (supervised learning, recommender systems, on-device inference — anything that involves a trained model rather than a pre-trained LLM). This section is distinct from `03-ai-engineering/`: AI engineering is prompt-engineering and LLM application work; ML engineering is data pipelines, feature engineering, training discipline, and metrics. The template (loaded in Step 3 under "SECTION 04 — MACHINE LEARNING") organizes patterns into sub-disciplines:
+  - **Supervised learning foundations**: the supervised pipeline, feature engineering, train/val/test split discipline, model selection (LR vs GBT).
+  - **Data and model quality**: class imbalance, domain gap, transfer learning.
+  - **Metrics**: confusion matrices, calibration.
+  - **Recommender systems**: framing (content-based / collaborative / hybrid), cold-start.
+  - **On-device inference**: on-device basics, quantization.
+  - **ML observability**: training-run logging, drift detection, retraining pipelines.
+  - **How this codebase uses ML**: ML features table, per-feature spec.
+
+  Number files in the order above (`01-supervised-pipeline`, `02-feature-engineering`, …). Skip patterns that don't apply. If the codebase has **no ML surface** (no trained models, only pre-trained LLM calls), skip this entire section — do not create the `04-machine-learning/` directory. ML and AI engineering are different disciplines; a project that only uses LLM APIs has no ML section.
 
 ## Step 7C — Create the directory structure
 
@@ -169,10 +189,11 @@ Create:
 .aipe/specs/study/
 .aipe/specs/study/01-system-design/
 .aipe/specs/study/02-dsa/
-.aipe/specs/study/03-ai-engineering/
+.aipe/specs/study/03-ai-engineering/    (skip if the codebase has no AI surface)
+.aipe/specs/study/04-machine-learning/   (skip if the codebase has no trained-model surface)
 ```
 
-(Use `mkdir -p`.)
+(Use `mkdir -p`.) Sections without applicable patterns are not created — leaving an empty `04-machine-learning/` for a project that doesn't use ML is misleading. The inventory from Step 6C decides which directories exist.
 
 ## Step 8C — Generate `00-overview.md`
 
@@ -180,7 +201,7 @@ One full-system diagram + bullet legend (one line per component: what it is, wha
 
 ## Step 9C — Generate per-concept files in each section
 
-For each section (`01-system-design/`, `02-dsa/`, `03-ai-engineering/`), iterate the inventory from Step 6C. Compose ONE file per concept. Save immediately before moving to the next.
+For each section that the inventory included (`01-system-design/`, `02-dsa/`, `03-ai-engineering/`, `04-machine-learning/`), iterate the inventory from Step 6C. Compose ONE file per concept. Save immediately before moving to the next. Skip any section the inventory left empty (e.g., a project with no ML surface won't have `04-machine-learning/`).
 
 Every concept file uses this exact structure:
 
@@ -579,7 +600,8 @@ After all per-concept files in a section are written, create that section's `REA
 
 - **`01-system-design/README.md`** — index of pattern files (one-line description each), plus the full system map diagram from `00-overview.md` for quick reference, plus the **6-step mental checklist** (Data model / Request flow / Caching / State ownership / Failure handling / Scale concerns) reproduced verbatim from the template, with each listed pattern tagged by which step(s) it lives in. The mental checklist is what binds the section into a unified framework — readers should see it on entry, before opening any individual pattern file.
 - **`02-dsa/README.md`** — index of operation files (one-line each), plus the full **complexity cheat sheet** table (every major data operation in the app, time/space, "holds at 10×?"). For every operation that doesn't hold at 10×: one-line fix and estimated effort.
-- **`03-ai-engineering/README.md`** — index of AI pattern files (one-line each), plus the **AI features table** (Feature → Pattern used → Why this pattern).
+- **`03-ai-engineering/README.md`** — index of AI pattern files (one-line each), grouped by sub-discipline (LLM foundations / Prompt engineering / Context and prompts / Retrieval and RAG / Agents and tool use / Evals and observability / Production serving / How this codebase uses AI), plus the **AI features table** (Feature → Pattern used → Why this pattern).
+- **`04-machine-learning/README.md`** — index of ML pattern files (one-line each), grouped by sub-discipline (Supervised learning foundations / Data and model quality / Metrics / Recommender systems / On-device inference / ML observability / How this codebase uses ML), plus the **ML features table** (Feature → Model type → Inference location). Skip this README if the section was not created.
 
 The section READMEs are the navigation. They're the first thing a reader opens when they enter a section.
 
@@ -590,9 +612,10 @@ Print exactly:
 ```
 ✓ Study guide created at .aipe/specs/study/
   00-overview.md
-  01-system-design/  (<N> files + README.md)
-  02-dsa/            (<N> files + README.md)
-  03-ai-engineering/ (<N> files + README.md)
+  01-system-design/   (<N> files + README.md)
+  02-dsa/             (<N> files + README.md)
+  03-ai-engineering/  (<N> files + README.md)   [omit line if section not created]
+  04-machine-learning/(<N> files + README.md)   [omit line if section not created]
 ```
 
 Then a 3-sentence summary: what the codebase being studied is, which section was richest given the actual surface area, and any operations in the DSA section that are currently O(n²) where O(n) is easy (since the spec asks for these to be flagged plainly).
@@ -612,7 +635,8 @@ Walk `.aipe/specs/study/` recursively. Read every `.md` file in:
 - the root (`00-overview.md`)
 - `01-system-design/` (README.md + every per-pattern file)
 - `02-dsa/` (README.md + every per-operation file)
-- `03-ai-engineering/` (README.md + every per-pattern file)
+- `03-ai-engineering/` (README.md + every per-pattern file) — skip if directory doesn't exist
+- `04-machine-learning/` (README.md + every per-pattern file) — skip if directory doesn't exist (most projects without a trained-model surface won't have this section)
 
 Build a mental model of what the guide currently covers per file: the diagrams, the operations, the AI patterns, the tradeoffs.
 
@@ -681,6 +705,7 @@ For every existing concept file, run TWO diffs:
     - Files generated under **v1.21.0** name specific libraries/frameworks/services (e.g., Express, Prisma, Netlify Functions, React Query) without pairing them with the current industry leader. The v1.22.0 fix is to add industry-leader pairings; the v1.23.0 fix is then to consolidate those pairings into a dedicated `## Tech reference (industry pairing)` section (see v1.22.0 note below).
     - Files generated under **v1.22.0** carry the industry-leader pairings but inlined them throughout the file (most often into Tradeoffs, sometimes also into How it works or Interview defense answers), and in many cases formatted them as one-row markdown tables with pipes — which render as garbage strings of `|` characters on narrow screens (mobile, narrow GitHub panes). The v1.23.0 fix is to: (a) create a new `## Tech reference (industry pairing)` section between Tradeoffs and Summary; (b) extract every industry-leader pairing from wherever it currently lives (Tradeoffs sub-blocks, How it works prose, Interview defense answers) and move it into the new section as a `###` subsection per tech; (c) reformat each tech entry as `### [tech name]` heading + five labelled bullets (`**Codebase uses:**` / `**Why it's here:**` / `**Leading today:**` / `**Why it leads:**` / `**Runner-up:**`); (d) leave references in other sections naming what the codebase uses (e.g., "this codebase uses expo-sqlite via `database.ts`") but strip leader/runner-up content from them. **Never use markdown tables with pipes for tech entries.**
     - Files generated under **v1.23.0** have a `## How it works` block written as 2–3 short paragraphs without the three-moves structure. v1.24.0 restructures the block: Move 1 (mental model / metaphor opening — NOT a definition), Move 2 (layered walkthrough where each independent part gets its own bolded `###` sub-heading and covers the technical term, the frontend-to-backend bridge, the practical consequence walked concretely, and the condition under which it works/breaks), Move 2.5 (Phase A / Phase B when applicable), Move 3 (the principle that generalises). Length scales with complexity (four paragraphs for debounce, fifteen-plus for complex auth). The v1.24.0 fix is to rewrite the How it works block in place: reuse existing prose as raw material for the move-2 sub-sections, add a metaphor opening if missing, split running prose into sub-headings, inject frontend-bridge sentences ("if you're coming from frontend, you're used to X — here it's different"), promote any abstract claims into abstract-claim + concrete-consequence pairs, append a Phase A / Phase B sub-section when the concept warrants it, and end with a principle paragraph + handoff line.
+    - Files generated under **v1.24.0** are missing two things from the section-level inventory: (a) the **`04-machine-learning/` section** (if the codebase has any trained-model / supervised-learning / recommender / on-device-inference surface that wasn't previously documented), and (b) the **expanded `03-ai-engineering/` inventory** organized by sub-discipline. The v1.24.0 catalog of AI patterns was 8 files; v1.25.0 expanded it to ~34 patterns grouped by sub-discipline (LLM foundations / Prompt engineering / Context and prompts / Retrieval and RAG / Agents and tool use / Evals and observability / Production serving / How this codebase uses AI). The v1.25.0 fix is to: (1) walk the project context for ML surface — if any trained model, recommender, or on-device inference is in scope, create `04-machine-learning/` and walk the sub-disciplines listed in Step 6C, adding only the patterns that apply; (2) walk the expanded AI catalog (loaded in Step 3 under "SECTION 03 — AI ENGINEERING") and add any sub-discipline patterns the codebase actually uses that aren't already documented — typically patterns like tokenization, sampling parameters, structured outputs, streaming, token economics, heuristic-before-LLM, eval set types, LLM observability, prompt injection, etc. Existing v1.24.0 AI files keep their numeric prefixes; new files take the next available numbers and the README index is re-grouped by sub-discipline.
 
   All variants are fixed the same way: insert/replace/reorder/restructure the affected fields in their canonical position, with values drawn from the project context and from existing-block content where present.
 
