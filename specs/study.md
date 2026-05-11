@@ -91,6 +91,12 @@ Each file contains:
                         the alternative would have cost, the
                         breakpoint, and what wasn't actually
                         a tradeoff at all
+  → Tech reference      one `###` subsection per tech the
+                        file references; five labelled bullets
+                        per subsection: Codebase uses / Why
+                        it's here / Leading today (adoption-
+                        or innovation-leading) / Why it leads
+                        / Runner-up. No markdown tables.
   → Summary             recap — one-paragraph concept summary
                         plus 3–6 bulleted key points to
                         carry away. The block you return to
@@ -630,6 +636,131 @@ Every individual concept file uses this structure exactly:
   improved." If the decision was wrong in hindsight,
   say so plainly — that goes in this block, and it
   is more credible than defending a bad call.
+
+  ---
+
+  ## Tech reference (industry pairing)
+
+  This block is the only place industry pairings
+  live. Other sections (How it works, Tradeoffs,
+  Interview defense) may name what the codebase
+  uses, but the leader/runner-up pairing is
+  consolidated here — one section per file, one
+  subsection per tech.
+
+  The job of this block is to let the reader build
+  a mental map of where this codebase sits relative
+  to the industry: what's chosen here, what's
+  leading today, and what the credible alternatives
+  are.
+
+  ### Format — one `###` subsection per tech
+
+  For every distinct library, framework, or service
+  this file references — runtime, framework, ORM /
+  query layer, AI provider, storage, queue, auth,
+  observability, anything load-bearing — add a
+  `###` subsection with the tech name as the
+  heading. Inside the subsection, use labelled
+  bullets. **Do not use markdown tables with pipes
+  for these entries** — they break in narrow
+  renderings and are illegible on mobile. Bullets
+  with `**Label:**` prefixes are mandatory.
+
+  Each subsection has five fields. The first two
+  describe the codebase; the next three describe
+  the industry context.
+
+  - **Codebase uses:** the real library / framework
+    / service in the repo, with version where it
+    matters and the file or import line where it's
+    instantiated.
+  - **Why it's here:** one sentence naming the
+    specific job this tech does in this codebase —
+    the thing that would break if it were missing.
+  - **Leading today:** name the current industry
+    leader for this category, labelled as either
+    `adoption-leading` (most-deployed in production
+    today — for battle-tested patterns like auth,
+    request flow, DB access) or `innovation-leading`
+    (most mindshare/momentum, likely to lead in
+    1–2 years — for fast-moving areas like AI
+    tooling, edge compute, type safety). Include
+    the year (2026, per the spec header).
+  - **Why it leads:** one sentence naming the
+    specific technical reason — typed end-to-end,
+    server-component-native, zero bridge cost,
+    edge-runtime-compatible. Never marketing.
+  - **Runner-up:** name a credible alternative
+    with one sentence on its angle. If the codebase
+    already uses the leader, this field is required
+    so the alternative landscape stays visible.
+    Otherwise it's optional but valuable.
+
+  Never claim a single tech "won". Where real
+  disagreement exists (App Router vs Pages Router,
+  Prisma vs Drizzle, Server Actions vs tRPC), name
+  it in one of the fields rather than smoothing it
+  over.
+
+  ### Worked example — for a local-first request-flow file
+
+  ### expo-sqlite (WAL)
+
+  - **Codebase uses:** `expo-sqlite` in WAL mode,
+    single-process via `loopd.db`. Opened in
+    `src/lib/database.ts` at startup.
+  - **Why it's here:** the synchronous write layer
+    that makes "keystroke → ~1ms write → UI
+    re-render" possible. If it were async, the
+    optimistic UI shape collapses.
+  - **Leading today:** `expo-sqlite` —
+    adoption-leading, 2026.
+  - **Why it leads:** ships with the Expo SDK;
+    battle-tested WAL mode; mirrors the SQLite C
+    API directly with zero bridge cost for Expo
+    projects.
+  - **Runner-up:** `op-sqlite` — innovation-leading
+    JSI-direct binding with no bridge cost; the
+    perf-tier alternative for bare React Native
+    projects.
+
+  ### @supabase/supabase-js + Supabase Postgres
+
+  - **Codebase uses:** `@supabase/supabase-js`
+    against managed Supabase Postgres as the cloud
+    provider layer. `pushAll()` upserts dirty rows
+    via the Supabase client.
+  - **Why it's here:** the cloud mirror that
+    receives every row the 5-second debounce
+    batches and sends via HTTPS upsert.
+  - **Leading today:** Supabase —
+    adoption-leading for Postgres-as-a-service,
+    2026.
+  - **Why it leads:** managed Postgres + auth + RLS
+    + Storage in one console; SDK mirrors
+    PostgREST, so an upsert with `onConflict` is
+    one call.
+  - **Runner-up:** Neon + Drizzle —
+    innovation-leading typed SQL with
+    branch-per-PR; Convex is the reactive-first
+    alternative.
+
+  ### What this block is NOT
+
+  - Not a rewrite of Tradeoffs. Tradeoffs name what
+    was given up. Tech reference names what the
+    industry context is. They overlap only in that
+    both can mention alternatives — but the
+    alternative in Tradeoffs is what was rejected
+    in this codebase; the alternative in Tech
+    reference is what's leading in the industry.
+  - Not a place for prose paragraphs. Five bullets
+    per tech, that's the shape.
+  - Not a place for markdown tables. Use the
+    `###` heading + labelled bullets format
+    exactly. Pipe-tables render as garbage on
+    narrow screens.
 
   ---
 
@@ -1370,53 +1501,66 @@ not alphabetically. The first few in each list are
 nearly universal; the bottom of each list is
 context-dependent.
 
-  ### Tech stack rule — applies to every concept file
+  ### Tech stack rule — every concept file gets a dedicated Tech reference section
 
-  Whenever a concept file references a tech choice
-  (in How it works, Tradeoffs, Interview defense, or
-  anywhere else), it names two things:
+  Every industry pairing in a concept file lives in
+  one place: the `## Tech reference (industry
+  pairing)` section, which sits between `## Tradeoffs`
+  and `## Summary`. Other sections (How it works,
+  Tradeoffs, Interview defense) may name what the
+  codebase uses, but the leader/runner-up pairing
+  is consolidated in the Tech reference section —
+  one section per file, one `###` subsection per
+  tech, five labelled bullets per subsection.
 
-    1. What this codebase actually uses. The real
-       library, framework, or service in the repo.
-       Reference the actual file or import line.
+  Format (mandatory — see the worked example in the
+  per-concept template):
 
-    2. What the leading industry choice is today
-       (year of last spec update — see header). Pick
-       one of the two angles below depending on what
-       the concept is about, and label which angle
-       you used:
+    ### [tech name]
+    - **Codebase uses:** the real lib/framework/
+      service in the repo, with the file or import
+      line where it's instantiated.
+    - **Why it's here:** one sentence — the specific
+      job this tech does that nothing else does.
+    - **Leading today:** name + label as either
+      `adoption-leading` (most-deployed in
+      production today — battle-tested patterns)
+      or `innovation-leading` (most mindshare /
+      momentum, likely to lead in 1–2 years —
+      fast-moving areas), with the year (2026).
+    - **Why it leads:** one sentence on the
+      specific technical reason — typed end-to-end,
+      server-component-native, zero bridge cost,
+      edge-runtime-compatible. Never marketing.
+    - **Runner-up:** required when the codebase
+      already uses the leader (so the alternative
+      landscape stays visible); optional otherwise.
 
-         → Adoption-leading — the most-deployed-in-
-           production choice across real teams in 2026.
-           Use this when the concept file is about a
-           battle-tested pattern (auth, request flow,
-           DB access). What a senior engineer at a
-           Series B startup would default to.
+  Never use markdown tables with pipes for tech
+  entries. They break in narrow renderings and
+  render as garbage on mobile. Use the `###` +
+  labelled bullets format.
 
-         → Innovation-leading — the choice that has
-           the most mindshare and momentum, likely
-           to lead in 1–2 years. Use this when the
-           concept is in a fast-moving area (AI
-           tooling, edge compute, type safety). What
-           a senior engineer at a frontier-tech
-           company is reaching for.
+  Pick `adoption-leading` for battle-tested
+  patterns (auth, request flow, DB access — what a
+  senior engineer at a Series B startup defaults
+  to). Pick `innovation-leading` for fast-moving
+  areas (AI tooling, edge compute, type safety —
+  what a senior engineer at a frontier-tech
+  company is reaching for).
 
-  Both choices get a one-sentence "why it leads"
-  reason — not marketing, the specific thing that
-  makes it the leader (typed end-to-end, zero
-  config, server-component-native, edge-runtime-
-  compatible). Never claim a single tech "won";
-  call out where there is real disagreement.
+  Never claim a single tech "won". Where real
+  disagreement exists (App Router vs Pages Router,
+  Prisma vs Drizzle, Server Actions vs tRPC), name
+  it in one of the fields rather than smoothing it
+  over.
 
-  If the codebase already uses the leading choice,
-  say so — and pick a credible runner-up to contrast
-  against, so the reader sees the alternative
-  landscape regardless of what the codebase picked.
-
-  This applies inside the concept files. The
-  discipline section's stack lists below are the
-  same idea applied at the catalog level — "in the
-  wild" vs "leading today".
+  The discipline section's stack lists below are
+  the same idea applied at the catalog level — "in
+  the wild" vs "leading today" — and are the source
+  the agent draws from when picking leaders and
+  runners-up for each tech in the Tech reference
+  section.
 
 ─────────────────────────────────────────────────
 FRONTEND
@@ -2735,15 +2879,21 @@ CONSTRAINTS
    and line range — no concept file without a code reference
 → Every Level 3 validate scenario must reference the specific
    file and lines the reader checks their answer against
-→ Every concept file that references a tech choice (library,
-   framework, service) must name both what this codebase
-   actually uses AND what the leading industry choice is
-   today. Label which angle the leader was chosen on
-   (adoption-leading or innovation-leading) and give a
-   one-sentence reason it leads — not marketing, the
-   specific technical thing that puts it in front. If the
-   codebase already uses the leader, name a credible
-   runner-up so the alternative landscape is still visible.
+→ Every concept file must include a `## Tech reference
+   (industry pairing)` section between Tradeoffs and
+   Summary. One `###` subsection per tech the file
+   references (runtime, framework, ORM, AI provider,
+   storage, queue, auth — anything load-bearing).
+   Each subsection has five labelled bullets:
+   `**Codebase uses:**`, `**Why it's here:**`,
+   `**Leading today:**` (with the label
+   `adoption-leading` or `innovation-leading` and the
+   year), `**Why it leads:**` (specific technical
+   reason — never marketing), `**Runner-up:**`
+   (required when the codebase already uses the leader).
+   **No markdown tables with pipes** — they break in
+   narrow renderings. Use `###` heading + labelled
+   bullets exactly.
 ```
 
 > 💾 Save output → `.aipe/specs/study/[project-name]/` with this structure:
