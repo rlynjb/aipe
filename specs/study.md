@@ -71,10 +71,13 @@ Each file contains:
   → Why care            hook + zoom-out — grabs attention,
                         then names the pattern in general
                         terms outside this codebase
-  → How it works        prose walkthrough of the mechanics,
-                        2–3 short paragraphs with inline
-                        secondary diagrams, pseudocode, or
-                        execution traces where needed
+  → How it works        prose walkthrough that bridges from
+                        what the reader knows (frontend) to
+                        what they don't (this concept).
+                        Three moves: mental model → layered
+                        walkthrough → principle. Length
+                        scales with complexity — short for
+                        debounce, long for multi-layer auth.
   → Primary diagram     recap visual after the mechanics —
                         labels every box, every arrow, and
                         every architectural layer (UI, Service,
@@ -361,20 +364,366 @@ Every individual concept file uses this structure exactly:
 
   ## How it works
 
-  [Prose — 2–3 short paragraphs max. Direct language.
-   Write like explaining to a colleague who asked
-   "how does this actually work?"]
+  This is the load-bearing block of the entire file.
+  Why care made the reader curious; How it works
+  builds the actual understanding. Everything below
+  (the diagram, In this codebase, Tradeoffs, Summary)
+  assumes the reader finished this block with the
+  concept fully clicking. If it doesn't click here,
+  nothing else recovers.
 
-  [Secondary diagrams, pseudocode, or execution traces
-   inline where they earn their place. The reader should
-   never encounter a piece of jargon without a visual
-   anchoring it within the same paragraph.]
+  Length is scaled by complexity, not capped by
+  paragraph count. A simple concept (a debounce
+  function) gets four short paragraphs. A complex
+  one (multi-layer auth, distributed locks, prompt
+  routing under failure conditions) gets fifteen or
+  twenty paragraphs with sub-headings, interspersed
+  visuals, and explicit current-state vs future-state
+  walkthroughs. Err long for complex backend, infra,
+  and systems concepts — the reader is here to learn,
+  not to skim.
+
+  ### Know your reader before you write
+
+  The first thing the writer does — before drafting a
+  sentence — is name who the reader is and what
+  they already know. This determines every bridging
+  metaphor, every analogy, every "if you're coming
+  from X, this is different" line in the prose.
+
+  Default reader profile for this study guide:
+  a working frontend engineer with 5–8 years of
+  React/Vue/TypeScript experience, who is pivoting
+  toward full-stack and AI engineering. They are
+  comfortable with: components, hooks, client state,
+  forms, browser APIs, TypeScript, modern bundlers,
+  client-side routing. They are still building
+  intuition for: database internals, transactional
+  semantics, server-side request handling, auth
+  flows, queues, distributed systems, infra
+  primitives, LLM-shaped failure modes.
+
+  The writer's job: bridge from the first list to
+  the second list. Every backend or AI concept must
+  be anchored to something the reader already
+  understands from frontend. The bridge is the
+  difference between "explained" and "understood."
+
+  ### Three required moves
+
+  Every How it works block makes three moves, in
+  order. Move 1 frames the concept. Move 2 walks
+  the mechanics. Move 3 names the principle.
+  Complex concepts spend most of their length on
+  move 2; simple concepts compress move 2 to a
+  single sub-section. None of the three moves is
+  ever skipped.
+
+  #### Move 1 — The mental model (first paragraph)
+
+  Open with a concrete picture, not a definition.
+  Not "X is a mechanism that..." — that's a textbook.
+  Instead, give the reader a physical or familiar
+  metaphor they can hold in their head while they
+  read the rest. Defense in depth → "two locked doors,
+  but only one is installed right now." Connection
+  pooling → "a coat check that hands you the same
+  ticket every time." Optimistic UI → "you mark the
+  envelope as sent before the post office confirms
+  it arrived."
+
+  The mental model has two jobs: make the reader
+  picture the shape, and prime them for the layered
+  walkthrough that follows. A good mental model is
+  the sentence the reader will paraphrase six weeks
+  later when someone asks them about this concept.
+
+  After the metaphor lands, one sentence names the
+  underlying strategy in plain English: "two
+  independent mechanisms, layered." "One warm
+  resource, lent and returned." "Show success
+  immediately, reconcile when the server confirms."
+  This is the transition from picture to mechanics.
+
+  #### Move 2 — The layered walkthrough (the body)
+
+  Break the concept into its independent moving parts
+  and walk each one separately. Each part gets its
+  own bolded sub-heading. The reader should never have
+  to hold more than one moving part in their head at
+  a time.
+
+  For each part, cover:
+
+    1. The technical thing — what it is, named with
+       its real term. "Composite primary key."
+       "Row-Level Security." "JWT signature
+       verification." Names matter; the reader needs
+       to recognise the term when they encounter it
+       again.
+
+    2. The bridge from what the reader knows.
+       This is the load-bearing sentence. "If you're
+       coming from frontend, you're probably used to
+       thinking of an `id` as globally unique — like
+       a UUID. Here it's different." Without this
+       bridge, the technical thing is just vocabulary.
+       With it, the reader's existing mental model
+       reshapes around the new concept.
+
+       Common bridge starters:
+       - "If you're coming from frontend, you're
+          used to X. Here it's different — Y."
+       - "This is like React's [pattern], except
+          the [thing] lives on the server."
+       - "Think of it like [browser API you know],
+          but [twist that makes it different]."
+       - "In React, you'd handle this with [hook].
+          In a backend, you handle it with [server
+          equivalent]."
+
+    3. The practical consequence — what literally
+       happens when this is active. Not "this provides
+       security" — say "if user A's client sends a
+       query for `id = 'abc123'` belonging to user B,
+       the database looks for `(user_A_id, 'abc123')`
+       and that row literally does not exist." Concrete.
+       Specific. Walk a real example through.
+
+    4. The condition under which it works (and
+       doesn't). "This works whether the user is
+       logged in or out." "This breaks if `auth.uid()`
+       returns the wrong value." Boundary conditions
+       are where understanding lives.
+
+  Anchor every part with a secondary visual where it
+  helps: a small ASCII diagram, a code snippet, a
+  pseudocode sequence, a comparison table, a
+  before/after pair. The reader should never encounter
+  a piece of jargon in the prose without a visual
+  showing it in the same sub-section.
+
+  #### Move 2.5 — Current state vs future state (when applicable)
+
+  Whenever the concept involves something built-but-
+  not-fully-active, planned-but-not-yet-shipped, or
+  in-migration, write a Phase A / Phase B (or Now /
+  Later) sub-section. This is critical for concepts
+  like multi-tenant scaffolding, auth migrations,
+  feature flags, gradual rollouts, deprecated paths
+  still in the codebase.
+
+  Each phase gets:
+  - What's true right now in the code
+  - What's planned and why it's gated
+  - What the migration between phases costs
+
+  Example shape:
+
+    *Phase A (now):* No real auth. Client hardcodes
+    a user_id. Schema gate is active. RLS exists as
+    a migration file but isn't installed.
+
+    *Phase B (later):* Ship real auth. Stop hardcoding
+    user_id — it comes from the session. Run the RLS
+    migration. Both gates live.
+
+  The key insight this sub-section often surfaces:
+  *what doesn't have to change.* "The schema didn't
+  have to change between phases" is the kind of
+  takeaway that turns a Phase A/B description into
+  a lesson about architectural foresight.
+
+  Skip this sub-section when the concept is fully
+  shipped and stable.
+
+  #### Move 3 — The principle (final paragraph)
+
+  End with the takeaway that generalises beyond this
+  codebase. Not a summary of what was just said —
+  the underlying principle the concept exemplifies.
+  "This is what people mean by designing for multi-
+  tenancy from the start." "This is what defense in
+  depth looks like in a real system." "This is why
+  every web framework eventually adds optimistic
+  updates."
+
+  The principle paragraph is the bridge to the
+  diagram below and to the reader's broader
+  understanding. After this, the reader knows what
+  the concept is, why this codebase uses it, and
+  where else they'll see it. The diagram that follows
+  is the visual recap of the mechanics they just
+  understood.
+
+  ### Hard rules
+
+  - **No definition-first openings.** "X is a
+    mechanism for..." is banned. Start with the mental
+    model, end with the term.
+
+  - **Bridge from what the reader knows in every
+    sub-section.** If a sub-section has no bridge to
+    a frontend concept the reader already understands,
+    the writer hasn't done the work yet.
+
+  - **Every abstract claim followed by a concrete
+    consequence.** "This is secure" is banned;
+    "If the client tries X, the database returns Y"
+    is required.
+
+  - **Name the terms; don't dance around them.**
+    "Composite primary key" not "a special kind of
+    key." Real terms, used after they're introduced
+    with the bridge.
+
+  - **Length scales with complexity.** A four-paragraph
+    How it works for a complex auth pattern is a
+    failure. A twenty-paragraph How it works for
+    debounce is over-engineering. Calibrate.
+
+  - **Code/file references inline where they earn it.**
+    "The file `0002_rls_policies.sql` contains these
+    policies — written, committed, ready, but not
+    activated yet." File names ground the abstract
+    in the actual repo.
 
   End with a sentence that hands off to the primary
   diagram: "The full picture is below." Or: "Here's
   the diagram of the whole flow." The diagram that
   follows is the recap visual — it shows everything
   the prose just walked through, in one frame.
+
+  ### Worked example — what good looks like
+
+  This is what a How it works section looks like when
+  the rules above are followed. The concept being
+  explained is *multi-tenant data isolation in
+  Postgres with both schema-level and policy-level
+  enforcement* — a backend pattern the reader has
+  likely never built but will be asked about.
+
+  > **The mental model: two locked doors, but only
+  > one is installed right now.**
+  >
+  > In a multi-user app, you need to make sure user A
+  > can never read or write user B's data. There are
+  > lots of ways to enforce this. This system uses two
+  > independent mechanisms, layered. Think of them
+  > like defense in depth — if one fails, the other
+  > still holds.
+  >
+  > **Layer 1: The schema gate (always on)**
+  >
+  > Every table that syncs to the cloud has a
+  > *composite primary key*: `PRIMARY KEY (user_id, id)`.
+  >
+  > If you're coming from frontend, you're probably
+  > used to thinking of an `id` as globally unique —
+  > like a UUID that identifies one row, full stop.
+  > Here it's different. A row isn't identified by
+  > `id` alone; it's identified by the pair
+  > `(user_id, id)`. Two different users could
+  > technically have rows with the same `id` value
+  > and they'd be different rows, because the *pair*
+  > is what's unique.
+  >
+  > The practical consequence: if user A's client
+  > somehow sends a query for `id = 'abc123'`
+  > belonging to user B, the database looks for
+  > `(user_A_id, 'abc123')` — and that row literally
+  > does not exist. There's nothing to return. This
+  > isn't a permission check ("you're not allowed to
+  > see this"); it's an existence check ("this row
+  > isn't here"). The data is invisible at the
+  > structural level, not the policy level.
+  >
+  > This works whether the user is logged in, logged
+  > out, authenticated, unauthenticated — doesn't
+  > matter. It's baked into how rows are stored and
+  > looked up.
+  >
+  > **Layer 2: The runtime gate (RLS — Row Level
+  > Security)**
+  >
+  > RLS is a Postgres/Supabase feature where you write
+  > policies on the database itself that say "when
+  > anyone queries this table, automatically add
+  > `WHERE user_id = auth.uid()` to their query."
+  > `auth.uid()` is the currently-authenticated user's
+  > id, pulled from their session token.
+  >
+  > So even if a client tries to run
+  > `SELECT * FROM journal_entries` with no filter,
+  > the database silently rewrites it to
+  > `SELECT * FROM journal_entries WHERE user_id = <whoever-is-logged-in>`.
+  > The client physically cannot see other users'
+  > rows because the query never returns them.
+  >
+  > The file `0002_rls_policies.sql` contains these
+  > policies. They're written, they're committed,
+  > they're ready — but they're not *activated* yet
+  > in Phase A.
+  >
+  > **Why two gates instead of one?**
+  >
+  > Because they fail differently. RLS depends on
+  > auth working correctly — if `auth.uid()` returns
+  > null or the wrong value, the policy breaks down.
+  > The schema gate doesn't care about auth at all;
+  > it's just how the data is shaped. If RLS ever has
+  > a bug, the composite key still prevents cross-user
+  > lookups. If the composite key were ever bypassed,
+  > RLS still filters. Two independent failure modes
+  > have to both go wrong to leak data.
+  >
+  > **Phase A vs Phase B**
+  >
+  > *Phase A (now):* No real auth. The client
+  > hardcodes a `user_id` value and stamps it onto
+  > every row. There's only one user — you. The
+  > schema gate is active and doing its job (every
+  > row is keyed by user_id, queries naturally scope
+  > to that user_id). RLS exists as a migration file
+  > but isn't installed in the database, because
+  > there's no `auth.uid()` to filter against yet.
+  >
+  > *Phase B (later):* Ship Supabase Auth (real
+  > sign-up, sign-in, session tokens). Stop hardcoding
+  > the user_id on the client — the user_id now comes
+  > from the authenticated session. Run the RLS
+  > migration so the policies become active. Now
+  > both gates are live.
+  >
+  > The key thing: **the schema didn't have to change
+  > between phases.** The composite primary key was
+  > correct from day one. You just turn on the second
+  > layer when auth is ready.
+  >
+  > This is what people mean by "designing for
+  > multi-tenancy from the start" — even when there's
+  > only one tenant, the data shape already supports
+  > many. You don't pay a migration cost later to add
+  > a `user_id` column, backfill it, and re-key
+  > everything. It's already there.
+  >
+  > The full picture is below.
+
+  What this example does right:
+  - Opens with a metaphor, not a definition.
+  - Each layer gets its own sub-heading and is
+    walked separately.
+  - The "if you're coming from frontend, you're used
+    to X — here it's different" bridge appears in
+    every layer.
+  - Every abstract claim ("the data is invisible")
+    is followed by a concrete consequence ("the
+    database looks for (user_A_id, 'abc123') and
+    that row literally does not exist").
+  - Phase A vs Phase B is treated as a first-class
+    sub-section.
+  - The takeaway paragraph names the principle,
+    not the mechanics.
 
   ---
 
@@ -2832,6 +3181,34 @@ CONSTRAINTS
    nouns — that's the test of a real zoom-out. Ends
    with an explicit handoff to the diagram or
    How it works.
+→ Every concept file must include a How it works block
+   immediately after Why care and before the primary
+   diagram. Length scaled by complexity, not capped at
+   a paragraph count — simple concepts get four short
+   paragraphs, complex backend/AI/infra concepts get
+   fifteen or twenty with sub-headings. Required moves
+   in order: (1) Move 1 — open with a concrete mental
+   model or metaphor, then one sentence naming the
+   underlying strategy. Definition-first openings ("X
+   is a mechanism for...") are banned. (2) Move 2 — a
+   layered walkthrough where each independent part of
+   the concept gets its own bolded sub-heading and
+   covers four things: the technical thing named with
+   its real term, a bridge from what the reader already
+   knows ("if you're coming from frontend, you're used
+   to X — here it's different"), the practical
+   consequence walked through with a concrete example,
+   and the condition under which it works or breaks.
+   (2.5) Optional but required when applicable —
+   Phase A / Phase B sub-section for concepts that
+   involve built-but-not-fully-active mechanisms,
+   migrations, or gradual rollouts. (3) Move 3 — end
+   with the principle that generalises beyond this
+   codebase, not a summary of what was just said.
+   Every abstract claim must be followed by a concrete
+   consequence. Bridges from frontend knowledge are
+   required in every sub-section of move 2 — without
+   a bridge, the writer hasn't done the work.
 → Every concept file must include a Tradeoffs block
    immediately before Summary. Required parts:
    (1) a comparison table with at least four cost
