@@ -48,105 +48,59 @@ Read these files (skip missing ones):
 - `~/.config/aipe/global/skills.md` (optional)
 - `~/.config/aipe/global/aieng-curriculum.md` or `~/.config/aipe/global/curriculum.md` (cross-project curriculum)
 
-**Curriculum file resolution.** The AI Engineering (`03-ai-engineering/`) and Machine Learning (`04-machine-learning/`) sections are curriculum-driven (see Step 5C non-negotiable 19). The resolution flow:
+**Curriculum file resolution.** The curriculum is **optional**. When loaded, it drives the AI (`03-ai-engineering/`) and ML (`04-machine-learning/`) inventory and powers the `## Project exercises` block. When absent, AI/ML files fall back to codebase-driven inventory and skip the Project exercises block. **The agent never blocks on a missing curriculum.**
 
-1. **Check the canonical paths** (in order): `.aipe/project/aieng-curriculum.md` → `.aipe/project/curriculum.md` → `~/.config/aipe/global/aieng-curriculum.md` → `~/.config/aipe/global/curriculum.md`. If found, load it and continue to Step 3.
+Resolution flow:
 
-2. **If no curriculum file is found AND the codebase has no AI or ML surface**, the curriculum isn't needed. Skip it and continue.
+1. **Check the canonical paths** (in order): `.aipe/project/aieng-curriculum.md` → `.aipe/project/curriculum.md` → `~/.config/aipe/global/aieng-curriculum.md` → `~/.config/aipe/global/curriculum.md`. If any path matches, load it and continue to Step 3 in **curriculum-loaded** mode.
 
-3. **If no curriculum file is found AND the codebase has AI or ML surface**, branch by mode:
-
-   **CREATE mode (no existing study guide — Step 4 will detect this):**
-
-   a. Search common locations for a candidate curriculum file:
+2. **If no canonical path matches**, search the user's home for candidate curriculum files:
 
    ```bash
    find ~ -maxdepth 4 \( -name "aieng-curriculum.md" -o -name "curriculum.md" \) \
-     -not -path "*/node_modules/*" -not -path "*/.git/*" 2>/dev/null
+     -not -path "*/node_modules/*" -not -path "*/.git/*" \
+     -not -path "*/.aipe/specs/*" 2>/dev/null
    ```
 
-   b. **If one or more candidates are found**, present them and ask the user which to install:
+3. **Branch on candidate count**:
 
-   ```
-   No curriculum file is installed yet. Found candidate file(s):
+   - **Zero candidates** — continue to Step 3 in **codebase-driven** mode. No prompt, no warning. AI/ML files (if any) will be inventoried from codebase scan and will not carry a Project exercises block.
 
-     1. /Users/rein/Public/aipe/aieng-curriculum.md       (1234 lines)
-     2. /Users/rein/Projects/loopd/docs/curriculum.md     (560 lines)
+   - **Exactly one candidate** — auto-install via symlink to `~/.config/aipe/global/aieng-curriculum.md` and print a single-line notice:
 
-   Which should I install as your curriculum? Reply with:
-     - a number (1 or 2) — I'll symlink it to ~/.config/aipe/global/aieng-curriculum.md
-                          (cross-project, recommended — one source of truth)
-     - "copy <N>"       — copy instead of symlink (no live link to the source)
-     - "project <N>"    — install at .aipe/project/aieng-curriculum.md (per-project)
-     - "scaffold"       — write a placeholder template I can fill in later
-     - "skip"           — proceed without a curriculum (AI/ML files will be
-                          codebase-driven only, no Project exercises blocks)
-   ```
+     ```bash
+     mkdir -p ~/.config/aipe/global
+     ln -s <candidate-path> ~/.config/aipe/global/aieng-curriculum.md
+     ```
 
-   Honor whatever the user picks. Default install path is `~/.config/aipe/global/aieng-curriculum.md` via symlink (`ln -s`). Use `cp` if the user said "copy". Use `.aipe/project/aieng-curriculum.md` if the user said "project". Create the target directory with `mkdir -p` if needed.
+     ```
+     ✓ Auto-installed curriculum from <candidate-path>
+       (symlinked to ~/.config/aipe/global/aieng-curriculum.md)
+     ```
 
-   c. **If no candidates are found** (or the user replied "scaffold"), write a minimal placeholder to `~/.config/aipe/global/aieng-curriculum.md`:
+     Load the symlinked file and continue to Step 3 in **curriculum-loaded** mode.
 
-   ```markdown
-   # AI Engineering Curriculum
+   - **Multiple candidates** — prompt the user to pick:
 
-   Replace this placeholder with your phased curriculum. The /aipe:study
-   command uses it to drive Section 03 (AI Engineering) and Section 04
-   (Machine Learning) of the generated study guide.
+     ```
+     Found multiple curriculum candidates. Pick one or skip:
 
-   ## Phases
-   - Phase 1: LLM foundations
-   - Phase 2: Retrieval and prompt engineering
-   - Phase 3: Evals and observability
-   - Phase 4: Agents and tool use
-   - Phase 5: Production serving / hardening
+       1. /Users/rein/Public/aipe/aieng-curriculum.md       (1234 lines)
+       2. /Users/rein/Projects/loopd/docs/curriculum.md     (560 lines)
 
-   ## Concepts (format: [Cx.y] Title — status (project tags))
-   - [C1.1] What an LLM is — covered (all)
-   - [C1.2] Context window — covered (all)
-   - ...
+     Reply with:
+       - a number (1, 2, …) — symlink to ~/.config/aipe/global/aieng-curriculum.md
+       - "copy <N>"          — copy instead of symlink
+       - "project <N>"       — install at .aipe/project/aieng-curriculum.md
+       - "skip"              — proceed without a curriculum (codebase-driven only)
+     ```
 
-   ## Build items (format: [Bx.y] Title — concept tags [Cx.y, Cx.y])
-   - [B1.1] Wrap LLM call in typed schema — concepts [C1.1, C1.4]
-   - ...
+     Honor the reply. On `skip`, continue in **codebase-driven** mode (no warning needed — the user explicitly chose).
 
-   ## Status values
-   - covered      — actively in use; file walks the implementation
-   - learn-only   — read about but not built (no exercise required)
-   - deferred     — planned but not implemented yet; Case B applies
-   - out-of-scope — explicitly skipped for this curriculum
-   ```
+**Result.** Step 3 onward operates in one of two modes:
 
-   Print:
-
-   ```
-   ✓ Scaffolded a placeholder curriculum at ~/.config/aipe/global/aieng-curriculum.md.
-     Open it, fill in your phases/concepts/build items, then re-run /aipe:study.
-   ```
-
-   Then **stop** — proceeding with a placeholder produces empty AI/ML files. The user has to fill it in first.
-
-   d. **If the user replied "skip"**, fall through to the UPDATE-mode degraded branch below — but mark the run as `curriculum-less` so the agent later skips Project exercises blocks and curriculum-driven flags.
-
-   **UPDATE mode (existing study guide):**
-
-   Print a warning and **continue** in degraded mode:
-
-   ```
-   ⚠ No curriculum file found. Running in degraded mode for this update:
-     - Section 03 / 04 files will be diffed against the codebase only (Diff A)
-     - Curriculum-driven Diff B flags (Project exercises, in-scope concepts,
-       out-of-scope file removal) are suppressed this run
-     - No new files will be created for in-scope concepts not yet covered
-     - Existing Project exercises blocks (if any) are left untouched
-
-     Place a curriculum file at .aipe/project/aieng-curriculum.md or
-     ~/.config/aipe/global/aieng-curriculum.md (or re-run /aipe:study in
-     CREATE-mode-style discovery by deleting .aipe/specs/study/) to get
-     full v1.26.0+ behaviour.
-   ```
-
-   Continue to Step 3. Track the `curriculum-less` flag through to Step 6U so the Diff B checks know which flags to suppress.
+- **curriculum-loaded** — AI/ML inventory is curriculum-driven (one file per in-scope `[Cx.y]`, Case B for not-yet-implemented concepts). Every AI/ML file carries a `## Project exercises` block. UPDATE MODE runs full Diff B including curriculum-driven flags.
+- **codebase-driven** — AI/ML inventory is codebase-driven (same as `01-system-design/` and `02-dsa/`: one file per pattern found in the actual code). No Project exercises block. UPDATE MODE runs Diff A as normal and suppresses the four curriculum-driven Diff B flags (missing Project exercises, subsection bullet gaps, out-of-scope concept, missing in-scope concept file). No degradation warning — codebase-driven is a legitimate first-class mode, not a fallback.
 
 ## Step 3 — Load the `study` template
 
@@ -247,17 +201,17 @@ The non-negotiables from the template:
 
     End the block with an explicit handoff sentence to the primary diagram ("The full picture is below." / "Here's the diagram of the whole flow."). The full worked example showing what good looks like lives in the loaded template (Step 3) under "How it works → Worked example" — read it before writing complex concepts.
 
-19. **AI Engineering and Machine Learning files include a `## Project exercises` block, and the inventory for those two sections is curriculum-driven, not codebase-driven.** Four related rules:
+19. **Curriculum-loaded mode is opt-in. When loaded, AI Engineering and Machine Learning files include a `## Project exercises` block and the inventory is curriculum-driven. When absent, AI/ML files are codebase-driven (same model as System design and DSA) and the Project exercises block is omitted.** Four related rules:
 
-    - **`## Project exercises` block** sits between `## Tech reference (industry pairing)` and `## Summary` in every Section 03 (AI Engineering) and Section 04 (Machine Learning) file. It names the curriculum-defined Build items (`[Bx.y]` IDs from `aieng-curriculum.md`) that map to this file's concept IDs. Format: one `###` subsection per exercise, six labelled bullets each — `**Exercise ID:**` (verbatim, e.g. `[B3.11]`), `**What to build:**` (concrete deliverable from the curriculum), `**Why it earns its place:**` (one sentence on the interview signal it produces), `**Files to touch:**` (real file paths in this codebase, or expected paths if Case B), `**Done when:**` (measurable end-state — "Per-class F1 reported on a 50-item held-out set, saved to `docs/ml-results.md`"; if no measurable end-state can be named, the exercise is wrong), `**Estimated effort:**` (one of `<1hr`, `1–4hr`, `1–2 days`, `≥1 week`). Two cases:
+    - **`## Project exercises` block** (curriculum-loaded mode only) sits between `## Tech reference (industry pairing)` and `## Summary` in every Section 03 (AI Engineering) and Section 04 (Machine Learning) file. It names the curriculum-defined Build items (`[Bx.y]` IDs from `aieng-curriculum.md`) that map to this file's concept IDs. **Omit this block entirely in codebase-driven mode** — Section 03/04 files in that mode go straight from Tech reference to Summary, same shape as Section 01/02 files. Format: one `###` subsection per exercise, six labelled bullets each — `**Exercise ID:**` (verbatim, e.g. `[B3.11]`), `**What to build:**` (concrete deliverable from the curriculum), `**Why it earns its place:**` (one sentence on the interview signal it produces), `**Files to touch:**` (real file paths in this codebase, or expected paths if Case B), `**Done when:**` (measurable end-state — "Per-class F1 reported on a 50-item held-out set, saved to `docs/ml-results.md`"; if no measurable end-state can be named, the exercise is wrong), `**Estimated effort:**` (one of `<1hr`, `1–4hr`, `1–2 days`, `≥1 week`). Two cases:
       - **Case A — concept implemented.** `In this codebase` describes the implementation; Project exercises names the *next* curriculum step that extends, evaluates, or hardens it (e.g., a file on LLM caching with prompt caching active gets an exercise to add the semantic cache layer named in the curriculum).
       - **Case B — concept not yet implemented.** `In this codebase` says "Not yet implemented" with one honest sentence (deferred to Phase X / gated on prerequisite Y); Project exercises becomes the *primary* buildable target — the curriculum's Build item is the spec for building the thing. Case B is the load-bearing reason this block exists.
 
-    - **Curriculum-driven inventory (AI + ML only).** Section 01 (System design) and Section 02 (DSA) remain codebase-driven — they generate files only for patterns found in the actual code. Section 03 and Section 04 are different: they generate one file per **curriculum concept in scope for the project**, regardless of current implementation state. A curriculum concept `[Cx.y]` is in scope when (a) the curriculum tags it for the project being studied (e.g., loopd, aipe, contrl-mo), and (b) its status is `covered`, `learn-only`, or `deferred`. Concepts explicitly marked out-of-scope are excluded.
+    - **Curriculum-driven inventory** (curriculum-loaded mode only, AI + ML only). When a curriculum is loaded, Section 03 and Section 04 generate one file per **curriculum concept in scope for the project**, regardless of current implementation state. A curriculum concept `[Cx.y]` is in scope when (a) the curriculum tags it for the project being studied (e.g., loopd, aipe, contrl-mo), and (b) its status is `covered`, `learn-only`, or `deferred`. Concepts explicitly marked out-of-scope are excluded. **In codebase-driven mode** (no curriculum loaded), Section 03 and Section 04 generate files from codebase scan only — one file per pattern found, same model as Section 01 and Section 02. Section 01 and Section 02 are always codebase-driven regardless of curriculum state.
 
     - **Anchors per sub-discipline.** Each `═════` sub-section divider in Section 03 and Section 04 of the template carries an `Anchor:` line naming the primary project (loopd / aipe / contrl-mo) and a `Curriculum:` line naming the phase + concept ID range. When the codebase being studied is one of the anchored projects, the agent weights coverage toward sub-sections anchored to that project — but every sub-section is covered, because the three-shapes interview story depends on the contrast. When the codebase is not one of the anchored projects, anchors are instructional examples rather than required mappings.
 
-    - **Curriculum file resolution.** The agent reads `aieng-curriculum.md` (or any file named `curriculum.md`) from `.aipe/project/` first (per-project), then from `~/.config/aipe/global/` (cross-project). If neither exists and the codebase has AI or ML surface, the agent does NOT hard-stop — it follows the resolution flow in Step 2: in CREATE mode, it searches common locations under `~` for a candidate curriculum file and offers the user a choice (install via symlink / copy / scaffold a placeholder / skip and proceed curriculum-less); in UPDATE mode, it prints a warning and continues in degraded mode (codebase-driven Diff A only for AI/ML files; Project exercises and curriculum-driven Diff B flags suppressed). When the agent proceeds curriculum-less, AI/ML files generated or updated this run do NOT carry a Project exercises block, and the run's UPDATE-mode report flags the suppression explicitly so the user knows what was skipped.
+    - **Curriculum file resolution.** Step 2 handles this — see the "Curriculum file resolution" sub-section there. Summary: canonical paths checked first; if empty, the agent searches `~` (maxdepth 4) for candidate curriculum files; zero candidates → silent codebase-driven mode; exactly one candidate → auto-symlink to `~/.config/aipe/global/aieng-curriculum.md` with a one-line notice → curriculum-loaded mode; multiple candidates → prompt the user. The agent never blocks on a missing curriculum. Both modes are first-class; codebase-driven is not a degraded fallback.
 
 Diagrams use box-drawing characters: `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ → ← ↑ ↓ ◀ ▶ ▲ ▼`. No Mermaid, no images, no PlantUML.
 
@@ -267,10 +221,12 @@ Every file is grounded in concrete details from the project context: real file n
 
 ## Step 6C — Plan the file inventory
 
-The inventory uses two different sources depending on the section:
+The inventory source depends on the mode determined in Step 2:
 
-- **Sections 01 (System design) and 02 (DSA) are codebase-driven.** Identify patterns and operations by walking the project context. Use the template's "What to expect by discipline" catalog (loaded in Step 3) as the first pass: determine whether the codebase is primarily frontend, backend, or full-stack, then walk the discipline's pattern list and note which ones you can ground in concrete code. Patterns you find become files; patterns you don't find are skipped (or flagged for the user). The cross-reference table ("if you see X, you're looking at Y") is a useful signal-to-pattern map.
-- **Sections 03 (AI Engineering) and 04 (Machine Learning) are curriculum-driven.** Walk the curriculum file loaded in Step 2 (`aieng-curriculum.md`). Generate one file per **curriculum concept `[Cx.y]` in scope for the project being studied**, regardless of current implementation state. A concept is in scope when (a) the curriculum tags it for this project (e.g., loopd, aipe, contrl-mo), and (b) its status is `covered`, `learn-only`, or `deferred`. Concepts explicitly marked out-of-scope are excluded. Each file's `## In this codebase` block becomes Case A (concept is implemented — describe the implementation) or Case B (concept is not yet implemented — say so honestly in one sentence). Each file's `## Project exercises` block is built from the curriculum's `[Bx.y]` Build items that map to the file's `[Cx.y]` concept IDs.
+- **Sections 01 (System design) and 02 (DSA) are always codebase-driven.** Identify patterns and operations by walking the project context. Use the template's "What to expect by discipline" catalog (loaded in Step 3) as the first pass: determine whether the codebase is primarily frontend, backend, or full-stack, then walk the discipline's pattern list and note which ones you can ground in concrete code. Patterns you find become files; patterns you don't find are skipped (or flagged for the user). The cross-reference table ("if you see X, you're looking at Y") is a useful signal-to-pattern map.
+- **Sections 03 (AI Engineering) and 04 (Machine Learning) depend on mode:**
+  - **Curriculum-loaded mode** (Step 2 loaded a curriculum file): walk the curriculum and generate one file per **curriculum concept `[Cx.y]` in scope for the project being studied**, regardless of current implementation state. A concept is in scope when (a) the curriculum tags it for this project (e.g., loopd, aipe, contrl-mo), and (b) its status is `covered`, `learn-only`, or `deferred`. Concepts explicitly marked out-of-scope are excluded. Each file's `## In this codebase` block becomes Case A (concept is implemented — describe the implementation) or Case B (concept is not yet implemented — say so honestly in one sentence). Each file's `## Project exercises` block is built from the curriculum's `[Bx.y]` Build items that map to the file's `[Cx.y]` concept IDs.
+  - **Codebase-driven mode** (no curriculum loaded): walk the project context, same as Sections 01/02. Use the expanded AI catalog (loaded in Step 3 under "SECTION 03 — AI ENGINEERING") and the ML catalog (under "SECTION 04 — MACHINE LEARNING") as pattern checklists; include patterns the codebase actually uses, skip ones it doesn't. **Omit the `## Project exercises` block from every file in this mode** — go straight from Tech reference to Summary, same shape as Section 01/02 files. Case A / Case B distinction does not apply; files exist only for patterns actually in the codebase.
 
 Assign each pattern a kebab-case file name with a numeric prefix (in dependency / reading order):
 
@@ -844,7 +800,10 @@ For every existing concept file, run TWO diffs:
   - "Missing `## Project exercises` section (AI/ML file)" — flag any file in `03-ai-engineering/` or `04-machine-learning/` that doesn't have a `## Project exercises` block between Tech reference and Summary. The v1.26.0 fix is to walk the curriculum file's Build items (`[Bx.y]`), include each item whose concept tags overlap with this file's concept IDs, and add a `###` subsection per exercise with the six labelled bullets.
   - "Project exercises subsection missing one of the six required bullets" — flag any `###` exercise subsection that doesn't carry all required labelled bullets in order: `**Exercise ID:**` / `**What to build:**` / `**Why it earns its place:**` / `**Files to touch:**` / `**Done when:**` / `**Estimated effort:**`.
   - "Project exercises missing `Done when` end-state" — flag any subsection whose `**Done when:**` value is vague ("works", "is complete", "is implemented") rather than a measurable end-state. The fix is to rewrite the end-state with a concrete artifact, file path, test command, or measured number. If no measurable end-state can be named, the exercise itself is wrong and should be replaced.
-  - "Curriculum file missing — curriculum-driven flags suppressed this run" — when the codebase has AI/ML surface but Step 2 found no `aieng-curriculum.md` / `curriculum.md` AND the user chose to proceed curriculum-less (or this is UPDATE mode and the warning fired), suppress the four curriculum-driven flags below ("Missing Project exercises", "Project exercises subsection missing bullets", "AI/ML file covers out-of-scope concept", "Curriculum concept in scope but missing a file") for this run and include this notice in the Step 7U change plan so the user sees what was deferred. Diff A (codebase drift) still runs for AI/ML files; only the curriculum-driven Diff B subset is suppressed.
+  - **Curriculum-driven flags only fire in curriculum-loaded mode.** The four flags below ("Missing Project exercises", "Project exercises subsection missing bullets", "AI/ML file covers out-of-scope concept", "Curriculum concept in scope but missing a file") apply ONLY when Step 2 loaded a curriculum file. In codebase-driven mode, these flags are silently skipped — codebase-driven is a first-class mode, not a fallback, and AI/ML files in this mode legitimately have no Project exercises block and no concept-of-scope to validate against.
+  - **Mode-switch flags** (when the previous run and this run differ in mode):
+    - "Existing Project exercises block but curriculum no longer loaded" — flag any AI/ML file that already carries a `## Project exercises` block when this run is in codebase-driven mode. Two options the user picks in Step 7U: (a) keep the existing block as-is (the curriculum-supplied content stays useful even if a new curriculum check can't validate it this run), or (b) strip the block to match the current codebase-driven mode. Default: keep.
+    - "Curriculum loaded but existing AI/ML files lack Project exercises" — flag any file in `03-ai-engineering/` or `04-machine-learning/` that doesn't carry a `## Project exercises` block when this run is in curriculum-loaded mode. The fix is to add the block by walking the curriculum for Build items matching the file's concept IDs (same as the standard "Missing Project exercises section" flag).
   - "AI/ML file covers a concept that's out of curriculum scope" — flag any `03-ai-engineering/` or `04-machine-learning/` file whose concept IDs don't appear in the curriculum's in-scope list (status `covered`, `learn-only`, or `deferred`) for the project being studied. These files are stale and should be removed (or the curriculum needs to be updated to include them).
   - "Curriculum concept in scope but missing a file" — flag any curriculum concept `[Cx.y]` tagged for this project with status `covered`, `learn-only`, or `deferred` that doesn't have a corresponding file in `03-ai-engineering/` or `04-machine-learning/`. The v1.26.0 fix is to generate a new file for the missing concept, using Case B of the In this codebase block if the concept isn't yet implemented.
   - "Why care still hands off to Quick summary or to the diagram" — flag any Why care paragraph 2 whose closing sentence says "Quick summary below" (v1.18.0 wording) or "diagram below" / "diagram and How it works" (v1.19.0 wording). The handoff target is now How it works alone.
@@ -881,13 +840,10 @@ Print a structured summary in this exact shape:
 Changes detected for .aipe/specs/study/
 ─────────────────────────────────────────────────
 
-[If the run is curriculum-less, include this banner first:]
-⚠ CURRICULUM-LESS RUN — no curriculum file was found at Step 2.
-  Curriculum-driven Diff B flags are suppressed for Section 03 / 04
-  this run (no Project exercises updates, no in-scope-concept file
-  generation, no out-of-scope removal proposals). Codebase-driven
-  Diff A still runs normally. To get full v1.26.0+ behaviour next
-  time, install a curriculum file via Step 2's resolution flow.
+[Header line indicating mode — always print:]
+Mode: <curriculum-loaded | codebase-driven>
+[If curriculum-loaded, also include the curriculum file path on the next line.]
+[No warning banner — both modes are first-class. The Mode line tells the user which set of flags ran.]
 
 00-overview.md
   Outdated: <e.g. layer X removed but still in the system diagram>
