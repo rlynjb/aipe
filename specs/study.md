@@ -144,6 +144,18 @@ Each file contains:
                         it's here / Leading today (adoption-
                         or innovation-leading) / Why it leads
                         / Runner-up. No markdown tables.
+  → Project exercises   (SECTIONS 03 + 04 only) curriculum
+                        Build items mapped to this file's
+                        concept IDs. One `###` subsection per
+                        exercise; six labelled bullets each:
+                        Exercise ID / What to build / Why it
+                        earns its place / Files to touch /
+                        Done when / Estimated effort. Handles
+                        Case A (concept already implemented;
+                        exercise is the next step) and Case B
+                        (concept not yet implemented;
+                        exercise is the primary buildable
+                        target).
   → Summary             recap — one-paragraph concept summary
                         plus 3–6 bulleted key points to
                         carry away. The block you return to
@@ -161,8 +173,10 @@ Each file contains:
 Each file walks the pattern from curiosity hook to verified
 understanding: Why care frames it, How it works explains it,
 the diagram anchors it, In this codebase grounds it, Elaborate
-extends it, Tradeoffs name the cost, Summary recaps it,
-Interview defense pressure-tests it, Validate proves you got it.
+extends it, Tradeoffs name the cost, Tech reference places it
+in the industry, Project exercises name what to build next
+(AI + ML only), Summary recaps it, Interview defense
+pressure-tests it, Validate proves you got it.
 ```
 
 ---
@@ -1159,7 +1173,230 @@ Every individual concept file uses this structure exactly:
 
   ---
 
-  ## Summary
+  ## Project exercises
+
+  This block names the curriculum-defined exercises
+  that build understanding of this concept by
+  *making* something — not just reading about it.
+  It exists for two reasons. First: some concepts in
+  the AI engineering and ML curriculum are not yet
+  implemented in any of the user's codebases — but
+  the user still needs to learn them, and the
+  curriculum already specifies a concrete project
+  exercise for each one. Second: even for concepts
+  already in the codebase, the next exercise in the
+  curriculum is often the right next step to deepen
+  understanding (add evals, harden under failure,
+  measure cost). Project exercises name those next
+  steps.
+
+  ### The two cases this block covers
+
+  **Case A — concept is implemented in the codebase.**
+  In this case, In this codebase already names the
+  files and walks the implementation. Project
+  exercises here names the *next* curriculum build
+  item that extends, evaluates, or hardens the
+  existing implementation. Example: if the file is
+  about LLM caching and the codebase has prompt
+  caching active, the project exercise is to add
+  the semantic cache layer named in the curriculum
+  (B5.8 in the loopd curriculum) — the same concept,
+  one step deeper.
+
+  **Case B — concept is in the curriculum but not
+  yet in the codebase.** In this case, the file
+  still exists (the spec generates one file per
+  curriculum concept that's tagged in-scope for the
+  project, regardless of current implementation
+  state). In this codebase says "Not yet
+  implemented" with one honest sentence about why
+  (deferred to Phase X, gated on prerequisite Y).
+  Project exercises here is the *primary*
+  buildable target — the curriculum's Build item
+  becomes the spec for building the thing.
+
+  Case B is the load-bearing reason this block
+  exists. Without it, files for not-yet-implemented
+  concepts would have nothing concrete in them.
+  With it, every file has either a documented
+  implementation (Case A) or a clear next exercise
+  (Case B). The reader is never left with an
+  abstract concept and no path forward.
+
+  ### Format — one `###` subsection per exercise
+
+  For every curriculum Build item that maps to this
+  concept's IDs (the `[Cx.y]` and `[Bx.y]` tags
+  from the curriculum), add a `###` subsection.
+  Inside, use labelled bullets — same shape as
+  Tech reference, so the file reads consistently.
+
+  - **Exercise ID:** the curriculum's identifier,
+    verbatim (e.g. `[B1.1]`, `[B2C.6]`, `[B5.9]`).
+    The reader can cross-reference back to the
+    curriculum for context.
+  - **What to build:** the exercise statement from
+    the curriculum, lightly edited if the original
+    references concepts the reader hasn't met yet.
+    Concrete deliverable, not a learning goal.
+  - **Why it earns its place:** one sentence on
+    what understanding this exercise produces that
+    reading alone can't. The interview signal it
+    creates.
+  - **Files to touch:** the actual file paths in
+    this codebase where the exercise would land.
+    Names the codebase, not the curriculum. If
+    files don't exist yet (Case B), name the
+    expected paths and which directory they belong
+    in.
+  - **Done when:** a measurable end-state —
+    "Zod schemas exist for all 5 chains and
+    `pnpm test` passes" or "Per-class F1 reported
+    on a 50-item held-out set, saved to
+    `docs/ml-results.md`." If the exercise has no
+    measurable end-state, the exercise is wrong.
+  - **Estimated effort:** one of `<1hr`, `1–4hr`,
+    `1–2 days`, `≥1 week`. Honesty here is more
+    valuable than precision — the reader is
+    deciding whether to take this on this week or
+    park it for the next sprint.
+
+  ### How to choose which exercises appear
+
+  An exercise belongs in a file if it exercises one
+  of the concept IDs the file covers. A single
+  concept may map to one exercise or several. A
+  single exercise may appear in two files if it
+  legitimately exercises two concepts — but mark
+  the primary file and reference it from the
+  secondary one to avoid duplicating the spec.
+
+  In general, expect 1–3 exercises per file. If a
+  file has zero matching exercises in the
+  curriculum, the file is either covering a
+  `learn-only` concept (no exercise by design — say
+  so in one line) or the concept isn't actually
+  part of this project's curriculum scope (in
+  which case the file shouldn't exist at all).
+
+  ### Worked example — Case A: extending an
+  implemented concept
+
+  This is an excerpt from a hypothetical
+  `loopd/03-ai-engineering/30-llm-observability.md`
+  file. The codebase already has a local
+  `ai_call_log` table; the curriculum exercise
+  pushes it toward proper LLM tracing.
+
+  > ### [B3.11] Local ai_trace table for LLM tracing
+  >
+  > - **Exercise ID:** `[B3.11]`
+  > - **What to build:** Extend the existing
+  >   `ai_call_log` table to capture full traces —
+  >   per-request: input, output, latency, tokens,
+  >   cost, model, prompt version — plus per-step
+  >   spans for chain steps and tool calls.
+  > - **Why it earns its place:** Tracing is the
+  >   diff between "the chain failed" and "the
+  >   summarize step failed because the model
+  >   returned an empty string." Without spans, you
+  >   can't find the slow or broken link. With
+  >   them, debugging an LLM bug stops being
+  >   archaeology.
+  > - **Files to touch:** `src/lib/database.ts`
+  >   (new `ai_trace` table), `src/lib/ai/log.ts`
+  >   (new `logTrace` helper), `src/lib/ai/chains/`
+  >   (instrument each chain call site).
+  > - **Done when:** every chain call in the app
+  >   writes a trace row, the existing AI Ops
+  >   dashboard shows a "View trace" link per call,
+  >   and clicking it expands the per-step span
+  >   tree.
+  > - **Estimated effort:** 1–2 days.
+
+  ### Worked example — Case B: a concept the
+  codebase doesn't yet cover
+
+  This is an excerpt from a hypothetical
+  `contrl-mo/04-machine-learning/12-on-device-inference.md`
+  file. The codebase ships an unquantized model;
+  the curriculum exercise is to quantize.
+
+  > In this codebase: not yet implemented. The form
+  > classifier currently ships as an unquantized
+  > LightGBM model bundled with the app at
+  > `assets/models/form-classifier-v1.lgb`.
+  > Quantization is gated on first reliable
+  > inference latency measurements on a real
+  > Android device.
+  >
+  > ### [B5.9] Quantize the form classifier
+  >
+  > - **Exercise ID:** `[B5.9]`
+  > - **What to build:** Export the trained
+  >   LightGBM classifier to a quantized format
+  >   (int8 for tabular models, fp16 if a neural
+  >   variant is introduced). Measure model size
+  >   and per-rep inference latency on a real
+  >   Android device, before and after.
+  > - **Why it earns its place:** Quantization is
+  >   the interview signal for on-device ML.
+  >   Naming "I quantized my model from 12MB to
+  >   3MB with no measurable accuracy loss"
+  >   converts an abstract claim of on-device
+  >   experience into a concrete artifact.
+  > - **Files to touch:**
+  >   `scripts/quantize-model.ts` (new — runs the
+  >   conversion pipeline),
+  >   `assets/models/form-classifier-v1-int8.onnx`
+  >   (new — the quantized artifact),
+  >   `src/lib/ml/inference.ts` (swap loader to
+  >   accept the quantized format).
+  > - **Done when:** quantized model is bundled,
+  >   inference latency is measured at <50ms per
+  >   rep on a Pixel 7, and per-class macro-F1
+  >   on the held-out test set is within 0.01 of
+  >   the unquantized model.
+  > - **Estimated effort:** 1–2 days.
+  >
+  > ### [B5.10] Latency budget on a real device
+  >
+  > - **Exercise ID:** `[B5.10]`
+  > - **What to build:** Measure end-to-end
+  >   per-rep inference latency on a real Android
+  >   device. Target <50ms per rep. Document the
+  >   measurement methodology.
+  > - **Why it earns its place:** A latency claim
+  >   without a real-device measurement is
+  >   marketing. This exercise produces the
+  >   measurement.
+  > - **Files to touch:** `docs/ml-latency.md`
+  >   (new — the measurement report),
+  >   `src/lib/ml/inference.ts` (add timing
+  >   instrumentation).
+  > - **Done when:** report exists with median, p95,
+  >   p99 latency on three exercise classes,
+  >   measured over ≥100 reps per class.
+  > - **Estimated effort:** 4–8 hours.
+
+  ### What this block is NOT
+
+  - Not a brainstorm of every possible thing the
+    reader could build. Only the curriculum's named
+    Build items belong here, with their `[Bx.y]`
+    IDs preserved. The curriculum is the source of
+    truth; this block is a per-file projection of
+    it.
+  - Not a rewrite of the In this codebase block.
+    In this codebase describes what *is*. Project
+    exercises describes what comes *next*.
+  - Not a tutorial. Each exercise is a target, not
+    a walkthrough. The reader is expected to use
+    Claude Code or their own judgment to implement.
+
+  ---
+
 
   This block is the recap. By the time the reader gets
   here, they've seen the hook, the diagram, the
@@ -2943,8 +3180,44 @@ each pattern: explain what it is, show it visually,
 show what the code does at each step, and name the
 tradeoff.
 
+Three project anchors map to three shapes of AI work,
+deliberately separated. Every sub-section below
+declares its primary anchor and curriculum phase.
+When generating a guide for one of these projects,
+the agent weights coverage toward sub-sections
+anchored to that project — but every sub-section is
+covered, because the interview story depends on the
+contrast.
+
+  ┌──────────────┬─────────────────────────────────┐
+  │ Anchor       │ Shape of AI work                │
+  ├──────────────┼─────────────────────────────────┤
+  │ loopd        │ LLM application engineering —   │
+  │              │ single-purpose chains, retrieval│
+  │              │ over personal corpus, LLM evals │
+  ├──────────────┼─────────────────────────────────┤
+  │ aipe         │ Prompt engineering as a         │
+  │              │ discipline + meta-tooling —     │
+  │              │ markdown specs, slash commands, │
+  │              │ retrieval over project context, │
+  │              │ meta-agents                     │
+  ├──────────────┼─────────────────────────────────┤
+  │ contrl-mo    │ Classical supervised ML +       │
+  │              │ on-device inference +           │
+  │              │ recommender systems — covered   │
+  │              │ in SECTION 04                   │
+  └──────────────┴─────────────────────────────────┘
+
+  The anchor on each sub-section names which project
+  exemplifies the shape. When the codebase being
+  studied is not one of these three projects, the
+  agent treats anchors as instructional examples
+  rather than required mappings.
+
 ═════════════════════════════════════════════════
 LLM foundations
+  Anchor: loopd (primary) · aipe (secondary)
+  Curriculum: Phase 1 — concepts C1.1–C1.14
 ═════════════════════════════════════════════════
 
   ### What an LLM actually is (in one diagram)
@@ -3211,6 +3484,13 @@ LLM foundations
 
 ═════════════════════════════════════════════════
 Prompt engineering as a discipline
+  Anchor: aipe (primary) · loopd (secondary)
+  Curriculum: Phase 1 — concepts C1.7, C1.10, C1.12
+  This is the meta-tooling shape — aipe encodes
+  prompt engineering as reusable markdown templates
+  and slash commands. The patterns below are
+  exercised in loopd's 5 chains and in aipe's 11
+  templates.
 ═════════════════════════════════════════════════
 
   Prompt engineering is the load-bearing skill of LLM
@@ -3411,6 +3691,8 @@ Prompt engineering as a discipline
 
 ═════════════════════════════════════════════════
 Context and prompts
+  Anchor: loopd (primary) · aipe (secondary)
+  Curriculum: Phase 1 — concepts C1.2, prompt chaining
 ═════════════════════════════════════════════════
 
   ### Context window
@@ -3498,6 +3780,14 @@ Context and prompts
 
 ═════════════════════════════════════════════════
 Retrieval and RAG
+  Anchor: loopd (Phase 2A — personal corpus) ·
+          aipe (Phase 2B — project context)
+  Curriculum: Phase 2A/2B — concepts C2.1–C2.13
+  Two RAGs, two shapes. loopd retrieves over the
+  user's own journal entries; aipe retrieves over
+  project context for slash commands. The mechanics
+  below cover both shapes; the file's "In this
+  codebase" block names which shape applies.
 ═════════════════════════════════════════════════
 
   ### Embeddings (geometrically)
@@ -3848,6 +4138,15 @@ Retrieval and RAG
 
 ═════════════════════════════════════════════════
 Agents and tool use
+  Anchor: pick one path —
+    Path A: aipe meta-agent (/aipe:implement)
+    Path B: loopd classifier upgrade
+    Path C: contrl-mo coaching agent (recommended)
+  Curriculum: Phase 4 — concepts C4.1–C4.12
+  Path C is the strongest interview signal because
+  it orchestrates a trained ML model as one of its
+  tools (form classifier) alongside a generative
+  LLM. Most candidates' agents call only LLM tools.
 ═════════════════════════════════════════════════
 
   ### Agents vs chains
@@ -4028,6 +4327,11 @@ Agents and tool use
 
 ═════════════════════════════════════════════════
 Evals and observability (LLM side)
+  Anchor: loopd (5 chains + RAG) · aipe (RAG + specs)
+  Curriculum: Phase 3 — concepts C3.1–C3.12
+  The eval harness is the connective tissue across
+  projects. ML-side evals (classifier + recommender)
+  live in SECTION 04.
 ═════════════════════════════════════════════════
 
   ### Eval set types
@@ -4136,6 +4440,10 @@ Evals and observability (LLM side)
 
 ═════════════════════════════════════════════════
 Production serving (LLM side)
+  Anchor: loopd (primary)
+  Curriculum: Phase 5 — concepts C5.1–C5.8
+  On-device ML serving (quantization, retraining,
+  drift) lives in SECTION 04 under contrl-mo.
 ═════════════════════════════════════════════════
 
   ### LLM caching
@@ -4284,6 +4592,8 @@ Production serving (LLM side)
 
 ═════════════════════════════════════════════════
 How this codebase uses AI specifically
+  Anchor: the codebase being studied
+  Curriculum: maps each feature to phase + concept
 ═════════════════════════════════════════════════
 
   ### AI features table
@@ -4324,8 +4634,26 @@ and metrics matter more than prompts. Most candidates
 have only consumed pre-trained models — having actually
 trained one is the interview signal.
 
+Primary anchor: contrl-mo (form classifier +
+progression recommender). Curriculum coverage: Phase
+2C (concepts C2C.1–C2C.13), Phase 3 ML evals (C3.4,
+C3.5, C3.9, C3.10, C3.12), Phase 5 ML hardening
+(C5.15, C5.16).
+
+The contrl-mo shape is the rarest of the three
+project shapes — actual end-to-end supervised ML
+with labeled data, feature engineering, training,
+evaluation, and on-device deployment. When the
+codebase being studied does not include any ML
+training pipeline, this entire section is built
+against the curriculum's Phase 2C build items as
+project exercises (see the Project exercises block
+in each file).
+
 ═════════════════════════════════════════════════
 Supervised learning foundations
+  Anchor: contrl-mo (form classifier)
+  Curriculum: Phase 2C — concepts C2C.1–C2C.4
 ═════════════════════════════════════════════════
 
   ### The supervised learning pipeline
@@ -4474,6 +4802,8 @@ Supervised learning foundations
 
 ═════════════════════════════════════════════════
 Data and model quality
+  Anchor: contrl-mo (public→personal domain gap)
+  Curriculum: Phase 2C — concepts C2C.5–C2C.7
 ═════════════════════════════════════════════════
 
   ### Class imbalance
@@ -4603,6 +4933,8 @@ Data and model quality
 
 ═════════════════════════════════════════════════
 Metrics
+  Anchor: contrl-mo (per-class precision/recall/F1)
+  Curriculum: Phase 2C — concepts C2C.11, C2C.12
 ═════════════════════════════════════════════════
 
   ### Confusion matrices
@@ -4684,6 +5016,8 @@ Metrics
 
 ═════════════════════════════════════════════════
 Recommender systems
+  Anchor: contrl-mo (progression recommender)
+  Curriculum: Phase 2C — concepts C2C.9, C2C.10
 ═════════════════════════════════════════════════
 
   ### Recommender system framing
@@ -4741,6 +5075,8 @@ Recommender systems
 
 ═════════════════════════════════════════════════
 On-device inference
+  Anchor: contrl-mo (MediaPipe + on-device classifier)
+  Curriculum: Phase 2C + Phase 5 — concepts C2C.8, C5.15
 ═════════════════════════════════════════════════
 
   ### On-device inference
@@ -4800,6 +5136,9 @@ On-device inference
 
 ═════════════════════════════════════════════════
 ML observability
+  Anchor: contrl-mo (training-run logging, drift)
+  Curriculum: Phase 3 + Phase 5 — concepts C3.10,
+              C3.12, C5.16
 ═════════════════════════════════════════════════
 
   ### Training-run logging
@@ -4885,6 +5224,8 @@ ML observability
 
 ═════════════════════════════════════════════════
 How this codebase uses ML specifically
+  Anchor: the codebase being studied
+  Curriculum: maps each feature to phase + concept
 ═════════════════════════════════════════════════
 
   ### ML features table
@@ -5069,6 +5410,58 @@ CONSTRAINTS
    **No markdown tables with pipes** — they break in
    narrow renderings. Use `###` heading + labelled
    bullets exactly.
+→ Every concept file in SECTION 03 (AI Engineering)
+   and SECTION 04 (Machine Learning) must include a
+   `## Project exercises` block immediately after
+   Tech reference and before Summary. The block
+   names curriculum Build items (`[Bx.y]` IDs from
+   `aieng-curriculum.md`) that map to this file's
+   concept IDs. Format: one `###` subsection per
+   exercise, six labelled bullets each:
+   `**Exercise ID:**`, `**What to build:**` (the
+   exercise statement, concrete deliverable),
+   `**Why it earns its place:**` (one sentence on
+   the interview signal it produces),
+   `**Files to touch:**` (real file paths in this
+   codebase, or expected paths if Case B),
+   `**Done when:**` (measurable end-state),
+   `**Estimated effort:**` (one of `<1hr`, `1–4hr`,
+   `1–2 days`, `≥1 week`). Two cases handled:
+   Case A (concept already implemented) — exercises
+   name the *next* curriculum step that extends or
+   hardens the implementation. Case B (concept not
+   yet implemented) — In this codebase says "Not yet
+   implemented" with one honest sentence, and Project
+   exercises becomes the primary buildable target
+   built from the curriculum's Build item.
+→ Files for AI Engineering and Machine Learning are
+   generated for every curriculum concept in scope
+   for the project, not only for concepts found in
+   the codebase. A curriculum concept (`[Cx.y]`) is
+   in scope when the curriculum tags it for the
+   project being studied (loopd, aipe, contrl-mo)
+   and when its status is `covered`, `learn-only`,
+   or `deferred` — concepts marked out-of-scope
+   explicitly are excluded. Concepts already
+   implemented in the codebase use Case A of the
+   Project exercises block; concepts not yet
+   implemented use Case B. SECTION 01 (System design)
+   and SECTION 02 (DSA) remain codebase-driven — they
+   generate files only for patterns found in the
+   actual code.
+→ Each `═════` sub-section divider in SECTION 03
+   and SECTION 04 includes an `Anchor:` line naming
+   the primary project (loopd, aipe, or contrl-mo)
+   and a `Curriculum:` line naming the phase and
+   concept ID range. When the codebase being studied
+   is one of the anchored projects, the agent
+   weights coverage toward sub-sections anchored to
+   that project — but every sub-section is covered,
+   because the three-shapes interview story depends
+   on the contrast. When the codebase is not one
+   of the anchored projects, anchors are
+   instructional examples rather than required
+   mappings.
 ```
 
 > 💾 Save output → `.aipe/specs/study/[project-name]/` with this structure:
