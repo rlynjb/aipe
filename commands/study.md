@@ -41,25 +41,112 @@ Read these files (skip missing ones):
 - `.aipe/project/context.md` (required — exists after Step 1)
 - `.aipe/project/rules.md` (optional)
 - `.aipe/project/stack.md` (optional)
-- `.aipe/project/aieng-curriculum.md` or `.aipe/project/curriculum.md` (per-project curriculum; required only when the codebase has AI or ML surface)
+- `.aipe/project/aieng-curriculum.md` or `.aipe/project/curriculum.md` (per-project curriculum)
 - `~/.config/aipe/global/identity.md` (optional)
 - `~/.config/aipe/global/rules.md` (optional)
 - `~/.config/aipe/global/stack.md` (optional)
 - `~/.config/aipe/global/skills.md` (optional)
-- `~/.config/aipe/global/aieng-curriculum.md` or `~/.config/aipe/global/curriculum.md` (cross-project curriculum; required only when the codebase has AI or ML surface)
+- `~/.config/aipe/global/aieng-curriculum.md` or `~/.config/aipe/global/curriculum.md` (cross-project curriculum)
 
-**Curriculum file handling.** The AI Engineering (`03-ai-engineering/`) and Machine Learning (`04-machine-learning/`) sections are curriculum-driven (see Step 5C non-negotiable 19). If the codebase has any AI or ML surface and no curriculum file is found at either path above, **stop here** and print:
+**Curriculum file resolution.** The AI Engineering (`03-ai-engineering/`) and Machine Learning (`04-machine-learning/`) sections are curriculum-driven (see Step 5C non-negotiable 19). The resolution flow:
 
-```
-✗ No curriculum file found. Place a curriculum file at one of:
-    .aipe/project/aieng-curriculum.md         (per-project)
-    ~/.config/aipe/global/aieng-curriculum.md (cross-project)
+1. **Check the canonical paths** (in order): `.aipe/project/aieng-curriculum.md` → `.aipe/project/curriculum.md` → `~/.config/aipe/global/aieng-curriculum.md` → `~/.config/aipe/global/curriculum.md`. If found, load it and continue to Step 3.
 
-The curriculum drives the AI and ML inventory — without it, Section 03 and
-Section 04 cannot be planned. Re-run /aipe:study once it's in place.
-```
+2. **If no curriculum file is found AND the codebase has no AI or ML surface**, the curriculum isn't needed. Skip it and continue.
 
-If the project has no AI or ML surface at all, the curriculum file is not required — skip it and continue.
+3. **If no curriculum file is found AND the codebase has AI or ML surface**, branch by mode:
+
+   **CREATE mode (no existing study guide — Step 4 will detect this):**
+
+   a. Search common locations for a candidate curriculum file:
+
+   ```bash
+   find ~ -maxdepth 4 \( -name "aieng-curriculum.md" -o -name "curriculum.md" \) \
+     -not -path "*/node_modules/*" -not -path "*/.git/*" 2>/dev/null
+   ```
+
+   b. **If one or more candidates are found**, present them and ask the user which to install:
+
+   ```
+   No curriculum file is installed yet. Found candidate file(s):
+
+     1. /Users/rein/Public/aipe/aieng-curriculum.md       (1234 lines)
+     2. /Users/rein/Projects/loopd/docs/curriculum.md     (560 lines)
+
+   Which should I install as your curriculum? Reply with:
+     - a number (1 or 2) — I'll symlink it to ~/.config/aipe/global/aieng-curriculum.md
+                          (cross-project, recommended — one source of truth)
+     - "copy <N>"       — copy instead of symlink (no live link to the source)
+     - "project <N>"    — install at .aipe/project/aieng-curriculum.md (per-project)
+     - "scaffold"       — write a placeholder template I can fill in later
+     - "skip"           — proceed without a curriculum (AI/ML files will be
+                          codebase-driven only, no Project exercises blocks)
+   ```
+
+   Honor whatever the user picks. Default install path is `~/.config/aipe/global/aieng-curriculum.md` via symlink (`ln -s`). Use `cp` if the user said "copy". Use `.aipe/project/aieng-curriculum.md` if the user said "project". Create the target directory with `mkdir -p` if needed.
+
+   c. **If no candidates are found** (or the user replied "scaffold"), write a minimal placeholder to `~/.config/aipe/global/aieng-curriculum.md`:
+
+   ```markdown
+   # AI Engineering Curriculum
+
+   Replace this placeholder with your phased curriculum. The /aipe:study
+   command uses it to drive Section 03 (AI Engineering) and Section 04
+   (Machine Learning) of the generated study guide.
+
+   ## Phases
+   - Phase 1: LLM foundations
+   - Phase 2: Retrieval and prompt engineering
+   - Phase 3: Evals and observability
+   - Phase 4: Agents and tool use
+   - Phase 5: Production serving / hardening
+
+   ## Concepts (format: [Cx.y] Title — status (project tags))
+   - [C1.1] What an LLM is — covered (all)
+   - [C1.2] Context window — covered (all)
+   - ...
+
+   ## Build items (format: [Bx.y] Title — concept tags [Cx.y, Cx.y])
+   - [B1.1] Wrap LLM call in typed schema — concepts [C1.1, C1.4]
+   - ...
+
+   ## Status values
+   - covered      — actively in use; file walks the implementation
+   - learn-only   — read about but not built (no exercise required)
+   - deferred     — planned but not implemented yet; Case B applies
+   - out-of-scope — explicitly skipped for this curriculum
+   ```
+
+   Print:
+
+   ```
+   ✓ Scaffolded a placeholder curriculum at ~/.config/aipe/global/aieng-curriculum.md.
+     Open it, fill in your phases/concepts/build items, then re-run /aipe:study.
+   ```
+
+   Then **stop** — proceeding with a placeholder produces empty AI/ML files. The user has to fill it in first.
+
+   d. **If the user replied "skip"**, fall through to the UPDATE-mode degraded branch below — but mark the run as `curriculum-less` so the agent later skips Project exercises blocks and curriculum-driven flags.
+
+   **UPDATE mode (existing study guide):**
+
+   Print a warning and **continue** in degraded mode:
+
+   ```
+   ⚠ No curriculum file found. Running in degraded mode for this update:
+     - Section 03 / 04 files will be diffed against the codebase only (Diff A)
+     - Curriculum-driven Diff B flags (Project exercises, in-scope concepts,
+       out-of-scope file removal) are suppressed this run
+     - No new files will be created for in-scope concepts not yet covered
+     - Existing Project exercises blocks (if any) are left untouched
+
+     Place a curriculum file at .aipe/project/aieng-curriculum.md or
+     ~/.config/aipe/global/aieng-curriculum.md (or re-run /aipe:study in
+     CREATE-mode-style discovery by deleting .aipe/specs/study/) to get
+     full v1.26.0+ behaviour.
+   ```
+
+   Continue to Step 3. Track the `curriculum-less` flag through to Step 6U so the Diff B checks know which flags to suppress.
 
 ## Step 3 — Load the `study` template
 
@@ -170,7 +257,7 @@ The non-negotiables from the template:
 
     - **Anchors per sub-discipline.** Each `═════` sub-section divider in Section 03 and Section 04 of the template carries an `Anchor:` line naming the primary project (loopd / aipe / contrl-mo) and a `Curriculum:` line naming the phase + concept ID range. When the codebase being studied is one of the anchored projects, the agent weights coverage toward sub-sections anchored to that project — but every sub-section is covered, because the three-shapes interview story depends on the contrast. When the codebase is not one of the anchored projects, anchors are instructional examples rather than required mappings.
 
-    - **Curriculum file location.** The agent reads `aieng-curriculum.md` (or any file named `curriculum.md`) from `.aipe/project/` first (per-project), then from `~/.config/aipe/global/` (cross-project). If neither exists and the codebase has AI or ML surface, the agent **stops** at Step 2 with a message asking the user to place a curriculum file at one of those paths — the AI/ML inventory cannot be planned without it.
+    - **Curriculum file resolution.** The agent reads `aieng-curriculum.md` (or any file named `curriculum.md`) from `.aipe/project/` first (per-project), then from `~/.config/aipe/global/` (cross-project). If neither exists and the codebase has AI or ML surface, the agent does NOT hard-stop — it follows the resolution flow in Step 2: in CREATE mode, it searches common locations under `~` for a candidate curriculum file and offers the user a choice (install via symlink / copy / scaffold a placeholder / skip and proceed curriculum-less); in UPDATE mode, it prints a warning and continues in degraded mode (codebase-driven Diff A only for AI/ML files; Project exercises and curriculum-driven Diff B flags suppressed). When the agent proceeds curriculum-less, AI/ML files generated or updated this run do NOT carry a Project exercises block, and the run's UPDATE-mode report flags the suppression explicitly so the user knows what was skipped.
 
 Diagrams use box-drawing characters: `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ → ← ↑ ↓ ◀ ▶ ▲ ▼`. No Mermaid, no images, no PlantUML.
 
@@ -757,7 +844,7 @@ For every existing concept file, run TWO diffs:
   - "Missing `## Project exercises` section (AI/ML file)" — flag any file in `03-ai-engineering/` or `04-machine-learning/` that doesn't have a `## Project exercises` block between Tech reference and Summary. The v1.26.0 fix is to walk the curriculum file's Build items (`[Bx.y]`), include each item whose concept tags overlap with this file's concept IDs, and add a `###` subsection per exercise with the six labelled bullets.
   - "Project exercises subsection missing one of the six required bullets" — flag any `###` exercise subsection that doesn't carry all required labelled bullets in order: `**Exercise ID:**` / `**What to build:**` / `**Why it earns its place:**` / `**Files to touch:**` / `**Done when:**` / `**Estimated effort:**`.
   - "Project exercises missing `Done when` end-state" — flag any subsection whose `**Done when:**` value is vague ("works", "is complete", "is implemented") rather than a measurable end-state. The fix is to rewrite the end-state with a concrete artifact, file path, test command, or measured number. If no measurable end-state can be named, the exercise itself is wrong and should be replaced.
-  - "Curriculum file missing or stale" — flag (with high priority) when the codebase has AI/ML surface but no `aieng-curriculum.md` / `curriculum.md` was found at either `.aipe/project/` or `~/.config/aipe/global/` during Step 2. Without the curriculum, the AI/ML inventory cannot be planned and the existing AI/ML files cannot be validated against the current curriculum scope. Stop and ask the user to place the file.
+  - "Curriculum file missing — curriculum-driven flags suppressed this run" — when the codebase has AI/ML surface but Step 2 found no `aieng-curriculum.md` / `curriculum.md` AND the user chose to proceed curriculum-less (or this is UPDATE mode and the warning fired), suppress the four curriculum-driven flags below ("Missing Project exercises", "Project exercises subsection missing bullets", "AI/ML file covers out-of-scope concept", "Curriculum concept in scope but missing a file") for this run and include this notice in the Step 7U change plan so the user sees what was deferred. Diff A (codebase drift) still runs for AI/ML files; only the curriculum-driven Diff B subset is suppressed.
   - "AI/ML file covers a concept that's out of curriculum scope" — flag any `03-ai-engineering/` or `04-machine-learning/` file whose concept IDs don't appear in the curriculum's in-scope list (status `covered`, `learn-only`, or `deferred`) for the project being studied. These files are stale and should be removed (or the curriculum needs to be updated to include them).
   - "Curriculum concept in scope but missing a file" — flag any curriculum concept `[Cx.y]` tagged for this project with status `covered`, `learn-only`, or `deferred` that doesn't have a corresponding file in `03-ai-engineering/` or `04-machine-learning/`. The v1.26.0 fix is to generate a new file for the missing concept, using Case B of the In this codebase block if the concept isn't yet implemented.
   - "Why care still hands off to Quick summary or to the diagram" — flag any Why care paragraph 2 whose closing sentence says "Quick summary below" (v1.18.0 wording) or "diagram below" / "diagram and How it works" (v1.19.0 wording). The handoff target is now How it works alone.
@@ -793,6 +880,14 @@ Print a structured summary in this exact shape:
 ```
 Changes detected for .aipe/specs/study/
 ─────────────────────────────────────────────────
+
+[If the run is curriculum-less, include this banner first:]
+⚠ CURRICULUM-LESS RUN — no curriculum file was found at Step 2.
+  Curriculum-driven Diff B flags are suppressed for Section 03 / 04
+  this run (no Project exercises updates, no in-scope-concept file
+  generation, no out-of-scope removal proposals). Codebase-driven
+  Diff A still runs normally. To get full v1.26.0+ behaviour next
+  time, install a curriculum file via Step 2's resolution flow.
 
 00-overview.md
   Outdated: <e.g. layer X removed but still in the system diagram>
