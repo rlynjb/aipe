@@ -86,8 +86,13 @@ Study guide directory structure
   │   ├── 31-prompt-injection.md
   │   ├── 32-llm-caching.md
   │   ├── 33-llm-cost-optimization.md
-  │   └── 34-ai-features-in-this-app.md
-  │       (+ any other patterns found in the codebase)
+  │   ├── 34-ai-features-in-this-app.md
+  │   └── system-design-templates/  IK Module reframes
+  │       ├── README.md               index + template shape
+  │       ├── 01-search-ranking.md
+  │       └── 02-tech-support-chatbot.md
+  │           (+ any other AI-side system design
+  │            templates the curriculum names)
   │
   └── 04-machine-learning/        one file per pattern found
       ├── README.md               index of all ML patterns
@@ -104,8 +109,14 @@ Study guide directory structure
       ├── 11-cold-start.md
       ├── 12-on-device-inference.md
       ├── 13-ml-observability.md
-      └── 14-ml-features-in-this-app.md
-          (+ any other patterns found in the codebase)
+      ├── 14-ml-features-in-this-app.md
+      └── system-design-templates/  IK Module reframes
+          ├── README.md               index + template shape
+          ├── 01-recommender-system.md
+          ├── 02-anomaly-detection.md
+          └── 03-object-detection-cv.md
+              (+ any other ML-side system design
+               templates the curriculum names)
 
 Each file contains:
   → Subtitle            industry name(s) + type label
@@ -4591,6 +4602,358 @@ Production serving (LLM side)
              hammering a broken service.
 
 ═════════════════════════════════════════════════
+System design templates (interview reframes)
+  Anchor: codebases reframed as IK Module templates
+  Curriculum: Phase 5 — concepts C5.10 (Search
+              ranking), C5.14 (Tech support chatbot)
+═════════════════════════════════════════════════
+
+  This sub-section is different from every other
+  sub-section above. The concept blocks above explain
+  *patterns the codebase uses*. The templates below
+  explain *interview prompts the codebase exemplifies
+  (or could be refactored to exemplify)*. Same code,
+  different framing.
+
+  This is Phase 5's synthesis layer. By the time the
+  reader gets here, they've covered LLM foundations,
+  prompt engineering, retrieval, agents, evals, and
+  production. The templates ask: "now zoom out. If an
+  interviewer says 'design X system,' can you answer
+  by walking through *this* codebase as that
+  system?" That reframe is what converts project work
+  into interview signal.
+
+  All templates appear in every AI Engineering study
+  guide — even when the current codebase doesn't
+  exemplify them. The "applies to this codebase"
+  bullet is honest about current state, and the "how
+  to make it apply" bullet names the concrete refactor
+  that would let the reader defend the codebase as
+  this template. Approach: every template is a
+  potential next exercise, even if today it's marked
+  "does not apply."
+
+  ### Template shape — applies to every System design template
+
+  Every `###` block in this sub-section (and the
+  parallel one in SECTION 04) follows the same shape.
+  The shape is fixed because interviewers ask system
+  design questions in a fixed shape: requirements →
+  data → architecture → scale → eval → failure. The
+  template gives the reader a whiteboard structure to
+  fall back on.
+
+  Each template has nine labelled bullets:
+
+  - **The prompt:** the verbatim interview prompt
+    this template answers (e.g. "Design a search
+    ranking system for a developer documentation
+    site"). One sentence, no setup.
+  - **Standard architecture:** the box-and-arrow
+    diagram the reader would draw in the first 60
+    seconds of a whiteboard. Named components, in
+    order, with arrows.
+  - **Data model:** what's stored where. Indexes,
+    embeddings, signals, logs. One bullet per data
+    structure with a one-line purpose.
+  - **Key components:** the named sub-systems
+    (retrieval, ranking, serving, eval). For each:
+    one sentence on what it does and one technical
+    choice with rationale.
+  - **Scale concerns:** what breaks first as
+    traffic/data grows. Three bullets minimum,
+    ordered by which problem hits first. Each
+    names a concrete threshold ("at 100k QPS",
+    "at 10M docs") not vague ("at scale").
+  - **Eval framing:** the metrics that matter,
+    online vs offline, what's measured per
+    deployment. References classical metrics from
+    the Evals sub-section above.
+  - **Common failure modes:** the three or four
+    things an interviewer probes for. Stale
+    indexes, cold-start, ranking bias, etc. Name
+    the failure, then the mitigation.
+  - **Applies to this codebase:** one of `yes`,
+    `partially`, or `no`. One paragraph explaining
+    why. When `partially`, name what's there and
+    what's missing.
+  - **How to make it apply:** the concrete refactor
+    or feature that would let the reader defend
+    this codebase as this template. References
+    Project exercises if any apply. When `applies`
+    is already `yes`, this bullet names the *next*
+    deepening — adding evals, hardening at scale,
+    documenting the failure modes.
+
+  Use the same labelled-bullet shape as Tech
+  reference. **No markdown tables with pipes.**
+
+  ### Search ranking system design
+
+  - **The prompt:** "Design a search ranking
+    system that takes a user query and returns the
+    top-k most relevant items from a corpus."
+  - **Standard architecture:**
+
+    ```
+    Query
+      │
+      ▼
+    ┌──────────────────────────────────┐
+    │ Query understanding              │
+    │  (tokenize, expand, rewrite)     │
+    └──────────────┬───────────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────────┐
+    │ Candidate retrieval              │
+    │  (dense + sparse, top-N)         │
+    └──────────────┬───────────────────┘
+                   │
+                   │  N candidates (N=500)
+                   ▼
+    ┌──────────────────────────────────┐
+    │ Ranking                          │
+    │  (cross-encoder, learned model)  │
+    └──────────────┬───────────────────┘
+                   │
+                   │  top-k (k=10)
+                   ▼
+    ┌──────────────────────────────────┐
+    │ Serving + logging                │
+    │  (cache, instrument, return)     │
+    └──────────────┬───────────────────┘
+                   │
+                   ▼
+                Results
+    ```
+
+  - **Data model:**
+    - Document corpus with `{id, text, metadata,
+      created_at, embedding}` per item
+    - Inverted index for sparse retrieval (BM25
+      term → doc IDs)
+    - Vector index for dense retrieval (embedding
+      → doc IDs, ANN via HNSW)
+    - Click/interaction logs with `{query, doc_id,
+      position, clicked, dwell_time}` for offline
+      learning
+  - **Key components:**
+    - *Query understanding*: rewrites query for
+      better retrieval (synonym expansion, typo
+      correction, HyDE). Decision: rule-based for
+      latency, LLM-rewritten for hard queries
+      only.
+    - *Retrieval*: hybrid dense + sparse with RRF
+      fusion. Decision: keep both; sparse catches
+      exact terms, dense catches paraphrases.
+    - *Ranking*: cross-encoder rerank on top-N
+      candidates. Decision: only rerank when
+      retrieval confidence is low (gated by
+      bi-encoder margin) to bound latency.
+    - *Serving*: cache top-k per query for
+      repeated queries, instrument with traces
+      (latency per stage, retrieval recall@k).
+  - **Scale concerns:**
+    - At ~10M docs: ANN index size exceeds RAM on
+      single node. Solution: shard by doc id range,
+      query all shards in parallel.
+    - At ~1k QPS: cross-encoder rerank becomes
+      latency bottleneck. Solution: cache reranks
+      for popular queries, distill cross-encoder
+      to smaller model for cold queries.
+    - At ~100M+ docs: full corpus re-embed on
+      embedding model upgrade becomes
+      multi-day. Solution: incremental indexing
+      with `embedding_version` per doc, dual-
+      serve during migration.
+  - **Eval framing:**
+    - Offline: hit@k, MRR, NDCG on a held-out
+      query-doc relevance set
+    - Online: click-through rate at position 1–3,
+      dwell time, query reformulation rate (drops
+      when ranking is good)
+    - "No-click is not a negative label" — a user
+      not clicking doesn't mean the result was
+      bad; they may have read the snippet and
+      gotten their answer
+  - **Common failure modes:**
+    - Stale index → query for current product
+      returns deprecated docs. Mitigation:
+      `embedding_stale_at` tracking, re-embed on
+      edit.
+    - Cold queries (never seen before) → no click
+      data to learn from. Mitigation: query
+      similarity to known queries, fall back to
+      sparse-only retrieval.
+    - Position bias in training data → model
+      learns "position 1 is good" not "this doc
+      is good." Mitigation: inverse propensity
+      scoring or randomization in some sessions.
+    - Lost-in-the-middle for LLM-summary results
+      → if results feed a downstream LLM, mid-
+      ranked results get ignored. Mitigation:
+      surface top-3 only or restructure the
+      prompt.
+  - **Applies to this codebase:** [yes / partially
+    / no — agent fills based on actual codebase.
+    For loopd: `partially` — the RAG retrieval
+    pipeline (embedding + cosine search) is the
+    retrieval layer of a search ranking system,
+    but there's no learned ranker on top, no
+    click logging, and queries are paraphrase-
+    style rather than search-style.]
+  - **How to make it apply:** [for loopd: add a
+    "search my journal" UI surface that uses the
+    existing RAG retrieval, instrument click logs
+    when the user opens an entry from results,
+    after ~500 logged clicks introduce a learned
+    reranker on top of cosine similarity. References
+    Project exercises if curriculum Build items
+    cover this — `B2A.9`, `B2A.10`, `B2A.11`.]
+
+  ### Tech support chatbot system design
+
+  - **The prompt:** "Design a tech support chatbot
+    for a product. It must answer customer
+    questions, escalate when it can't, and learn
+    from agent corrections."
+  - **Standard architecture:**
+
+    ```
+    User message
+      │
+      ▼
+    ┌──────────────────────────────────┐
+    │ Intent classification            │
+    │  (heuristic + LLM)               │
+    └──────────────┬───────────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────────┐
+    │ RAG over knowledge base          │
+    │  (docs, past tickets, runbooks)  │
+    └──────────────┬───────────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────────┐
+    │ LLM response generation          │
+    │  (constrained to retrieved KB)   │
+    └──────────────┬───────────────────┘
+                   │
+              ┌────┴─────┐
+              │          │
+              ▼ confident ▼ unsure / out-of-scope
+         Respond     ┌──────────────────┐
+                     │ Escalate to      │
+                     │ human agent      │
+                     └──────────────────┘
+                              │
+                              ▼
+                     Agent answers, agent
+                     answer logged for
+                     KB update
+    ```
+
+  - **Data model:**
+    - Knowledge base: docs, FAQs, past ticket
+      resolutions. Each chunked, embedded,
+      indexed.
+    - Conversation history per user with `{turn,
+      role, content, tools_called,
+      confidence_score, escalated}`
+    - Escalation log linking bot conversations to
+      human-resolved outcomes (the training
+      signal for future improvement)
+    - Feedback log: thumbs-up/down per response,
+      free-text corrections from agents
+  - **Key components:**
+    - *Intent classification*: detect category
+      (billing, technical, account, out-of-scope)
+      before retrieval. Decision: heuristic
+      regex/keyword first, LLM classifier on
+      ambiguous cases.
+    - *RAG retrieval*: hybrid retrieval over the
+      knowledge base, scoped by intent category
+      to reduce noise. Decision: chunk by section
+      not by token, so retrieved chunks are
+      semantically coherent.
+    - *Response generation*: LLM constrained to
+      cite retrieved KB chunks. Decision: refuse
+      to answer if no chunk above relevance
+      threshold (better to escalate than
+      hallucinate).
+    - *Escalation*: rule-based gate (intent =
+      out-of-scope, or confidence < threshold, or
+      user types "agent please") triggers handoff
+      with full conversation context.
+    - *Feedback loop*: agent corrections are
+      logged as gold-standard responses, fed back
+      into eval set, used to identify KB gaps.
+  - **Scale concerns:**
+    - At ~10k conversations/day: LLM cost
+      dominates. Solution: cache common
+      question-answer pairs, route easy
+      questions to cheaper model.
+    - At ~100 escalations/day: human agents
+      become bottleneck. Solution: prioritize
+      escalation queue by user value, surface
+      bot's draft response so agent edits
+      instead of types from scratch.
+    - At ~1M KB chunks: retrieval latency grows.
+      Solution: tiered retrieval (intent-scoped
+      first, full corpus only on miss),
+      pre-compute embeddings for hot KB
+      entries.
+  - **Eval framing:**
+    - Offline: golden set of resolved tickets
+      (LLM answer vs human agent answer, rubric
+      scored)
+    - Online: resolution rate without escalation,
+      time to resolution, CSAT (customer
+      satisfaction)
+    - Adversarial set: prompt injection attempts
+      ("ignore previous instructions"), out-of-
+      scope questions, hostile users
+  - **Common failure modes:**
+    - Hallucinated answers when KB has nothing
+      relevant. Mitigation: relevance threshold
+      gates response, refuse + escalate.
+    - Prompt injection in user messages. Mitigation:
+      sanitize, never let LLM emit free-form
+      privileged actions (passwords, refunds).
+    - Stale knowledge base — bot tells users
+      about a feature that was deprecated last
+      week. Mitigation: KB freshness SLA, doc
+      change → re-embed within 24h.
+    - Tone drift — bot sounds inconsistent across
+      conversations. Mitigation: system prompt
+      defines persona, eval rubric scores tone
+      adherence per response.
+  - **Applies to this codebase:** [yes / partially
+    / no — agent fills. For loopd: `no` — loopd
+    is a journaling tool, not a support system.
+    For aipe: `partially` — aipe is a
+    spec-generation tool that uses RAG over
+    project context, which is structurally similar
+    to a chatbot's RAG-over-KB pattern but the
+    intent is generation, not Q&A.]
+  - **How to make it apply:** [for loopd: this is
+    a stretch — loopd's domain isn't support, so
+    "make it apply" would mean repurposing the
+    journal RAG into a "ask your past self" Q&A
+    interface. Not necessarily worth doing as a
+    project, but useful as an interview thought
+    experiment: "I haven't built a support
+    chatbot, but here's how I'd extend loopd's
+    RAG to become one." For aipe: extend the
+    existing retrieval to support a Q&A mode that
+    answers questions about the project from
+    `.dev/` context — adjacent to the existing
+    slash commands.]
+
+═════════════════════════════════════════════════
 How this codebase uses AI specifically
   Anchor: the codebase being studied
   Curriculum: maps each feature to phase + concept
@@ -5223,6 +5586,443 @@ ML observability
   How this codebase handles it: [strategy, thresholds]
 
 ═════════════════════════════════════════════════
+System design templates (interview reframes)
+  Anchor: codebases reframed as IK Module templates
+  Curriculum: Phase 5 — concepts C5.11 (Recommender),
+              C5.12 (Anomaly detection),
+              C5.13 (Object detection / CV)
+═════════════════════════════════════════════════
+
+  Mirror of the sub-section in SECTION 03. Same
+  reasoning, same nine-bullet template shape (see
+  "Template shape — applies to every System design
+  template" in SECTION 03 — do not redefine here).
+  Same Approach-2 rule: all three ML templates
+  appear in every ML study guide regardless of
+  current applicability.
+
+  These are Phase 5 synthesis layers — the reader
+  has built up classifier training, evaluation,
+  on-device serving, and recommender concepts; now
+  they reframe contrl-mo's existing work as three
+  different IK interview templates. For codebases
+  other than contrl-mo, the templates are still
+  generated, with "Applies" set honestly and "How
+  to make it apply" naming the concrete refactor.
+
+  ### Recommender system design
+
+  - **The prompt:** "Design a recommender system
+    that surfaces N items per user from a catalog
+    of M items, maximizing user engagement."
+  - **Standard architecture:**
+
+    ```
+    User context (history, profile)
+      │
+      ▼
+    ┌──────────────────────────────────┐
+    │ Candidate generation             │
+    │  (content + collaborative,       │
+    │   reduce M → ~1000)              │
+    └──────────────┬───────────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────────┐
+    │ Ranking                          │
+    │  (learned model, predict         │
+    │   engagement probability)        │
+    └──────────────┬───────────────────┘
+                   │
+                   │  top-N
+                   ▼
+    ┌──────────────────────────────────┐
+    │ Re-ranking / business rules      │
+    │  (diversity, freshness,          │
+    │   fairness, cold-start fallback) │
+    └──────────────┬───────────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────────┐
+    │ Serving + logging                │
+    │  (impressions, clicks, dwell)    │
+    └──────────────┬───────────────────┘
+                   │
+                   ▼
+                N items shown
+    ```
+
+  - **Data model:**
+    - Item catalog with `{id, features, content
+      embeddings, metadata, created_at}`
+    - User profile with `{id, demographics,
+      explicit preferences, derived features
+      from history}`
+    - Interaction log with `{user_id, item_id,
+      timestamp, action, dwell, position}` — the
+      training signal for collaborative filtering
+    - Model registry: trained candidate-gen and
+      ranking models with versions, training data
+      snapshots, eval metrics per version
+  - **Key components:**
+    - *Candidate generation*: hybrid content-based
+      + collaborative. Decision: content-based
+      first (handles cold-start), collaborative
+      added once user has ≥ N interactions.
+    - *Ranking*: gradient-boosted trees on
+      engineered features (user history, item
+      features, context). Decision: GBT over
+      neural for tabular features at this scale;
+      Two-Tower if scale grows.
+    - *Re-ranking*: enforces diversity (no 3
+      same-category in a row), freshness (boost
+      recent items), fairness (don't always
+      promote popular). Decision: deterministic
+      rules over learned policies for
+      interpretability.
+    - *Cold-start handling*: new user → popular
+      items by demographic prior; new item →
+      content similarity to engaged items.
+  - **Scale concerns:**
+    - At ~100k items: full candidate-gen scan
+      becomes too slow. Solution: ANN index over
+      item embeddings, retrieve top-1000.
+    - At ~10M users: training data grows past
+      single-node fit. Solution: distributed
+      training, downsample negatives.
+    - At ~1B impressions/day: feature store
+      lookups become bottleneck. Solution:
+      precompute user features in offline
+      pipeline, cache hot users in memory.
+  - **Eval framing:**
+    - Offline: precision@k, recall@k, MRR, NDCG
+      on held-out interactions
+    - Online: click-through rate, dwell time,
+      session length, return rate
+    - A/B framing: control arm (rules / popular)
+      vs treatment arm (learned). "No-click is
+      not a negative label" — an unselected
+      recommendation isn't necessarily bad.
+    - Single-user case: keep a control arm using
+      rules only, an experimental arm using
+      learned model. Log which arm produced each
+      session.
+  - **Common failure modes:**
+    - Filter bubble — model recommends the same
+      cluster repeatedly. Mitigation: explicit
+      diversity constraint in re-ranking.
+    - Cold-start for new items — never gets shown,
+      can't accumulate signal. Mitigation:
+      exploration quota (top-K always includes
+      one new item).
+    - Position bias in training data — clicked
+      items are mostly from position 1.
+      Mitigation: inverse propensity scoring,
+      randomized exploration sessions.
+    - Drift — user preferences shift, model
+      doesn't catch up. Mitigation: retraining
+      cadence + drift detection (PSI on input
+      distribution).
+  - **Applies to this codebase:** [yes / partially
+    / no — agent fills. For contrl-mo: `yes` —
+    the progression recommender is a recommender
+    system. Rule-based v1, learned v2 after
+    threshold, cold-start handled by rules,
+    single-user A/B framing. The full IK template
+    is fully exercised.]
+  - **How to make it apply:** [for contrl-mo (when
+    already `yes`): the next deepening is the
+    learned v2 (`B2C.15`) — features = recent
+    sessions, gate state, form history; target =
+    next exercise's clean-session probability;
+    classifier ranked by predicted probability.
+    Then diversity check (`B2C.17`) and A/B
+    framing (`B2C.18`). For non-recommender
+    codebases: "make it apply" means identifying
+    any ranking surface — even small ones (which
+    todo to surface next, which entry to
+    suggest) — and framing it as a recommender.]
+
+  ### Anomaly detection system design
+
+  - **The prompt:** "Design an anomaly detection
+    system that flags unusual events in a stream
+    of data."
+  - **Standard architecture:**
+
+    ```
+    Event stream
+      │
+      ▼
+    ┌──────────────────────────────────┐
+    │ Feature extraction               │
+    │  (windowed aggregates,           │
+    │   normalize per-entity)          │
+    └──────────────┬───────────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────────┐
+    │ Anomaly scoring                  │
+    │  (statistical / ML model)        │
+    └──────────────┬───────────────────┘
+                   │
+              ┌────┴─────┐
+              │          │
+              ▼ score    ▼ score
+              < threshold > threshold
+           Pass through    │
+                           ▼
+                   ┌─────────────────┐
+                   │ Alert + log     │
+                   │  + human review │
+                   └─────────────────┘
+                           │
+                           ▼
+                  Feedback labels feed
+                  next training cycle
+    ```
+
+  - **Data model:**
+    - Event stream with `{timestamp, entity_id,
+      features, raw_payload}`
+    - Baseline statistics per entity (rolling
+      mean, std, P95) for normalization
+    - Anomaly log with `{timestamp, score,
+      threshold, action, human_label?}` — the
+      ground truth for retraining
+    - Alert state per entity (currently anomalous,
+      cooldown timer, recent score history)
+  - **Key components:**
+    - *Feature extraction*: windowed aggregates
+      over the stream, normalized per-entity
+      (because what's anomalous for entity A is
+      normal for entity B). Decision: tumbling
+      windows for predictable latency, sliding
+      windows when smoothness matters.
+    - *Anomaly scoring*: isolation forest or
+      autoencoder for unsupervised; LightGBM
+      classifier when labels exist. Decision:
+      start unsupervised, switch to supervised
+      after collecting labeled anomalies.
+    - *Thresholding*: dynamic threshold per entity
+      based on baseline distribution + business
+      tolerance. Decision: percentile-based, not
+      absolute — adapts to distribution shift.
+    - *Alerting*: deduplication (don't fire the
+      same alert N times), cooldown (don't fire
+      again within window), severity tiering.
+    - *Human review loop*: flagged events go to a
+      review queue, labels feed retraining.
+  - **Scale concerns:**
+    - At ~10k events/sec: stream processing
+      becomes the bottleneck. Solution: shard by
+      entity_id, process each shard
+      independently.
+    - At ~1M entities: per-entity baselines blow
+      up memory. Solution: tiered baselines —
+      hot entities in memory, cold entities in
+      DB.
+    - High false-positive rate at scale: humans
+      can't review every alert. Solution: tiered
+      severity, only top-N reviewed by human, the
+      rest auto-escalated only on repeat.
+  - **Eval framing:**
+    - Offline: precision/recall/F1 on labeled
+      anomalies (requires ground truth, which is
+      hard)
+    - Online: human review accuracy ("of flagged
+      events, what fraction were real?"),
+      missed-anomaly rate (requires
+      retrospective labeling)
+    - Imbalanced data is the default — anomalies
+      are rare by definition. Macro-F1 over
+      accuracy.
+  - **Common failure modes:**
+    - Concept drift — what's anomalous changes
+      over time. Mitigation: PSI on input
+      distribution, retraining trigger when PSI
+      exceeds threshold.
+    - Alert fatigue — too many false positives,
+      humans stop reviewing. Mitigation: tune
+      threshold for precision over recall in
+      early days, add severity tiers.
+    - Cold-start for new entities — no baseline
+      yet, every event looks anomalous.
+      Mitigation: grace period or population-
+      level prior until per-entity baseline
+      accumulates.
+    - LLM analog — hallucination detection is
+      anomaly detection. Same patterns apply:
+      score outputs, threshold, escalate to
+      human review on flagged.
+  - **Applies to this codebase:** [yes / partially
+    / no — agent fills. For contrl-mo:
+    `partially` — drift detection on the form
+    classifier (population stability index, alert
+    when distribution shifts) is anomaly
+    detection on the model's input space.
+    Form-failure detection itself (flagging "this
+    rep is bad form") is also anomaly detection
+    in the user's movement space. For loopd:
+    `partially` — could flag anomalous entries
+    (unusual length, sentiment, time-of-day) but
+    not implemented.]
+  - **How to make it apply:** [for contrl-mo:
+    formalize the drift detection from `B3.13` as
+    a full anomaly detection pipeline — feature
+    extraction over inference logs, PSI scoring,
+    alert thresholds, human review loop. Already
+    half-built; closing the loop is `B5.12`.
+    For loopd: add a "weird entry" flagger that
+    surfaces unusually long, short, or
+    emotionally-extreme entries for user review
+    — useful product feature *and* an anomaly
+    detection deliverable.]
+
+  ### Object detection / CV system design
+
+  - **The prompt:** "Design a computer vision
+    system that detects objects in real-time
+    video, on-device."
+  - **Standard architecture:**
+
+    ```
+    Video frames
+      │
+      ▼
+    ┌──────────────────────────────────┐
+    │ Preprocessing                    │
+    │  (resize, normalize, batch)      │
+    └──────────────┬───────────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────────┐
+    │ Detection model                  │
+    │  (CNN or MediaPipe-style         │
+    │   landmark detector)             │
+    └──────────────┬───────────────────┘
+                   │
+                   │  bounding boxes
+                   │  or landmarks
+                   ▼
+    ┌──────────────────────────────────┐
+    │ Post-processing                  │
+    │  (smoothing, tracking,           │
+    │   confidence thresholding)       │
+    └──────────────┬───────────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────────┐
+    │ Downstream consumer              │
+    │  (rep counter, form classifier,  │
+    │   AR overlay, etc.)              │
+    └──────────────┬───────────────────┘
+                   │
+                   ▼
+                Output
+    ```
+
+  - **Data model:**
+    - Frame buffer (rolling window, last N frames)
+    - Detection output per frame: `{bounding
+      boxes or landmarks, confidence, model
+      version, timestamp}`
+    - Tracking state: which detection in frame T
+      corresponds to which in frame T+1 (object
+      identity across time)
+    - Inference log (when audit-enabled): raw
+      detections, post-processed outputs, user
+      feedback — the training data pipeline for
+      future model improvements
+  - **Key components:**
+    - *Preprocessing*: resize to model input
+      size, normalize. Decision: do on-device,
+      not cloud, for privacy + latency.
+    - *Detection model*: CNN for general object
+      detection (YOLO-style), pose estimation
+      model for landmark detection (MediaPipe-
+      style). Decision: choose model based on
+      output shape needed downstream — boxes vs
+      landmarks.
+    - *Post-processing*: smoothing over time
+      (Kalman filter or simple EMA) to reduce
+      jitter, confidence thresholding to drop
+      noisy detections.
+    - *Tracking*: maintain object identity across
+      frames so downstream consumers see "the
+      same object moved" not "two new objects
+      appeared."
+    - *Downstream consumer*: the trained
+      classifier or rule engine that uses the
+      detections to produce final output (form
+      labels, rep counts, AR placement).
+  - **Scale concerns:**
+    - At ~30fps real-time: per-frame inference
+      must hit < 33ms. Solution: quantization
+      (int8 or fp16), GPU delegate on supported
+      devices, skip frames when behind.
+    - On older devices: model too big for memory
+      or too slow. Solution: smaller variant of
+      same model, fallback to per-frame instead
+      of streaming.
+    - Battery cost: continuous inference drains
+      battery. Solution: pause inference when
+      user is idle, lower fps when motion is
+      slow.
+  - **Eval framing:**
+    - Offline: mAP (mean Average Precision) on
+      held-out labeled video, per-class precision
+      and recall
+    - Online: latency p95/p99 on real devices,
+      battery cost per minute, FPS sustained
+    - User-facing: downstream task accuracy (does
+      the rep counter agree with ground truth?
+      does the form classifier work?)
+    - Domain gap measurement: train on public
+      dataset, eval on real user devices to
+      catch distribution shift.
+  - **Common failure modes:**
+    - Domain gap: model trained on professional
+      studio video fails on phone-camera-in-
+      living-room video. Mitigation: fine-tune
+      on self-collected data from the actual
+      deployment environment.
+    - Occlusion / partial visibility: model
+      reports low confidence or misses entirely.
+      Mitigation: track through occlusion using
+      temporal smoothing, surface uncertainty to
+      downstream consumer.
+    - Drift in deployment: lighting, camera
+      angles, user demographics shift over
+      time. Mitigation: drift detection on
+      detection-output distribution, retraining
+      trigger.
+    - Battery / thermal throttling: long sessions
+      slow the model. Mitigation: monitor frame
+      time, degrade gracefully (drop fps, skip
+      frames) before the user notices.
+  - **Applies to this codebase:** [yes / partially
+    / no — agent fills. For contrl-mo: `yes` —
+    MediaPipe pose detection is the detection
+    layer, the form classifier is the downstream
+    consumer, on-device inference is the
+    deployment shape. The full IK template is
+    structurally exercised.]
+  - **How to make it apply:** [for contrl-mo: the
+    next deepenings are quantization (`B5.9`),
+    real-device latency measurement (`B5.10`),
+    and on-device personalization (`B5.13`).
+    Already structurally complete; the remaining
+    exercises are about hardening at production
+    quality. For non-CV codebases: this template
+    rarely applies cleanly — note in the
+    "Applies" bullet that you'd reach for this
+    template only if explicitly asked to design
+    a CV system, then walk through the canonical
+    architecture without forcing a codebase
+    mapping.]
+
+═════════════════════════════════════════════════
 How this codebase uses ML specifically
   Anchor: the codebase being studied
   Curriculum: maps each feature to phase + concept
@@ -5449,6 +6249,27 @@ CONSTRAINTS
    and SECTION 02 (DSA) remain codebase-driven — they
    generate files only for patterns found in the
    actual code.
+→ SECTION 03 and SECTION 04 each end with a "System
+   design templates" sub-section that reframes the
+   codebase as IK Module interview templates. AI side
+   covers C5.10 (Search ranking) and C5.14 (Tech
+   support chatbot). ML side covers C5.11
+   (Recommender), C5.12 (Anomaly detection), C5.13
+   (Object detection / CV). Templates are generated
+   for **every** AI/ML study guide regardless of
+   current applicability — the "Applies to this
+   codebase" bullet is honest about current state
+   (`yes` / `partially` / `no`), and the "How to
+   make it apply" bullet names the concrete refactor
+   that would let the reader defend the codebase as
+   this template. Output: one file per template
+   under `system-design-templates/` sub-directory of
+   the section, following the fixed 9-bullet shape
+   defined in SECTION 03's "Template shape" block.
+   These template files do NOT use the per-file
+   template (no Why care, How it works, Tradeoffs,
+   etc.) — they use the 9-bullet system-design
+   shape only.
 → Each `═════` sub-section divider in SECTION 03
    and SECTION 04 includes an `Anchor:` line naming
    the primary project (loopd, aipe, or contrl-mo)

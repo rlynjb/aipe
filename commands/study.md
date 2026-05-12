@@ -213,6 +213,28 @@ The non-negotiables from the template:
 
     - **Curriculum file resolution.** Step 2 handles this — see the "Curriculum file resolution" sub-section there. Summary: canonical paths checked first; if empty, the agent searches `~` (maxdepth 4) for candidate curriculum files; zero candidates → silent codebase-driven mode; exactly one candidate → auto-symlink to `~/.config/aipe/global/aieng-curriculum.md` with a one-line notice → curriculum-loaded mode; multiple candidates → prompt the user. The agent never blocks on a missing curriculum. Both modes are first-class; codebase-driven is not a degraded fallback.
 
+20. **AI Engineering and Machine Learning sections each end with a `system-design-templates/` sub-directory of IK-style interview-prompt reframes.** Always generated for every AI/ML study guide, regardless of whether the current codebase exemplifies the prompts. Templates exist in BOTH curriculum-loaded and codebase-driven modes — they're synthesis artifacts, not curriculum-driven content.
+
+    Template inventory (fixed list — these are the canonical IK templates):
+    - **AI side** (`03-ai-engineering/system-design-templates/`): `01-search-ranking.md`, `02-tech-support-chatbot.md`.
+    - **ML side** (`04-machine-learning/system-design-templates/`): `01-recommender-system.md`, `02-anomaly-detection.md`, `03-object-detection-cv.md`.
+
+    The curriculum can name additional templates beyond these (e.g., `[C5.x]` slots). If the loaded curriculum tags additional in-scope system-design templates, generate them too with the next available numeric prefix.
+
+    Template files use a **different structure** than the per-concept template — they do NOT have Why care / How it works / diagram / Tradeoffs / Tech reference / Project exercises / Summary / Interview defense / Validate. Instead, each template file has exactly nine labelled bullets in this order:
+
+    - `**The prompt:**` — verbatim interview prompt this template answers (one sentence, no setup; e.g., "Design a search ranking system for a developer documentation site").
+    - `**Standard architecture:**` — box-and-arrow diagram the reader would draw in the first 60 seconds of a whiteboard. ASCII box-drawing in a fenced code block. Named components in order with arrows.
+    - `**Data model:**` — what's stored where. Indexes, embeddings, signals, logs. One sub-bullet per data structure with a one-line purpose.
+    - `**Key components:**` — named sub-systems (retrieval, ranking, serving, eval). For each: one sentence on what it does and one technical choice with rationale.
+    - `**Scale concerns:**` — what breaks first as traffic/data grows. Three sub-bullets minimum, ordered by which problem hits first. Each names a **concrete threshold** ("at 100k QPS", "at 10M docs") — never vague ("at scale").
+    - `**Eval framing:**` — metrics that matter, online vs offline, what's measured per deployment. References classical metrics from the Evals sub-section.
+    - `**Common failure modes:**` — three or four things an interviewer probes for (stale indexes, cold-start, ranking bias). Name the failure, then the mitigation.
+    - `**Applies to this codebase:**` — one of `yes`, `partially`, or `no`. One paragraph explaining why; when `partially`, name what's there and what's missing.
+    - `**How to make it apply:**` — concrete refactor or feature that would let the reader defend this codebase as this template. References Project exercises when curriculum Build items apply. When `Applies` is already `yes`, this bullet names the *next* deepening (add evals, harden at scale, document failure modes). When `Applies` is `no` for a structurally-incompatible codebase (e.g., journaling app + CV template), say so honestly and note it's a thought experiment rather than a buildable target.
+
+    Use `###` heading + labelled bullets exactly. **No markdown tables with pipes.** Each `system-design-templates/` sub-directory has its own `README.md` indexing the templates.
+
 Diagrams use box-drawing characters: `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ → ← ↑ ↓ ◀ ▶ ▲ ▼`. No Mermaid, no images, no PlantUML.
 
 Every term must be shown before it's used (jargon without a diagram is forbidden).
@@ -254,6 +276,12 @@ Assign each pattern a kebab-case file name with a numeric prefix (in dependency 
 
   Number files in the order above (`01-supervised-pipeline`, `02-feature-engineering`, …). Skip patterns that don't apply. If the codebase has **no ML surface** (no trained models, only pre-trained LLM calls), skip this entire section — do not create the `04-machine-learning/` directory. ML and AI engineering are different disciplines; a project that only uses LLM APIs has no ML section.
 
+- **`03-ai-engineering/system-design-templates/`** and **`04-machine-learning/system-design-templates/`** — IK-style interview-prompt reframes. Generated for every AI/ML study guide regardless of applicability (see Step 5C non-negotiable 20). Inventory is fixed (extendable by curriculum):
+  - **AI side:** `01-search-ranking.md`, `02-tech-support-chatbot.md`. Curriculum can name more via `[C5.x]` tags.
+  - **ML side:** `01-recommender-system.md`, `02-anomaly-detection.md`, `03-object-detection-cv.md`. Curriculum can name more.
+
+  These template files do NOT use the per-concept template structure. They use the 9-labelled-bullet system-design shape only — see Step 5C non-negotiable 20 for the canonical structure and Step 9C below for an exact template fragment.
+
 ## Step 7C — Create the directory structure
 
 Create:
@@ -262,11 +290,13 @@ Create:
 .aipe/specs/study/
 .aipe/specs/study/01-system-design/
 .aipe/specs/study/02-dsa/
-.aipe/specs/study/03-ai-engineering/    (skip if the codebase has no AI surface)
-.aipe/specs/study/04-machine-learning/   (skip if the codebase has no trained-model surface)
+.aipe/specs/study/03-ai-engineering/                            (skip if no AI surface)
+.aipe/specs/study/03-ai-engineering/system-design-templates/    (always when 03 exists)
+.aipe/specs/study/04-machine-learning/                          (skip if no ML surface)
+.aipe/specs/study/04-machine-learning/system-design-templates/  (always when 04 exists)
 ```
 
-(Use `mkdir -p`.) Sections without applicable patterns are not created — leaving an empty `04-machine-learning/` for a project that doesn't use ML is misleading. The inventory from Step 6C decides which directories exist.
+(Use `mkdir -p`.) Sections without applicable patterns are not created — leaving an empty `04-machine-learning/` for a project that doesn't use ML is misleading. The inventory from Step 6C decides which directories exist. The `system-design-templates/` sub-directories are always created when their parent section exists (the templates are generated regardless of current applicability — see Step 5C non-negotiable 20).
 
 ## Step 8C — Generate `00-overview.md`
 
@@ -695,14 +725,72 @@ For DSA files (in `02-dsa/`), the **How it works** section additionally must con
 - Comparison table: brute force vs optimal at multiple scales
 - "When brute force is fine" — sometimes it is
 
+### System design template files — use this structure instead of the per-concept template
+
+Files under `03-ai-engineering/system-design-templates/` and `04-machine-learning/system-design-templates/` do NOT use the per-concept structure (Why care / How it works / etc.). Each template file uses this exact shape:
+
+```markdown
+# [Template name — e.g., "Search ranking system design"]
+
+**Industry name(s):** [the textbook / interview name for this system design — e.g., "Information retrieval system, learned ranking, IK Module: Search ranking"]
+**Type:** Industry standard
+
+> [One sentence — the interview prompt this template answers, paraphrased into a summary.]
+
+**See also:** → [related-concept-file] · → [related-concept-file]
+
+---
+
+- **The prompt:** [Verbatim interview prompt this template answers. One sentence, no setup. Example: "Design a search ranking system that takes a user query and returns the top-k most relevant items from a corpus."]
+
+- **Standard architecture:**
+
+  ```
+  [ASCII box-and-arrow diagram — the picture the reader would draw on a whiteboard in the first 60 seconds. Named components, in order, with arrows showing data flow.]
+  ```
+
+- **Data model:**
+  - [Data structure 1 with `{fields}` and one-line purpose]
+  - [Data structure 2 with `{fields}` and one-line purpose]
+  - [...]
+
+- **Key components:**
+  - *[Component 1]*: [one sentence on what it does + one technical choice with rationale]
+  - *[Component 2]*: [one sentence on what it does + one technical choice with rationale]
+  - [...]
+
+- **Scale concerns:**
+  - At ~[concrete threshold, e.g., 10M docs / 1k QPS / 100 escalations per day]: [what breaks]. Solution: [mitigation].
+  - At ~[next threshold]: [what breaks]. Solution: [mitigation].
+  - At ~[next threshold]: [what breaks]. Solution: [mitigation].
+
+- **Eval framing:**
+  - Offline: [hit@k / MRR / NDCG / precision-recall — whichever apply]
+  - Online: [CTR / dwell / session length / resolution rate]
+  - [Any framing notes — "no-click is not a negative label", adversarial set composition, etc.]
+
+- **Common failure modes:**
+  - [Failure 1]. Mitigation: [...].
+  - [Failure 2]. Mitigation: [...].
+  - [Failure 3]. Mitigation: [...].
+
+- **Applies to this codebase:** `yes` / `partially` / `no`. [One paragraph explaining why. When `partially`, name what's there and what's missing. When `no` for a structurally-incompatible codebase, say so honestly.]
+
+- **How to make it apply:** [Concrete refactor or feature that would let the reader defend this codebase as this template. Reference curriculum Project exercises `[Bx.y]` when applicable. When `Applies` is already `yes`, this names the *next* deepening — adding evals, hardening at scale, etc. When `Applies` is `no` for a structurally-incompatible codebase, note that the template is a thought experiment for this codebase rather than a buildable target.]
+```
+
+Use the same labelled-bullet format as Tech reference. **No markdown tables with pipes.** Headings inside the file are `###` only where genuinely needed (the body is a single labelled-bullet list).
+
 ## Step 10C — Generate section README indexes
 
 After all per-concept files in a section are written, create that section's `README.md`:
 
 - **`01-system-design/README.md`** — index of pattern files (one-line description each), plus the full system map diagram from `00-overview.md` for quick reference, plus the **6-step mental checklist** (Data model / Request flow / Caching / State ownership / Failure handling / Scale concerns) reproduced verbatim from the template, with each listed pattern tagged by which step(s) it lives in. The mental checklist is what binds the section into a unified framework — readers should see it on entry, before opening any individual pattern file.
 - **`02-dsa/README.md`** — index of operation files (one-line each), plus the full **complexity cheat sheet** table (every major data operation in the app, time/space, "holds at 10×?"). For every operation that doesn't hold at 10×: one-line fix and estimated effort.
-- **`03-ai-engineering/README.md`** — index of AI pattern files (one-line each), grouped by sub-discipline (LLM foundations / Prompt engineering / Context and prompts / Retrieval and RAG / Agents and tool use / Evals and observability / Production serving / How this codebase uses AI), plus the **AI features table** (Feature → Pattern used → Why this pattern).
-- **`04-machine-learning/README.md`** — index of ML pattern files (one-line each), grouped by sub-discipline (Supervised learning foundations / Data and model quality / Metrics / Recommender systems / On-device inference / ML observability / How this codebase uses ML), plus the **ML features table** (Feature → Model type → Inference location). Skip this README if the section was not created.
+- **`03-ai-engineering/README.md`** — index of AI pattern files (one-line each), grouped by sub-discipline (LLM foundations / Prompt engineering / Context and prompts / Retrieval and RAG / Agents and tool use / Evals and observability / Production serving / How this codebase uses AI). Also include the **AI features table** (Feature → Pattern used → Why this pattern) and a final pointer line: `→ See system-design-templates/ for IK-style interview reframes (search ranking, tech support chatbot).`
+- **`03-ai-engineering/system-design-templates/README.md`** — index of template files (one-line each), one-paragraph description of what the templates are (interview-prompt reframes, 9-bullet shape, generated regardless of codebase applicability), plus a table mapping each template to whether it currently applies to this codebase (`yes` / `partially` / `no`) for quick scanning.
+- **`04-machine-learning/README.md`** — index of ML pattern files (one-line each), grouped by sub-discipline (Supervised learning foundations / Data and model quality / Metrics / Recommender systems / On-device inference / ML observability / How this codebase uses ML). Also include the **ML features table** (Feature → Model type → Inference location) and a final pointer line: `→ See system-design-templates/ for IK-style interview reframes (recommender, anomaly detection, object detection / CV).` Skip this README (and the templates README below) if the section was not created.
+- **`04-machine-learning/system-design-templates/README.md`** — index + brief description + per-template `Applies` table, same shape as the AI-side templates README.
 
 The section READMEs are the navigation. They're the first thing a reader opens when they enter a section.
 
@@ -713,10 +801,12 @@ Print exactly:
 ```
 ✓ Study guide created at .aipe/specs/study/
   00-overview.md
-  01-system-design/   (<N> files + README.md)
-  02-dsa/             (<N> files + README.md)
-  03-ai-engineering/  (<N> files + README.md)   [omit line if section not created]
-  04-machine-learning/(<N> files + README.md)   [omit line if section not created]
+  01-system-design/                            (<N> files + README.md)
+  02-dsa/                                      (<N> files + README.md)
+  03-ai-engineering/                           (<N> files + README.md)   [omit if not created]
+  03-ai-engineering/system-design-templates/   (<N> files + README.md)   [omit if section not created]
+  04-machine-learning/                         (<N> files + README.md)   [omit if not created]
+  04-machine-learning/system-design-templates/ (<N> files + README.md)   [omit if section not created]
 ```
 
 Then a 3-sentence summary: what the codebase being studied is, which section was richest given the actual surface area, and any operations in the DSA section that are currently O(n²) where O(n) is easy (since the spec asks for these to be flagged plainly).
@@ -737,7 +827,9 @@ Walk `.aipe/specs/study/` recursively. Read every `.md` file in:
 - `01-system-design/` (README.md + every per-pattern file)
 - `02-dsa/` (README.md + every per-operation file)
 - `03-ai-engineering/` (README.md + every per-pattern file) — skip if directory doesn't exist
+- `03-ai-engineering/system-design-templates/` (README.md + every template file) — skip if directory doesn't exist
 - `04-machine-learning/` (README.md + every per-pattern file) — skip if directory doesn't exist (most projects without a trained-model surface won't have this section)
+- `04-machine-learning/system-design-templates/` (README.md + every template file) — skip if directory doesn't exist
 
 Build a mental model of what the guide currently covers per file: the diagrams, the operations, the AI patterns, the tradeoffs.
 
@@ -801,6 +893,15 @@ For every existing concept file, run TWO diffs:
   - "Project exercises subsection missing one of the six required bullets" — flag any `###` exercise subsection that doesn't carry all required labelled bullets in order: `**Exercise ID:**` / `**What to build:**` / `**Why it earns its place:**` / `**Files to touch:**` / `**Done when:**` / `**Estimated effort:**`.
   - "Project exercises missing `Done when` end-state" — flag any subsection whose `**Done when:**` value is vague ("works", "is complete", "is implemented") rather than a measurable end-state. The fix is to rewrite the end-state with a concrete artifact, file path, test command, or measured number. If no measurable end-state can be named, the exercise itself is wrong and should be replaced.
   - **Curriculum-driven flags only fire in curriculum-loaded mode.** The four flags below ("Missing Project exercises", "Project exercises subsection missing bullets", "AI/ML file covers out-of-scope concept", "Curriculum concept in scope but missing a file") apply ONLY when Step 2 loaded a curriculum file. In codebase-driven mode, these flags are silently skipped — codebase-driven is a first-class mode, not a fallback, and AI/ML files in this mode legitimately have no Project exercises block and no concept-of-scope to validate against.
+  - **System-design-templates flags** (apply whenever Section 03 or Section 04 exists, regardless of curriculum mode):
+    - "Missing `system-design-templates/` sub-directory" — flag any Section 03 or Section 04 that doesn't have the `system-design-templates/` sub-directory. The v1.29.0 fix is to create it and generate the canonical templates: AI side gets `01-search-ranking.md` and `02-tech-support-chatbot.md`; ML side gets `01-recommender-system.md`, `02-anomaly-detection.md`, `03-object-detection-cv.md`. Curriculum (when loaded) may name additional templates that take the next available numeric prefix.
+    - "Missing canonical template file" — flag any canonical template missing from an existing `system-design-templates/` directory (e.g., `01-search-ranking.md` absent from `03-ai-engineering/system-design-templates/`). The fix is to generate the missing file using the 9-bullet shape from Step 9C.
+    - "Template file using the per-concept structure" — flag any file in a `system-design-templates/` directory that has `## Why care` / `## How it works` / `## Tradeoffs` etc. instead of the 9 labelled bullets. The fix is to rewrite the file using the system-design template shape: `**The prompt:**` / `**Standard architecture:**` / `**Data model:**` / `**Key components:**` / `**Scale concerns:**` / `**Eval framing:**` / `**Common failure modes:**` / `**Applies to this codebase:**` / `**How to make it apply:**`. Preserve any project-context content as raw material when rewriting.
+    - "Template missing one or more of the 9 labelled bullets" — flag any template file that doesn't carry all nine bullets in canonical order. Append the missing bullets sourced from the project context and the curriculum (when loaded).
+    - "Scale-concerns vague" — flag any template whose `**Scale concerns:**` bullets use vague phrasing ("at scale", "with growth") instead of concrete thresholds ("at 100k QPS", "at 10M docs"). The fix is to substitute real numbers — pull from the project context's stated scale targets, or use canonical thresholds for the template category.
+    - "Applies bullet missing or hedged" — flag any template whose `**Applies to this codebase:**` doesn't start with one of `yes`, `partially`, or `no`. The fix is to make the verdict explicit; the paragraph that follows explains the reasoning.
+    - "System-design templates README missing or stale" — flag when the `system-design-templates/README.md` is absent, or its `Applies` table doesn't reflect the current verdicts inside the template files. Regenerate it after the template files are correct.
+
   - **Mode-switch flags** (when the previous run and this run differ in mode):
     - "Existing Project exercises block but curriculum no longer loaded" — flag any AI/ML file that already carries a `## Project exercises` block when this run is in codebase-driven mode. Two options the user picks in Step 7U: (a) keep the existing block as-is (the curriculum-supplied content stays useful even if a new curriculum check can't validate it this run), or (b) strip the block to match the current codebase-driven mode. Default: keep.
     - "Curriculum loaded but existing AI/ML files lack Project exercises" — flag any file in `03-ai-engineering/` or `04-machine-learning/` that doesn't carry a `## Project exercises` block when this run is in curriculum-loaded mode. The fix is to add the block by walking the curriculum for Build items matching the file's concept IDs (same as the standard "Missing Project exercises section" flag).
@@ -817,6 +918,8 @@ For every existing concept file, run TWO diffs:
     - Files generated under **v1.22.0** carry the industry-leader pairings but inlined them throughout the file (most often into Tradeoffs, sometimes also into How it works or Interview defense answers), and in many cases formatted them as one-row markdown tables with pipes — which render as garbage strings of `|` characters on narrow screens (mobile, narrow GitHub panes). The v1.23.0 fix is to: (a) create a new `## Tech reference (industry pairing)` section between Tradeoffs and Summary; (b) extract every industry-leader pairing from wherever it currently lives (Tradeoffs sub-blocks, How it works prose, Interview defense answers) and move it into the new section as a `###` subsection per tech; (c) reformat each tech entry as `### [tech name]` heading + five labelled bullets (`**Codebase uses:**` / `**Why it's here:**` / `**Leading today:**` / `**Why it leads:**` / `**Runner-up:**`); (d) leave references in other sections naming what the codebase uses (e.g., "this codebase uses expo-sqlite via `database.ts`") but strip leader/runner-up content from them. **Never use markdown tables with pipes for tech entries.**
     - Files generated under **v1.23.0** have a `## How it works` block written as 2–3 short paragraphs without the three-moves structure. v1.24.0 restructures the block: Move 1 (mental model / metaphor opening — NOT a definition), Move 2 (layered walkthrough where each independent part gets its own bolded `###` sub-heading and covers the technical term, the frontend-to-backend bridge, the practical consequence walked concretely, and the condition under which it works/breaks), Move 2.5 (Phase A / Phase B when applicable), Move 3 (the principle that generalises). Length scales with complexity (four paragraphs for debounce, fifteen-plus for complex auth). The v1.24.0 fix is to rewrite the How it works block in place: reuse existing prose as raw material for the move-2 sub-sections, add a metaphor opening if missing, split running prose into sub-headings, inject frontend-bridge sentences ("if you're coming from frontend, you're used to X — here it's different"), promote any abstract claims into abstract-claim + concrete-consequence pairs, append a Phase A / Phase B sub-section when the concept warrants it, and end with a principle paragraph + handoff line.
     - Files generated under **v1.24.0** are missing two things from the section-level inventory: (a) the **`04-machine-learning/` section** (if the codebase has any trained-model / supervised-learning / recommender / on-device-inference surface that wasn't previously documented), and (b) the **expanded `03-ai-engineering/` inventory** organized by sub-discipline. The v1.24.0 catalog of AI patterns was 8 files; v1.25.0 expanded it to ~34 patterns grouped by sub-discipline (LLM foundations / Prompt engineering / Context and prompts / Retrieval and RAG / Agents and tool use / Evals and observability / Production serving / How this codebase uses AI). The v1.25.0 fix is to: (1) walk the project context for ML surface — if any trained model, recommender, or on-device inference is in scope, create `04-machine-learning/` and walk the sub-disciplines listed in Step 6C, adding only the patterns that apply; (2) walk the expanded AI catalog (loaded in Step 3 under "SECTION 03 — AI ENGINEERING") and add any sub-discipline patterns the codebase actually uses that aren't already documented — typically patterns like tokenization, sampling parameters, structured outputs, streaming, token economics, heuristic-before-LLM, eval set types, LLM observability, prompt injection, etc. Existing v1.24.0 AI files keep their numeric prefixes; new files take the next available numbers and the README index is re-grouped by sub-discipline.
+    - Guides generated under **v1.28.0** or earlier do not have a `system-design-templates/` sub-directory in either AI or ML sections. v1.29.0 adds it: every AI study guide gains `03-ai-engineering/system-design-templates/` with `01-search-ranking.md` and `02-tech-support-chatbot.md`; every ML study guide gains `04-machine-learning/system-design-templates/` with `01-recommender-system.md`, `02-anomaly-detection.md`, `03-object-detection-cv.md`. Each template uses the 9-labelled-bullet system-design shape (not the per-concept template). Templates are generated regardless of whether the codebase currently exemplifies them — the `**Applies to this codebase:**` bullet is honest, and `**How to make it apply:**` names the refactor path. Section READMEs gain a pointer to the templates sub-directory; each templates sub-directory gets its own README with an `Applies` table.
+
     - Files generated under **v1.25.0** were inventoried by walking the codebase (and the expanded AI catalog), but v1.26.0 changes the inventory model for Sections 03 and 04 to be **curriculum-driven**: the inventory walks the curriculum file (`aieng-curriculum.md`) and generates one file per in-scope curriculum concept, whether or not the codebase implements it yet. v1.25.0 files also lack the `## Project exercises` block (which sits between Tech reference and Summary). The v1.26.0 fix is to: (1) verify a curriculum file exists at `.aipe/project/aieng-curriculum.md` or `~/.config/aipe/global/aieng-curriculum.md`; if not, stop and ask the user to place one; (2) for every existing AI/ML file, look up its concept IDs in the curriculum and add the `## Project exercises` block using the matching `[Bx.y]` Build items (Case A if the codebase implements the concept, Case B if not — `## In this codebase` becomes "Not yet implemented" with one honest sentence); (3) check the curriculum for in-scope concepts that don't yet have a file in the section directory and generate new files for each (using Case B in `## In this codebase` and the curriculum's Build item as the primary buildable target in Project exercises); (4) propose removal for any existing file covering a concept that's out of curriculum scope. The README indexes for Section 03 and 04 are regrouped by curriculum phase rather than discipline grouping (so the reader can trace each phase's concepts in order).
 
   All variants are fixed the same way: insert/replace/reorder/restructure the affected fields in their canonical position, with values drawn from the project context, the curriculum file, and existing-block content where present.
@@ -874,7 +977,7 @@ Reply "no" to abort.
 Run only after the user replies "yes" or with a scoped path. For each file approved:
 
 - Edit only the sections identified as outdated, content-missing, or structurally absent.
-- For **structurally absent sections**, append the section in canonical order. The current sequence is: Title → **Subtitle (Industry name(s) + Type)** → blockquote → See also → **Why care** → **How it works** → **[Concept] — diagram (recap visual, labels every layer)** → In this codebase → Elaborate → **Tradeoffs (comparison table + 4 sub-blocks)** → **Tech reference (industry pairing — `###` per tech + labelled bullets, no pipe-tables)** → **Project exercises (AI/ML files only — `###` per exercise + six labelled bullets)** → **Summary (recap form)** → **Interview defense (with per-answer diagrams)** → Validate your understanding.
+- For **structurally absent sections**, append the section in canonical order. The current sequence (per-concept template, applies to all files EXCEPT those under `system-design-templates/`) is: Title → **Subtitle (Industry name(s) + Type)** → blockquote → See also → **Why care** → **How it works** → **[Concept] — diagram (recap visual, labels every layer)** → In this codebase → Elaborate → **Tradeoffs (comparison table + 4 sub-blocks)** → **Tech reference (industry pairing — `###` per tech + labelled bullets, no pipe-tables)** → **Project exercises (AI/ML files only, curriculum-loaded mode only — `###` per exercise + six labelled bullets)** → **Summary (recap form)** → **Interview defense (with per-answer diagrams)** → Validate your understanding. Files under `system-design-templates/` use a different structure entirely (9 labelled bullets, see Step 9C and non-negotiable 20) — do not apply the per-concept order to them.
 - For a **missing subtitle block**, insert two lines immediately after the H1 and before the blockquote:
   - `**Industry name(s):**` followed by formal/widely-recognised names this pattern goes by (or `— (project-specific composition of [X] + [Y])` if none).
   - `**Type:**` followed by one of `Industry standard` / `Language-agnostic` / `Industry standard · Language-agnostic` / `Project-specific`.
@@ -910,6 +1013,13 @@ Run only after the user replies "yes" or with a scoped path. For each file appro
 - For a **curriculum concept in scope but missing a file**, generate a new file in the appropriate section directory (`03-ai-engineering/` or `04-machine-learning/`) using the same per-concept template. Determine Case A vs Case B from the project context: if the concept is implemented in the codebase, write `## In this codebase` describing the implementation; if not, write `## In this codebase` as "Not yet implemented" with one honest sentence on why (deferred to Phase X / gated on prerequisite Y). Either way, the file gets a full `## Project exercises` block from the matching curriculum Build items — for Case A, the exercise is the *next* step that extends/hardens; for Case B, the exercise is the *primary* buildable target.
 - For a **missing curriculum file** when the codebase has AI/ML surface, do not attempt to repair AI/ML files automatically. Stop and ask the user to place a curriculum file at `.aipe/project/aieng-curriculum.md` or `~/.config/aipe/global/aieng-curriculum.md`. Re-run /aipe:study once it's in place.
 - If the **system-design `README.md` is missing the 6-step mental checklist**, append it after the existing index. Tag each listed pattern with its checklist step(s) so the section README is the unified framework view.
+- For a **missing `system-design-templates/` sub-directory** in an existing Section 03 or Section 04, create the sub-directory with `mkdir -p` and generate the canonical template files. AI side: `01-search-ranking.md`, `02-tech-support-chatbot.md`. ML side: `01-recommender-system.md`, `02-anomaly-detection.md`, `03-object-detection-cv.md`. Each file uses the 9-labelled-bullet system-design shape from Step 9C (not the per-concept template). Then write the sub-directory's `README.md` with the templates index, the brief description, and the `Applies` table.
+- For a **missing canonical template file** inside an existing `system-design-templates/` directory, generate the file using the 9-bullet shape. Source: the template body lives in the loaded template (Step 3) under "System design templates (interview reframes)" in the relevant section. The `**Applies to this codebase:**` and `**How to make it apply:**` bullets are filled from the project context.
+- For a **template file using the per-concept structure** (Why care / How it works / etc.), REWRITE the file using the 9-labelled-bullet shape: `**The prompt:**`, `**Standard architecture:**`, `**Data model:**`, `**Key components:**`, `**Scale concerns:**`, `**Eval framing:**`, `**Common failure modes:**`, `**Applies to this codebase:**`, `**How to make it apply:**`. Preserve project-context content from the existing per-concept block (especially Tradeoffs, How it works examples) as raw material for the new bullets. The H1 stays; the subtitle, blockquote, and See also lines stay; everything between the See also line and the end of the file is replaced.
+- For a **template missing one or more of the 9 labelled bullets**, append the missing bullets in canonical order. Source values from the project context and (when curriculum is loaded) the curriculum's exercise statements.
+- For a **template with vague scale concerns**, rewrite each `**Scale concerns:**` sub-bullet to start with a concrete threshold ("at 100k QPS", "at 10M docs", "at 100 escalations/day"). Pull thresholds from the project context's stated scale targets, or use canonical thresholds (search ranking → QPS + corpus size; chatbot → conversations/day + escalations/day; recommender → users + items + impressions/day; anomaly detection → events/sec + entities; CV → fps + device generation).
+- For an **`**Applies:**` bullet missing or hedged**, set it explicitly to `yes`, `partially`, or `no` based on the project context. The paragraph following the verdict explains why. When `partially`, name what's there and what's missing. When `no` for a structurally-incompatible codebase, say so honestly — the template is a thought experiment rather than a buildable target.
+- For a **stale or missing `system-design-templates/README.md`**, regenerate it after the template files inside it are correct. Include: the file index (one line each), the brief description of what the templates are (interview-prompt reframes, 9-bullet shape, generated regardless of codebase applicability), and a table mapping each template to its current `Applies` verdict for quick scanning.
 - Do NOT rewrite accurate sections.
 - Maintain the existing voice and per-concept file structure.
 - Apply the template's diagram + pseudocode + trace requirements to any new concepts you add.
