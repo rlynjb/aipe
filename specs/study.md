@@ -123,9 +123,14 @@ Each file contains:
                         (Industry standard / Language-agnostic /
                          Project-specific) — so other devs
                         catch on with one-second lookup
-  → Why care            hook + zoom-out — grabs attention,
-                        then names the pattern in general
-                        terms outside this codebase
+  → Why care            grounded scenario the reader can hold
+                        in their head, then names the pattern
+                        as the answer to a question the
+                        scenario set up. Five moves: scenario
+                        → name the question → why the question
+                        matters → before/after → one-line
+                        metaphor. Length scales with
+                        complexity.
   → How it works        prose walkthrough that bridges from
                         what the reader knows (frontend) to
                         what they don't (this concept).
@@ -330,106 +335,330 @@ Every individual concept file uses this structure exactly:
 
   ## Why care
 
-  This block is the hook. It exists for one job: make
-  the reader want to read the next thing. A skim-reader
-  should land on this block, get curious, and stay.
+  This block is the hook, but "hook" here means
+  something more specific than a clever opening
+  sentence. The hook is a *concrete grounded scenario
+  the reader can hold in their head* — a notebook
+  page they're editing, a coat check that hands them
+  a ticket, a library with twenty checkouts running
+  in parallel. From inside that scenario, the reader
+  arrives at the question the pattern answers without
+  having to be told what to care about.
 
-  The file flow is intentional. Why care zooms out — the
-  concept in general, independent of this codebase.
-  How it works walks the mechanics in prose; the diagram
-  follows as the recap visual for what was just described.
-  In this codebase points at the lines. Tradeoffs name
-  what was given up. Summary recaps everything in
-  one block — the concept plus the key points worth
-  carrying away. Validate proves the reader actually
-  got it. Hook → zoom out → mechanics → diagram →
-  tradeoffs → recap → check.
+  The reader is curious by the end of this block
+  because the scenario showed them stakes they
+  already understood. Not because the writer used
+  the word "fascinating."
 
-  Structure: two short paragraphs. No file paths. No
-  project nouns. A reader who has never seen this
-  codebase should understand this block fully — that's
-  the test.
+  Length is scaled by complexity, the same way How
+  it works is. A simple concept gets a short scenario
+  and a one-line summary; a complex one gets a fuller
+  scenario, a worked before/after, and a bolded
+  "why this question matters" pivot. The structure is
+  the same either way.
 
-  ### Paragraph 1 — the hook
+  ### Five structural moves, in order
 
-  One opening sentence that grabs attention. Pick one
-  of these three angles, whichever fits the pattern best:
+  Every Why care block makes five moves. Simple
+  concepts compress moves 3 and 4 into a single
+  paragraph; complex ones give each move its own
+  paragraph. Move 5 is one sentence, always.
 
-  - **The everyday problem they've already hit**
-    "You've copied a file in your terminal and watched
-    the second one start before the first one finished —
-    that's the same problem this pattern solves at scale."
+  #### Move 1 — The grounded scenario
 
-  - **The surprising claim**
-    "Most of the speed in a modern web app comes from
-    not doing work, not from doing it faster."
+  Open with a concrete picture the reader can hold
+  in their head. Not abstract framing. Not a
+  rhetorical question. A scenario with specifics.
+  Numbers. Verbs. Objects that exist in the physical
+  world or in software the reader uses every day.
 
-  - **The scenario that ends in a question**
-    "Two users open the same document, both edit the
-    title, both hit save within a second of each other.
-    What does the server show next? That's the question
-    this pattern answers."
+  Examples of opening scenarios that work:
 
-  Then one or two sentences that name the underlying
-  problem in plain English. Concrete nouns. No jargon
-  before it's defined. The reader should finish this
-  paragraph thinking "huh, I want to know how that
-  works."
+  - "Imagine you have a notebook page with five
+    todos. You erase it and rewrite the list with
+    some changes — one typo fixed, two reordered,
+    one deleted, one added."
+  - "You open two terminals and run the same script
+    in both. They both reach for the same lockfile
+    at the same millisecond. One wins, one waits —
+    but which one and how is decided by something
+    smaller than your script."
+  - "You have a library with one librarian and
+    twenty people who want books. The librarian has
+    a stack of pre-printed library cards on the
+    desk. When you arrive, you take one. When you
+    leave, you put it back."
 
-  ### Paragraph 2 — the zoom out
+  What these scenarios have in common: they're
+  visualizable. The reader is not reading text;
+  they're watching a small movie play out. The
+  scenario sets up a question the reader can almost
+  ask themselves before the writer asks it for them.
 
-  Three to five sentences. Name the pattern, state what
-  it does in general terms, and place it in the family
-  of problems it belongs to.
+  #### Move 2 — Name the question (or job) the pattern answers
 
-  Cover:
-  - What the pattern is, in one sentence — the concept,
-    not the implementation.
-  - The class of problems it solves. ("This is how
-    systems handle X whenever Y is a constraint.")
-  - One or two other places the same pattern shows up —
-    React's renderer abstraction, Postgres drivers, HTTP
-    keep-alive, thread pools. The recognition hook: "oh,
-    that's the same thing as X."
+  One or two sentences that turn the scenario's
+  implicit question into an explicit one, and name
+  what the pattern is by framing it as the answer.
 
-  End on a sentence that hands off to How it works:
-  "Here's how that actually works in this codebase."
-  Or: "How it shows up here is in the next block."
-  Or similar — explicit handoff, so the reader knows
-  the mechanics are coming.
+  > "That matching question is what a reconciler
+  > answers. Not the rewriting, not the diffing —
+  > just the matching."
 
-  ### What this block is not
+  > "What decides which terminal wins is a lock. A
+  > primitive coordination tool, not a clever one —
+  > but the simplicity is the point."
 
-  - Not a definition dump. Definitions go in How it works.
-  - Not a tradeoff discussion. Tradeoffs get their own block.
-  - Not codebase-specific. File paths and project nouns
-    are banned here — they belong in How it works and
-    In this codebase.
-  - Not long. If it runs past two short paragraphs, it's
-    competing with How it works instead of feeding into it.
+  > "The pre-printed cards are a connection pool.
+  > The library doesn't print a new card every time
+  > you visit; it hands you one of the cards already
+  > on the desk."
 
-  Worked example for provider abstraction:
+  Notice the secondary technique: *naming what the
+  pattern is by naming what it is NOT*. "Not the
+  rewriting, not the diffing — just the matching."
+  This narrows the concept before the reader can
+  generalize too broadly. Use it when the pattern
+  sits adjacent to other patterns it gets confused
+  with.
 
-  > You've installed a new database in a side project and
-  > realised the SDK is identical to the last one. Same
-  > `client.query()`, same `client.connect()` — the
-  > implementation behind it is completely different but
-  > the call sites don't know that. That's not an accident.
-  > It's a pattern with a name, and it's load-bearing in
-  > every system that needs to swap one piece for another
-  > without rewriting everything that talks to it.
+  #### Move 3 — Why answering that question matters
+
+  This is the load-bearing move. The scenario gave
+  the reader a question; this move tells them what
+  *depends* on the answer. What breaks if the
+  pattern isn't there. What gets lost. What goes
+  wrong silently.
+
+  Open with a bolded transition that names the
+  shift: **Why you need to answer that question at
+  all:**, or **What depends on getting this right:**,
+  or **What breaks without it:**. The bold makes the
+  pivot legible. The reader is following the writer
+  from "here's the question" to "here's the stakes."
+
+  Then one paragraph that names the stakes in plain
+  English, with at least one concrete consequence the
+  reader can picture. Abstract claims about
+  correctness, performance, or data integrity are
+  banned without a concrete instance:
+
+  > "**Why you need to answer that question at all:**
+  > because *stuff is attached to the old lines*.
+  > Every todo has a created-at timestamp, tags, an
+  > AI classification, maybe a thread link. That
+  > metadata lives with the row's identity, not its
+  > text. If the user fixes a typo in row 3, you
+  > want row 3 to still be row 3 — same created-at,
+  > same tags, same classification."
+
+  The codebase can appear here. The current rule
+  banning project nouns from Why care is replaced by
+  a softer rule: **the scenario in Move 1 must be
+  understandable to someone who has never seen this
+  codebase, but Move 3 can ground its consequences
+  in real fields from real files**. The reader who
+  doesn't know the codebase still understands the
+  scenario; the reader who knows the codebase gets a
+  sharper sense of what's at stake.
+
+  #### Move 4 — Concrete before/after
+
+  Show what happens with the pattern absent vs
+  present. Two short bulleted scenarios, three to
+  five bullets each. Same scenario, two outcomes.
+
+  > Without a reconciler:
+  > - User fixes typo in todo #3
+  > - App sees "the list changed" → wipes old list,
+  >   saves new list
+  > - Todo #3's created-at is now today, its tags
+  >   are gone, its AI classification re-runs and
+  >   maybe comes back different
   >
-  > Provider abstraction is the layer that lets a caller
-  > use one of several interchangeable implementations
-  > behind a single interface. It belongs to the family
-  > of "decouple the consumer from the producer" patterns,
-  > alongside dependency injection and the adapter
-  > pattern. You've already seen this in React's renderer
-  > abstraction (DOM, native, server — same component
-  > tree), in database drivers (Postgres, MySQL, SQLite
-  > behind the same query API), and in storage SDKs (S3,
-  > GCS, R2 behind the same upload call). How it works
-  > in this codebase is in the next block.
+  > With a reconciler:
+  > - User fixes typo in todo #3
+  > - Reconciler matches new-row-3 to old-row-3 (by
+  >   position, since exact text no longer matches)
+  > - Metadata stays attached, only the text field
+  >   updates
+
+  Why this works: abstract consequences ("metadata
+  gets lost") are weaker than walked consequences
+  ("the created-at resets to now, the tags vanish,
+  and the AI re-classifies from scratch"). The
+  before/after walks the consequences instead of
+  asserting them.
+
+  Skip Move 4 when the concept is too simple to
+  earn it — when the difference between with-pattern
+  and without-pattern is one obvious thing. Skip it
+  also when before/after would be misleading because
+  the concept isn't binary (e.g. retrieval quality,
+  which is gradient).
+
+  #### Move 5 — The one-line summary metaphor
+
+  End with a single sentence that names the pattern
+  in one phrase. Not a definition. A metaphor or
+  reduction.
+
+  > "The reconciler is just the matchmaker."
+  > "The lock is the bouncer at the door."
+  > "The connection pool is the coat check."
+
+  This is the sentence the reader will paraphrase
+  three weeks later when someone asks them about
+  this concept. It's also the sentence that hands
+  off to How it works — the metaphor names the
+  pattern, and How it works walks the mechanics.
+
+  After this sentence, optionally add one
+  *handoff* line that explicitly points to the next
+  block. "Here's how that actually plays out in
+  this codebase." or "The full mechanics are below."
+  This is small but the spec keeps the handoff
+  habit consistent across blocks.
+
+  ### Reader profile — same as How it works
+
+  The default reader is a working frontend engineer
+  with 5–8 years of experience, pivoting to
+  full-stack and AI engineering. They are
+  comfortable with components, hooks, client state,
+  forms, browser APIs. They are still building
+  intuition for databases, transactional semantics,
+  server-side request handling, auth, queues,
+  distributed systems, infra primitives, LLM-shaped
+  failure modes.
+
+  Move 1's scenario should connect to something
+  they already know — a notebook, a terminal, a
+  library, a coat check, a queue at a coffee shop.
+  Not "imagine you're scaling a Kubernetes cluster."
+  The scenario brings the reader in; the rest of
+  the file is what they came for.
+
+  ### Hard rules
+
+  - **Open with a scenario, not a hook sentence.**
+    "Most of the speed in a modern web app comes
+    from not doing work" is a clever sentence,
+    but it doesn't put a picture in the reader's
+    head. "You've watched your editor lag for a
+    second after typing fast — that's the buffer
+    filling up" does. Use the scenario form.
+
+  - **Banned phrases.** "It's important to
+    understand X" / "X is a fundamental concept" /
+    "X is fascinating because" — these are
+    permission-seeking. The reader gives permission
+    by reading the next sentence. Drop the
+    permission-seeking and trust the scenario to
+    earn the attention.
+
+  - **No definition-first openings.** "A reconciler
+    is a function that..." is banned. Definitions
+    belong in Move 2, framed as the answer to a
+    question Move 1 set up.
+
+  - **Concrete consequences only.** Move 3 must
+    name what breaks, what gets lost, what shifts —
+    with at least one specific consequence the
+    reader can picture. "This is important for
+    correctness" is banned without a worked
+    instance.
+
+  - **Codebase references allowed in Moves 3, 4,
+    and 5.** Not in Move 1 (the scenario must be
+    project-agnostic). Not in Move 2 (the pattern
+    name is universal). After that, real fields,
+    real files, real consequences make the block
+    sharper.
+
+  - **End with the one-line metaphor.** The reader
+    should be able to highlight Move 5 and know
+    what the pattern is in one phrase.
+
+  ### Worked example — what good looks like
+
+  This is what a Why care block looks like when the
+  five moves above are followed. The concept being
+  explained is *reconciliation between an old list
+  and a new list when rows have metadata attached* —
+  a frontend-adjacent pattern the reader has
+  probably implemented without naming.
+
+  > Imagine you have a notebook page with five todos.
+  > You erase it and rewrite the list with some
+  > changes — one typo fixed, two reordered, one
+  > deleted, one added. Now I hand you the old page
+  > and the new page and ask: "for each line on the
+  > new page, which line on the old page is it?"
+  >
+  > That matching question is what a reconciler
+  > answers. Not the rewriting, not the diffing —
+  > just the matching.
+  >
+  > **Why you need to answer that question at all:**
+  > because *stuff is attached to the old lines*.
+  > Every todo has a created-at timestamp, tags, an
+  > AI classification, maybe a thread link. That
+  > metadata lives with the row's identity, not its
+  > text. If the user fixes a typo in row 3, you
+  > want row 3 to still be row 3 — same created-at,
+  > same tags, same classification. You don't want
+  > the system to think "row 3 was deleted and a
+  > new row was inserted," because then the
+  > created-at resets to now, the tags vanish, and
+  > the AI re-classifies from scratch.
+  >
+  > So the reconciler exists to prevent that loss.
+  > It's the thing that looks at old-list and
+  > new-list and says "these two rows are the same
+  > row, just edited" so the metadata can ride
+  > along.
+  >
+  > Without a reconciler:
+  > - User fixes typo in todo #3
+  > - App sees "the list changed" → wipes old list,
+  >   saves new list
+  > - Todo #3's created-at is now today, its tags
+  >   are gone, its AI classification re-runs and
+  >   maybe comes back different
+  >
+  > With a reconciler:
+  > - User fixes typo in todo #3
+  > - Reconciler matches new-row-3 to old-row-3 (by
+  >   position, since exact text no longer matches)
+  > - Metadata stays attached, only the text field
+  >   updates
+  >
+  > The reconciler is just the matchmaker.
+  > Everything else — the storage, the UI, the
+  > classifier — depends on it getting the matches
+  > right. Here's how that actually plays out in
+  > this codebase.
+
+  What this example does right:
+
+  - Opens with a notebook scenario, not a hook
+    sentence. The reader sees the notebook and the
+    erased lines.
+  - Names the pattern (reconciler) by framing it as
+    the answer to the matching question, and
+    sharpens it by what it's NOT (not the
+    rewriting, not the diffing).
+  - Bolded transition to "why answering that
+    question matters" — the load-bearing pivot.
+  - Concrete consequences with specific field names
+    (created-at, tags, AI classification) — not
+    abstract claims about metadata loss.
+  - Before/after bullets walk the difference rather
+    than asserting it.
+  - One-line metaphor closes ("the reconciler is
+    just the matchmaker") and the handoff sentence
+    points to How it works.
 
   ---
 
@@ -1427,7 +1656,7 @@ Every individual concept file uses this structure exactly:
   Three to five sentences that summarise the concept in
   prose. Cover:
   - What the pattern is (one sentence — pulled from
-    Why care's paragraph 2).
+    Why care's Move 2 or Move 5).
   - How it shows up in this codebase (one sentence —
     pulled from How it works or In this codebase).
   - The constraint that made it the right call here
@@ -6114,12 +6343,47 @@ CONSTRAINTS
    + Type label) directly under the H1, before the blockquote
 → Every concept file must include a Why care block
    immediately after the blockquote and before the
-   diagram. Two short paragraphs: paragraph 1 hooks
-   attention, paragraph 2 zooms out and places the
-   pattern in its family. No file paths, no project
-   nouns — that's the test of a real zoom-out. Ends
-   with an explicit handoff to the diagram or
-   How it works.
+   diagram. Length scaled by complexity — simple
+   concepts get a short scenario plus a one-line
+   summary; complex ones get a fuller scenario, a
+   worked before/after, and a bolded "why this
+   matters" pivot. Five required moves in order:
+   (1) Move 1 — open with a grounded scenario the
+   reader can hold in their head; physical objects,
+   verbs, specifics; no abstract framing, no clever
+   rhetorical openers. Hook-sentence openings
+   ("Most of the speed in a modern web app comes
+   from not doing work") are banned in favour of
+   scenario openings ("You've watched your editor
+   lag for a second after typing fast — that's
+   the buffer filling up"). (2) Move 2 — name the
+   pattern by framing it as the answer to the
+   question the scenario set up; sharpen with
+   "not X, not Y — just Z" when the pattern
+   sits adjacent to similar patterns. Definition-
+   first openings are banned. (3) Move 3 — bolded
+   transition ("**Why you need to answer that
+   question at all:**" or similar) then a paragraph
+   on what depends on the pattern, what breaks
+   without it. At least one concrete consequence
+   the reader can picture; abstract claims about
+   correctness/performance/data integrity are
+   banned without a worked instance. Codebase
+   references ARE allowed here (real fields, real
+   files) — the relaxed rule replaces the old
+   "no project nouns" ban. (4) Move 4 — concrete
+   before/after with two short bulleted scenarios
+   (three to five bullets each, same scenario two
+   outcomes). Skip when concept is too simple to
+   earn it or when before/after would mislead.
+   (5) Move 5 — one-line metaphor that names the
+   pattern in a single phrase. Always one
+   sentence. Optionally followed by a handoff line
+   to How it works. Move 1's scenario must remain
+   project-agnostic (a reader who has never seen
+   this codebase must understand it). Moves 3–5
+   may ground in the codebase to make consequences
+   vivid.
 → Every concept file must include a How it works block
    immediately after Why care and before the primary
    diagram. Length scaled by complexity, not capped at
