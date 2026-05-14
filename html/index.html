@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prompting Cheatsheet — AIPE</title>
+  <title>aipe — Spec workflow for AI-assisted development</title>
+  <meta name="description" content="A plugin for Claude Code and Codex CLI. 11 spec templates that turn a one-line intent + your project context into a filled, structured spec your coding agent can implement from." />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet" />
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -19,13 +22,11 @@
       --border2: #3a3a48;
       --text:    #e8e6e0;
       --muted:   #888898;
-      --dim:     #444458;
+      --dim:     #555568;
       --gold:    #e8d5b0;
       --gold2:   #c8b080;
       --info:    #5b9cf6;
       --success: #4eca8b;
-      --warn:    #f0a04a;
-      --danger:  #e05c6a;
     }
 
     html { scroll-behavior: smooth; }
@@ -34,1013 +35,640 @@
       background: var(--bg);
       color: var(--text);
       font-family: 'Instrument Sans', sans-serif;
-      font-size: 14px;
-      line-height: 1.6;
+      font-size: 15px;
+      line-height: 1.65;
       min-height: 100vh;
     }
 
-    /* ── Header ── */
-    header {
-      border-bottom: 1px solid var(--border);
-      padding: 2rem 2rem 1.5rem;
+    a { color: inherit; text-decoration: none; }
+
+    /* ───────── Top nav ───────── */
+    .topnav {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem;
       display: flex;
-      align-items: flex-end;
       justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
+      align-items: center;
     }
 
     .logo {
       font-family: 'DM Mono', monospace;
-      font-size: 11px;
+      font-size: 12px;
       color: var(--dim);
-      letter-spacing: .1em;
+      letter-spacing: .12em;
       text-transform: uppercase;
-      text-decoration: none;
     }
     .logo span { color: var(--gold); }
 
-    header h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: 400;
-      color: var(--text);
-      letter-spacing: -.01em;
-      line-height: 1.1;
+    .topnav-right {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
     }
-
-    header p {
+    .topnav-link {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
       color: var(--muted);
-      margin-top: 4px;
-      letter-spacing: .04em;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: color .15s;
+    }
+    .topnav-link:hover { color: var(--text); }
+
+    .topnav-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--gold);
+      background: rgba(232,213,176,.06);
+      border: 1px solid rgba(232,213,176,.18);
+      padding: 8px 14px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: background .15s, border-color .15s;
+    }
+    .topnav-cta:hover {
+      background: rgba(232,213,176,.12);
+      border-color: rgba(232,213,176,.32);
     }
 
-    .header-left { display: flex; flex-direction: column; gap: 6px; }
+    /* ───────── Hero ───────── */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+    }
 
-    .header-tag {
+    .hero-tag {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
       color: var(--gold);
-      background: rgba(232,213,176,.07);
-      border: 1px solid rgba(232,213,176,.15);
-      padding: 3px 10px;
-      display: inline-block;
-      letter-spacing: .08em;
+      letter-spacing: .15em;
       text-transform: uppercase;
-      align-self: flex-start;
+      margin-bottom: 1.5rem;
     }
 
-    /* ── Layout ── */
-    main {
-      max-width: 100%;
-      margin: 0;
-      padding: 0;
-      display: grid;
-      gap: 1px;
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 400;
+      letter-spacing: -.015em;
+      line-height: 1.05;
+      margin-bottom: 1.25rem;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero h1 .accent { color: var(--gold); font-style: italic; }
+
+    .hero p.lead {
+      font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.55;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 12px 22px;
+      transition: all .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      color: var(--bg);
+      background: var(--gold);
+      border: 1px solid var(--gold);
+    }
+    .btn-primary:hover {
+      background: var(--gold2);
+      border-color: var(--gold2);
+    }
+    .btn-ghost {
+      color: var(--text);
+      border: 1px solid var(--border2);
+      background: transparent;
+    }
+    .btn-ghost:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* ───────── Section scaffolding ───────── */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      border-top: 1px solid var(--border);
     }
 
     .section-label {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
-      color: var(--dim);
-      letter-spacing: .12em;
+      color: var(--gold);
+      letter-spacing: .15em;
       text-transform: uppercase;
-      padding: 2.5rem 0 .75rem;
-      border-top: 1px solid var(--border);
-      margin-top: 1rem;
+      margin-bottom: .8rem;
     }
-    .section-label:first-child { border-top: none; padding-top: 0; margin-top: 0; }
 
-    /* ── Cards ── */
-    .card {
+    section h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 400;
+      letter-spacing: -.01em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    section p.section-intro {
+      color: var(--muted);
+      max-width: 700px;
+      margin-bottom: 2.5rem;
+      font-size: 1.05rem;
+    }
+
+    /* ───────── How it works (3 steps) ───────── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    @media (max-width: 800px) {
+      .steps { grid-template-columns: 1fr; }
+    }
+
+    .step {
       background: var(--bg2);
       border: 1px solid var(--border);
-      padding: 1.25rem 1.5rem;
-      animation: fadeUp .4s ease both;
-    }
-    .card + .card { border-top: none; }
-
-    .card-title {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--gold2);
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      margin-bottom: .875rem;
+      padding: 1.75rem;
+      position: relative;
     }
 
-    /* ── Body text ── */
-    .body-text {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-bottom: .875rem;
-    }
-
-    /* ── Why it matters ── */
-    .why {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--gold);
-      padding: 10px 14px;
-      margin-bottom: .875rem;
-    }
-    .why-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-    .why p { font-size: 13px; color: var(--gold2); line-height: 1.6; }
-
-    /* ── Do / Don't ── */
-    .do-dont {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      margin-bottom: .875rem;
-    }
-    @media (max-width: 580px) { .do-dont { grid-template-columns: 1fr; } }
-
-    .do-block, .dont-block { padding: 12px 14px; }
-    .do-block   { background: rgba(78,202,139,.05);  border: 1px solid rgba(78,202,139,.15); }
-    .dont-block { background: rgba(224,92,106,.05);  border: 1px solid rgba(224,92,106,.15); border-left: none; }
-    @media (max-width: 580px) {
-      .dont-block { border-left: 1px solid rgba(224,92,106,.15); border-top: none; }
-    }
-
-    .do-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .do-block   .do-label { color: var(--success); }
-    .dont-block .do-label { color: var(--danger); }
-    .do-block   .code-block { border-color: rgba(78,202,139,.15);  border-left-color: rgba(78,202,139,.3); }
-    .dont-block .code-block { border-color: rgba(224,92,106,.15);  border-left-color: rgba(224,92,106,.3); }
-
-    /* ── Example block ── */
-    .example {
-      background: var(--bg4);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--border2);
-      margin-bottom: .875rem;
-    }
-    .example-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--dim);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      padding: 8px 14px 0;
-    }
-    .example .code-block {
-      border: none;
-      border-left: none;
-      background: transparent;
-      margin: 0;
-      padding: 8px 14px 12px;
-    }
-
-    /* ── Two-col ── */
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: .875rem;
-    }
-    @media (max-width: 540px) { .two-col { grid-template-columns: 1fr; gap: 1rem; } }
-
-    .col-label {
+    .step-num {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
+      color: var(--dim);
+      letter-spacing: .15em;
+      margin-bottom: 1rem;
+    }
+
+    .step h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      margin-bottom: .75rem;
+      line-height: 1.2;
+    }
+
+    .step p {
       color: var(--muted);
-      margin-bottom: .5rem;
+      font-size: .95rem;
+      line-height: 1.55;
     }
 
-    .item {
-      font-size: 13px;
-      color: var(--muted);
-      padding-left: 14px;
-      position: relative;
-      margin: 4px 0;
-      line-height: 1.5;
+    .step-arrow {
+      color: var(--gold);
+      font-family: 'DM Mono', monospace;
+      margin: 0 .5rem;
     }
-    .item::before { content: '—'; position: absolute; left: 0; color: var(--dim); }
 
-    /* ── Callouts ── */
-    .callout {
-      border-left: 2px solid var(--gold);
-      padding: 10px 14px;
-      font-size: 13px;
-      color: var(--gold2);
-      background: rgba(232,213,176,.04);
-      line-height: 1.6;
-    }
-    .callout.warn  { border-color: var(--warn);    color: var(--warn);    background: rgba(240,160,74,.04); }
-    .callout.info  { border-color: var(--info);    color: var(--info);    background: rgba(91,156,246,.04); }
-    .callout.good  { border-color: var(--success); color: var(--success); background: rgba(78,202,139,.04); }
-    .callout + * { margin-top: .875rem; }
-    * + .callout  { margin-top: .875rem; }
-
-    /* ── Divider ── */
-    hr { border: none; border-top: 1px solid var(--border); margin: .875rem 0; }
-
-    /* ── Steps ── */
-    .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: .875rem; }
-    .step-row { display: flex; gap: 14px; align-items: flex-start; padding: .75rem 0; }
-    .step-row + .step-row { border-top: 1px solid var(--border); }
-    .step-num {
-      width: 22px; height: 22px;
-      border: 1px solid var(--border2);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted);
-      flex-shrink: 0; margin-top: 2px;
-    }
-    .step-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
-    .step-desc  { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
-    /* ── Code block ── */
+    /* ───────── Code block ───────── */
     .code-block {
       background: var(--bg3);
       border: 1px solid var(--border);
-      border-left: 2px solid var(--border2);
-      padding: 12px 14px;
+      padding: 1rem 1.25rem;
       font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.8;
+      font-size: 13px;
+      line-height: 1.7;
       white-space: pre;
       overflow-x: auto;
-      margin: .5rem 0;
+      color: var(--text);
     }
-    .code-block .hl  { color: var(--gold); }
-    .code-block .cm  { color: var(--dim); font-style: italic; }
-    .code-block .arr { color: var(--gold2); }
-    .code-block .ok  { color: var(--success); }
-    .code-block .bad { color: var(--danger); }
+    .code-block .cm { color: var(--dim); }
+    .code-block .gold { color: var(--gold); }
+    .code-block .info { color: var(--info); }
+    .code-block .ok { color: var(--success); }
 
-    /* ── Pills ── */
-    .pill {
-      display: inline-block;
-      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
-      padding: 3px 10px; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 5px;
+    .example-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 1.5rem;
     }
-    .pill-happy   { background: rgba(78,202,139,.1);  color: var(--success); border: 1px solid rgba(78,202,139,.2); }
-    .pill-unhappy { background: rgba(224,92,106,.1);  color: var(--danger);  border: 1px solid rgba(224,92,106,.2); }
-    .pill-weird   { background: rgba(240,160,74,.1);  color: var(--warn);    border: 1px solid rgba(240,160,74,.2); }
-
-    /* ── Tags ── */
-    .tag {
-      display: inline-block;
-      font-family: 'DM Mono', monospace; font-size: 10px;
-      padding: 3px 9px; background: var(--bg3);
-      border: 1px solid var(--border); color: var(--muted);
-      letter-spacing: .04em; margin: 2px 3px 2px 0;
-      white-space: nowrap;
+    @media (max-width: 800px) {
+      .example-flow {
+        grid-template-columns: 1fr;
+      }
+      .flow-arrow { display: none; }
+    }
+    .flow-arrow {
+      font-family: 'DM Mono', monospace;
+      color: var(--gold);
+      font-size: 1.5rem;
+      text-align: center;
     }
 
-    /* ── Layer bars ── */
-    .layer-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: .875rem; }
-    .layer-row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 9px 12px; background: var(--bg3); border: 1px solid var(--border);
+    /* ───────── Spec types grid ───────── */
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
     }
-    .layer-body { flex: 1; }
-    .layer-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
-    .layer-desc { font-size: 11px; color: var(--dim); font-family: 'DM Mono', monospace; }
-    .bar-wrap   { width: 100%; height: 2px; background: var(--border); margin-top: 6px; }
-    .bar        { height: 2px; }
-    .layer-badge {
-      font-family: 'DM Mono', monospace; font-size: 10px;
-      padding: 2px 8px; white-space: nowrap; flex-shrink: 0; letter-spacing: .04em;
-    }
-    .badge-correct { background: rgba(91,156,246,.08);  color: var(--info);  border: 1px solid rgba(91,156,246,.15); }
-    .badge-read    { background: var(--bg3); color: var(--dim); border: 1px solid var(--border); }
 
-    /* ── Path blocks ── */
-    .path-block { padding: .75rem 0; }
-    .path-block + .path-block { border-top: 1px solid var(--border); }
-    .path-desc { font-size: 13px; color: var(--muted); margin: 4px 0 8px; line-height: 1.5; }
-    .path-examples { display: flex; flex-wrap: wrap; gap: 4px; }
-
-    /* ── State blocks ── */
-    .state-block { padding: .75rem 0; }
-    .state-block + .state-block { border-top: 1px solid var(--border); }
-    .state-desc { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 4px 0 6px; }
-    .state-eg   { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--dim); line-height: 1.6; }
-
-    /* ── Workflow ── */
-    .workflow-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: .875rem; }
-    .wf-tag {
-      font-family: 'DM Mono', monospace; font-size: 11px;
-      padding: 4px 12px; border: 1px solid; letter-spacing: .04em;
-    }
-    .wf-tag.ai   { color: var(--info);    border-color: rgba(91,156,246,.3);  background: rgba(91,156,246,.06); }
-    .wf-tag.code { color: var(--success); border-color: rgba(78,202,139,.3);  background: rgba(78,202,139,.06); }
-    .wf-arrow    { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--dim); }
-    .wf-label    { font-size: 12px; color: var(--muted); }
-
-    /* ── Animations ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .card:nth-child(1)  { animation-delay: .04s; }
-    .card:nth-child(2)  { animation-delay: .08s; }
-    .card:nth-child(3)  { animation-delay: .12s; }
-    .card:nth-child(4)  { animation-delay: .16s; }
-    .card:nth-child(5)  { animation-delay: .20s; }
-    .card:nth-child(6)  { animation-delay: .24s; }
-    .card:nth-child(7)  { animation-delay: .28s; }
-    .card:nth-child(8)  { animation-delay: .32s; }
-    .card:nth-child(9)  { animation-delay: .36s; }
-    .card:nth-child(10) { animation-delay: .40s; }
-    .card:nth-child(11) { animation-delay: .44s; }
-    .card:nth-child(12) { animation-delay: .48s; }
-    @media (prefers-reduced-motion: reduce) { .card { animation: none; } }
-
-    /* ── TOC ── */
-    .toc {
+    .spec-card {
       background: var(--bg2);
       border: 1px solid var(--border);
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1px;
-      animation: fadeUp .3s ease both;
-    }
-
-    .toc-title {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--gold2);
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      margin-bottom: .875rem;
-    }
-
-    .toc-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2px;
-      list-style: none;
-    }
-
-    @media (max-width: 520px) {
-      .toc-list { grid-template-columns: 1fr; }
-    }
-
-    .toc-list li a {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      padding: 7px 10px;
-      text-decoration: none;
-      background: var(--bg3);
-      border: 1px solid var(--border);
+      padding: 1.25rem;
       transition: border-color .15s, background .15s;
     }
-
-    .toc-list li a:hover {
-      background: var(--bg4);
+    .spec-card:hover {
       border-color: var(--border2);
+      background: var(--bg3);
     }
 
-    .toc-list li a:hover .toc-num { color: var(--gold); }
-    .toc-list li a:hover .toc-text { color: var(--text); }
-
-    .toc-num {
+    .spec-cmd {
       font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--dim);
-      flex-shrink: 0;
-      transition: color .15s;
+      font-size: 12px;
+      color: var(--gold);
+      margin-bottom: .5rem;
+      letter-spacing: .02em;
     }
 
-    .toc-text {
-      font-size: 13px;
+    .spec-desc {
       color: var(--muted);
-      line-height: 1.3;
-      transition: color .15s;
-    }
-
-    /* ── Mapping table ── */
-    .map-table { width: 100%; border-collapse: collapse; margin-bottom: .875rem; }
-
-    .map-table thead tr {
-      border-bottom: 1px solid var(--border2);
-    }
-
-    .map-table thead th {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--dim);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      padding: 6px 10px;
-      text-align: left;
-      font-weight: 400;
-    }
-
-    .map-table thead th:first-child { padding-left: 0; }
-
-    .map-table tbody tr {
-      border-bottom: 1px solid var(--border);
-    }
-
-    .map-table tbody tr:last-child { border-bottom: none; }
-
-    .map-table tbody tr:hover { background: var(--bg3); }
-
-    .map-table td {
-      padding: 10px 10px;
-      vertical-align: top;
-      font-size: 13px;
+      font-size: .9rem;
       line-height: 1.5;
     }
 
-    .map-table td:first-child { padding-left: 0; }
-
-    .map-table .col-technique {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--gold2);
-      white-space: nowrap;
-    }
-
-    .map-table .col-cheatsheet {
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    .map-table .col-cheatsheet a {
-      color: var(--text);
-      font-weight: 500;
-      text-decoration: none;
-      border-bottom: 1px solid var(--border2);
-    }
-
-    .map-table .col-cheatsheet a:hover {
-      color: var(--gold);
-      border-bottom-color: var(--gold2);
-    }
-
-    .map-table .col-desc {
-      color: var(--muted);
-    }
-
-    .map-table .col-where {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--dim);
-      white-space: nowrap;
-    }
-
-    .map-table .sec-ref {
-      display: inline-block;
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--info);
-      background: rgba(91,156,246,.08);
-      border: 1px solid rgba(91,156,246,.15);
-      padding: 1px 6px;
-      text-decoration: none;
-      margin: 1px 2px 1px 0;
-    }
-    .map-table .sec-ref:hover { background: rgba(91,156,246,.15); }
-
-    @media (max-width: 640px) {
-      .map-table thead { display: none; }
-      .map-table tbody tr { display: block; padding: .75rem 0; }
-      .map-table td { display: block; padding: 2px 0; }
-      .map-table .col-technique { margin-bottom: 4px; }
-      .map-table .col-where { margin-top: 4px; }
-    }
-
-    /* ── Quick picker ── */
-    .picker-grid {
+    /* ───────── Install ───────── */
+    .install-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      margin-bottom: .875rem;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    @media (max-width: 800px) {
+      .install-grid { grid-template-columns: 1fr; }
     }
 
-    @media (max-width: 560px) {
-      .picker-grid { grid-template-columns: 1fr; }
-    }
-
-    .picker-card {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      padding: 12px 14px;
-    }
-
-    .picker-usecase {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .picker-icon {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--gold);
-      background: rgba(232,213,176,.08);
-      border: 1px solid rgba(232,213,176,.12);
-      padding: 1px 6px;
-      flex-shrink: 0;
-    }
-
-    .picker-techniques {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .picker-row {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
-
-    .picker-arrow {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--gold2);
-      flex-shrink: 0;
-    }
-
-    .picker-tech {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--info);
-      flex-shrink: 0;
-      text-decoration: none;
-    }
-
-    .picker-tech:hover {
-      color: var(--gold);
-      text-decoration: underline;
-    }
-
-    .picker-note {
-      font-size: 11px;
-      color: var(--dim);
-      line-height: 1.4;
-    }
-
-    /* ── Tabs ── */
-    .tabs-shell {
+    .install-card {
       background: var(--bg2);
       border: 1px solid var(--border);
+      padding: 1.5rem;
     }
 
-    .tab-bar-wrap {
-      position: relative;
-      border-bottom: 1px solid var(--border);
+    .install-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-bottom: .25rem;
     }
 
-    .tab-bar-wrap::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 40px;
-      background: linear-gradient(to right, transparent, var(--bg2));
-      pointer-events: none;
-      opacity: 1;
-      transition: opacity .2s;
-    }
-
-    .tab-bar-wrap.no-fade::after { opacity: 0; }
-
-    .tab-bar {
-      display: flex;
-      overflow-x: auto;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .tab-bar::-webkit-scrollbar { display: none; }
-
-    .tab-btn {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--dim);
-      background: none;
-      border: none;
-      border-right: 1px solid var(--border);
-      padding: 12px 18px;
-      cursor: pointer;
-      transition: color .15s, background .15s;
-      white-space: nowrap;
-      flex-shrink: 0;
-      min-height: 44px;
-    }
-
-    .tab-btn:last-child { border-right: none; }
-    .tab-btn:hover { color: var(--muted); background: var(--bg3); }
-
-    .tab-btn.active {
-      color: var(--gold);
-      background: var(--bg3);
-      border-bottom: 2px solid var(--gold);
-      margin-bottom: -1px;
-    }
-
-    .tab-panel { display: none; padding: 1.25rem 1.5rem; }
-    .tab-panel.active { display: block; }
-
-    .tab-intro {
-      font-size: 13px;
+    .install-card p {
       color: var(--muted);
-      line-height: 1.6;
+      font-size: .85rem;
       margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
     }
 
-    .tab-group-label {
+    /* ───────── Why ───────── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .why-card {
+      background: transparent;
+      border-left: 2px solid var(--gold);
+      padding: .5rem 1.25rem;
+    }
+
+    .why-card h3 {
       font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--gold2);
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      margin: 1.25rem 0 .625rem;
-    }
-
-    .tab-group-label:first-of-type { margin-top: 0; }
-
-    /* map table inside tab needs no outer border */
-    .tab-panel .map-table { margin-top: .5rem; }
-
-    /* ── Spec steps ── */
-    .spec-step {
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-      padding: .875rem 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .spec-step:first-of-type { border-top: none; }
-
-    .spec-tool {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      white-space: nowrap;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .spec-tool-chat {
-      color: var(--info);
-      background: rgba(91,156,246,.08);
-      border: 1px solid rgba(91,156,246,.2);
-    }
-
-    .spec-tool-code {
-      color: var(--success);
-      background: rgba(78,202,139,.08);
-      border: 1px solid rgba(78,202,139,.2);
-    }
-
-    .spec-body { flex: 1; }
-
-    .spec-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: .625rem;
-    }
-
-    .spec-save {
       font-size: 11px;
-      color: var(--dim);
-      font-family: 'DM Mono', monospace;
+      color: var(--gold);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+    }
+
+    .why-card p {
+      color: var(--text);
+      font-size: .95rem;
+      line-height: 1.55;
+    }
+
+    /* ───────── Books mention ───────── */
+    .books-cta {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .books-cta h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: .5rem;
+    }
+
+    .books-cta p {
+      color: var(--muted);
+      max-width: 580px;
+      margin: 0 auto 1.25rem;
+      font-size: .95rem;
+    }
+
+    .books-list {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
       margin-top: .5rem;
     }
 
-    /* ── Sidebar ── */
-    .page-layout {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      min-height: 100vh;
-      align-items: start;
-    }
-
-    .sidebar {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      border-right: 1px solid var(--border);
-      padding: 1.5rem 0 2rem;
-      background: var(--bg2);
-      scrollbar-width: thin;
-      scrollbar-color: var(--border2) transparent;
-    }
-
-    .sidebar::-webkit-scrollbar { width: 4px; }
-    .sidebar::-webkit-scrollbar-track { background: transparent; }
-    .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-    .sidebar-section {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--dim);
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      padding: 1.25rem 1.25rem .4rem;
-    }
-
-    .sidebar-section:first-child { padding-top: .5rem; }
-
-    .sidebar-link {
-      display: block;
-      font-size: 13px;
-      color: var(--muted);
-      text-decoration: none;
-      padding: .4rem 1.25rem;
-      border-left: 2px solid transparent;
-      transition: color .15s, background .15s, border-color .15s;
-      line-height: 1.4;
-    }
-
-    .sidebar-link:hover {
-      color: var(--text);
-      background: rgba(255,255,255,.03);
-    }
-
-    .sidebar-link.active {
-      color: var(--gold);
-      border-left-color: var(--gold);
-      background: rgba(232,213,176,.05);
-    }
-
-    /* Expandable group */
-    .sidebar-group-btn {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      background: none;
-      border: none;
-      padding: .4rem 1.25rem;
-      font-size: 13px;
-      color: var(--muted);
-      cursor: pointer;
-      text-align: left;
-      border-left: 2px solid transparent;
-      transition: color .15s, background .15s;
-    }
-
-    .sidebar-group-btn:hover { color: var(--text); background: rgba(255,255,255,.03); }
-
-    .sidebar-group-btn .chevron {
-      font-size: 10px;
-      color: var(--dim);
-      transition: transform .2s;
-      flex-shrink: 0;
-    }
-
-    .sidebar-group-btn.open .chevron { transform: rotate(90deg); }
-
-    .sidebar-group-items {
-      display: none;
-      padding-left: .75rem;
-    }
-
-    .sidebar-group-items.open { display: block; }
-
-    .sidebar-group-items .sidebar-link {
-      font-size: 12px;
-      color: var(--dim);
-      padding: .3rem 1.25rem;
-    }
-
-    .sidebar-group-items .sidebar-link:hover { color: var(--muted); }
-    .sidebar-group-items .sidebar-link.active { color: var(--gold2); border-left-color: var(--gold2); }
-
-    /* Mobile sidebar drawer */
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.6);
-      z-index: 200;
-    }
-
-    .sidebar-overlay.open { display: block; }
-
-    .sidebar-drawer {
-      position: fixed;
-      top: 0;
-      left: -260px;
-      width: 260px;
-      height: 100vh;
-      background: var(--bg2);
-      border-right: 1px solid var(--border);
-      overflow-y: auto;
-      z-index: 201;
-      transition: left .25s ease;
-      padding: 1rem 0 2rem;
-    }
-
-    .sidebar-drawer.open { left: 0; }
-
-    .drawer-close {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding: .5rem 1rem .75rem;
-    }
-
-    .drawer-close button {
-      background: none;
-      border: none;
-      color: var(--dim);
-      font-size: 18px;
-      cursor: pointer;
-      padding: 4px 8px;
-    }
-
-    .drawer-close button:hover { color: var(--text); }
-
-    .menu-btn {
-      display: none;
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 6px 10px;
-      font-size: 13px;
-      cursor: pointer;
-      align-items: center;
-      gap: 6px;
+    .books-tag {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
+      color: var(--gold);
+      border: 1px solid rgba(232,213,176,.2);
+      padding: 6px 12px;
+      letter-spacing: .04em;
     }
 
-    .menu-btn:hover { color: var(--text); border-color: var(--border2); }
-
-    .content-area {
-      min-width: 0;
-      padding: 2rem;
-    }
-
-    /* ── Footer ── */
+    /* ───────── Footer ───────── */
     footer {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
       border-top: 1px solid var(--border);
-      padding: 1.5rem 2rem;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: .5rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: .08em;
     }
-    footer p { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: .06em; }
-    footer a  { color: var(--gold2); text-decoration: none; }
+
+    footer .footer-right {
+      display: flex;
+      gap: 1.5rem;
+    }
     footer a:hover { color: var(--gold); }
-    /* ── Mobile ── */
-    @media (max-width: 700px) {
-      .page-layout { grid-template-columns: 1fr; }
-      .sidebar { display: none; }
-      .menu-btn { display: flex; }
-      .content-area { padding: 1rem; }
+
+    /* ───────── Selection ───────── */
+    ::selection {
+      background: rgba(232,213,176,.25);
+      color: var(--text);
     }
-
-    @media (max-width: 600px) {
-
-      /* Header */
-      header {
-        padding: 1.25rem 1rem 1rem;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: .5rem;
-      }
-
-      header h1 { font-size: 1.75rem; }
-
-      .header-tag { align-self: flex-start; }
-
-      /* Main */
-      main { padding: 1rem; gap: 1px; }
-
-      /* Section labels */
-      .section-label { padding: 1.75rem 0 .625rem; }
-
-      /* Cards */
-      .card { padding: 1rem; }
-
-      /* Code blocks — allow horizontal scroll */
-      .code-block {
-        font-size: 11px;
-        overflow-x: auto;
-        white-space: pre;
-      }
-
-      /* Two col → single */
-      .two-col { grid-template-columns: 1fr; gap: .875rem; }
-
-      /* Do/dont → single */
-      .do-dont { grid-template-columns: 1fr; }
-      .dont-block { border-left: 1px solid rgba(224,92,106,.15); border-top: none; }
-
-      /* Picker grid → single */
-      .picker-grid { grid-template-columns: 1fr; }
-
-      /* Layer rows — stack badge below bar */
-      .layer-row { flex-wrap: wrap; gap: 6px; }
-      .layer-badge { width: 100%; text-align: left; }
-
-      /* Step rows — tighten */
-      .step-row { gap: 10px; }
-      .step-num { width: 20px; height: 20px; font-size: 9px; }
-
-      /* Spec steps — stack tool badge above body */
-      .spec-step { flex-direction: column; gap: 8px; }
-      .spec-tool { align-self: flex-start; }
-
-      /* Map table — already handled at 640px, ensure padding */
-      .map-table td { font-size: 12px; }
-
-      /* Workflow row — wrap */
-      .workflow-row { gap: 6px; }
-      .wf-label { font-size: 11px; }
-
-      /* Path blocks */
-      .path-examples { gap: 3px; }
-      .tag { font-size: 9px; padding: 2px 7px; }
-
-      /* State blocks */
-      .state-header { flex-wrap: wrap; }
-      .state-eg { font-size: 11px; }
-
-      /* Tabs */
-      .tab-btn { font-size: 10px; padding: 10px 12px; }
-      .tab-panel { padding: 1rem; }
-      .tab-intro { font-size: 12px; }
-      .tab-group-label { margin: 1rem 0 .5rem; }
-
-      /* Footer */
-      footer {
-        padding: 1rem;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: .25rem;
-      }
-    }
-
-
-    .index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; margin-top: 1.5rem; }
-    .index-card { display: block; background: var(--bg2); border: 1px solid var(--border); padding: 1.25rem 1.5rem; text-decoration: none; transition: background .15s, border-color .15s; }
-    .index-card:hover { background: var(--bg3); border-color: var(--border2); }
-    .index-card-title { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold2); margin-bottom: .5rem; letter-spacing: .04em; }
-    .index-card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
-    .index-intro { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 640px; margin-bottom: .5rem; }
   </style>
 </head>
 <body>
-<header>
-  <div class="header-left">
-    <a href="index.html" class="logo">aipe / <span>prompting</span></a>
-    <h1>Prompting Cheatsheet</h1>
-    <p>AI prompt engineering for app builders</p>
-  </div>
-  <span class="header-tag">Reference</span>
-</header>
-<div style="padding:2rem">
-  <p class="index-intro">A practical reference for AI-assisted app development.</p>
-  <div class="index-grid">
-<a href="quick-reference.html" class="index-card"><p class="index-card-title">Quick reference</p><p class="index-card-desc">Use case picker, technique mapping, and all reference sections. Start here.</p></a>
-<a href="closing-feedback-loop.html" class="index-card"><p class="index-card-title">Closing the feedback loop</p><p class="index-card-desc">Make the AI the sensor. Instrumentation, emulation, and self-evaluation patterns.</p></a>
-<a href="what-pe-actually-is.html" class="index-card"><p class="index-card-title">01 — What PE actually is</p><p class="index-card-desc">The 80/20 rule. Wording is the last 20%.</p></a>
-<a href="detail-vs-highlevel.html" class="index-card"><p class="index-card-title">02 — Detail vs high-level</p><p class="index-card-desc">When to go deep vs stay broad.</p></a>
-<a href="feature-implementation.html" class="index-card"><p class="index-card-title">03 — Feature implementation</p><p class="index-card-desc">System → behaviour → UI. Never start with UI.</p></a>
-<a href="two-layer-prompt.html" class="index-card"><p class="index-card-title">04 — Two-layer prompt</p><p class="index-card-desc">Intent + constraints.</p></a>
-<a href="three-user-paths.html" class="index-card"><p class="index-card-title">05 — Three user paths</p><p class="index-card-desc">Happy, unhappy, and weird paths.</p></a>
-<a href="interaction-flow.html" class="index-card"><p class="index-card-title">06 — Interaction flow</p><p class="index-card-desc">Narrate the full UX including failure.</p></a>
-<a href="three-states.html" class="index-card"><p class="index-card-title">07 — Three states</p><p class="index-card-desc">Empty, error, and re-entry.</p></a>
-<a href="workflow.html" class="index-card"><p class="index-card-title">08 — Workflow</p><p class="index-card-desc">Claude.ai for spec. Claude Code for implementation.</p></a>
-<a href="analysing-app.html" class="index-card"><p class="index-card-title">09 — Analysing an app</p><p class="index-card-desc">Questions to ask before writing any prompt.</p></a>
-  </div>
-</div>
-<footer>
-  <p>aipe — AI Product Engineering curriculum</p>
-  <p><a href="index.html">← back to AIPE</a></p>
-</footer>
+
+  <!-- ───────── Top nav ───────── -->
+  <nav class="topnav">
+    <a href="#" class="logo">aipe / <span>spec workflow</span></a>
+    <div class="topnav-right">
+      <a href="#how" class="topnav-link">How it works</a>
+      <a href="#specs" class="topnav-link">Spec types</a>
+      <a href="#install" class="topnav-link">Install</a>
+      <a href="https://github.com/rlynjb/aipe" class="topnav-cta" target="_blank" rel="noopener">GitHub →</a>
+    </div>
+  </nav>
+
+  <!-- ───────── Hero ───────── -->
+  <header class="hero">
+    <p class="hero-tag">Plugin · Claude Code &amp; Codex CLI · MIT</p>
+    <h1>
+      Stop re-explaining your codebase
+      <br />to your <span class="accent">AI agent</span>.
+    </h1>
+    <p class="lead">
+      aipe is a spec workflow for AI-assisted development. 11 markdown templates that turn a one-line intent plus your project context into a filled, structured spec your coding agent can implement from — no extra runtime, no extra API keys.
+    </p>
+    <div class="hero-ctas">
+      <a href="https://github.com/rlynjb/aipe" class="btn btn-primary" target="_blank" rel="noopener">
+        View on GitHub →
+      </a>
+      <a href="#install" class="btn btn-ghost">
+        Install
+      </a>
+    </div>
+  </header>
+
+  <!-- ───────── How it works ───────── -->
+  <section id="how">
+    <p class="section-label">How it works</p>
+    <h2>One slash command per intent. Your agent does the rest.</h2>
+    <p class="section-intro">
+      You run <code style="font-family:'DM Mono',monospace;color:var(--gold)">/aipe:&lt;type&gt; &lt;intent&gt;</code> in Claude Code or Codex. The plugin loads the matching template, reads your project context from <code style="font-family:'DM Mono',monospace;color:var(--gold)">.aipe/</code>, and your agent fills the spec using its own model. The output is a structured markdown file ready to implement against.
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <p class="step-num">01</p>
+        <h3>Scaffold once</h3>
+        <p>First run creates <code style="font-family:'DM Mono',monospace;color:var(--gold)">.aipe/project/context.md</code> in your repo. You fill in stack, data model, file structure, constraints — the things your agent would otherwise guess.</p>
+      </div>
+      <div class="step">
+        <p class="step-num">02</p>
+        <h3>Run a slash command</h3>
+        <p>Pick a spec type — feature, debugging, refactor, audit, migration, performance, integration, plan, study, testing, user-stories. One slash command per type, tab-completable in both Claude Code and Codex CLI.</p>
+      </div>
+      <div class="step">
+        <p class="step-num">03</p>
+        <h3>Get a filled spec</h3>
+        <p>Agent reads template + context, composes the spec, saves to <code style="font-family:'DM Mono',monospace;color:var(--gold)">.aipe/specs/&lt;type&gt;/&lt;slug&gt;.md</code>. You review. Then say "implement it" and the same agent builds against the spec.</p>
+      </div>
+    </div>
+
+    <div class="example-flow">
+      <div class="code-block"><span class="gold">$</span> /aipe:feature add dark mode toggle</div>
+      <div class="flow-arrow">→</div>
+      <div class="code-block"><span class="cm"># Feature spec</span>
+<span class="info">## Data model</span>
+<span class="cm">  Settings: { theme: 'light' | 'dark' }</span>
+<span class="info">## Behaviour</span>
+<span class="cm">  Tap → toggle → persist</span>
+<span class="info">## UI</span>
+<span class="cm">  ...</span>
+<span class="ok">✓ saved to .aipe/specs/features/dark-mode.md</span></div>
+    </div>
+  </section>
+
+  <!-- ───────── Spec types ───────── -->
+  <section id="specs">
+    <p class="section-label">11 spec types</p>
+    <h2>One template per kind of work.</h2>
+    <p class="section-intro">
+      Each template is a plain markdown file in <code style="font-family:'DM Mono',monospace;color:var(--gold)">specs/</code>. You can read them directly to see what each one produces. Adding a new spec type is a markdown edit, no build step.
+    </p>
+
+    <div class="spec-grid">
+      <div class="spec-card">
+        <p class="spec-cmd">/aipe:plan</p>
+        <p class="spec-desc">Multi-phase project that spans sessions.</p>
+      </div>
+      <div class="spec-card">
+        <p class="spec-cmd">/aipe:feature</p>
+        <p class="spec-desc">Building something new.</p>
+      </div>
+      <div class="spec-card">
+        <p class="spec-cmd">/aipe:debugging</p>
+        <p class="spec-desc">A bug keeps coming back.</p>
+      </div>
+      <div class="spec-card">
+        <p class="spec-cmd">/aipe:study</p>
+        <p class="spec-desc">Understand a codebase as a layered study guide — system design, DSA, AI engineering, ML.</p>
+      </div>
+      <div class="spec-card">
+        <p class="spec-cmd">/aipe:audit</p>
+        <p class="spec-desc">Reviewing existing code before extending it.</p>
+      </div>
+      <div class="spec-card">
+        <p class="spec-cmd">/aipe:testing</p>
+        <p class="spec-desc">Writing or improving tests.</p>
+      </div>
+      <div class="spec-card">
+        <p class="spec-cmd">/aipe:user-stories</p>
+        <p class="spec-desc">Rewriting tasks in different personas.</p>
+      </div>
+      <div class="spec-card">
+        <p class="spec-cmd">/aipe:refactor</p>
+        <p class="spec-desc">Restructuring without changing behaviour.</p>
+      </div>
+      <div class="spec-card">
+        <p class="spec-cmd">/aipe:migration</p>
+        <p class="spec-desc">Changing schema, dependency, or storage.</p>
+      </div>
+      <div class="spec-card">
+        <p class="spec-cmd">/aipe:performance</p>
+        <p class="spec-desc">Diagnosing speed or bundle issues.</p>
+      </div>
+      <div class="spec-card">
+        <p class="spec-cmd">/aipe:integration</p>
+        <p class="spec-desc">Connecting an external service.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── Install ───────── -->
+  <section id="install">
+    <p class="section-label">Install</p>
+    <h2>Two commands. No CLI, no API keys.</h2>
+    <p class="section-intro">
+      Both plugins distribute via marketplace install. Same templates back both agents — edit a template, both surfaces update on the next plugin pull.
+    </p>
+
+    <div class="install-grid">
+      <div class="install-card">
+        <h3>Claude Code</h3>
+        <p>In any Claude Code session:</p>
+        <div class="code-block"><span class="gold">/plugin marketplace add</span> rlynjb/aipe
+<span class="gold">/plugin install</span> aipe@rlynjb-aipe</div>
+      </div>
+
+      <div class="install-card">
+        <h3>Codex CLI</h3>
+        <p>From your terminal:</p>
+        <div class="code-block"><span class="gold">codex plugin marketplace add</span> rlynjb/aipe</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── Why ───────── -->
+  <section>
+    <p class="section-label">Why aipe</p>
+    <h2>The decisions that make this different.</h2>
+    <p class="section-intro">
+      aipe is deliberately small. It ships templates and slash commands — nothing else. The agent in your session does the work using its own model.
+    </p>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <h3>No external runtime</h3>
+        <p>No CLI binary, no API keys, no auth, no service to deploy. The agent in your session does the work.</p>
+      </div>
+      <div class="why-card">
+        <h3>One source of truth</h3>
+        <p>Both plugins load from the same <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold)">specs/*.md</code> files. Edit once, both surfaces update.</p>
+      </div>
+      <div class="why-card">
+        <h3>Per-project context</h3>
+        <p>Your stack, file structure, and constraints live in <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold)">.aipe/project/</code> — committed to the repo, edited as you go.</p>
+      </div>
+      <div class="why-card">
+        <h3>Markdown all the way</h3>
+        <p>Templates are markdown. Generated specs are markdown. The state lives in files you own. No databases, no telemetry.</p>
+      </div>
+      <div class="why-card">
+        <h3>UPDATE mode is first-class</h3>
+        <p>Re-running a command on a project with a spec diffs against the codebase and the template, patches only what drifted.</p>
+      </div>
+      <div class="why-card">
+        <h3>Free, MIT-licensed</h3>
+        <p>Fork it, edit it, ship your own variant. The repo is the product.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── Books mention ───────── -->
+  <section>
+    <p class="section-label">Companion books</p>
+    <h2>Long-form references built on the same workflow.</h2>
+    <p class="section-intro">
+      aipe is part of an AI-engineering curriculum. The repo includes book-form references covering project-driven AI engineering, FAANG interview prep (ML and FE), and prompt engineering.
+    </p>
+
+    <div class="books-cta">
+      <h3>Four books, ~14,000 lines of markdown</h3>
+      <p>
+        Companion long-form references that share the same voice and conventions as the spec templates. Direct, opinionated, anchored to production systems.
+      </p>
+      <div class="books-list">
+        <span class="books-tag">AI engineering curriculum</span>
+        <span class="books-tag">ML interview masterclass</span>
+        <span class="books-tag">Front-end interview masterclass</span>
+        <span class="books-tag">Prompt engineering</span>
+      </div>
+      <div style="margin-top:1.5rem">
+        <a href="https://github.com/rlynjb/aipe/tree/main/books" class="btn btn-ghost" target="_blank" rel="noopener">
+          Read on GitHub →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── Footer ───────── -->
+  <footer>
+    <div>aipe — AI Product Engineering · MIT licensed</div>
+    <div class="footer-right">
+      <a href="https://github.com/rlynjb/aipe" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/rlynjb/aipe/blob/main/README.md" target="_blank" rel="noopener">Docs</a>
+      <a href="https://github.com/rlynjb/aipe/tree/main/books" target="_blank" rel="noopener">Books</a>
+    </div>
+  </footer>
+
 </body>
 </html>
