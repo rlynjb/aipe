@@ -129,24 +129,29 @@ Each file contains:
                         scenario set up. Five moves: scenario
                         → name the question → why the question
                         matters → before/after → one-line
-                        summary. All anchors come from real
-                        software the reader uses (Linear,
-                        Gmail, GitHub, React's `key` prop)
-                        — physical-world analogies are banned.
+                        summary. All anchors come from the
+                        frontend primitives the reader builds
+                        with daily (a todo list, a DB table's
+                        rows and columns, a `.map()` with a
+                        `key`) — physical-world analogies and
+                        whole-product references are banned.
                         Length scales with complexity.
   → How it works        prose walkthrough that bridges from
                         what the reader knows (frontend) to
                         what they don't (this concept).
                         Three moves: mental model → layered
                         walkthrough → principle. The mental
-                        model anchors to real software the
-                        reader has used or built (GitHub
-                        branch protection, HTTP keep-alive,
-                        Linear's optimistic checkmark) —
-                        physical-world analogies are banned.
-                        Length scales with complexity — short
-                        for debounce, long for multi-layer
-                        auth.
+                        model anchors to a frontend primitive
+                        the reader builds with (a re-rendering
+                        list, a DB table, a primary key) —
+                        analogies and whole-product references
+                        are banned. ASCII diagrams required at
+                        every move: a mnemonic for Move 1, a
+                        mechanism diagram in every Move 2
+                        sub-section, a side-by-side for Phase
+                        A vs B. Length scales with complexity
+                        — short for debounce, long for
+                        multi-layer auth.
   → Primary diagram     recap visual after the mechanics —
                         labels every box, every arrow, and
                         every architectural layer (UI, Service,
@@ -347,20 +352,22 @@ Every individual concept file uses this structure exactly:
   This block is the hook, but "hook" here means
   something more specific than a clever opening
   sentence. The hook is a *concrete grounded scenario
-  the reader can hold in their head* — a real
-  interaction with software they use, a pattern they've
-  already built in their own apps, or a behavior they
-  can verify in seconds by opening a tool. From inside
-  that scenario, the reader arrives at the question
-  the pattern answers without having to be told what
-  to care about.
+  the reader can hold in their head* — built from the
+  primitives a frontend engineer touches every day: a
+  todo list rendering, a database table with rows and
+  columns, a `.map()` with a `key`, a form input, a
+  `fetch()` and its loading state. From inside that
+  scenario, the reader arrives at the question the
+  pattern answers without having to be told what to
+  care about.
 
   The reader is curious by the end of this block
   because the scenario showed them stakes they
-  already understood — *from software, not from
-  invented metaphors*. Not because the writer used
-  the word "fascinating," and not because the writer
-  reached for a librarian or a coat check.
+  already understood — *from the substrate of their
+  own work, not from invented metaphors*. Not because
+  the writer used the word "fascinating," and not
+  because the writer reached for a librarian or a
+  coat check.
 
   Length is scaled by complexity, the same way How
   it works is. A simple concept gets a short scenario
@@ -381,44 +388,51 @@ Every individual concept file uses this structure exactly:
   Open with a concrete picture the reader can hold
   in their head. Not abstract framing. Not a
   rhetorical question. **Not a physical-world
-  analogy.** A scenario rooted in real software the
-  reader has used, real engineering surfaces they
-  touch, or real patterns they've built.
+  analogy.** A scenario rooted in the primitives a
+  frontend engineer touches every single day — a
+  todo list being rendered, a database table with
+  rows and columns, a form input, a `fetch()` call,
+  a list re-rendering after state changes.
+
+  These are lower-level than whole products. "Linear's
+  drag-to-reorder" assumes the reader uses Linear.
+  "A todo list where you drag a row to a new
+  position" assumes only that the reader has built a
+  list — which every frontend engineer has, in every
+  tutorial, interview, and side project. Reach for
+  the substrate the reader builds *with*, not the
+  SaaS products they happen to use.
 
   Examples of opening scenarios that work:
 
-  - "Open Linear and drag an issue to a new spot in
-    the list. The issue moves. Its comments, its
-    label, its assignee — all still attached, in the
-    new position. Now do it again in a second tab.
-    Both tabs reach for the same row at the same
-    millisecond. Something has to decide which drag
-    wins, and how the other client catches up."
-  - "Open Gmail, type a message, hit send. The
-    message disappears from the compose window
-    immediately. But your laptop's wifi is flaky —
-    the request might still be in flight five seconds
-    later. Gmail doesn't make you wait. It assumes
-    success, shows you the sent folder, and reconciles
-    later if the network fails. You've used this
-    pattern in every modern app."
-  - "Open GitHub, push a commit to a branch with
-    protection rules turned on. Before the merge can
-    happen, two independent gates need to pass: a
-    review from another engineer, and all status
-    checks green. If either fails, the merge is
-    blocked. The rules aren't a single 'is this
-    allowed' check — they're two orthogonal checks
-    that both have to pass."
+  - "You've got a todo list on screen — five rows,
+    each with text the user typed. The user fixes a
+    typo in row 3 and the list re-renders. To the
+    user it's the same five todos. But to the code,
+    is row 3 the *same* row 3, or a brand-new row
+    that happens to sit in the same spot?"
+  - "Picture a database table: `todos`, with columns
+    `id`, `text`, `created_at`, `user_id`. Two
+    different users each have a row with `id = 1`.
+    When the app asks for 'todo number 1,' which
+    row comes back — and what stops it from being
+    the wrong one?"
+  - "You render a list of todos with `.map()`. Every
+    React dev sets `key={todo.id}` because the
+    console warns if you don't. But strip the `key`
+    out and watch what breaks: the input you were
+    typing in loses focus, the half-finished
+    animation restarts. Something was relying on
+    that key to know which row was which."
 
   What these scenarios have in common: they reference
-  software the reader has used (Linear, Gmail, GitHub)
-  with specific verifiable behaviors (drag-reorder,
-  optimistic send, branch protection). The reader is
-  not imagining a kitchen or a library; they're
-  remembering a real interaction. The scenario sets
-  up a question the reader can almost ask themselves
-  before the writer asks it for them.
+  things the reader builds with daily — a rendered
+  list, a table with named columns, a `.map()` with
+  a `key`. The reader isn't imagining a kitchen or
+  recalling a product they might not use; they're
+  looking at the substrate of their own work. The
+  scenario sets up a question the reader can almost
+  ask themselves before the writer asks it for them.
 
   #### Move 2 — Name the question (or job) the pattern answers
 
@@ -426,32 +440,33 @@ Every individual concept file uses this structure exactly:
   implicit question into an explicit one, and name
   what the pattern is by framing it as the answer.
 
-  > "That drag-reorder problem is what a reconciler
-  > solves. Not the diffing of the array, not the
-  > re-rendering — just the matching of old-row to
-  > new-row so the metadata can ride along. It's
-  > what React's `key` prop is for, on the frontend.
-  > Backends have the same problem and the same
-  > pattern name."
+  > "That same-row-or-new-row question is what a
+  > reconciler answers. Not the diffing of the
+  > array, not the re-rendering — just the matching
+  > of old-row to new-row. It's the exact job
+  > React's `key` prop does on the frontend.
+  > Backends hit the same question and reach for the
+  > same pattern."
 
-  > "What decides which client wins is a *lock*. The
-  > same primitive Redis exposes as `SETNX`, the same
-  > thing Postgres advisory locks give you — a single
-  > value that only one process can hold at a time."
+  > "What stops 'todo number 1' from being the wrong
+  > row is the *composite key* — the table is keyed
+  > on `(user_id, id)` together, not `id` alone. The
+  > pair is what's unique, so user A's row 1 and
+  > user B's row 1 are simply different rows."
 
-  > "Those gates are *connection pools*. The browser
-  > doesn't open a fresh TCP handshake for every
-  > request you make to the same origin — it reuses
-  > one. Servers do the same thing with database
-  > connections, for the same reason."
+  > "What keeps the half-finished input from losing
+  > focus is *identity tracking* — the list keeps a
+  > stable handle on each row across re-renders, so
+  > the DOM node, its focus, and its state all stay
+  > attached to the same logical item."
 
   Notice the secondary technique: *naming what the
   pattern is by naming what it is NOT*. "Not the
-  rewriting, not the diffing — just the matching."
-  This narrows the concept before the reader can
-  generalize too broadly. Use it when the pattern
-  sits adjacent to other patterns it gets confused
-  with.
+  diffing of the array, not the re-rendering — just
+  the matching." This narrows the concept before the
+  reader can generalize too broadly. Use it when the
+  pattern sits adjacent to other patterns it gets
+  confused with.
 
   #### Move 3 — Why answering that question matters
 
@@ -538,10 +553,14 @@ Every individual concept file uses this structure exactly:
   reader already knows from real software.
 
   > "The reconciler is what React's `key` prop does,
-  > but for backend rows with attached metadata."
-  > "The lock is `SETNX` — exactly that, no more."
-  > "The connection pool is HTTP keep-alive, applied
-  > to database sockets instead of TCP."
+  > but for database rows with attached columns
+  > instead of DOM nodes with attached state."
+  > "The composite key is just a primary key made
+  > of two columns instead of one — `(user_id, id)`
+  > instead of `id`."
+  > "Optimistic update is rendering the new todo in
+  > the list before the `POST` comes back, and
+  > rolling the row back out if it fails."
 
   This is the sentence the reader will paraphrase
   three weeks later when someone asks them about
@@ -569,15 +588,19 @@ Every individual concept file uses this structure exactly:
   distributed systems, infra primitives, LLM-shaped
   failure modes.
 
-  Move 1's scenario should connect to software they
-  already use or patterns they've already built:
-  Linear, Notion, Gmail, GitHub, ChatGPT, the
-  network tab in DevTools, the `key` warning in
-  React, a route handler they've written that
-  checks `req.user.id`. Not "imagine a library."
-  Not "imagine you're scaling a Kubernetes cluster."
-  The scenario brings the reader in; the rest of
-  the file is what they came for.
+  Move 1's scenario should connect to the primitives
+  the reader builds with every day: a todo list
+  being rendered, a database table with named
+  columns, a `.map()` with a `key` prop, a form
+  input, a `fetch()` and its loading state, a list
+  re-rendering after `setState`. Not "imagine a
+  library." Not "imagine you're scaling a Kubernetes
+  cluster." Not even "open Linear and drag an issue"
+  — that assumes a specific product. A todo list and
+  a DB table are universal; every frontend engineer
+  has built with both. The scenario brings the
+  reader in; the rest of the file is what they came
+  for.
 
   ### Hard rules
 
@@ -585,12 +608,12 @@ Every individual concept file uses this structure exactly:
     "Most of the speed in a modern web app comes
     from not doing work" is a clever sentence,
     but it doesn't put a picture in the reader's
-    head. "Open DevTools' network tab on any
-    production app and you'll see the same TCP
-    connection serving fifty requests in a row —
-    that's not the default, that's keep-alive
-    earning its place" does. Use the scenario form,
-    grounded in real software.
+    head. "You've got a list of todos rendering on
+    screen. The user edits one. The whole list
+    re-renders — but only one row actually changed,
+    and something has to figure out which" does.
+    Use the scenario form, grounded in a primitive
+    the reader builds with daily.
 
   - **No physical-world analogies.** Coat checks,
     librarians, post offices, locked doors,
@@ -799,41 +822,52 @@ Every individual concept file uses this structure exactly:
   single sub-section. None of the three moves is
   ever skipped.
 
-  #### Move 1 — The mental model (first paragraph)
+  #### Move 1 — The mental model (first paragraph + diagram)
 
   Open with a concrete picture, not a definition.
   Not "X is a mechanism that..." — that's a textbook.
-  Instead, **anchor the pattern to something the reader
-  already knows from real software** — a behavior they
-  can verify, a primitive they've used, a pattern they've
-  built. Defense in depth → "this is GitHub's branch
-  protection model: two independent gates that both
-  have to pass — review approval AND status checks."
-  Connection pooling → "this is browser HTTP
-  keep-alive, but for database sockets — same TCP
-  connection reused across many requests instead of
-  handshaking every time." Optimistic UI → "this is
-  what Linear does when you check off an issue: the
-  checkmark appears in 16ms, before the server has
-  confirmed anything, and rolls back only if the
-  network fails."
+  Instead, **anchor the pattern to a primitive the
+  reader already builds with** — a list re-rendering,
+  a table with rows and columns, a `fetch()` and its
+  states, a primary key. Defense in depth → "two
+  WHERE conditions on the same query, where either
+  one alone would still scope the rows correctly."
+  Connection pooling → "the same open database
+  connection handed to one request after another,
+  instead of opening a fresh one each time — the way
+  a single `fetch` keep-alive connection serves many
+  calls." Optimistic UI → "rendering the new row in
+  the list the instant the user hits save, before
+  the `POST` resolves, and removing it again only if
+  the request fails."
 
   The mental model has two jobs: make the reader
-  recognize the shape from software they already know,
-  and prime them for the layered walkthrough that
-  follows. A good mental model is the sentence the
-  reader will paraphrase six weeks later when someone
-  asks them about this concept — usually a sentence of
-  the form "it's like X, but for Y" where X is a real
-  product or primitive.
+  recognize the shape from primitives they already
+  work with, and prime them for the layered
+  walkthrough that follows. A good mental model is
+  the sentence the reader will paraphrase six weeks
+  later when someone asks them about this concept.
 
   **Banned: physical-world analogies.** Locked doors,
   coat checks, librarians, post offices, bouncers,
   factories — all banned as primary anchors. See the
   global rule "Use real software, not analogies" in
-  FORMATTING RULES. The reader has built apps; reach
-  for their app-building knowledge before reaching
-  for kitchen metaphors.
+  FORMATTING RULES. Also avoid whole-product anchors
+  ("Linear does X", "GitHub does Y") when a lower-
+  level primitive works — a todo list and a DB table
+  are universal; a specific SaaS product is not.
+
+  **Diagram required: the mental model picture.** Move 1
+  always includes one small ASCII diagram (5–12 lines)
+  — the literal shape of the mental model. If the
+  model is "two WHERE conditions, either one
+  sufficient," draw the two conditions as two boxes
+  the query passes through. If it's "one connection
+  handed to many requests," draw the one connection
+  with many request arrows pointing at it. The
+  diagram is the visual the reader will recall
+  alongside the sentence. Place it immediately after
+  the opening paragraph.
 
   After the mental model lands, one sentence names
   the underlying strategy in plain English: "two
@@ -894,12 +928,102 @@ Every individual concept file uses this structure exactly:
        returns the wrong value." Boundary conditions
        are where understanding lives.
 
-  Anchor every part with a secondary visual where it
-  helps: a small ASCII diagram, a code snippet, a
-  pseudocode sequence, a comparison table, a
-  before/after pair. The reader should never encounter
-  a piece of jargon in the prose without a visual
-  showing it in the same sub-section.
+  **Every Move 2 sub-section requires at least one
+  ASCII diagram showing its mechanism.** Not "where
+  it helps" — every sub-section. The prose explains;
+  the diagram shows. A reader who skims only the
+  diagrams in Move 2 should come away with the shape
+  of each mechanism before reading a sentence. Most
+  sub-sections need more than one diagram — typically
+  a data-shape diagram (what's stored) plus a flow
+  diagram (how the operation moves).
+
+  Pick the diagram type that matches what the
+  sub-section is describing:
+
+  - **Flow / pipeline** — a sequence of steps, a
+    request moving through stages, a transformation.
+    Boxes connected by labelled arrows, top to
+    bottom.
+
+    ```
+    Request
+      │
+      ▼
+    ┌──────────────────┐
+    │ validate input   │  rejects malformed
+    └────────┬─────────┘
+             │ clean input
+             ▼
+    ┌──────────────────┐
+    │ write to table   │  side effect
+    └────────┬─────────┘
+             ▼
+        row stored
+    ```
+
+  - **Table rows & columns** — what's stored, the
+    shape of a record, how rows relate. Use this
+    constantly; the reader thinks in tables.
+
+    ```
+    todos
+    ┌──────────┬─────────┬────────────┬──────────┐
+    │ user_id  │ id      │ text       │ done     │
+    ├──────────┼─────────┼────────────┼──────────┤
+    │ alice    │ 1       │ buy milk   │ false    │
+    │ alice    │ 2       │ call mom   │ true     │
+    │ bob      │ 1       │ ship v2    │ false    │ ← same id=1,
+    └──────────┴─────────┴────────────┴──────────┘   different row
+              └────┬────┘
+            (user_id, id) together = the unique key
+    ```
+
+  - **Comparison / side-by-side** — before vs after,
+    with-pattern vs without, Phase A vs Phase B.
+    Two columns, aligned rows, the difference marked.
+
+    ```
+        Without the pattern         With the pattern
+    ┌────────────────────┐      ┌────────────────────┐
+    │ query runs every   │      │ check cache first  │
+    │ time → ~50ms       │      │ → ~1ms on hit      │
+    └────────────────────┘      └────────────────────┘
+    ```
+
+  - **Sequence / interaction** — actors exchanging
+    messages over time (client ↔ server ↔ database).
+    Actors as columns, time flowing down, labelled
+    arrows between.
+
+    ```
+    Client            Server            Database
+      │                 │                  │
+      │  POST /todos     │                  │
+      │ ───────────────► │                  │
+      │                  │  INSERT row      │
+      │                  │ ───────────────► │
+      │                  │  ◄─── id         │
+      │  ◄─── 201 {id}   │                  │
+      ▼                  ▼                  ▼
+    ```
+
+  - **Inline code annotation** — pointing at parts
+    of a small snippet, naming what each piece does.
+
+    ```
+    SELECT * FROM todos
+    WHERE user_id = $1     ← scopes to one user
+      AND id = $2;         ← picks the row
+    ```
+
+  Rules for every diagram: label every box, label
+  every arrow that carries information, name every
+  layer the system has (UI, Service, Storage). Use
+  box-drawing characters (┌─│▼◄►), not ASCII
+  approximations (+−|v<). Introduce each diagram with
+  one sentence of prose before it and one after — a
+  diagram never stands alone. No Mermaid, no images.
 
   #### Move 2.5 — Current state vs future state (when applicable)
 
@@ -916,7 +1040,28 @@ Every individual concept file uses this structure exactly:
   - What's planned and why it's gated
   - What the migration between phases costs
 
-  Example shape:
+  **Diagram required: side-by-side comparison.** Move 2.5
+  always includes one comparison diagram — Phase A on
+  the left, Phase B on the right, with the elements
+  that change marked (an arrow, a `(new!)` label, a
+  highlighted box). The reader sees in one glance what
+  stays the same and what changes.
+
+    ```
+              Phase A (now)            Phase B (later)
+    ┌────────────────────────┐  ┌────────────────────────┐
+    │ user_id: hardcoded     │  │ user_id: from session  │ ←
+    │   ▼                    │  │   ▼                    │
+    │ schema gate  ✓         │  │ schema gate  ✓         │
+    │   ▼                    │  │   ▼                    │
+    │ row returns            │  │ RLS gate  ✓  (new!)    │ ←
+    │                        │  │   ▼                    │
+    │                        │  │ row returns            │
+    └────────────────────────┘  └────────────────────────┘
+       schema gate unchanged across both phases
+    ```
+
+  Example shape in prose:
 
     *Phase A (now):* No real auth. Client hardcodes
     a user_id. Schema gate is active. RLS exists as
@@ -986,6 +1131,15 @@ Every individual concept file uses this structure exactly:
     activated yet." File names ground the abstract
     in the actual repo.
 
+  - **Diagrams at every move.** Move 1 gets a mnemonic
+    diagram of the mental model. Every Move 2
+    sub-section gets at least one mechanism diagram.
+    Move 2.5 gets a side-by-side comparison. A How it
+    works block with prose-only sub-sections is
+    incomplete — the diagrams aren't decoration, they
+    carry the mechanics. Every diagram is wrapped in
+    prose: one sentence before, one after.
+
   End with a sentence that hands off to the primary
   diagram: "The full picture is below." Or: "Here's
   the diagram of the whole flow." The diagram that
@@ -999,34 +1153,52 @@ Every individual concept file uses this structure exactly:
   explained is *multi-tenant data isolation in
   Postgres with both schema-level and policy-level
   enforcement* — a backend pattern the reader has
-  likely never built but will be asked about.
+  likely never built but will be asked about. Notice
+  a diagram at every move: a mnemonic for Move 1, a
+  table-rows diagram for Layer 1, a flow diagram for
+  the lookup, a transformation diagram for Layer 2,
+  a side-by-side for Phase A vs B.
 
-  > **The mental model: GitHub's branch protection,
-  > but for database rows.**
+  > **The mental model: two WHERE conditions, either
+  > one enough to scope the rows.**
   >
-  > You've already built this pattern in your own
-  > apps without naming it. When you write a backend
-  > route, you check `req.user.id` in the handler
-  > AND you filter by `user_id` in the database
-  > query. That's two gates in the request path: if
-  > the auth check fails, the query never runs; if
-  > the auth check has a bug, the user_id filter
-  > still scopes the rows.
+  > You've already built half of this pattern. When
+  > you write a backend route, you check the logged-in
+  > user in the handler AND you filter the query by
+  > `user_id`. Two independent guards on the same
+  > request: if the handler check has a bug, the
+  > `user_id` filter still scopes the rows; if you
+  > forget the filter, the handler check still
+  > blocked the wrong user.
   >
-  > GitHub's branch protection works the same way at
-  > the protocol level: to merge to main, you need
-  > (1) at least one approving review AND (2) all
-  > status checks green. Two independent gates.
-  > Either alone wouldn't catch every bad merge;
-  > together, they catch what each one misses.
+  > ```
+  > A query for one user's data passes two gates:
   >
-  > This codebase enforces multi-tenant data
-  > isolation using the same pattern, but at two
-  > different layers of the stack: the database
-  > schema itself (always on), and a Postgres-level
-  > policy (currently inactive, ready to ship). Two
-  > independent mechanisms, layered. If one fails,
-  > the other holds.
+  >   incoming query
+  >        │
+  >        ▼
+  >   ┌─────────────────────────┐
+  >   │ Gate 1: schema          │  composite key —
+  >   │ (user_id, id) together  │  always on
+  >   └───────────┬─────────────┘
+  >        │
+  >        ▼
+  >   ┌─────────────────────────┐
+  >   │ Gate 2: RLS policy      │  WHERE user_id =
+  >   │ auto-added WHERE clause │  auth.uid() —
+  >   └───────────┬─────────────┘  Phase B only
+  >        │
+  >        ▼
+  >   rows for this user only
+  > ```
+  >
+  > This codebase enforces multi-tenant isolation
+  > with that same two-gate shape, but the gates sit
+  > at two different layers: the database schema
+  > itself (always on), and a Postgres policy
+  > (written, not yet active). Two independent
+  > mechanisms, layered. If one fails, the other
+  > holds.
   >
   > **Layer 1: The schema gate (always on)**
   >
@@ -1035,129 +1207,205 @@ Every individual concept file uses this structure exactly:
   >
   > If you're coming from frontend, you're probably
   > used to thinking of an `id` as globally unique —
-  > like a UUID that identifies one row, full stop.
-  > Here it's different. A row isn't identified by
-  > `id` alone; it's identified by the pair
-  > `(user_id, id)`. Two different users could
-  > technically have rows with the same `id` value
-  > and they'd be different rows, because the *pair*
-  > is what's unique.
+  > one `id`, one row, like a `key` prop. Here it's
+  > different. A row isn't identified by `id` alone;
+  > it's identified by the *pair* `(user_id, id)`.
+  > Look at the table:
   >
-  > The practical consequence: if user A's client
-  > somehow sends a query for `id = 'abc123'`
-  > belonging to user B, the database looks for
-  > `(user_A_id, 'abc123')` — and that row literally
-  > does not exist. There's nothing to return. This
-  > isn't a permission check ("you're not allowed to
-  > see this"); it's an existence check ("this row
-  > isn't here"). The data is invisible at the
-  > structural level, not the policy level.
+  > ```
+  > journal_entries
+  > ┌──────────┬──────┬──────────────┬──────────────┐
+  > │ user_id  │ id   │ body         │ created_at   │
+  > ├──────────┼──────┼──────────────┼──────────────┤
+  > │ alice    │ abc  │ "took a walk"│ 2024-01-05   │
+  > │ alice    │ def  │ "called mom" │ 2024-01-06   │
+  > │ bob      │ abc  │ "shipped v2" │ 2024-01-06   │ ← id=abc
+  > └──────────┴──────┴──────────────┴──────────────┘   again,
+  >          └────┬────┘                                 different
+  >       PRIMARY KEY (user_id, id)                      row
+  > ```
   >
-  > This works whether the user is logged in, logged
-  > out, authenticated, unauthenticated — doesn't
-  > matter. It's baked into how rows are stored and
-  > looked up.
+  > Alice has a row with `id = abc`. Bob also has a
+  > row with `id = abc`. They are different rows,
+  > because the *pair* is what's unique, not the
+  > `id` column alone.
+  >
+  > The practical consequence: if Bob's client sends
+  > a query for `id = 'abc'` belonging to Alice, the
+  > database looks for the pair `(bob, 'abc')` —
+  > which is Bob's own row, not Alice's. Bob
+  > physically cannot address Alice's row, because
+  > the only `id` his session can pair with is his
+  > own `user_id`. Walk it through:
+  >
+  > ```
+  > Bob's client                Database lookup
+  > ─────────────────           ───────────────────
+  > "give me entry abc"   ──►   looks for the pair
+  > (Bob's session                (bob, abc)
+  >  supplies user_id=bob)            │
+  >                                   ▼
+  >                             ┌──────────────────┐
+  >                             │ that's Bob's own │
+  >                             │ row — NOT the    │
+  >                             │ (alice, abc) row │
+  >                             └──────────────────┘
+  >                                   │
+  >                                   ▼
+  >                             Alice's row is
+  >                             unreachable, not
+  >                             "denied" — just not
+  >                             addressable
+  > ```
+  >
+  > This isn't a permission check ("you're not
+  > allowed to see this"); it's an addressing fact
+  > ("you cannot even name that row"). The isolation
+  > is structural. It works whether the user is
+  > logged in or out — it's baked into how rows are
+  > keyed and looked up.
   >
   > **Layer 2: The runtime gate (RLS — Row Level
   > Security)**
   >
-  > RLS is a Postgres/Supabase feature where you write
-  > policies on the database itself that say "when
+  > RLS is a Postgres feature where you write
+  > policies on the table itself that say "whenever
   > anyone queries this table, automatically add
   > `WHERE user_id = auth.uid()` to their query."
-  > `auth.uid()` is the currently-authenticated user's
-  > id, pulled from their session token.
+  > `auth.uid()` is the currently-authenticated
+  > user's id, pulled from their session token.
   >
-  > If you've used a middleware library like Express's
-  > `app.use(authMiddleware)` to inject `req.user`
-  > before route handlers run — RLS is the same idea,
-  > but at the database layer. The middleware doesn't
-  > run in your application code; it runs inside
-  > Postgres on every query. So even if a client
-  > tries to run `SELECT * FROM journal_entries` with
-  > no filter, the database silently rewrites it to
-  > `SELECT * FROM journal_entries WHERE user_id = <whoever-is-logged-in>`.
-  > The client physically cannot see other users'
-  > rows because the query never returns them.
+  > If you've used Express middleware —
+  > `app.use(authMiddleware)` running before your
+  > route handlers — RLS is that idea, but it runs
+  > inside the database instead of your app code,
+  > on every single query. Here's the rewrite it
+  > performs:
+  >
+  > ```
+  > What the app sends:
+  >   SELECT * FROM journal_entries;
+  >        │
+  >        ▼  Postgres applies the RLS policy
+  >        │
+  > What actually executes:
+  >   SELECT * FROM journal_entries
+  >   WHERE user_id = auth.uid();
+  >        │
+  >        ▼
+  >   only the current user's rows come back
+  > ```
+  >
+  > So even if a client runs `SELECT * FROM
+  > journal_entries` with no filter at all, the
+  > database silently appends the `WHERE` clause.
+  > The client physically cannot retrieve other
+  > users' rows because the query that runs never
+  > selects them.
   >
   > The file `0002_rls_policies.sql` contains these
-  > policies. They're written, they're committed,
-  > they're ready — but they're not *activated* yet
-  > in Phase A.
+  > policies. They're written, committed, ready —
+  > but not *activated* yet in Phase A.
   >
   > **Why two gates instead of one?**
   >
-  > Because they fail differently. RLS depends on
-  > auth working correctly — if `auth.uid()` returns
-  > null or the wrong value, the policy breaks down.
-  > The schema gate doesn't care about auth at all;
-  > it's just how the data is shaped. If RLS ever has
-  > a bug, the composite key still prevents cross-user
-  > lookups. If the composite key were ever bypassed,
-  > RLS still filters. Two independent failure modes
-  > have to both go wrong to leak data — which is the
-  > same property that makes GitHub's branch
-  > protection robust: an attacker would have to
-  > simultaneously bypass both the review check and
-  > the status check, which is much harder than
-  > bypassing either alone.
+  > Because they fail differently:
+  >
+  > ```
+  >                  Schema gate         RLS gate
+  >                  ───────────         ────────
+  > Depends on:      how rows are        auth.uid()
+  >                  keyed (static)      returning the
+  >                                      right value
+  >
+  > Fails when:      a query bypasses    auth is
+  >                  the composite key   misconfigured
+  >                  (very rare)         (more likely)
+  >
+  > If it fails,     RLS still appends   schema key
+  > the other gate:  the WHERE clause    still scopes
+  >                  ✓ data safe         the lookup
+  >                                      ✓ data safe
+  > ```
+  >
+  > Two independent failure modes have to both go
+  > wrong, at the same time, to leak data. That's
+  > the whole point of layering them.
   >
   > **Phase A vs Phase B**
   >
+  > ```
+  >           Phase A (now)              Phase B (later)
+  > ┌──────────────────────────┐ ┌──────────────────────────┐
+  > │ user_id: hardcoded in    │ │ user_id: from the auth   │ ←
+  > │   the client             │ │   session (auth.uid())   │
+  > │     ▼                    │ │     ▼                    │
+  > │ Gate 1: schema  ✓        │ │ Gate 1: schema  ✓        │
+  > │     ▼                    │ │     ▼                    │
+  > │ rows returned            │ │ Gate 2: RLS  ✓  (new!)   │ ←
+  > │                          │ │     ▼                    │
+  > │ (RLS migration exists    │ │ rows returned            │
+  > │  but is not installed)   │ │                          │
+  > └──────────────────────────┘ └──────────────────────────┘
+  >    Gate 1 is identical in both phases — the
+  >    schema never had to change.
+  > ```
+  >
   > *Phase A (now):* No real auth. The client
-  > hardcodes a `user_id` value and stamps it onto
-  > every row. There's only one user — you. The
-  > schema gate is active and doing its job (every
-  > row is keyed by user_id, queries naturally scope
-  > to that user_id). RLS exists as a migration file
-  > but isn't installed in the database, because
+  > hardcodes a `user_id` and stamps it onto every
+  > row. There's only one user — you. The schema
+  > gate is active and doing its job. RLS exists as
+  > a migration file but isn't installed, because
   > there's no `auth.uid()` to filter against yet.
   >
-  > *Phase B (later):* Ship Supabase Auth (real
-  > sign-up, sign-in, session tokens). Stop hardcoding
-  > the user_id on the client — the user_id now comes
-  > from the authenticated session. Run the RLS
-  > migration so the policies become active. Now
-  > both gates are live.
+  > *Phase B (later):* Ship Supabase Auth. Stop
+  > hardcoding the user_id — it now comes from the
+  > authenticated session. Run the RLS migration so
+  > the policies become active. Both gates live.
   >
   > The key thing: **the schema didn't have to change
   > between phases.** The composite primary key was
   > correct from day one. You just turn on the second
-  > layer when auth is ready.
+  > gate when auth is ready.
   >
   > This is what people mean by "designing for
-  > multi-tenancy from the start" — even when there's
-  > only one tenant, the data shape already supports
-  > many. You don't pay a migration cost later to add
-  > a `user_id` column, backfill it, and re-key
-  > everything. It's already there.
+  > multi-tenancy from the start" — even with one
+  > user, the table shape already supports many. You
+  > don't pay a migration cost later to add a
+  > `user_id` column, backfill it, and re-key every
+  > row. It's already there.
   >
   > The full picture is below.
 
   What this example does right:
-  - Opens by anchoring to two things the reader
-    already knows: GitHub's branch protection model
-    (a real product the reader has used) and the
-    auth-wall pattern the reader has already built
-    in their own apps. No locked doors, no coat
-    checks.
-  - Each layer gets its own sub-heading and is
-    walked separately.
+  - Opens by anchoring to a primitive the reader
+    has built — the two-guard request handler
+    (`user` check plus `user_id` filter) — and a
+    mnemonic diagram of the two gates. No locked
+    doors, no whole-product references.
+  - Every move has a diagram. Move 1: the two-gate
+    mnemonic. Layer 1: a literal table with rows
+    and columns showing why `(user_id, id)` makes
+    Alice's and Bob's `id=abc` distinct — then a
+    flow diagram walking a cross-user lookup
+    failing. Layer 2: the query-rewrite
+    transformation. "Why two gates": a comparison
+    of the two failure modes. Phase A vs B: a
+    side-by-side with `(new!)` marking what
+    changes.
+  - Each diagram is wrapped in prose — a sentence
+    introduces it, a sentence follows it. No
+    diagram stands alone.
   - The "if you're coming from frontend, you're
     used to X — here it's different" bridge appears
-    in every layer, with X being a real frontend
-    pattern (the unique-UUID assumption, Express
-    middleware).
-  - Every abstract claim ("the data is invisible")
-    is followed by a concrete consequence ("the
-    database looks for (user_A_id, 'abc123') and
-    that row literally does not exist").
-  - Phase A vs Phase B is treated as a first-class
-    sub-section.
-  - The takeaway paragraph names the principle and
-    references the same real-software anchor it
-    opened with (branch protection), closing the
-    loop.
+    in every layer, with X being a frontend
+    primitive (the unique-`id` assumption, the
+    `key` prop, Express middleware).
+  - Every abstract claim ("the isolation is
+    structural") is followed by a concrete,
+    walked consequence.
+  - Phase A vs Phase B is a first-class sub-section,
+    and the takeaway names the principle.
 
   ---
 
@@ -6460,35 +6708,55 @@ FORMATTING RULES — apply throughout
    metaphor. Banned anchor types: coat checks,
    librarians, locked doors, bouncers, matchmakers,
    post offices, notebooks, kitchens, factories.
-   Preferred anchor types:
+   Preferred anchor types, in priority order — reach
+   for the most universal one that works:
 
-   - **Apps the reader uses daily.** Gmail's optimistic
-     send. Linear's drag-to-reorder. Notion's per-user
-     workspace isolation. ChatGPT's persistent system
-     prompt. GitHub's branch protection rules.
-   - **DevTools and engineering surfaces the reader
-     touches.** The network tab showing reused TCP
-     connections. The "missing key prop" warning in
-     React. The `X-RateLimit-Remaining` header in
-     GitHub's API responses. The session cookie in
-     application storage.
-   - **Patterns the reader has built in their own
-     apps.** "You already do this when you check
-     `req.user.id` in the route handler AND filter by
-     `user_id` in the database query — that's two
-     gates." "You already do this when you set `key`
-     on a list item in React."
-   - **Industry-standard products and protocols the
-     reader has encountered.** Stripe's idempotency
-     keys. JWT signatures. OAuth's authorization code
-     flow. Postgres's `MVCC`. Redis's `SETNX`.
+   1. **Frontend primitives the reader builds with
+      every day.** This is the default — the most
+      universal anchor, because every frontend
+      engineer has used these regardless of which
+      products or stack they work in. A todo list
+      rendering on screen. A database table with
+      rows and columns. A `.map()` with a `key`
+      prop. A form input and its controlled value.
+      A `fetch()` and its loading / error / success
+      states. A list re-rendering after `setState`.
+      A primary key. A `WHERE` clause.
+   2. **Patterns the reader has built in their own
+      apps.** "You already do this when you check
+      the logged-in user in the route handler AND
+      filter by `user_id` in the query — that's two
+      gates." "You already do this when you set
+      `key` on a list item."
+   3. **DevTools and engineering surfaces the reader
+      touches.** The network tab. The "missing key
+      prop" console warning. A response header. The
+      session cookie in application storage.
+   4. **Industry-standard protocols and primitives.**
+      JWT signatures. OAuth's authorization code
+      flow. Postgres `MVCC`. Redis `SETNX`. Use
+      these only when no lower-level primitive
+      captures the concept.
+   5. **Whole products — last resort.** "Gmail's
+      optimistic send", "Linear's drag-to-reorder",
+      "GitHub's branch protection." Avoid these when
+      a primitive works: they assume the reader uses
+      that specific product. A todo list and a DB
+      table are universal; a SaaS product is not.
+      Use a whole-product anchor only when the
+      concept genuinely has no primitive-level
+      equivalent.
 
    The test: could the reader open the app, browser
    tool, or codebase and verify what the writer
    claims? If yes, the example is grounded. If the
    only way to verify is "trust me, this is like a
    coat check," the writer has used an analogy and
-   needs to find a real example instead.
+   needs to find a real example instead. The second
+   test: is there a more universal anchor one level
+   down? If the writer reached for "Linear does X"
+   but a todo list would carry the same point, the
+   writer should drop to the todo list.
 
    The narrow exception: when the only working
    example involves software the reader is unlikely
@@ -6562,20 +6830,25 @@ CONSTRAINTS
    outcomes). Skip when concept is too simple to
    earn it or when before/after would mislead.
    (5) Move 5 — one-line summary that names the
-   pattern in a single phrase, by reference to
-   something the reader already knows from real
-   software (Linear, React's `key` prop, GitHub
-   branch protection, etc.) — NOT a physical-world
-   metaphor. Always one sentence. Optionally
-   followed by a handoff line to How it works. Move
-   1's scenario must remain project-agnostic (a
-   reader who has never seen this codebase must
-   understand it) and grounded in real software
-   (banned: coat checks, librarians, locked doors,
-   post offices, kitchens, factories — see the
-   global "Use real software, not analogies" rule
-   in FORMATTING RULES). Moves 3–5 may ground in
-   the codebase to make consequences vivid.
+   pattern in a single phrase, by reference to a
+   frontend primitive the reader builds with daily
+   (React's `key` prop, a primary key, an optimistic
+   list render) — NOT a physical-world metaphor and
+   NOT a whole-product reference. Always one
+   sentence. Optionally followed by a handoff line
+   to How it works. Move 1's scenario must remain
+   project-agnostic (a reader who has never seen
+   this codebase must understand it) and grounded in
+   a frontend primitive — a todo list rendering, a
+   DB table's rows and columns, a `.map()` with a
+   `key`, a form input, a `fetch()` and its loading
+   state. Banned: physical-world analogies (coat
+   checks, librarians, locked doors) AND
+   whole-product anchors ("Linear does X") when a
+   lower-level primitive works — see the global
+   "Use real software, not analogies" rule in
+   FORMATTING RULES. Moves 3–5 may ground in the
+   codebase to make consequences vivid.
 → Every concept file must include a How it works block
    immediately after Why care and before the primary
    diagram. Length scaled by complexity, not capped at
@@ -6583,17 +6856,21 @@ CONSTRAINTS
    paragraphs, complex backend/AI/infra concepts get
    fifteen or twenty with sub-headings. Required moves
    in order: (1) Move 1 — open with a mental model
-   anchored to **real software the reader has used or
-   built** (GitHub branch protection, HTTP keep-alive,
-   Linear's optimistic checkmark, the auth-wall
-   pattern in the reader's own apps), then one
-   sentence naming the underlying strategy.
+   anchored to **a frontend primitive the reader
+   builds with** (a re-rendering list, a DB table
+   with rows and columns, a primary key, a `fetch()`
+   and its states), then one sentence naming the
+   underlying strategy. Move 1 also requires one
+   small ASCII mnemonic diagram (5–12 lines) showing
+   the literal shape of the mental model.
    Definition-first openings ("X is a mechanism
    for...") are banned. **Physical-world analogies
-   (locked doors, coat checks, librarians, post
-   offices) are banned as primary anchors** — see
-   the global "Use real software, not analogies"
-   rule in FORMATTING RULES. (2) Move 2 — a
+   (locked doors, coat checks, librarians) AND
+   whole-product anchors ("Linear does X", "GitHub
+   does Y") are banned as primary anchors when a
+   lower-level primitive works** — see the global
+   "Use real software, not analogies" rule in
+   FORMATTING RULES. (2) Move 2 — a
    layered walkthrough where each independent part of
    the concept gets its own bolded sub-heading and
    covers four things: the technical thing named with
@@ -6602,16 +6879,26 @@ CONSTRAINTS
    to X — here it's different"), the practical
    consequence walked through with a concrete example,
    and the condition under which it works or breaks.
+   **Every Move 2 sub-section requires at least one
+   ASCII diagram showing its mechanism** — pick the
+   type that fits (flow, table rows & columns,
+   comparison, sequence, inline code annotation).
    (2.5) Optional but required when applicable —
    Phase A / Phase B sub-section for concepts that
    involve built-but-not-fully-active mechanisms,
-   migrations, or gradual rollouts. (3) Move 3 — end
+   migrations, or gradual rollouts. **Move 2.5
+   requires a side-by-side comparison diagram.**
+   (3) Move 3 — end
    with the principle that generalises beyond this
    codebase, not a summary of what was just said.
    Every abstract claim must be followed by a concrete
    consequence. Bridges from frontend knowledge are
    required in every sub-section of move 2 — without
-   a bridge, the writer hasn't done the work.
+   a bridge, the writer hasn't done the work. Every
+   diagram is wrapped in prose: one sentence before,
+   one after — diagrams never stand alone. Use
+   box-drawing characters, label every box and every
+   information-carrying arrow, name every layer.
 → Every concept file must include a Tradeoffs block
    immediately before Summary. Required parts:
    (1) a comparison table with at least four cost
