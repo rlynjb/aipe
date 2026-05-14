@@ -129,15 +129,24 @@ Each file contains:
                         scenario set up. Five moves: scenario
                         → name the question → why the question
                         matters → before/after → one-line
-                        metaphor. Length scales with
-                        complexity.
+                        summary. All anchors come from real
+                        software the reader uses (Linear,
+                        Gmail, GitHub, React's `key` prop)
+                        — physical-world analogies are banned.
+                        Length scales with complexity.
   → How it works        prose walkthrough that bridges from
                         what the reader knows (frontend) to
                         what they don't (this concept).
                         Three moves: mental model → layered
-                        walkthrough → principle. Length
-                        scales with complexity — short for
-                        debounce, long for multi-layer auth.
+                        walkthrough → principle. The mental
+                        model anchors to real software the
+                        reader has used or built (GitHub
+                        branch protection, HTTP keep-alive,
+                        Linear's optimistic checkmark) —
+                        physical-world analogies are banned.
+                        Length scales with complexity — short
+                        for debounce, long for multi-layer
+                        auth.
   → Primary diagram     recap visual after the mechanics —
                         labels every box, every arrow, and
                         every architectural layer (UI, Service,
@@ -338,17 +347,20 @@ Every individual concept file uses this structure exactly:
   This block is the hook, but "hook" here means
   something more specific than a clever opening
   sentence. The hook is a *concrete grounded scenario
-  the reader can hold in their head* — a notebook
-  page they're editing, a coat check that hands them
-  a ticket, a library with twenty checkouts running
-  in parallel. From inside that scenario, the reader
-  arrives at the question the pattern answers without
-  having to be told what to care about.
+  the reader can hold in their head* — a real
+  interaction with software they use, a pattern they've
+  already built in their own apps, or a behavior they
+  can verify in seconds by opening a tool. From inside
+  that scenario, the reader arrives at the question
+  the pattern answers without having to be told what
+  to care about.
 
   The reader is curious by the end of this block
   because the scenario showed them stakes they
-  already understood. Not because the writer used
-  the word "fascinating."
+  already understood — *from software, not from
+  invented metaphors*. Not because the writer used
+  the word "fascinating," and not because the writer
+  reached for a librarian or a coat check.
 
   Length is scaled by complexity, the same way How
   it works is. A simple concept gets a short scenario
@@ -368,32 +380,45 @@ Every individual concept file uses this structure exactly:
 
   Open with a concrete picture the reader can hold
   in their head. Not abstract framing. Not a
-  rhetorical question. A scenario with specifics.
-  Numbers. Verbs. Objects that exist in the physical
-  world or in software the reader uses every day.
+  rhetorical question. **Not a physical-world
+  analogy.** A scenario rooted in real software the
+  reader has used, real engineering surfaces they
+  touch, or real patterns they've built.
 
   Examples of opening scenarios that work:
 
-  - "Imagine you have a notebook page with five
-    todos. You erase it and rewrite the list with
-    some changes — one typo fixed, two reordered,
-    one deleted, one added."
-  - "You open two terminals and run the same script
-    in both. They both reach for the same lockfile
-    at the same millisecond. One wins, one waits —
-    but which one and how is decided by something
-    smaller than your script."
-  - "You have a library with one librarian and
-    twenty people who want books. The librarian has
-    a stack of pre-printed library cards on the
-    desk. When you arrive, you take one. When you
-    leave, you put it back."
+  - "Open Linear and drag an issue to a new spot in
+    the list. The issue moves. Its comments, its
+    label, its assignee — all still attached, in the
+    new position. Now do it again in a second tab.
+    Both tabs reach for the same row at the same
+    millisecond. Something has to decide which drag
+    wins, and how the other client catches up."
+  - "Open Gmail, type a message, hit send. The
+    message disappears from the compose window
+    immediately. But your laptop's wifi is flaky —
+    the request might still be in flight five seconds
+    later. Gmail doesn't make you wait. It assumes
+    success, shows you the sent folder, and reconciles
+    later if the network fails. You've used this
+    pattern in every modern app."
+  - "Open GitHub, push a commit to a branch with
+    protection rules turned on. Before the merge can
+    happen, two independent gates need to pass: a
+    review from another engineer, and all status
+    checks green. If either fails, the merge is
+    blocked. The rules aren't a single 'is this
+    allowed' check — they're two orthogonal checks
+    that both have to pass."
 
-  What these scenarios have in common: they're
-  visualizable. The reader is not reading text;
-  they're watching a small movie play out. The
-  scenario sets up a question the reader can almost
-  ask themselves before the writer asks it for them.
+  What these scenarios have in common: they reference
+  software the reader has used (Linear, Gmail, GitHub)
+  with specific verifiable behaviors (drag-reorder,
+  optimistic send, branch protection). The reader is
+  not imagining a kitchen or a library; they're
+  remembering a real interaction. The scenario sets
+  up a question the reader can almost ask themselves
+  before the writer asks it for them.
 
   #### Move 2 — Name the question (or job) the pattern answers
 
@@ -401,18 +426,24 @@ Every individual concept file uses this structure exactly:
   implicit question into an explicit one, and name
   what the pattern is by framing it as the answer.
 
-  > "That matching question is what a reconciler
-  > answers. Not the rewriting, not the diffing —
-  > just the matching."
+  > "That drag-reorder problem is what a reconciler
+  > solves. Not the diffing of the array, not the
+  > re-rendering — just the matching of old-row to
+  > new-row so the metadata can ride along. It's
+  > what React's `key` prop is for, on the frontend.
+  > Backends have the same problem and the same
+  > pattern name."
 
-  > "What decides which terminal wins is a lock. A
-  > primitive coordination tool, not a clever one —
-  > but the simplicity is the point."
+  > "What decides which client wins is a *lock*. The
+  > same primitive Redis exposes as `SETNX`, the same
+  > thing Postgres advisory locks give you — a single
+  > value that only one process can hold at a time."
 
-  > "The pre-printed cards are a connection pool.
-  > The library doesn't print a new card every time
-  > you visit; it hands you one of the cards already
-  > on the desk."
+  > "Those gates are *connection pools*. The browser
+  > doesn't open a fresh TCP handshake for every
+  > request you make to the same origin — it reuses
+  > one. Servers do the same thing with database
+  > connections, for the same reason."
 
   Notice the secondary technique: *naming what the
   pattern is by naming what it is NOT*. "Not the
@@ -497,21 +528,27 @@ Every individual concept file uses this structure exactly:
   the concept isn't binary (e.g. retrieval quality,
   which is gradient).
 
-  #### Move 5 — The one-line summary metaphor
+  #### Move 5 — The one-line summary
 
   End with a single sentence that names the pattern
-  in one phrase. Not a definition. A metaphor or
-  reduction.
+  in one phrase. Not a definition. **Not a physical-
+  world analogy.** A *reduction* — the concept
+  compressed into its essential job, often by naming
+  the pattern as the same thing as something the
+  reader already knows from real software.
 
-  > "The reconciler is just the matchmaker."
-  > "The lock is the bouncer at the door."
-  > "The connection pool is the coat check."
+  > "The reconciler is what React's `key` prop does,
+  > but for backend rows with attached metadata."
+  > "The lock is `SETNX` — exactly that, no more."
+  > "The connection pool is HTTP keep-alive, applied
+  > to database sockets instead of TCP."
 
   This is the sentence the reader will paraphrase
   three weeks later when someone asks them about
   this concept. It's also the sentence that hands
-  off to How it works — the metaphor names the
-  pattern, and How it works walks the mechanics.
+  off to How it works — the summary names the
+  pattern by reference, and How it works walks the
+  mechanics.
 
   After this sentence, optionally add one
   *handoff* line that explicitly points to the next
@@ -532,9 +569,12 @@ Every individual concept file uses this structure exactly:
   distributed systems, infra primitives, LLM-shaped
   failure modes.
 
-  Move 1's scenario should connect to something
-  they already know — a notebook, a terminal, a
-  library, a coat check, a queue at a coffee shop.
+  Move 1's scenario should connect to software they
+  already use or patterns they've already built:
+  Linear, Notion, Gmail, GitHub, ChatGPT, the
+  network tab in DevTools, the `key` warning in
+  React, a route handler they've written that
+  checks `req.user.id`. Not "imagine a library."
   Not "imagine you're scaling a Kubernetes cluster."
   The scenario brings the reader in; the rest of
   the file is what they came for.
@@ -545,9 +585,23 @@ Every individual concept file uses this structure exactly:
     "Most of the speed in a modern web app comes
     from not doing work" is a clever sentence,
     but it doesn't put a picture in the reader's
-    head. "You've watched your editor lag for a
-    second after typing fast — that's the buffer
-    filling up" does. Use the scenario form.
+    head. "Open DevTools' network tab on any
+    production app and you'll see the same TCP
+    connection serving fifty requests in a row —
+    that's not the default, that's keep-alive
+    earning its place" does. Use the scenario form,
+    grounded in real software.
+
+  - **No physical-world analogies.** Coat checks,
+    librarians, post offices, locked doors,
+    bouncers, kitchens, factories — all banned as
+    primary anchors. The reader has richer pattern
+    recognition from software they use daily than
+    from physical-world objects. See the global
+    rule "Use real software, not analogies" in
+    FORMATTING RULES for what to reach for instead
+    (real apps, DevTools surfaces, patterns the
+    reader has built, industry-standard products).
 
   - **Banned phrases.** "It's important to
     understand X" / "X is a fundamental concept" /
@@ -576,9 +630,11 @@ Every individual concept file uses this structure exactly:
     real files, real consequences make the block
     sharper.
 
-  - **End with the one-line metaphor.** The reader
+  - **End with the one-line summary.** The reader
     should be able to highlight Move 5 and know
-    what the pattern is in one phrase.
+    what the pattern is in one phrase, by reference
+    to something they already know from real
+    software.
 
   ### Worked example — what good looks like
 
@@ -586,43 +642,61 @@ Every individual concept file uses this structure exactly:
   five moves above are followed. The concept being
   explained is *reconciliation between an old list
   and a new list when rows have metadata attached* —
-  a frontend-adjacent pattern the reader has
-  probably implemented without naming.
+  a pattern the reader has already used on the
+  frontend (via React's `key` prop) but probably
+  never named.
 
-  > Imagine you have a notebook page with five todos.
-  > You erase it and rewrite the list with some
-  > changes — one typo fixed, two reordered, one
-  > deleted, one added. Now I hand you the old page
-  > and the new page and ask: "for each line on the
-  > new page, which line on the old page is it?"
+  > You've written this React code a thousand times:
   >
-  > That matching question is what a reconciler
-  > answers. Not the rewriting, not the diffing —
-  > just the matching.
+  > ```
+  > {todos.map(todo => (
+  >   <TodoRow key={todo.id} todo={todo} />
+  > ))}
+  > ```
+  >
+  > You set `key={todo.id}` because if you don't,
+  > React will warn you in the console. But why does
+  > React need the key at all? Open the dev tools,
+  > drag a row to reorder the list, and watch what
+  > happens: the input cursor inside the dragged row
+  > stays in the same field, the focused element stays
+  > focused, the animation continues smoothly. Without
+  > `key`, all of that breaks — inputs lose focus,
+  > animations restart, state resets. The key is how
+  > React matches each item in the new list to the
+  > same item in the old list, so attached state can
+  > ride along.
+  >
+  > That matching problem is what a *reconciler*
+  > solves. Not the diffing of the array. Not the
+  > re-rendering. Just the matching of new-row to
+  > old-row.
   >
   > **Why you need to answer that question at all:**
-  > because *stuff is attached to the old lines*.
-  > Every todo has a created-at timestamp, tags, an
-  > AI classification, maybe a thread link. That
-  > metadata lives with the row's identity, not its
-  > text. If the user fixes a typo in row 3, you
-  > want row 3 to still be row 3 — same created-at,
-  > same tags, same classification. You don't want
-  > the system to think "row 3 was deleted and a
-  > new row was inserted," because then the
-  > created-at resets to now, the tags vanish, and
-  > the AI re-classifies from scratch.
+  > because *stuff is attached to the old rows*.
+  > In React, the attached thing is component state
+  > and DOM focus. In a backend with persistent rows,
+  > the attached thing is server-side metadata —
+  > created-at timestamps, AI classifications, tags,
+  > thread links. That metadata lives with the row's
+  > identity, not its text. If the user fixes a typo
+  > in row 3, you want row 3 to still be row 3 —
+  > same created-at, same tags, same classification.
+  > You don't want the system to think "row 3 was
+  > deleted and a new row was inserted," because
+  > then the created-at resets to now, the tags
+  > vanish, and the AI re-classifies from scratch.
   >
-  > So the reconciler exists to prevent that loss.
-  > It's the thing that looks at old-list and
-  > new-list and says "these two rows are the same
-  > row, just edited" so the metadata can ride
-  > along.
+  > So the backend reconciler exists for the same
+  > reason React's reconciler does — to prevent that
+  > loss. It looks at old-list and new-list and says
+  > "these two rows are the same row, just edited"
+  > so the metadata can ride along.
   >
   > Without a reconciler:
   > - User fixes typo in todo #3
-  > - App sees "the list changed" → wipes old list,
-  >   saves new list
+  > - Backend sees "the list changed" → wipes old
+  >   rows, inserts new rows
   > - Todo #3's created-at is now today, its tags
   >   are gone, its AI classification re-runs and
   >   maybe comes back different
@@ -634,7 +708,8 @@ Every individual concept file uses this structure exactly:
   > - Metadata stays attached, only the text field
   >   updates
   >
-  > The reconciler is just the matchmaker.
+  > The backend reconciler is React's `key` prop, but
+  > for server-side rows with attached metadata.
   > Everything else — the storage, the UI, the
   > classifier — depends on it getting the matches
   > right. Here's how that actually plays out in
@@ -642,13 +717,15 @@ Every individual concept file uses this structure exactly:
 
   What this example does right:
 
-  - Opens with a notebook scenario, not a hook
-    sentence. The reader sees the notebook and the
-    erased lines.
-  - Names the pattern (reconciler) by framing it as
-    the answer to the matching question, and
-    sharpens it by what it's NOT (not the
-    rewriting, not the diffing).
+  - Opens with React code the reader has written
+    thousands of times. No notebook, no librarian
+    — a real, verifiable pattern. The reader's
+    first reaction is recognition, not imagination.
+  - Names the pattern (reconciler) by reference to
+    React's reconciler (which the reader has used
+    even if they didn't know the term), and
+    sharpens it by what it's NOT (not the diffing,
+    not the re-rendering).
   - Bolded transition to "why answering that
     question matters" — the load-bearing pivot.
   - Concrete consequences with specific field names
@@ -656,9 +733,11 @@ Every individual concept file uses this structure exactly:
     abstract claims about metadata loss.
   - Before/after bullets walk the difference rather
     than asserting it.
-  - One-line metaphor closes ("the reconciler is
-    just the matchmaker") and the handoff sentence
-    points to How it works.
+  - One-line summary closes ("the backend reconciler
+    is React's `key` prop, but for server-side rows
+    with attached metadata") — a real-software
+    reference, not a metaphor — and the handoff
+    sentence points to How it works.
 
   ---
 
@@ -688,8 +767,9 @@ Every individual concept file uses this structure exactly:
   The first thing the writer does — before drafting a
   sentence — is name who the reader is and what
   they already know. This determines every bridging
-  metaphor, every analogy, every "if you're coming
-  from X, this is different" line in the prose.
+  reference, every "if you're coming from X, this is
+  different" line, every example reaching for software
+  the reader has already used.
 
   Default reader profile for this study guide:
   a working frontend engineer with 5–8 years of
@@ -723,27 +803,45 @@ Every individual concept file uses this structure exactly:
 
   Open with a concrete picture, not a definition.
   Not "X is a mechanism that..." — that's a textbook.
-  Instead, give the reader a physical or familiar
-  metaphor they can hold in their head while they
-  read the rest. Defense in depth → "two locked doors,
-  but only one is installed right now." Connection
-  pooling → "a coat check that hands you the same
-  ticket every time." Optimistic UI → "you mark the
-  envelope as sent before the post office confirms
-  it arrived."
+  Instead, **anchor the pattern to something the reader
+  already knows from real software** — a behavior they
+  can verify, a primitive they've used, a pattern they've
+  built. Defense in depth → "this is GitHub's branch
+  protection model: two independent gates that both
+  have to pass — review approval AND status checks."
+  Connection pooling → "this is browser HTTP
+  keep-alive, but for database sockets — same TCP
+  connection reused across many requests instead of
+  handshaking every time." Optimistic UI → "this is
+  what Linear does when you check off an issue: the
+  checkmark appears in 16ms, before the server has
+  confirmed anything, and rolls back only if the
+  network fails."
 
   The mental model has two jobs: make the reader
-  picture the shape, and prime them for the layered
-  walkthrough that follows. A good mental model is
-  the sentence the reader will paraphrase six weeks
-  later when someone asks them about this concept.
+  recognize the shape from software they already know,
+  and prime them for the layered walkthrough that
+  follows. A good mental model is the sentence the
+  reader will paraphrase six weeks later when someone
+  asks them about this concept — usually a sentence of
+  the form "it's like X, but for Y" where X is a real
+  product or primitive.
 
-  After the metaphor lands, one sentence names the
-  underlying strategy in plain English: "two
-  independent mechanisms, layered." "One warm
+  **Banned: physical-world analogies.** Locked doors,
+  coat checks, librarians, post offices, bouncers,
+  factories — all banned as primary anchors. See the
+  global rule "Use real software, not analogies" in
+  FORMATTING RULES. The reader has built apps; reach
+  for their app-building knowledge before reaching
+  for kitchen metaphors.
+
+  After the mental model lands, one sentence names
+  the underlying strategy in plain English: "two
+  independent gates, both required." "One warm
   resource, lent and returned." "Show success
   immediately, reconcile when the server confirms."
-  This is the transition from picture to mechanics.
+  This is the transition from recognition to
+  mechanics.
 
   #### Move 2 — The layered walkthrough (the body)
 
@@ -903,15 +1001,32 @@ Every individual concept file uses this structure exactly:
   enforcement* — a backend pattern the reader has
   likely never built but will be asked about.
 
-  > **The mental model: two locked doors, but only
-  > one is installed right now.**
+  > **The mental model: GitHub's branch protection,
+  > but for database rows.**
   >
-  > In a multi-user app, you need to make sure user A
-  > can never read or write user B's data. There are
-  > lots of ways to enforce this. This system uses two
-  > independent mechanisms, layered. Think of them
-  > like defense in depth — if one fails, the other
-  > still holds.
+  > You've already built this pattern in your own
+  > apps without naming it. When you write a backend
+  > route, you check `req.user.id` in the handler
+  > AND you filter by `user_id` in the database
+  > query. That's two gates in the request path: if
+  > the auth check fails, the query never runs; if
+  > the auth check has a bug, the user_id filter
+  > still scopes the rows.
+  >
+  > GitHub's branch protection works the same way at
+  > the protocol level: to merge to main, you need
+  > (1) at least one approving review AND (2) all
+  > status checks green. Two independent gates.
+  > Either alone wouldn't catch every bad merge;
+  > together, they catch what each one misses.
+  >
+  > This codebase enforces multi-tenant data
+  > isolation using the same pattern, but at two
+  > different layers of the stack: the database
+  > schema itself (always on), and a Postgres-level
+  > policy (currently inactive, ready to ship). Two
+  > independent mechanisms, layered. If one fails,
+  > the other holds.
   >
   > **Layer 1: The schema gate (always on)**
   >
@@ -953,9 +1068,14 @@ Every individual concept file uses this structure exactly:
   > `auth.uid()` is the currently-authenticated user's
   > id, pulled from their session token.
   >
-  > So even if a client tries to run
-  > `SELECT * FROM journal_entries` with no filter,
-  > the database silently rewrites it to
+  > If you've used a middleware library like Express's
+  > `app.use(authMiddleware)` to inject `req.user`
+  > before route handlers run — RLS is the same idea,
+  > but at the database layer. The middleware doesn't
+  > run in your application code; it runs inside
+  > Postgres on every query. So even if a client
+  > tries to run `SELECT * FROM journal_entries` with
+  > no filter, the database silently rewrites it to
   > `SELECT * FROM journal_entries WHERE user_id = <whoever-is-logged-in>`.
   > The client physically cannot see other users'
   > rows because the query never returns them.
@@ -975,7 +1095,12 @@ Every individual concept file uses this structure exactly:
   > a bug, the composite key still prevents cross-user
   > lookups. If the composite key were ever bypassed,
   > RLS still filters. Two independent failure modes
-  > have to both go wrong to leak data.
+  > have to both go wrong to leak data — which is the
+  > same property that makes GitHub's branch
+  > protection robust: an attacker would have to
+  > simultaneously bypass both the review check and
+  > the status check, which is much harder than
+  > bypassing either alone.
   >
   > **Phase A vs Phase B**
   >
@@ -1010,20 +1135,29 @@ Every individual concept file uses this structure exactly:
   > The full picture is below.
 
   What this example does right:
-  - Opens with a metaphor, not a definition.
+  - Opens by anchoring to two things the reader
+    already knows: GitHub's branch protection model
+    (a real product the reader has used) and the
+    auth-wall pattern the reader has already built
+    in their own apps. No locked doors, no coat
+    checks.
   - Each layer gets its own sub-heading and is
     walked separately.
-  - The "if you're coming from frontend, you're used
-    to X — here it's different" bridge appears in
-    every layer.
+  - The "if you're coming from frontend, you're
+    used to X — here it's different" bridge appears
+    in every layer, with X being a real frontend
+    pattern (the unique-UUID assumption, Express
+    middleware).
   - Every abstract claim ("the data is invisible")
     is followed by a concrete consequence ("the
     database looks for (user_A_id, 'abc123') and
     that row literally does not exist").
   - Phase A vs Phase B is treated as a first-class
     sub-section.
-  - The takeaway paragraph names the principle,
-    not the mechanics.
+  - The takeaway paragraph names the principle and
+    references the same real-software anchor it
+    opened with (branch protection), closing the
+    loop.
 
   ---
 
@@ -6312,6 +6446,57 @@ FORMATTING RULES — apply throughout
    - a concept introduced without a visual
    - jargon used before it's shown
    - an algorithm explained without a trace
+   - **a physical-world analogy where a software
+     example would work**. The reader is a working
+     frontend engineer with 5–8 years of experience;
+     they have richer pattern recognition from software
+     they use daily than from coat checks, libraries,
+     locked doors, or post offices. See the next rule.
+
+→ Use real software, not analogies.
+   When the writer needs a concrete anchor for an
+   abstract concept, reach for something the reader
+   has actually used or built — not a physical-world
+   metaphor. Banned anchor types: coat checks,
+   librarians, locked doors, bouncers, matchmakers,
+   post offices, notebooks, kitchens, factories.
+   Preferred anchor types:
+
+   - **Apps the reader uses daily.** Gmail's optimistic
+     send. Linear's drag-to-reorder. Notion's per-user
+     workspace isolation. ChatGPT's persistent system
+     prompt. GitHub's branch protection rules.
+   - **DevTools and engineering surfaces the reader
+     touches.** The network tab showing reused TCP
+     connections. The "missing key prop" warning in
+     React. The `X-RateLimit-Remaining` header in
+     GitHub's API responses. The session cookie in
+     application storage.
+   - **Patterns the reader has built in their own
+     apps.** "You already do this when you check
+     `req.user.id` in the route handler AND filter by
+     `user_id` in the database query — that's two
+     gates." "You already do this when you set `key`
+     on a list item in React."
+   - **Industry-standard products and protocols the
+     reader has encountered.** Stripe's idempotency
+     keys. JWT signatures. OAuth's authorization code
+     flow. Postgres's `MVCC`. Redis's `SETNX`.
+
+   The test: could the reader open the app, browser
+   tool, or codebase and verify what the writer
+   claims? If yes, the example is grounded. If the
+   only way to verify is "trust me, this is like a
+   coat check," the writer has used an analogy and
+   needs to find a real example instead.
+
+   The narrow exception: when the only working
+   example involves software the reader is unlikely
+   to have touched (specialized academic systems,
+   internal tools at large companies), a brief
+   physical-world reference is acceptable as a
+   *secondary* anchor after the engineering reference.
+   Never as the primary.
 
 ─────────────────────────────────────────────────
 CONSTRAINTS
@@ -6376,24 +6561,39 @@ CONSTRAINTS
    (three to five bullets each, same scenario two
    outcomes). Skip when concept is too simple to
    earn it or when before/after would mislead.
-   (5) Move 5 — one-line metaphor that names the
-   pattern in a single phrase. Always one
-   sentence. Optionally followed by a handoff line
-   to How it works. Move 1's scenario must remain
-   project-agnostic (a reader who has never seen
-   this codebase must understand it). Moves 3–5
-   may ground in the codebase to make consequences
-   vivid.
+   (5) Move 5 — one-line summary that names the
+   pattern in a single phrase, by reference to
+   something the reader already knows from real
+   software (Linear, React's `key` prop, GitHub
+   branch protection, etc.) — NOT a physical-world
+   metaphor. Always one sentence. Optionally
+   followed by a handoff line to How it works. Move
+   1's scenario must remain project-agnostic (a
+   reader who has never seen this codebase must
+   understand it) and grounded in real software
+   (banned: coat checks, librarians, locked doors,
+   post offices, kitchens, factories — see the
+   global "Use real software, not analogies" rule
+   in FORMATTING RULES). Moves 3–5 may ground in
+   the codebase to make consequences vivid.
 → Every concept file must include a How it works block
    immediately after Why care and before the primary
    diagram. Length scaled by complexity, not capped at
    a paragraph count — simple concepts get four short
    paragraphs, complex backend/AI/infra concepts get
    fifteen or twenty with sub-headings. Required moves
-   in order: (1) Move 1 — open with a concrete mental
-   model or metaphor, then one sentence naming the
-   underlying strategy. Definition-first openings ("X
-   is a mechanism for...") are banned. (2) Move 2 — a
+   in order: (1) Move 1 — open with a mental model
+   anchored to **real software the reader has used or
+   built** (GitHub branch protection, HTTP keep-alive,
+   Linear's optimistic checkmark, the auth-wall
+   pattern in the reader's own apps), then one
+   sentence naming the underlying strategy.
+   Definition-first openings ("X is a mechanism
+   for...") are banned. **Physical-world analogies
+   (locked doors, coat checks, librarians, post
+   offices) are banned as primary anchors** — see
+   the global "Use real software, not analogies"
+   rule in FORMATTING RULES. (2) Move 2 — a
    layered walkthrough where each independent part of
    the concept gets its own bolded sub-heading and
    covers four things: the technical thing named with
