@@ -91,6 +91,62 @@ const db = factory({
    UUID here, but () => nanoid() or a counter would work too.
 ```
 
+**A full todo-app schema, written in @mswjs/data:** here's what the four-collection todo dataset we've been working with looks like as an actual `factory()` call. Every collection from Part I, every reference from Part III, every constraint from Part IV — wired up in one block:
+
+```js
+import { factory, primaryKey, oneOf, manyOf } from '@mswjs/data'
+
+export const db = factory({
+  // ── user ────────────────────────────────────────────
+  user: {
+    id:    primaryKey(() => crypto.randomUUID()),
+    name:  String,
+    email: String,                              // (uniqueness enforced by you)
+    lists: manyOf('list'),                      // reverse: lists this user owns
+    todos: manyOf('todo'),                      // reverse: todos this user owns
+  },
+
+  // ── list ────────────────────────────────────────────
+  list: {
+    id:    primaryKey(() => crypto.randomUUID()),
+    name:  String,
+    owner: oneOf('user'),                       // forward FK → user
+    todos: manyOf('todo'),                      // reverse: todos in this list
+  },
+
+  // ── todo ────────────────────────────────────────────
+  todo: {
+    id:        primaryKey(() => crypto.randomUUID()),
+    text:      String,
+    done:      Boolean,
+    createdAt: Number,
+    list:      oneOf('list'),                   // forward FK → list
+    owner:     oneOf('user'),                   // forward FK → user
+    tags:      manyOf('tag'),                   // N:M edge (Ch 3.5)
+  },
+
+  // ── tag ─────────────────────────────────────────────
+  tag: {
+    id:    primaryKey(() => crypto.randomUUID()),
+    label: String,
+    todos: manyOf('todo'),                      // reverse side of the N:M
+  },
+})
+```
+
+Read the schema like a graph diagram and the topology jumps out:
+
+```
+   user ──owns──► list ──contains──► todo ◄──tagged──► tag
+     │                                 ▲
+     └──────────owns──────────────────┘
+```
+
+Every arrow in that picture corresponds to either a `oneOf` (the FK side) or a `manyOf` (the reverse side). `oneOf` is a *real* field on the record — it gets stored, it's what enforces referential integrity. `manyOf` is *not* a stored field — it's a synthesised view, "all records on the other side that point at me." When you call `user.todos`, the engine performs the reverse-join from Chapter 5.4 transparently.
+
+**One subtle thing worth calling out** — `@mswjs/data` doesn't enforce all the integrity constraints from Chapter 4 by default. It will assign an id and store the record even if you reference a nonexistent list. This is fine for a mock layer (you control the test data, you don't need full DB rigor), but it means *you* are responsible for keeping referential integrity intact in your seed data. Real databases like Postgres or SQLite enforce these on every write; `@mswjs/data` trusts you.
+
+The takeaway: the **factory call IS your schema, IS your data model, IS your graph topology** — all at once, all in one place. From this single block, the engine builds a `db` object whose shape is mechanically derived from the schema. Chapter 8 looks at what `db` actually contains.
 
 ---
 

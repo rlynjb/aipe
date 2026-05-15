@@ -38,6 +38,10 @@ In DSA, **invariants** are the properties that must hold or the structure isn't 
 
 This is the big one. The invariant that makes the dataset a *valid* graph instead of a graph with broken edges.
 
+**Concretely in the todo app:** every `todo.userId` must match an existing row in the `user` collection. If you try to insert `{ text: "buy milk", userId: "u-99" }` when there's no user with id `u-99`, the database refuses. The engine looks at the foreign-key declaration (`userId → user`), reads the value the client tried to write (`"u-99"`), checks the target collection (`user.has("u-99")`), and rejects the write if the lookup fails. This happens *before* the write commits, so the dataset never spends even a millisecond in a broken state.
+
+Why a database goes to this trouble: a dangling reference is the kind of bug that produces wrong results without throwing an error. A query that joins todos with users will silently *omit* the dangling todo (LEFT JOIN style) or *crash on resolve* (INNER JOIN style). Either failure mode is worse than refusing the bad write up front.
+
 ```
    THE RULE: every reference must point at a record that EXISTS
              (or be explicitly null).
@@ -159,6 +163,32 @@ When you delete a record other records point at, **something** must happen to th
      RESTRICT  = "refuse to delete a node that still has neighbors"
 ```
 
+**The three policies in a todo app, picked deliberately:**
+
+```
+   Relationship                         Sensible policy        Why
+   ────────────────────────             ─────────────────      ────────────────────────
+   list.userId → user                   RESTRICT or CASCADE    if you delete a user, do
+                                                               you want their lists to
+                                                               vanish (CASCADE) or to
+                                                               require explicit cleanup
+                                                               first (RESTRICT)?
+   todo.listId → list                   CASCADE                if a list is deleted, its
+                                                               todos should die with it.
+                                                               an orphan todo with no
+                                                               list is a UI ghost.
+   todo.assignedUserId → user           SET NULL               if the assignee is removed
+                                                               from the team, the todo
+                                                               survives as "unassigned."
+   todo_tag.todoId → todo               CASCADE                junction rows have no
+   todo_tag.tagId  → tag                CASCADE                meaning without both ends.
+                                                               die together.
+```
+
+Notice the rule of thumb: pick the policy that makes the simplest dataset survive the delete. CASCADE is right when the dependent has no independent identity (a junction row, a comment on a deleted post). SET NULL is right when the dependent has its own life (a todo whose assignee just left). RESTRICT is right when the consequences are big enough that you want a human to make the call (deleting a user with active billing).
+
+The policy is declared **per foreign key**, not per collection — so the same `user` row can be RESTRICT-protected by `subscription.userId` and SET NULL'd by `todo.assignedUserId` at the same time. Engines walk every incoming edge type and apply each one's declared policy.
+
 ### 4.5 Value constraints (the smaller invariants)
 
 ```
@@ -183,8 +213,24 @@ When you delete a record other records point at, **something** must happen to th
    guarding the insert/update path. no new machinery.
 ```
 
----
+**Value constraints in the todo schema:**
 
+```
+   field        constraint                             rationale
+   ────────     ─────────────────────────────────      ──────────────────────────
+   text         NOT NULL, CHECK length <= 500          empty todos are noise;
+                                                       500 chars protects the UI.
+   done         NOT NULL, DEFAULT false                "is it done?" is never absent.
+   createdAt    NOT NULL, DEFAULT now()                every todo has a creation
+                                                       moment — assigned by the
+                                                       engine if the client omits it.
+   userId       NOT NULL, FK → user                    a todo always has an owner.
+   user.email   NOT NULL, UNIQUE                       one email = one account.
+```
+
+Each constraint is a small bet: "this field will never hold an invalid value, no matter what the client sends." The bet pays off downstream — every reader (a UI list, a search index, a notification job) gets to skip the "what if `text` is null" branch, because the engine already excluded that universe at write time.
+
+This is the relational equivalent of the TypeScript `strictNullChecks` flag: a constraint at the boundary means the rest of the system doesn't have to defend itself. Once you've internalised "every reader can trust the data," you stop scattering null-checks across your read paths.
 
 ---
 

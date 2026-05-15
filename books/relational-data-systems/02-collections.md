@@ -20,6 +20,10 @@ This is a mental shift you can feel:
 
 A **collection** is a **dictionary keyed by primary key**. Same data — indexed for identity.
 
+**Why this matters in practice.** Consider a todo list with 10,000 items where the user is toggling checkboxes rapidly. With an array, every toggle scans on average half the list (5,000 comparisons per toggle). With a Map, every toggle is one hash lookup (constant time, regardless of list size). At small scales (a 20-item shopping list) you don't notice. At medium scales (a project tracker with hundreds of tasks) you start noticing jank during keyboard navigation. At large scales (a CRM with 50,000 contacts), the array model is unusable. The collection model scales transparently because the lookup cost doesn't grow with the data.
+
+This is exactly the trick `normalizr` (Redux's normalisation library) does to client-side state: instead of nested arrays of objects, you get `{ todos: { byId: Map, allIds: Array } }`. The `byId` map is your collection; `allIds` is just a render-order helper. Same data, different access pattern.
+
 ### 2.2 The collection, drawn
 
 ```
@@ -63,6 +67,10 @@ A **collection** is a **dictionary keyed by primary key**. Same data — indexed
         it's just how a dictionary behaves. constraint = free.
 ```
 
+These two freebies — O(1) by-id lookup, uniqueness by construction — are why every relational engine, from Postgres to SQLite to `@mswjs/data`, uses a hash-map (or B-tree, which adds O(log n) ordered traversal but keeps the same identity model) for the primary key. You couldn't reasonably build a database without them. The collection IS the primary-key index — the rest of the engine is layered on top of it.
+
+A subtle but important consequence: there's no "duplicate primary key" error to handle in your code, because the data structure can't represent it. If you try to insert two todos with the same id, the second one overwrites the first. Real databases promote this into a runtime error (`UNIQUE constraint violation`) instead of silently overwriting, but the underlying structure is the same.
+
 ### 2.4 A collection has a SHAPE (schema)
 
 ```
@@ -92,6 +100,34 @@ A **collection** is a **dictionary keyed by primary key**. Same data — indexed
         }
 ```
 
+**A worked example — the schema for a todo collection:**
+
+```
+   SCHEMA for collection "todo"
+   ┌────────────┬──────────────┬───────────────────────────┐
+   │ FIELD      │ TYPE         │ ROLE                      │
+   ├────────────┼──────────────┼───────────────────────────┤
+   │ id         │ string       │ PRIMARY KEY               │
+   │ text       │ string       │ value (required)          │
+   │ done       │ boolean      │ value (default: false)    │
+   │ createdAt  │ number       │ value (timestamp ms)      │
+   │ userId     │ → user       │ REFERENCE (who owns it)   │
+   │ listId     │ → list       │ REFERENCE (which list)    │
+   └────────────┴──────────────┴───────────────────────────┘
+
+   one schema. shared by every todo in the collection.
+   write a record missing 'text' or with 'done: 42' and
+   the database REJECTS the insert. shape is law.
+```
+
+The schema does three jobs at once:
+
+1. **It tells the engine how to store records.** Strings, numbers, and booleans are laid out differently in memory and on disk; the schema is how the engine knows.
+2. **It tells the engine what to validate.** A `boolean` field can only ever hold `true` or `false`. A `number` field rejects `"three"`. The validation happens at the write boundary, so by the time a record is *in* the collection, you can trust its shape without re-checking.
+3. **It tells the engine which fields are references.** `userId: → user` says "the value in this field must match some user's primary key." That's the contract Chapter 3 will lean on heavily.
+
+In TypeScript land, you'd write `interface Todo { ... }` and trust the compiler. In relational land, the schema travels with the data and the engine enforces it on every write — even when the write came from code that wasn't checked at compile time (a curl command, a buggy migration, a test fixture). The schema is a runtime contract, not just a build-time hint.
+
 ### 2.5 The whole "database" is just a bag of collections
 
 ```
@@ -117,8 +153,38 @@ A **collection** is a **dictionary keyed by primary key**. Same data — indexed
    DIFFERENT collections point at each other → Chapter 3.
 ```
 
----
+**A worked database for a todo app, drawn at full size:**
 
+```
+   DATABASE: todo-app
+   ╔══════════════════════════════════════════════════════════════╗
+   ║                                                              ║
+   ║  collection: user                                            ║
+   ║  ┌───────┬─────────────────────────────────────────────────┐ ║
+   ║  │ "u-1" │ { id:"u-1", name:"Ada",  email:"a@x.com" }      │ ║
+   ║  │ "u-2" │ { id:"u-2", name:"Lin",  email:"l@x.com" }      │ ║
+   ║  └───────┴─────────────────────────────────────────────────┘ ║
+   ║                                                              ║
+   ║  collection: list                                            ║
+   ║  ┌───────┬─────────────────────────────────────────────────┐ ║
+   ║  │ "l-1" │ { id:"l-1", name:"Today",   userId:"u-1" }      │ ║
+   ║  │ "l-2" │ { id:"l-2", name:"Shopping",userId:"u-1" }      │ ║
+   ║  │ "l-3" │ { id:"l-3", name:"Work",    userId:"u-2" }      │ ║
+   ║  └───────┴─────────────────────────────────────────────────┘ ║
+   ║                                                              ║
+   ║  collection: todo                                            ║
+   ║  ┌───────┬─────────────────────────────────────────────────┐ ║
+   ║  │ "t-1" │ { id:"t-1", text:"buy milk", listId:"l-2" }     │ ║
+   ║  │ "t-2" │ { id:"t-2", text:"ship v2",  listId:"l-3" }     │ ║
+   ║  │ "t-3" │ { id:"t-3", text:"call mom", listId:"l-1" }     │ ║
+   ║  └───────┴─────────────────────────────────────────────────┘ ║
+   ║                                                              ║
+   ╚══════════════════════════════════════════════════════════════╝
+```
+
+Three collections. Each is a Map keyed by id. No nesting between collections — `list` rows store `userId` (a string pointing at a user), not a copy of the user. `todo` rows store `listId`, not a copy of the list. Everything is flat at this layer; the relationships are encoded entirely as id strings.
+
+Why flat is good: changing Ada's name is one write to one row in `user`. The 47 todos that "belong to Ada" don't need to update — they only ever held a pointer (`userId: "u-1"`), and the pointer still resolves to the same updated record. This is the single biggest reason real databases reject nested document storage when the data is genuinely relational. One source of truth per fact, joined at read time.
 
 ---
 

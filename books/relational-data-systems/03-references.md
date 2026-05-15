@@ -23,6 +23,24 @@ Everything before this was "collections you already understood." **This** chapte
 
 Relational data **always picks B**. A record points at another record by **storing that record's primary key as a plain value**.
 
+**Concretely in a todo app:** every todo "belongs to" a user. Containment would mean putting a copy of the user inside every todo:
+
+```
+   { id: "t-1", text: "buy milk", user: { id: "u-1", name: "Ada", email: "..." } }
+   { id: "t-2", text: "ship v2",  user: { id: "u-1", name: "Ada", email: "..." } }
+   { id: "t-3", text: "call mom", user: { id: "u-1", name: "Ada", email: "..." } }
+```
+
+Reference means putting only the user's id:
+
+```
+   { id: "t-1", text: "buy milk", userId: "u-1" }
+   { id: "t-2", text: "ship v2",  userId: "u-1" }
+   { id: "t-3", text: "call mom", userId: "u-1" }
+```
+
+The user record itself lives in exactly one place — the `user` collection. The todos hold pointers. Ada's email changes? One write to one row in `user`. Every todo "sees" the new email the next time it resolves the reference. The opposite shape (containment) would require finding and updating every embedded copy — and the moment you miss one, you've shipped stale data.
+
 ### 3.2 Containment vs. Reference — drawn side by side
 
 ```
@@ -99,6 +117,26 @@ Relational data **always picks B**. A record points at another record by **stori
 
    that's the whole tradeoff. one cheap lookup buys you all 3 payoffs.
 ```
+
+**The payoffs walked through with a todo app** at three different scales:
+
+```
+   Scale           Containment cost                Reference cost
+   ─────────       ─────────────────────           ─────────────────────
+   10 todos        ~negligible. embedded user      same. one user record
+                   appears 10× — fine.             plus 10 todos with id.
+
+   1,000 todos     1,000 copies of Ada's row.      one Ada. 1,000 ids.
+                   Rename Ada → 1,000 writes,      Rename Ada → 1 write,
+                   any miss = stale data.          0 stale todos possible.
+
+   1,000,000       embedded copy approach          one user row, one million
+   todos           collapses. Sync, search, and    references. Single write
+                   rename all become expensive.    to rename. Indexing on
+                                                   userId stays fast.
+```
+
+The payoff doesn't just scale with data size — it also scales with **how often a referenced record changes**. A user's name might change once a year. A user's last-online timestamp might change every minute. If you embed that timestamp into every todo, every todo's row has to rewrite every minute. If you only embed the userId, the timestamp lives on one row and updates one row.
 
 ### 3.4 A reference is stored on ONE side, read from BOTH
 
@@ -202,6 +240,41 @@ This asymmetry is the single most important mechanic in the chapter. Watch it.
    └─────────────────────────────────────────────────────────────────┘
 ```
 
+**Each cardinality, in the todo app:**
+
+```
+   ONE-TO-MANY    one user has many todos
+                  ──────────────────────────────────────────
+                  user  "u-1"  Ada
+                  todo  "t-1"  text:"buy milk"  userId:"u-1"
+                  todo  "t-2"  text:"ship v2"   userId:"u-1"
+                  todo  "t-3"  text:"call mom"  userId:"u-1"
+                  →  userId stored on the TODO (the "many" side).
+                     "all of Ada's todos" is derived by scanning.
+
+   ONE-TO-ONE     one user has one settings record
+                  ──────────────────────────────────────────
+                  user      "u-1"  Ada
+                  settings  "s-1"  theme:"dark"  userId:"u-1"  ← UNIQUE
+                  →  same shape as 1:N, but the userId column has a
+                     UNIQUE constraint so each user has at most one
+                     settings row.
+
+   MANY-TO-MANY   todos can have many tags, tags belong to many todos
+                  ──────────────────────────────────────────
+                  todo       "t-1"  text:"buy milk"
+                  tag        "g-1"  name:"shopping"
+                  tag        "g-2"  name:"urgent"
+                  todo_tag   "tt-1" todoId:"t-1"  tagId:"g-1"  ┐
+                  todo_tag   "tt-2" todoId:"t-1"  tagId:"g-2"  │ junction
+                  todo_tag   "tt-3" todoId:"t-3"  tagId:"g-1"  ┘
+                  →  the junction collection (todo_tag) holds one row
+                     per (todo, tag) pairing. Walking from a todo to
+                     its tags is two hops: todo → todo_tag → tag.
+```
+
+Junction collections feel like extra machinery, but they're not optional — they're the only way to encode a true many-to-many without lying about cardinality. Without the junction, you'd have to store an array of tag-ids inside the todo (`tagIds: ["g-1", "g-2"]`), which breaks the flat-shape rule and makes "all todos with this tag" a full-table scan with array-membership predicates. The junction keeps everything flat, scannable, and indexable.
+
 ### 3.6 THE BIG REVEAL — a relational dataset IS a graph
 
 ```
@@ -264,8 +337,33 @@ This asymmetry is the single most important mechanic in the chapter. Watch it.
    different clothes.
 ```
 
----
+**The todo app's data as a graph, drawn the same way:**
 
+```
+                  ┌──────────────┐
+                  │  user u-1    │
+                  │  "Ada"       │
+                  └──────────────┘
+                  ▲    ▲       ▲
+        userId    │    │       │  userId
+            ┌─────┘    │       └────────────────┐
+            │          │ userId                 │
+   ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+   │ list l-1     │ │ list l-2     │ │ todo t-3     │
+   │ "Today"      │ │ "Shopping"   │ │ "call mom"   │
+   └──────────────┘ └──────────────┘ └──────────────┘
+        ▲                ▲
+        │ listId         │ listId
+        │                │
+   ┌──────────────┐ ┌──────────────┐
+   │ todo t-3     │ │ todo t-1     │
+   │ "call mom"   │ │ "buy milk"   │
+   └──────────────┘ └──────────────┘
+```
+
+Three node types (`user`, `list`, `todo`). Two edge types (`userId`, `listId`). Every concrete operation you do in the app — "show me Ada's lists", "show me the todos on Today", "rename Today to Today's wins" — is a traversal on this graph. The relational query language (SQL, the `@mswjs/data` API, the `find()` function in your store) is just a vocabulary for *describing the traversal you want*.
+
+Knowing this gives you a transfer credit: every algorithm you learned for trees and graphs (BFS, DFS, topological sort, shortest path) applies — sometimes literally — to relational queries. We'll lean on it explicitly in [Chapter 5 (Reading: Query as Traversal)](05-reading-query-as-traversal.md).
 
 ---
 

@@ -2,6 +2,10 @@
 
 You really learned graphs by **implementing the Graph class yourself.** So here's a relational store from scratch — no library — implementing Parts I–III. `@mswjs/data` is a more featureful version of this same ~120 lines.
 
+**How to read the code below.** Each method is labelled with the chapter it implements. Read them in this order to mirror the book's structure: `Collection` and `Database` (Parts I–II — the primitives and the storage), `create` (Part II's invariants enforced on a write), `findById` and `findMany` (Part III reads), `resolve` (the join), and finally `update` / `delete` (the dangerous writes plus the policy engine).
+
+The code is deliberately bare: no indexes, no transactions, no async. It is small enough that you can hold every line in your head — which is exactly what makes it a teaching artefact. Once you can read this file top to bottom and predict what each method does, you can read `@mswjs/data`'s source, or Prisma's query engine, or any toy ORM tutorial, with the same shape already in your head.
+
 ```js
 // ============================================================
 //  A relational data system from scratch.
@@ -204,6 +208,47 @@ db.delete('team', 't-1', 'setNull')    // ok: u-1.teamId becomes null
    └─────────────────────────────────────────────────────────────┘
 ```
 
+**Apply the build-your-own to the todo app.** Take the same engine and run the todo schema through it — note how all four chapter-by-chapter pieces re-appear in less than 20 lines of setup:
+
+```js
+const db = new Database()
+  .defineCollection('user', {
+    id:    { isPrimaryKey: true },
+    name:  { type: 'string' },
+    email: { type: 'string' },
+    todos: { ref: 'todo', many: true, backref: 'userId' },   // reverse rel
+    lists: { ref: 'list', many: true, backref: 'userId' },   // reverse rel
+  })
+  .defineCollection('list', {
+    id:     { isPrimaryKey: true },
+    name:   { type: 'string' },
+    userId: { ref: 'user' },                                  // forward FK
+    todos:  { ref: 'todo', many: true, backref: 'listId' },   // reverse rel
+  })
+  .defineCollection('todo', {
+    id:     { isPrimaryKey: true },
+    text:   { type: 'string' },
+    done:   { type: 'boolean' },
+    userId: { ref: 'user' },                                  // forward FK
+    listId: { ref: 'list' },                                  // forward FK
+  })
+
+db.create('user', { id: 'u-1', name: 'Ada',  email: 'a@x.com' })
+db.create('list', { id: 'l-1', name: 'Shop', userId: 'u-1' })
+db.create('todo', { id: 't-1', text: 'milk', done: false,
+                     userId: 'u-1', listId: 'l-1' })
+
+const ada = db.resolve('user', db.findById('user', 'u-1'))
+// → { id:'u-1', name:'Ada', email:'a@x.com',
+//     todos: [ {…milk…} ],
+//     lists: [ {…Shop…} ] }
+
+db.delete('user', 'u-1', 'cascade')
+// → recursively deletes the list (and its todo, via cascade depth-2)
+```
+
+Every concept from this book is present in those lines: identity (Part I), collections (Part II), references and relations (Part III), the integrity invariants (Part II — `create` rejected if the FK didn't resolve), reading by id and by predicate (Chapter 5), reverse joins via `backref` (Chapter 5.4), and the delete policy engine running through two levels of cascade (Chapter 4.4). About 120 lines of engine, a few lines of schema, and you have a working relational data system — exactly what `@mswjs/data` ships and what Postgres provides with durability, transactions, and a network protocol added.
+
 ---
 
 # APPENDIX
@@ -234,6 +279,28 @@ db.delete('team', 't-1', 'setNull')    // ok: u-1.teamId becomes null
      const byAuthor = _.groupBy(posts, 'authorId')
    ...except the database keeps it in sync for you.
 ```
+
+**An index in the todo app, drawn.** For the "todos in this list" query — the most common reverse-join in the whole UI — adding one auxiliary map collapses the cost from "scan every todo in the database" to "look up one list-id":
+
+```
+   todo store (the data)                  index on listId (the shortcut)
+   ┌───────────────────────────────┐      ┌─────────────────────────────────┐
+   │ t-1  listId:"l-1"  "buy milk" │      │ "l-1"  →  [ t-1, t-4 ]           │
+   │ t-2  listId:"l-2"  "ship v2"  │      │ "l-2"  →  [ t-2 ]                │
+   │ t-3  listId:"l-3"  "call mom" │      │ "l-3"  →  [ t-3 ]                │
+   │ t-4  listId:"l-1"  "eggs"     │      └─────────────────────────────────┘
+   └───────────────────────────────┘
+                                              "todos in list l-1"
+                                              → index.get("l-1")
+                                              → [t-1, t-4]   O(1)
+
+   what each todo write must ALSO do:
+     create(todo)  → push the new id into index[listId]
+     update.listId → remove from old bucket, add to new bucket
+     delete(todo)  → remove the id from index[listId]
+```
+
+The cost moves from read-time to write-time — and since reads vastly outnumber writes in any UI, the trade is overwhelmingly worth it. Real databases let you declare `CREATE INDEX todo_listId_idx ON todo(listId)` and the engine maintains exactly this map for you, hidden behind the scenes. You don't write the bookkeeping; you just notice that the query got fast.
 
 ## B. The Rosetta Stone — Frontend / DSA  ↔  Relational
 
