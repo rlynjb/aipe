@@ -346,6 +346,39 @@
       margin-bottom: 1rem;
     }
 
+    /* ───────── Feature list (bulleted) ───────── */
+    .feature-list {
+      list-style: none;
+      margin-top: 1.5rem;
+      display: grid;
+      gap: 1rem;
+    }
+    .feature-list li {
+      padding-left: 1.5rem;
+      position: relative;
+      color: var(--text);
+      font-size: .98rem;
+      line-height: 1.6;
+    }
+    .feature-list li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--gold);
+      font-family: 'DM Mono', monospace;
+    }
+    .feature-list li b {
+      font-weight: 500;
+      color: var(--gold);
+      font-family: 'DM Mono', monospace;
+      font-size: .82rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: .15rem;
+    }
+
     /* ───────── Why ───────── */
     .why-grid {
       display: grid;
@@ -448,137 +481,104 @@
 
   <!-- ───────── Top nav ───────── -->
   <nav class="topnav">
-    <a href="#" class="logo">aipe / <span>spec workflow</span></a>
+    <a href="#" class="logo">aipe / <span>personal notebook</span></a>
     <div class="topnav-right">
-      <a href="#how" class="topnav-link">How it works</a>
-      <a href="#specs" class="topnav-link">Spec types</a>
+      <a href="#contents" class="topnav-link">Contents</a>
+      <a href="#study" class="topnav-link">Study guide</a>
       <a href="#install" class="topnav-link">Install</a>
-      <a href="https://github.com/rlynjb/aipe" class="topnav-cta" target="_blank" rel="noopener">GitHub →</a>
+      <a href="https://github.com/rlynjb/aipe" class="topnav-link" target="_blank" rel="noopener">GitHub →</a>
     </div>
   </nav>
 
   <!-- ───────── Hero ───────── -->
   <header class="hero">
-    <p class="hero-tag">Plugin · Claude Code &amp; Codex CLI · MIT</p>
+    <p class="hero-tag">A personal notebook for learning AI engineering</p>
     <h1>
-      Stop re-explaining your codebase
-      <br />to your <span class="accent">AI agent</span>.
+      A workspace I built<br />
+      for my <span class="accent">own learning</span>.
     </h1>
     <p class="lead">
-      aipe is a spec workflow for AI-assisted development. 11 markdown templates that turn a one-line intent plus your project context into a filled, structured spec your coding agent can implement from — no extra runtime, no extra API keys.
+      aipe is where I keep the long-form notes, prompt templates, and spec scaffolds I reuse across projects. It also generates a book-style study guide of any codebase I'm working in, formatted the way I personally like to learn.
     </p>
-    <div class="hero-ctas">
-      <a href="https://github.com/rlynjb/aipe" class="btn btn-primary" target="_blank" rel="noopener">
-        View on GitHub →
-      </a>
-      <a href="#install" class="btn btn-ghost">
-        Install
-      </a>
-    </div>
   </header>
 
-  <!-- ───────── How it works ───────── -->
-  <section id="how">
-    <p class="section-label">How it works</p>
-    <h2>One slash command per intent. Your agent does the rest.</h2>
+  <!-- ───────── Three pillars ───────── -->
+  <section id="contents">
+    <p class="section-label">What's in here</p>
+    <h2>Three things live in this repo.</h2>
     <p class="section-intro">
-      You run <code style="font-family:'DM Mono',monospace;color:var(--gold)">/aipe:&lt;type&gt; &lt;intent&gt;</code> in Claude Code or Codex. The plugin loads the matching template, reads your project context from <code style="font-family:'DM Mono',monospace;color:var(--gold)">.aipe/</code>, and your agent fills the spec using its own model. The output is a structured markdown file ready to implement against.
+      Everything is plain markdown — readable on GitHub, editable in any editor, version-controlled with the rest of my work.
     </p>
 
     <div class="steps">
       <div class="step">
-        <p class="step-num">01</p>
-        <h3>Scaffold once</h3>
-        <p>First run creates <code style="font-family:'DM Mono',monospace;color:var(--gold)">.aipe/project/context.md</code> in your repo. You fill in stack, data model, file structure, constraints — the things your agent would otherwise guess.</p>
+        <p class="step-num">01 · Books</p>
+        <h3>Long-form notes I'm writing</h3>
+        <p>Topic-by-topic references I work through as I learn. Currently covering AI engineering, ML and front-end interview prep, prompt engineering, and relational data systems. Diagrams, prose, and worked examples in one place.</p>
       </div>
       <div class="step">
-        <p class="step-num">02</p>
-        <h3>Run a slash command</h3>
-        <p>Pick a spec type — feature, debugging, refactor, audit, migration, performance, integration, plan, study, testing, user-stories. One slash command per type, tab-completable in both Claude Code and Codex CLI.</p>
+        <p class="step-num">02 · Prompts</p>
+        <h3>Prompt templates I reuse</h3>
+        <p>The prompts I keep coming back to — curriculum framings, review protocols, story checklists. Each one is a markdown file I can paste into any agent or adapt for a new project.</p>
       </div>
       <div class="step">
-        <p class="step-num">03</p>
-        <h3>Get a filled spec</h3>
-        <p>Agent reads template + context, composes the spec, saves to <code style="font-family:'DM Mono',monospace;color:var(--gold)">.aipe/specs/&lt;type&gt;/&lt;slug&gt;.md</code>. You review. Then say "implement it" and the same agent builds against the spec.</p>
+        <p class="step-num">03 · Specs</p>
+        <h3>Spec scaffolds for my agent</h3>
+        <p>Markdown templates my coding agent fills in before writing code. One per kind of work — feature, debugging, refactor, study, and others. Packaged as slash commands for Claude Code and Codex CLI.</p>
       </div>
-    </div>
-
-    <div class="example-flow">
-      <div class="code-block"><span class="gold">$</span> /aipe:feature add dark mode toggle</div>
-      <div class="flow-arrow">→</div>
-      <div class="code-block"><span class="cm"># Feature spec</span>
-<span class="info">## Data model</span>
-<span class="cm">  Settings: { theme: 'light' | 'dark' }</span>
-<span class="info">## Behaviour</span>
-<span class="cm">  Tap → toggle → persist</span>
-<span class="info">## UI</span>
-<span class="cm">  ...</span>
-<span class="ok">✓ saved to .aipe/specs/features/dark-mode.md</span></div>
     </div>
   </section>
 
-  <!-- ───────── Spec types ───────── -->
-  <section id="specs">
-    <p class="section-label">11 spec types</p>
-    <h2>One template per kind of work.</h2>
+  <!-- ───────── Study guide section ───────── -->
+  <section id="study">
+    <p class="section-label">/aipe:study</p>
+    <h2>A book-style study guide of any codebase I'm working on.</h2>
     <p class="section-intro">
-      Each template is a plain markdown file in <code style="font-family:'DM Mono',monospace;color:var(--gold)">specs/</code>. You can read them directly to see what each one produces. Adding a new spec type is a markdown edit, no build step.
+      The study spec is the one I built most carefully for myself. Point it at a codebase and it generates a directory of files — one per concept — that walk me from a curiosity hook to verified understanding. The shape, ordering, and conventions are tuned to how I personally learn.
     </p>
 
-    <div class="spec-grid">
-      <div class="spec-card">
-        <p class="spec-cmd">/aipe:plan</p>
-        <p class="spec-desc">Multi-phase project that spans sessions.</p>
-      </div>
-      <div class="spec-card">
-        <p class="spec-cmd">/aipe:feature</p>
-        <p class="spec-desc">Building something new.</p>
-      </div>
-      <div class="spec-card">
-        <p class="spec-cmd">/aipe:debugging</p>
-        <p class="spec-desc">A bug keeps coming back.</p>
-      </div>
-      <div class="spec-card">
-        <p class="spec-cmd">/aipe:study</p>
-        <p class="spec-desc">Understand a codebase as a layered study guide — system design, DSA, AI engineering, ML.</p>
-      </div>
-      <div class="spec-card">
-        <p class="spec-cmd">/aipe:audit</p>
-        <p class="spec-desc">Reviewing existing code before extending it.</p>
-      </div>
-      <div class="spec-card">
-        <p class="spec-cmd">/aipe:testing</p>
-        <p class="spec-desc">Writing or improving tests.</p>
-      </div>
-      <div class="spec-card">
-        <p class="spec-cmd">/aipe:user-stories</p>
-        <p class="spec-desc">Rewriting tasks in different personas.</p>
-      </div>
-      <div class="spec-card">
-        <p class="spec-cmd">/aipe:refactor</p>
-        <p class="spec-desc">Restructuring without changing behaviour.</p>
-      </div>
-      <div class="spec-card">
-        <p class="spec-cmd">/aipe:migration</p>
-        <p class="spec-desc">Changing schema, dependency, or storage.</p>
-      </div>
-      <div class="spec-card">
-        <p class="spec-cmd">/aipe:performance</p>
-        <p class="spec-desc">Diagnosing speed or bundle issues.</p>
-      </div>
-      <div class="spec-card">
-        <p class="spec-cmd">/aipe:integration</p>
-        <p class="spec-desc">Connecting an external service.</p>
-      </div>
-    </div>
+    <ul class="feature-list">
+      <li>
+        <b>One concept per file</b>
+        Each file walks a single pattern end-to-end. Open one, work through it in a sitting, then move on. No skimming, no half-understood concepts carrying forward.
+      </li>
+      <li>
+        <b>Prose first, diagram as the recap</b>
+        The "how it works" prose explains the mechanics; the primary diagram lands afterwards as a visual summary of what I just read. The order is deliberate.
+      </li>
+      <li>
+        <b>Four sections, mapped to my curriculum</b>
+        System design, DSA, AI engineering, and machine learning. Each section has its own subdirectory, README index, and one file per pattern actually found in the codebase.
+      </li>
+      <li>
+        <b>Execution traces in the DSA files</b>
+        Line-by-line walkthroughs of what a computer does at every step. The part most explanations skip, written out.
+      </li>
+      <li>
+        <b>"Validate" blocks send me back to real code</b>
+        After each concept, the validate scenarios point to specific file:line ranges in the codebase. The guide explains; the code is the ground truth.
+      </li>
+      <li>
+        <b>Tech reference with honest labels</b>
+        Every concept includes a "leading today" tag — adoption-leading for battle-tested patterns, innovation-leading for fast-moving areas — with a runner-up named where the codebase already uses the leader.
+      </li>
+      <li>
+        <b>Frontend primitives instead of analogies</b>
+        Concepts are anchored to real software I've worked with (React props, function calls, HTTP), not to physical-world metaphors that dissolve under scrutiny.
+      </li>
+      <li>
+        <b>Auto-detects existing guides, updates only what drifted</b>
+        Re-running on a codebase that already has a guide diffs against the code and the template, then patches only the pieces that changed. No regenerating from scratch.
+      </li>
+    </ul>
   </section>
 
   <!-- ───────── Install ───────── -->
   <section id="install">
     <p class="section-label">Install</p>
-    <h2>Two commands. No CLI, no API keys.</h2>
+    <h2>If you want to use it too.</h2>
     <p class="section-intro">
-      Both plugins distribute via marketplace install. Same templates back both agents — edit a template, both surfaces update on the next plugin pull.
+      aipe is a plugin for Claude Code and Codex CLI. The agent in your session does the work using its own model — there's no separate binary, no API keys, no service to deploy.
     </p>
 
     <div class="install-grid">
@@ -597,76 +597,14 @@
     </div>
   </section>
 
-  <!-- ───────── Why ───────── -->
-  <section>
-    <p class="section-label">Why aipe</p>
-    <h2>The decisions that make this different.</h2>
-    <p class="section-intro">
-      aipe is deliberately small. It ships templates and slash commands — nothing else. The agent in your session does the work using its own model.
-    </p>
-
-    <div class="why-grid">
-      <div class="why-card">
-        <h3>No external runtime</h3>
-        <p>No CLI binary, no API keys, no auth, no service to deploy. The agent in your session does the work.</p>
-      </div>
-      <div class="why-card">
-        <h3>One source of truth</h3>
-        <p>Both plugins load from the same <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold)">specs/*.md</code> files. Edit once, both surfaces update.</p>
-      </div>
-      <div class="why-card">
-        <h3>Per-project context</h3>
-        <p>Your stack, file structure, and constraints live in <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold)">.aipe/project/</code> — committed to the repo, edited as you go.</p>
-      </div>
-      <div class="why-card">
-        <h3>Markdown all the way</h3>
-        <p>Templates are markdown. Generated specs are markdown. The state lives in files you own. No databases, no telemetry.</p>
-      </div>
-      <div class="why-card">
-        <h3>UPDATE mode is first-class</h3>
-        <p>Re-running a command on a project with a spec diffs against the codebase and the template, patches only what drifted.</p>
-      </div>
-      <div class="why-card">
-        <h3>Free, MIT-licensed</h3>
-        <p>Fork it, edit it, ship your own variant. The repo is the product.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ───────── Books mention ───────── -->
-  <section>
-    <p class="section-label">Companion books</p>
-    <h2>Long-form references built on the same workflow.</h2>
-    <p class="section-intro">
-      aipe is part of an AI-engineering curriculum. The repo includes book-form references covering project-driven AI engineering, FAANG interview prep (ML and FE), and prompt engineering.
-    </p>
-
-    <div class="books-cta">
-      <h3>Four books, ~14,000 lines of markdown</h3>
-      <p>
-        Companion long-form references that share the same voice and conventions as the spec templates. Direct, opinionated, anchored to production systems.
-      </p>
-      <div class="books-list">
-        <span class="books-tag">AI engineering curriculum</span>
-        <span class="books-tag">ML interview masterclass</span>
-        <span class="books-tag">Front-end interview masterclass</span>
-        <span class="books-tag">Prompt engineering</span>
-      </div>
-      <div style="margin-top:1.5rem">
-        <a href="https://github.com/rlynjb/aipe/tree/main/books" class="btn btn-ghost" target="_blank" rel="noopener">
-          Read on GitHub →
-        </a>
-      </div>
-    </div>
-  </section>
-
   <!-- ───────── Footer ───────── -->
   <footer>
-    <div>aipe — AI Product Engineering · MIT licensed</div>
+    <div>aipe · personal notebook · MIT licensed</div>
     <div class="footer-right">
       <a href="https://github.com/rlynjb/aipe" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://github.com/rlynjb/aipe/blob/main/README.md" target="_blank" rel="noopener">Docs</a>
       <a href="https://github.com/rlynjb/aipe/tree/main/books" target="_blank" rel="noopener">Books</a>
+      <a href="https://github.com/rlynjb/aipe/tree/main/prompts" target="_blank" rel="noopener">Prompts</a>
+      <a href="https://github.com/rlynjb/aipe/tree/main/specs" target="_blank" rel="noopener">Specs</a>
     </div>
   </footer>
 
