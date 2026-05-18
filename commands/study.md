@@ -4,7 +4,7 @@ description: Visual study guide for system design, DSA, and AI engineering — d
 
 The user invoked `/aipe:study`.
 
-This command takes **no arguments**. There is one study guide per project, saved at `.aipe/specs/study/`. Since `.aipe/` is already per-project, no extra slug is needed. Re-running `/aipe:study` from the same project always points at the same directory — UPDATE MODE detects it cleanly.
+This command takes **no arguments**. There is one study guide per project, saved at `.aipe/study-<purpose>/` — where `<purpose>` is a 2-word descriptor capturing the app's main purpose (e.g., `study-ai-journal/`, `study-ml-fitness/`, `study-prompt-tooling/`). The agent derives `<purpose>` from the codebase on first run (Step 4); re-running `/aipe:study` from the same project detects the existing `.aipe/study-*/` directory and enters UPDATE MODE.
 
 ## Step 1 — Initialize if needed
 
@@ -114,13 +114,32 @@ If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to sea
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
-Check whether `.aipe/specs/study/` already contains the study layout. The signal is the presence of `00-overview.md` at the root, OR any file inside `01-system-design/`, `02-dsa/`, `03-ai-engineering/`, or `04-machine-learning/`.
+Look for an existing study guide directory in `.aipe/`:
 
-**If any of those exist → go to UPDATE MODE (Step 5U onward). Do NOT regenerate from scratch.**
+```bash
+ls -d .aipe/study-*/ 2>/dev/null
+```
 
-**If none exist → go to CREATE MODE (Step 5C onward).**
+A match counts as an existing guide only if the directory contains `00-overview.md` at its root OR any file inside `01-system-design/`, `02-dsa/`, `03-ai-engineering/`, or `04-machine-learning/`. (The directory may exist as an empty placeholder; that's not the same as having a guide already.)
 
-(The `.aipe/specs/study/` directory itself may exist as a placeholder; that's not the same as having a guide already.)
+Branch on what's found:
+
+- **One existing guide found** → record its path as `<study-dir>` and go to UPDATE MODE (Step 5U onward). **Do NOT regenerate from scratch.**
+
+- **Multiple existing guides found** (rare — usually means the project's purpose was renamed) → list them and ask the user which one to update. Honor the choice; set `<study-dir>` and go to UPDATE MODE.
+
+- **No existing guide** → derive the 2-word `<purpose>` descriptor from the codebase context and set `<study-dir>` = `.aipe/study-<purpose>/`. Then go to CREATE MODE (Step 5C onward).
+
+  **How to derive `<purpose>`:**
+  - The descriptor names *what the app does*, not what it's built with. "Next.js app" is a stack, not a purpose. "Ai journal" is a purpose.
+  - **Exactly 2 words** when possible; reach for 3 only if 2 genuinely cannot capture the purpose; never more than 3.
+  - **Kebab-case, all lowercase**: `study-ai-journal`, not `study-AiJournal` or `study-ai_journal`.
+  - **Concrete nouns and clear adjectives** over marketing language. `study-fitness-tracker` over `study-personal-wellness`. `study-prompt-tooling` over `study-developer-productivity`.
+  - **No abbreviations the reader wouldn't recognize.** `study-ai-journal` is fine; `study-pjt-tool` is not.
+  - Worked examples: `loopd` → `study-ai-journal/`; `contrl-mo` → `study-ml-fitness/`; `aipe` → `study-prompt-tooling/`; a docs Q&A app → `study-doc-search/`; a customer support chatbot → `study-support-chatbot/`.
+  - The agent decides `<purpose>` *itself* from the codebase evidence. It does NOT ask the user unless the codebase is genuinely ambiguous (e.g., the README describes one purpose but the actual code does something different). In that case, ask exactly one clarifying question naming the two candidate descriptors before proceeding.
+
+Throughout the rest of this procedure, references to `.aipe/study-<purpose>/` mean `<study-dir>` — the directory established in this step.
 
 ---
 
@@ -338,20 +357,20 @@ Assign each pattern a kebab-case file name with a numeric prefix (in dependency 
 Create:
 
 ```
-.aipe/specs/study/
-.aipe/specs/study/01-system-design/
-.aipe/specs/study/02-dsa/
-.aipe/specs/study/03-ai-engineering/                            (skip if no AI surface)
-.aipe/specs/study/03-ai-engineering/system-design-templates/    (always when 03 exists)
-.aipe/specs/study/04-machine-learning/                          (skip if no ML surface)
-.aipe/specs/study/04-machine-learning/system-design-templates/  (always when 04 exists)
+.aipe/study-<purpose>/
+.aipe/study-<purpose>/01-system-design/
+.aipe/study-<purpose>/02-dsa/
+.aipe/study-<purpose>/03-ai-engineering/                            (skip if no AI surface)
+.aipe/study-<purpose>/03-ai-engineering/system-design-templates/    (always when 03 exists)
+.aipe/study-<purpose>/04-machine-learning/                          (skip if no ML surface)
+.aipe/study-<purpose>/04-machine-learning/system-design-templates/  (always when 04 exists)
 ```
 
 (Use `mkdir -p`.) Sections without applicable patterns are not created — leaving an empty `04-machine-learning/` for a project that doesn't use ML is misleading. The inventory from Step 6C decides which directories exist. The `system-design-templates/` sub-directories are always created when their parent section exists (the templates are generated regardless of current applicability — see Step 5C non-negotiable 20).
 
 ## Step 8C — Generate `00-overview.md`
 
-One full-system diagram + bullet legend (one line per component: what it is, what it does, what it talks to). **No prose paragraphs.** Save to `.aipe/specs/study/00-overview.md`.
+One full-system diagram + bullet legend (one line per component: what it is, what it does, what it talks to). **No prose paragraphs.** Save to `.aipe/study-<purpose>/00-overview.md`.
 
 ## Step 9C — Generate per-concept files in each section
 
@@ -979,7 +998,7 @@ The section READMEs are the navigation. They're the first thing a reader opens w
 Print exactly:
 
 ```
-✓ Study guide created at .aipe/specs/study/
+✓ Study guide created at .aipe/study-<purpose>/
   00-overview.md
   01-system-design/                            (<N> files + README.md)
   02-dsa/                                      (<N> files + README.md)
@@ -1001,7 +1020,7 @@ Runs when Step 4 found an existing study guide. Goal: make the guide accurate ag
 
 ## Step 5U — Read the existing guide
 
-Walk `.aipe/specs/study/` recursively. Read every `.md` file in:
+Walk `.aipe/study-<purpose>/` recursively. Read every `.md` file in:
 
 - the root (`00-overview.md`)
 - `01-system-design/` (README.md + every per-pattern file)
@@ -1135,7 +1154,7 @@ Look for the kinds of changes the template flags:
 Print a structured summary in this exact shape:
 
 ```
-Changes detected for .aipe/specs/study/
+Changes detected for .aipe/study-<purpose>/
 ─────────────────────────────────────────────────
 
 [Header line indicating mode — always print:]
@@ -1261,7 +1280,7 @@ Run only after the user replies "yes" or with a scoped path. For each file appro
 Print:
 
 ```
-Update complete for .aipe/specs/study/
+Update complete for .aipe/study-<purpose>/
 ─────────────────────────────────────────────────
 Files updated:        <list, e.g. 01-system-design/03-serverless-functions, 02-dsa/01-reordering>
 Files added:          <list, e.g. 02-dsa/06-diff-operation>
