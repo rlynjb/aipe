@@ -13,6 +13,7 @@ Focus: relational data systems, system design fundamentals, DSA refresher.
 3. **unshippd** — Real-world project (system design, relational data systems). Study the existing build, audit it end-to-end, and harden it (tests, edge cases, schema review).
 4. **buffr** — Real-world project (system design, DSA, relational data systems). Study and document the current architecture.
 5. **contrl** — Real-world project (system design, DSA). Study and document the current architecture.
+6. **dryrun** - Real-world project (system design, DSA). Study and document the current architecture.
 
 ---
 
