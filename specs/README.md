@@ -7,22 +7,38 @@ The specs work together. They're not a menu to pick from; they're a flow with ha
 
 ## The system at a glance
 
-Three layers of work, each with its own discipline:
+Two flows. The action flow (top) is for getting work done. The reflective flow (bottom) is for thinking and learning.
 
 ```
-DESCRIBE        →    DIAGNOSE      →    ACT
-(no action)          (triage)            (changes code)
+ACTION FLOW
+═══════════
 
-audit.md             audit-cleanup.md    refactor.md
-audit-frontend-a11y.md                   refactor-frontend-behaviour.md
-                                         refactor-frontend-visual.md
+DESCRIBE        →    DIAGNOSE          →    ACT
+(no action)          (triage)                (changes code)
+
+audit.md             audit-cleanup.md        refactor.md
+audit-frontend-a11y.md                       refactor-frontend-behaviour.md
+                                             refactor-frontend-visual.md
+
+
+REFLECTIVE FLOW
+═══════════════
+
+EVALUATE                       TEACH
+(opinions, no action)          (concepts, anchored to code)
+
+audit-refactor.md              study.md
 ```
 
   - **Describe** — take stock of what exists. No changes, no proposals, no grading.
   - **Diagnose** — find debt and decide what's worth paying down. Produces a triaged list.
   - **Act** — execute one specific, named change. Behaviour-preserving by default.
+  - **Evaluate** — staff-engineer opinions on the codebase, organized as a book. Not a fix list; a notebook you return to.
+  - **Teach** — concept-by-concept study guides anchored to this specific codebase. System design, DSA, AI/ML patterns walked end-to-end.
 
-Findings flow downward. An audit might surface debt → a cleanup audit triages it → a refactor spec executes the fix. The discipline is in **not skipping layers** — acting without diagnosing leads to scope creep; diagnosing without describing leads to fixing the wrong things.
+Findings in the action flow move downward: an audit surfaces debt → cleanup audit triages it → refactor spec executes. The discipline is in **not skipping layers** — acting without diagnosing leads to scope creep; diagnosing without describing leads to fixing the wrong things.
+
+The reflective flow is separate. Read it when you want to think about or learn from a codebase, not when you want to change it. Both reflective specs hand off to the action flow when you're ready to act, but the artifacts themselves aren't action-oriented.
 
 
 ## "I want to..." — which spec?
@@ -45,6 +61,24 @@ You can feel the codebase getting heavy. You want to fix what's worth fixing, ac
   - **audit-cleanup.md** — produces a triaged debt list, then hands off to refactor specs
 
 Common signs: hesitating before touching certain files, finding the same logic in three places, names that no longer match what the code does.
+
+
+### Think about a codebase without committing to act
+
+You're not planning work. You want a staff engineer's opinions on the codebase — what's well-built, what's tangled, what techniques would apply where, what tradeoffs were made. Something you can read and return to like a book.
+
+  - **audit-refactor.md** — produces a six-chapter notebook organized by refactor category, with staff-engineer takes and verdicts on what's worth doing
+
+Common reasons: stepping back after a build phase, preparing to brief someone, building intuition for interviews, deciding what to focus on next.
+
+
+### Learn concepts from a codebase
+
+You want to deeply understand the patterns in a codebase — system design, DSA, AI/ML engineering — concept by concept, anchored to the actual code you wrote. One file per pattern, walked end-to-end from curiosity hook to validated understanding.
+
+  - **study.md** — produces a directory of concept files (one per pattern found in the codebase or named in the curriculum) with diagrams, tradeoffs, and validation blocks
+
+Common reasons: building real comprehension (not memorization) before interviews, working through a curriculum with your own code as the anchor, returning to specific concepts as reference.
 
 
 ### Restructure code without changing what it does
@@ -83,9 +117,19 @@ audit-frontend-a11y.md  ────►  identifies a11y gaps
                                     ├──►  new capability needed  →  feature spec
                                     ├──►  broken behaviour       →  fix mini-spec
                                     └──►  semantic markup change →  refactor-frontend-visual.md
+
+audit-refactor.md  ───►  staff-engineer takes (book)
+                                    │
+                                    └──►  when ready to act  →  audit-cleanup.md
+                                                                (then refactor specs)
+
+study.md  ──────────────►  concept files anchored to codebase
+                                    │
+                                    └──►  no automatic handoff — the artifact is
+                                          the deliverable; you read and return to it
 ```
 
-The arrows are one-way. Refactors don't loop back to audits; audits don't execute refactors. Each spec stays in its layer.
+The arrows are one-way. Refactors don't loop back to audits; audits don't execute refactors. The reflective specs hand off to the action flow but never receive from it. Each spec stays in its layer.
 
 
 ## Why the constraints matter
@@ -114,6 +158,8 @@ The discipline is what makes the specs useful. If you find yourself softening th
 | `audit.md` | Describe | Any codebase | Snapshots, onboarding, portfolio writing, interview prep |
 | `audit-frontend-a11y.md` | Describe | Frontend a11y | Finding accessibility gaps without committing to fix them |
 | `audit-cleanup.md` | Diagnose | Any codebase | Producing a triaged debt list with explicit fix/accept/defer decisions |
+| `audit-refactor.md` | Evaluate | Any codebase | Staff-engineer notebook of takes on what's worth refactoring — book-style, returnable |
+| `study.md` | Teach | Any codebase | Concept-by-concept study guides anchored to the code — system design, DSA, AI/ML |
 | `refactor.md` | Act | Any code, language-agnostic | Named, behaviour-preserving restructures |
 | `refactor-frontend-behaviour.md` | Act | Frontend behaviour | State placement, effects, components, data flow, perf |
 | `refactor-frontend-visual.md` | Act | Frontend visuals | CSS organization, design tokens, semantic HTML |
