@@ -1,11 +1,11 @@
 ---
-description: Restructure without changing behaviour
-argument-hint: <intent...>
+description: Restructure without changing behaviour — name the technique, scope it tight
+argument-hint: <what to refactor + why>
 ---
 
 The user invoked `/aipe:refactor` with intent: `$ARGUMENTS`.
 
-If `$ARGUMENTS` is empty or only whitespace, ask the user for a brief intent (one short sentence describing what to spec) and stop. Don't proceed without an intent.
+If `$ARGUMENTS` is empty or only whitespace, ask the user for a brief intent (one short sentence — what to refactor and why) and stop. Don't proceed without an intent.
 
 ## Step 1 — Initialize if needed
 
@@ -57,15 +57,25 @@ ${CLAUDE_PLUGIN_ROOT}/specs/refactor.md
 
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for `specs/refactor.md` upward from this file's location.
 
-## Step 4 — Compose the filled spec
+## Step 4 — Compose the filled refactor spec
 
-Apply the template structure to the project context and the user's intent (`$ARGUMENTS`). Use your own model — this is what you're already doing in this conversation, no external API call.
+Apply the spec format from the loaded template (the `## What to refactor` / `## Why` / `## Refactor type` / ... block) to the project context and the user's intent (`$ARGUMENTS`).
 
-Rules:
+The non-negotiables from the template:
+
+1. **Name the technique.** "Refactor type" is the single most important field. Use a name from the vocabulary catalog in the loaded template — composition (Extract Function, Rename, Move, ...), structural (Extract Module, Invert Dependency, Separate Pure from Effectful, ...), pattern (Strategy, Adapter, Factory, ...), or DSA (Change Data Structure, Replace Quadratic with Linear, ...). "Clean up X" / "Make X better" / "Improve X" are not refactor types and the spec must reject them.
+2. **Pick the smallest type that fixes the diagnosis.** Composition < structural < pattern < DSA. When multiple types could fix the same problem, prefer the smaller one — its blast radius is smaller and the verification is easier.
+3. **One refactor type per spec, one spec per session.** If the intent names more than one technique ("extract a function AND rename it"), split into multiple specs and tell the user. Combining types is how scope creeps.
+4. **`## Why` must name the principle being violated.** Single Responsibility, DRY-with-care, Separation of Concerns, Dependency Inversion, etc. — pulled from the Principles section of the template. "Code is messy" is not a diagnosis.
+5. **`## Must not change` is non-negotiable.** Always include: external API/interface stays identical, no behaviour change (same input → same output), `Do not touch [specific files]`. Add any project-specific constraints from `.aipe/project/context.md`'s "What must not change" section.
+6. **`## Must not introduce` is non-negotiable.** Always include: no new dependencies, no new abstractions not discussed in this spec, no additional refactors discovered along the way (surface them as separate specs).
+7. **`## Done when` must be verifiable.** Existing tests pass / feature still works end-to-end / equivalent measurement. "Looks cleaner" is not a done condition.
+
+Composition rules:
 - Replace every `[bracket placeholder]` with concrete content.
 - All file names and paths must match the actual project (from the context files).
-- Constraints sections must reflect real project constraints, not generic advice.
-- Output ONLY the filled spec body — no preamble, no commentary.
+- The "Must not change" and "Must not introduce" sections must reflect real project constraints, not generic advice.
+- Output ONLY the filled spec body — no preamble, no commentary about the process.
 
 ## Step 5 — Save the spec
 
@@ -85,6 +95,6 @@ Print exactly:
 ✓ Spec saved to <path>
 ```
 
-Then give a 3-sentence summary of what the spec covers (the main sections, the key decisions baked in, any open questions the user might want to clarify).
+Then a 3-sentence summary: the refactor type chosen, the principle being addressed, and any open questions the user might want to clarify before execution.
 
-**Stop. Wait for the user's next instruction.** Do NOT auto-implement.
+**Stop. Wait for the user's next instruction.** Do NOT auto-execute the refactor — that's a separate session with the spec as the only input.

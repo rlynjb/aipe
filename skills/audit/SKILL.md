@@ -1,17 +1,17 @@
 ---
-description: Review existing code before adding features
-argument-hint: <intent...>
+description: Take stock of a project — describe what is, not what to do
+argument-hint: <optional scope...>
 ---
 
-The user invoked `/aipe:audit` with intent: `$ARGUMENTS`.
+The user invoked `/aipe:audit` with optional scope: `$ARGUMENTS`.
 
-If `$ARGUMENTS` is empty or only whitespace, ask the user for a brief intent (one short sentence describing what to spec) and stop. Don't proceed without an intent.
+`$ARGUMENTS` is optional. If empty, audit the whole project. If supplied, treat it as a hint to narrow the scan (e.g., "auth flow", "data layer").
 
 ## Step 1 — Initialize if needed
 
 If `.aipe/project/context.md` does NOT exist in the current working directory:
 
-1. Create `.aipe/project/` and `.aipe/specs/` directories.
+1. Create `.aipe/project/` and `.aipe/audits/` directories.
 2. Write `.aipe/project/context.md` with this placeholder body:
 
    ```
@@ -32,7 +32,7 @@ If `.aipe/project/context.md` does NOT exist in the current working directory:
    - public API surface, schema fields, ...
    ```
 
-3. Print: `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:audit $ARGUMENTS.`
+3. Print: `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:audit.`
 4. **Stop. Don't proceed.** The user needs to fill in real context first.
 
 ## Step 2 — Load context
@@ -57,34 +57,43 @@ ${CODEX_PLUGIN_ROOT}/specs/audit.md
 
 If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for `specs/audit.md` upward from this file's location.
 
-## Step 4 — Compose the filled spec
+## Step 4 — Run the audit
 
-Apply the template structure to the project context and the user's intent (`$ARGUMENTS`). Use your own model — this is what you're already doing in this conversation, no external API call.
+Apply the procedure in the loaded template. Produce a status report covering the **eight sections** the spec names. If `$ARGUMENTS` is non-empty, narrow the scan to that area; otherwise cover the whole project.
 
-Rules:
-- Replace every `[bracket placeholder]` with concrete content.
-- All file names and paths must match the actual project (from the context files).
-- Constraints sections must reflect real project constraints, not generic advice.
-- Output ONLY the filled spec body — no preamble, no commentary.
+The non-negotiables from the template:
 
-## Step 5 — Save the spec
+1. **Describe, don't act.** No "you should...", no prioritized fix lists, no grading. The audit's job is to tell the reader *what is*, not *what to do*.
+2. **Be specific.** Name modules, features, libraries, decisions, file paths. Generic claims ("uses some libraries") are useless to a future reader.
+3. **Cover all 8 sections in order.** Identity → Stack → Architecture → Features → Decisions → Incomplete and deferred → Risks and rough edges → What's next.
+4. **Decisions section is the highest-value one.** Reconstruct the *why* behind notable choices — tradeoffs accepted, things explicitly rejected. The code shows what; only the audit captures why.
+5. **Risks section is observation, not prescription.** "Hard to change" is an observation; "needs to be refactored" is a prescription that belongs in `audit-cleanup` or feature work.
+6. **If the audit surfaces something that wants to be acted on, hand off** — debt → `/aipe:audit-cleanup`, restructuring → `/aipe:refactor`, new capability → feature work. Do NOT execute the action here.
 
-Compute the slug from `$ARGUMENTS`: lowercase, replace non-alphanumerics with `-`, collapse repeats, trim to 60 chars. If empty, use `spec`.
+## Step 5 — Save the snapshot
 
-Path: `.aipe/specs/audits/<slug>.md`
+Compute the date: `<YYYY-MM-DD>` (today, local time).
 
-If that file already exists, append an ISO timestamp: `.aipe/specs/audits/<slug>-<YYYY-MM-DDTHH-MM-SS>.md`. **Never overwrite.**
+Path: `.aipe/audits/snapshot-<YYYY-MM-DD>.md`
 
-Create parent directories as needed and write the filled spec.
+If that file already exists, append an ISO time suffix: `.aipe/audits/snapshot-<YYYY-MM-DD>T<HH-MM-SS>.md`. **Never overwrite** — audits are timestamped snapshots, not living documents.
+
+Create parent directories as needed and write the audit body. The output is the eight-section report only — no preamble, no commentary about the process.
 
 ## Step 6 — Report + stop
 
 Print exactly:
 
 ```
-✓ Spec saved to <path>
+✓ Audit saved to <path>
 ```
 
-Then give a 3-sentence summary of what the spec covers (the main sections, the key decisions baked in, any open questions the user might want to clarify).
+Then a short summary (3–5 sentences) of what the audit covers and what stood out: which section ran longest, any notable deferred items, any aging dependencies the user might not have realized.
 
-**Stop. Wait for the user's next instruction.** Do NOT auto-implement.
+Optionally suggest the four re-read lenses from the spec as next prompts:
+- *onboarding yourself back* — read Identity → What's next → Incomplete and deferred → Decisions
+- *portfolio / README writing* — read Identity → Features (stable) → Architecture → Stack → Decisions
+- *briefing someone else* — read Identity → Architecture → Decisions → Incomplete and deferred → Risks
+- *periodic check-in* — read Incomplete and deferred → What's next → Risks
+
+**Stop. Wait for the user's next instruction.** Do NOT auto-update `.aipe/project/context.md`. Do NOT act on findings. Do NOT generate follow-up specs — that's the user's call.

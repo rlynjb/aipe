@@ -1,21 +1,17 @@
 {
   "name": "aipe",
-  "description": "Spec workflow for AI-assisted development. 11 per-type skills (one per spec type) generate filled specs from your project context using your agent's own model — no external CLI, no extra API keys.",
-  "version": "1.33.0",
+  "description": "Spec workflow for AI-assisted development. 7 disciplined skills across three layers (Describe → Diagnose → Act) — audit, audit-cleanup, audit-frontend-a11y, refactor, refactor-frontend-behaviour, refactor-frontend-visual, study — generate filled specs from your project context using your agent's own model, no external CLI.",
+  "version": "1.34.0",
   "developerName": "rlynjb",
   "websiteURL": "https://github.com/rlynjb/aipe",
   "category": "productivity",
   "skills": [
-    "./skills/plan",
-    "./skills/feature",
-    "./skills/debugging",
     "./skills/audit",
-    "./skills/testing",
-    "./skills/user-stories",
+    "./skills/audit-cleanup",
+    "./skills/audit-frontend-a11y",
     "./skills/refactor",
-    "./skills/migration",
-    "./skills/performance",
-    "./skills/integration",
+    "./skills/refactor-frontend-behaviour",
+    "./skills/refactor-frontend-visual",
     "./skills/study"
   ],
   "license": "MIT"

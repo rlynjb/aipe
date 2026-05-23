@@ -9,7 +9,7 @@
         "source": "github",
         "repo": "rlynjb/aipe"
       },
-      "description": "Generate filled specs from 14 templates and your project context, using your agent's own model — no external CLI."
+      "description": "Generate filled specs from 7 disciplined templates (Describe → Diagnose → Act layers) and your project context, using your agent's own model — no external CLI."
     }
   ]
 }
