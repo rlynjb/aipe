@@ -3876,12 +3876,14 @@ SECTION 03 — AI ENGINEERING
 
 Cover every AI pattern in the codebase. The patterns
 below are organized by sub-discipline — LLM
-foundations, prompt engineering, retrieval, agents,
-evals, and production. Each sub-discipline maps to
-a phase of building real LLM-powered systems. For
-each pattern: explain what it is, show it visually,
-show what the code does at each step, and name the
-tradeoff.
+foundations, retrieval, agents, evals, and
+production. (Prompt engineering as a sub-discipline
+has moved to its own spec — see
+`study-prompt-engineering.md`.) Each sub-discipline
+maps to a phase of building real LLM-powered
+systems. For each pattern: explain what it is, show
+it visually, show what the code does at each step,
+and name the tradeoff.
 
 Three project anchors map to three shapes of AI work,
 deliberately separated. Every sub-section below
@@ -3903,7 +3905,8 @@ contrast.
   │              │ discipline + meta-tooling —     │
   │              │ markdown specs, slash commands, │
   │              │ retrieval over project context, │
-  │              │ meta-agents                     │
+  │              │ meta-agents — covered in        │
+  │              │ study-prompt-engineering.md     │
   ├──────────────┼─────────────────────────────────┤
   │ contrl-mo    │ Classical supervised ML +       │
   │              │ on-device inference +           │
@@ -4187,210 +4190,46 @@ LLM foundations
 
 ═════════════════════════════════════════════════
 Prompt engineering as a discipline
-  Anchor: aipe (primary) · loopd (secondary)
-  Curriculum: Phase 1 — concepts C1.7, C1.10, C1.12
-  This is the meta-tooling shape — aipe encodes
-  prompt engineering as reusable markdown templates
-  and slash commands. The patterns below are
-  exercised in loopd's 5 chains and in aipe's 11
-  templates.
+  See: study-prompt-engineering.md
 ═════════════════════════════════════════════════
 
-  Prompt engineering is the load-bearing skill of LLM
-  application engineering. It's not a magic incantation
-  list — it's a set of patterns for getting reliable
-  output from a non-deterministic function. The patterns
-  below are organized by what they solve.
+  Prompt engineering has its own spec.
 
-  ### Anatomy of a production prompt
+  The concepts that previously lived here — anatomy
+  of a production prompt, single-purpose chains,
+  output mode mismatch, few-shot prompting,
+  chain-of-thought, forbidden patterns — have all
+  moved to a dedicated spec at the root of this
+  project: `study-prompt-engineering.md`. The new
+  spec also adds Tier 1 concepts (structured outputs
+  via tool calling, prompts as code with versioning,
+  token budgeting and context window management,
+  eval-driven iteration, prompt injection defenses)
+  and Tier 2 concepts (self-critique, meta-
+  prompting), for a total of 13 concepts.
 
-  Show the four sections every reliable prompt has:
+  The prompt engineering spec uses a different
+  persona — a working AI engineer who has shipped
+  production LLM features and iterated thousands of
+  prompts — rather than `study.md`'s staff-engineer-
+  from-FAANG persona. The voice difference matters:
+  prompt engineering knowledge that survives
+  production comes from a different career path
+  than systems engineering knowledge that scales,
+  and the writing should reflect that.
 
-  ┌────────────────────────────────────────────────┐
-  │ SYSTEM PROMPT                                  │
-  ├────────────────────────────────────────────────┤
-  │  Role:        "You are X."                     │
-  │  Task:        "Your job is to do Y."           │
-  │  Constraints: "Never do Z. Always do W."       │
-  │  Output:      "Return JSON matching {schema}." │
-  └────────────────────────────────────────────────┘
-                       │
-                       ▼
-  ┌────────────────────────────────────────────────┐
-  │ CONTEXT INJECTION (dynamic per call)           │
-  │  Retrieved docs, conversation history,         │
-  │  prior outputs from earlier chains             │
-  └────────────────────────────────────────────────┘
-                       │
-                       ▼
-  ┌────────────────────────────────────────────────┐
-  │ FEW-SHOT EXAMPLES (when applicable)            │
-  │  Input → expected output, 2–5 examples         │
-  └────────────────────────────────────────────────┘
-                       │
-                       ▼
-  ┌────────────────────────────────────────────────┐
-  │ USER MESSAGE                                   │
-  │  The actual input to process                   │
-  └────────────────────────────────────────────────┘
+  Structurally, the prompt engineering spec inherits
+  everything from `study.md`: the per-concept-file
+  template, all formatting rules, the diagram
+  requirements, the hard rules, the Validate block.
+  Run the prompt engineering generator by giving the
+  agent both files (`study.md` for structure,
+  `study-prompt-engineering.md` for topic and voice)
+  along with the relevant codebases (typically aipe
+  and loopd).
 
-  Why this structure: each section has one job. Mixing
-                       them ("here are some examples and
-                       also remember to output JSON and
-                       also don't be rude") is how prompts
-                       drift over time.
-  What goes in system vs user: anything constant about
-                                the chain's job goes in
-                                system; anything that
-                                changes per call goes in
-                                user.
+  Output folder: `.aipe/study-prompt-engineering/`
 
-  ### Single-purpose chains
-
-  Show the pipeline pattern:
-
-  User input
-    │
-    ▼
-  ┌──────────────────┐
-  │  Chain A         │  single job: summarise
-  │  system prompt   │
-  │  user message    │
-  └──────────────────┘
-    │
-    │  output A (structured)
-    ▼
-  ┌──────────────────┐
-  │  Chain B         │  single job: classify intent
-  │  system prompt   │
-  │  + output A      │
-  └──────────────────┘
-    │
-    ▼
-  Final result
-
-  Why single-purpose:
-    → Easier to debug — one chain fails, you know
-       which job failed
-    → Easier to test — each chain has a clear
-       expected output
-    → Cheaper — you only run the chains you need
-    → Easier to swap models per chain (small models
-       for classifiers, large for generation)
-
-  What happens with a multi-purpose chain:
-    → If it fails, you don't know which job caused it
-    → You can't swap one job without affecting the other
-    → Harder to add a new job later
-    → Forced to use the most-capable model for the
-       whole call, even when 90% of it is simple
-
-  ### Output mode mismatch
-
-  Show the failure pattern:
-
-  Chain A returns: JSON       Chain B expects: markdown
-                              ↓
-                              Parser breaks. Silent fallback?
-                              Hard error? Either is bad.
-
-  The rule: every chain has one output mode, declared
-            in its schema. Chains that produce JSON go
-            through one parser path; chains that produce
-            markdown or prose go through another.
-  How to spot mismatches: any chain that uses
-                           `JSON.parse(response)` without
-                           explicit error handling is
-                           a future incident.
-  How this codebase handles it: [chains by output mode,
-                                 parser paths]
-
-  ### Few-shot prompting
-
-  Show how examples shape output:
-
-  Without examples (zero-shot):
-  System: "Classify intent: todo, question, or vent."
-  User:   "remembered to call mom"
-  LLM:    "todo"               ← might also return "completion" or "memory"
-
-  With examples (few-shot):
-  System: "Classify intent: todo, question, or vent.
-          Examples:
-            'buy milk' → todo
-            'why am I tired' → question
-            'i hate mondays' → vent"
-  User:   "remembered to call mom"
-  LLM:    "todo"               ← consistently uses the labels you defined
-
-  Why few-shot works: the model pattern-matches the
-                       output shape from the examples.
-                       Examples constrain output more
-                       than instructions do.
-  When to use: classifiers, format-sensitive outputs,
-                anywhere you need consistency.
-  When not to use: open-ended generation (creative
-                    writing), where examples bias
-                    toward repetition.
-  Tradeoff: examples consume context tokens. 3–5 good
-            examples beats 20 mediocre ones.
-
-  ### Chain-of-thought (CoT)
-
-  Show the reasoning pattern:
-
-  Direct prompt:
-  Q: "Will this commit break the auth flow?"
-  A: "Yes" / "No"           ← model jumps to conclusion
-
-  CoT prompt:
-  Q: "Will this commit break the auth flow?
-      Think step by step. List what auth depends on,
-      then check each dependency against the diff."
-  A: "Step 1: Auth depends on the session token...
-      Step 2: The diff modifies session.ts at line...
-      Conclusion: Yes, line 42 changes the token
-      structure, which will break verification."
-
-  Why CoT works: giving the model space to "think out
-                  loud" before answering produces more
-                  accurate answers on multi-step problems.
-  When it doesn't: simple lookups, classifications.
-                    CoT wastes tokens.
-  Modern caveat: most frontier models do CoT internally
-                  now. Asking for it explicitly is less
-                  necessary than it was, but still helps
-                  on cheaper models.
-
-  ### Forbidden patterns and rotating formulas
-
-  Show how anti-repetition works in practice:
-
-  Caption chain with rotation history:
-  ┌────────────────────────────────────────────────┐
-  │ Input:                                         │
-  │   transcript: "today I built the auth flow..."│
-  │   recentCaptions: [                            │
-  │     "Today I worked on auth...",               │
-  │     "I built the auth flow today..."           │
-  │   ]                                            │
-  ├────────────────────────────────────────────────┤
-  │ System prompt:                                 │
-  │   FORBIDDEN: "Today I", "I built", "I worked"  │
-  │   ROTATE: use a different opening formula      │
-  └────────────────────────────────────────────────┘
-                       │
-                       ▼
-  Output: "Auth flow shipped — finally clicked..."
-
-  Why this pattern: LLMs converge on phrasings.
-                    Without intervention, every caption
-                    from the same chain sounds the same.
-  The mechanism: explicitly list forbidden openings,
-                  enumerate rotating formulas, give the
-                  model permission to be different.
-  How this codebase uses it: [caption chain spec,
-                              recentCaptions field]
 
 ═════════════════════════════════════════════════
 Context and prompts
@@ -5309,12 +5148,14 @@ System design templates (interview reframes)
 
   This is Phase 5's synthesis layer. By the time the
   reader gets here, they've covered LLM foundations,
-  prompt engineering, retrieval, agents, evals, and
-  production. The templates ask: "now zoom out. If an
-  interviewer says 'design X system,' can you answer
-  by walking through *this* codebase as that
-  system?" That reframe is what converts project work
-  into interview signal.
+  retrieval, agents, evals, and production (and,
+  in the companion `study-prompt-engineering.md`,
+  prompt engineering as its own discipline). The
+  templates ask: "now zoom out. If an interviewer
+  says 'design X system,' can you answer by walking
+  through *this* codebase as that system?" That
+  reframe is what converts project work into
+  interview signal.
 
   All templates appear in every AI Engineering study
   guide — even when the current codebase doesn't
