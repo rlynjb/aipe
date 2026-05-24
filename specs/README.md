@@ -28,6 +28,7 @@ EVALUATE                       TEACH
 (opinions, no action)          (concepts, anchored to code)
 
 audit-refactor.md              study.md
+                               study-prompt-engineering.md
 ```
 
   - **Describe** — take stock of what exists. No changes, no proposals, no grading.
@@ -76,7 +77,8 @@ Common reasons: stepping back after a build phase, preparing to brief someone, b
 
 You want to deeply understand the patterns in a codebase — system design, DSA, AI/ML engineering — concept by concept, anchored to the actual code you wrote. One file per pattern, walked end-to-end from curiosity hook to validated understanding.
 
-  - **study.md** — produces a directory of concept files (one per pattern found in the codebase or named in the curriculum) with diagrams, tradeoffs, and validation blocks
+  - **study.md** — per-codebase guide. Produces `.aipe/study-<purpose>/` with one file per pattern found in the codebase (or named in the curriculum), in a staff-engineer voice. Diagrams, tradeoffs, validation blocks.
+  - **study-prompt-engineering.md** — topic-focused companion to study.md. Produces a single fixed-path guide (`.aipe/study-prompt-engineering/`) of 13 prompt-engineering concepts across the whole portfolio, in a working-AI-engineer voice. Inherits study.md's structure; differs in persona, concept list, and fixed output folder.
 
 Common reasons: building real comprehension (not memorization) before interviews, working through a curriculum with your own code as the anchor, returning to specific concepts as reference.
 
@@ -127,6 +129,12 @@ study.md  ──────────────►  concept files anchored 
                                     │
                                     └──►  no automatic handoff — the artifact is
                                           the deliverable; you read and return to it
+
+study-prompt-engineering.md  ───►  13 prompt-engineering concept files
+  (inherits study.md structure)         (working-AI-engineer voice; fixed
+                                         path, not per-codebase)
+                                    │
+                                    └──►  no automatic handoff — same as study.md
 ```
 
 The arrows are one-way. Refactors don't loop back to audits; audits don't execute refactors. The reflective specs hand off to the action flow but never receive from it. Each spec stays in its layer.
@@ -159,7 +167,8 @@ The discipline is what makes the specs useful. If you find yourself softening th
 | `audit-frontend-a11y.md` | Describe | Frontend a11y | Finding accessibility gaps without committing to fix them |
 | `audit-cleanup.md` | Diagnose | Any codebase | Producing a triaged debt list with explicit fix/accept/defer decisions |
 | `audit-refactor.md` | Evaluate | Any codebase | Staff-engineer notebook of takes on what's worth refactoring — book-style, returnable |
-| `study.md` | Teach | Any codebase | Concept-by-concept study guides anchored to the code — system design, DSA, AI/ML |
+| `study.md` | Teach | Any codebase | Per-codebase concept guides — system design, DSA, AI/ML — staff-engineer voice |
+| `study-prompt-engineering.md` | Teach | Portfolio-wide | 13 prompt-engineering concepts — working-AI-engineer voice, fixed output folder |
 | `refactor.md` | Act | Any code, language-agnostic | Named, behaviour-preserving restructures |
 | `refactor-frontend-behaviour.md` | Act | Frontend behaviour | State placement, effects, components, data flow, perf |
 | `refactor-frontend-visual.md` | Act | Frontend visuals | CSS organization, design tokens, semantic HTML |
