@@ -4,9 +4,11 @@ description: Prompt engineering study guide — 13 concepts in a working-AI-engi
 
 The user invoked `/aipe:study-prompt-engineering`.
 
-This command takes **no arguments**. There is one prompt-engineering guide across the user's whole portfolio (not per-project) saved at the fixed path `.aipe/study-prompt-engineering/`. Codebases (typically aipe and loopd) inform the *examples* inside the files, not the folder name. Re-running enters UPDATE MODE on the existing directory.
+This command takes **no arguments**. There is one prompt-engineering guide per repo, saved at the fixed path `.aipe/study-prompt-engineering/`. `.aipe/` is per-repo (lives at the root of whichever repo the command is run in); the folder name is fixed across repos because it names the *topic*, not the codebase. Re-running enters UPDATE MODE on the existing directory.
 
 This command produces a topic-focused companion to `/aipe:study` — same per-concept template, different voice, fixed concept list. The 13 concepts cover prompt engineering as a working discipline: anatomy of a production prompt, structured outputs, prompts as code, token budgeting, eval-driven iteration, single-purpose chains, output mode mismatch, few-shot, chain-of-thought, self-critique, meta-prompting, prompt injection defenses, forbidden patterns.
+
+**Per-repo scope.** This spec runs against one codebase at a time — the repo where the command was invoked. Codebase examples (loopd, aipe) named in the spec are illustrative of patterns; they are not required references. The agent describes how *this codebase* uses each pattern, not how the named projects use them.
 
 ## Step 1 — Initialize if needed
 
@@ -92,7 +94,7 @@ The non-negotiables — inherited from both specs:
 6. **No demo-vs-prod elision.** If a technique only works in demos, say so. If it works under specific conditions, name the conditions. If it stops working after a model upgrade, name that too.
 7. **First-person where it earns its place.** "I" appears when recounting a specific debugging episode, a specific production decision, a specific learning. Not for every paragraph.
 8. **Cite the literature when relevant.** When a pattern has a canonical source (Hamel on evals, OpenAI cookbook, Anthropic prompt guide), name it.
-9. **Anchor every concept to the codebases.** aipe and loopd are the canonical examples. For each concept, identify whether the anchor codebase implements it (Case A — `In this codebase` describes the implementation) or not (Case B — "Not yet implemented" with one honest sentence; Project exercises becomes the primary buildable target).
+9. **Anchor every concept to *this* codebase.** For each concept, identify whether *this* codebase implements it (Case A — `In this codebase` describes the implementation with real file + function + line range) or not (Case B — "Not yet implemented" with one honest sentence; Project exercises becomes the primary buildable target). Examples in the spec (aipe, loopd) illustrate what each concept *typically* looks like in well-shaped LLM application or meta-tooling codebases — they're not required references for the file you're writing.
 10. **Out-of-scope topics stay out**: vendor-specific syntax quirks (they appear inside Tech reference, not as their own concepts), Tree of Thoughts / academic prompt research, Constitutional AI, vision/multi-modal prompting, jailbreak research from the attacker side, the history of prompt engineering. The 13 concepts are the complete list.
 
 ## Step 6C — Create the directory structure
@@ -131,23 +133,23 @@ Write the files in this order so each builds on prior context where useful:
 
 Each file uses the full per-concept structure from `study.md` — Subtitle, blockquote summary, See also, Why care (5 moves), How it works (3 moves with diagrams at every move and every sub-section), primary diagram, In this codebase (with real file + function + line range references), Elaborate, Tradeoffs (with comparison table + breakpoint), Tech reference (with `###` heading + labelled bullets, never pipe-tables), Project exercises (curriculum-driven if curriculum loaded), Summary, Interview defense (with diagrams per Q&A), Validate.
 
-Anchor each concept to the named codebase per `study-prompt-engineering.md`:
+Anchor each concept to *this* codebase. The example anchors below (from `study-prompt-engineering.md`) describe what each concept *typically* looks like in well-shaped codebases — use them to recognize the pattern, then describe how this specific codebase implements it (Case A) or hasn't yet (Case B):
 
-- **#1 anatomy** — aipe (templates explicitly named) + loopd (5 chains, each with its own anatomy)
-- **#2 structured-outputs** — loopd (intent classifier, tag extractor) + aipe (template-output contracts)
-- **#3 prompts-as-code** — aipe (markdown templates as version-controlled prompts) + loopd
-- **#4 token-budgeting** — loopd (5 chains with measured token costs) + aipe (templates that fit a budget)
-- **#5 eval-driven-iteration** — loopd (intent classifier eval set) + aipe (template regression tests)
-- **#6 single-purpose-chains** — loopd
-- **#7 output-mode-mismatch** — loopd
-- **#8 few-shot** — loopd + aipe
-- **#9 chain-of-thought** — loopd
-- **#10 self-critique** — loopd (high-stakes journal edits)
-- **#11 meta-prompting** — aipe (templates that generate prompts for other LLM calls)
-- **#12 prompt-injection-defense** — loopd + aipe
-- **#13 forbidden-patterns** — loopd (caption chain with rotation history)
+- **#1 anatomy** — typically: explicit templates named in code (aipe-shaped) or chains each with their own anatomy (loopd-shaped)
+- **#2 structured-outputs** — typically: classifiers / extractors with declared schemas (loopd-shaped) or template-output contracts (aipe-shaped)
+- **#3 prompts-as-code** — typically: markdown templates as version-controlled prompts (aipe-shaped)
+- **#4 token-budgeting** — typically: chains with measured token costs or templates that fit a budget
+- **#5 eval-driven-iteration** — typically: golden eval sets, regression suites, LLM-as-judge wired in
+- **#6 single-purpose-chains** — typically: each chain doing one job, composed into longer flows
+- **#7 output-mode-mismatch** — typically: explicit output modes per chain, mismatches caught at boundaries
+- **#8 few-shot** — typically: classifiers with explicit examples or template literals carrying them
+- **#9 chain-of-thought** — typically: reasoning prompts for multi-step decisions
+- **#10 self-critique** — typically: high-stakes generation that runs a verify step (edits, content moderation)
+- **#11 meta-prompting** — typically: templates that generate prompts for other LLM calls (aipe-shaped)
+- **#12 prompt-injection-defense** — typically: any feature interpolating user-controlled content into prompts
+- **#13 forbidden-patterns** — typically: generative chains run repeatedly for the same user (caption-like)
 
-If the anchor codebase doesn't yet implement the concept, use Case B from `study.md`'s Project exercises block — `In this codebase` becomes "Not yet implemented" with one honest sentence; Project exercises becomes the primary buildable target.
+For each file: if this codebase implements the concept, write `In this codebase` (Case A) with real file + function + line range. If not, use Case B — `In this codebase` says "Not yet implemented" with one honest sentence; Project exercises becomes the primary buildable target.
 
 ## Step 9C — Generate `README.md`
 

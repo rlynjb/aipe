@@ -174,18 +174,23 @@ the second kind.
 OUTPUT FOLDER NAME
 ═════════════════════════════════════════════════
 
-Following the convention in `study.md`'s "Naming
-the output folder" section, prompt engineering
-guides save to:
+Following the `.aipe/` convention used in
+`study.md`, prompt engineering guides save to:
 
   .aipe/study-prompt-engineering/
 
-This is a fixed folder name — not derived from a
-2-word descriptor — because prompt engineering is
-the topic itself, not a per-codebase study guide.
-The codebases being studied (typically aipe and
-loopd) inform the *examples* inside the files, not
-the folder name.
+`.aipe/` is a per-repo directory — it lives at the
+root of whichever repo the command was run in.
+Each repo gets its own `.aipe/study-prompt-engineering/`
+when the command is run inside that repo.
+
+The folder name is fixed across repos, because it
+names the *topic*, not the codebase. The same
+convention applies to the base study generator
+(`study-system-design-dsa/`) and the AI engineering
+spec (`study-ai-engineering/`) — each topic spec
+has its own fixed folder name, derived from the
+topic it covers.
 
 The directory structure follows `study.md`'s rules:
 
@@ -578,17 +583,18 @@ per-codebase study guide generator. Running the
 per-codebase generator (with `study.md` against a
 target codebase) does not include this spec, and
 should not — the per-codebase generator produces
-`.aipe/study-<purpose>/` for whatever codebase
-it's pointed at, while this spec produces a fixed
-output (`.aipe/study-prompt-engineering/`) that
-exists once across the whole portfolio.
+`.aipe/study-system-design-dsa/`, while this spec
+produces `.aipe/study-prompt-engineering/`. Both
+are per-repo: the `.aipe/` directory lives at the
+root of whichever repo the command was run in, so
+each repo gets its own pair of folders.
 
 The two workflows share `study.md` as their
 structural foundation but are triggered
 independently and produce independent outputs.
-To produce the prompt engineering guide, the
-agent must be explicitly invoked with this spec
-plus `study.md` plus the example codebases.
+To produce the prompt engineering guide for a
+repo, run this spec's command from inside that
+repo.
 
 This spec is *additive* to `study.md`, not a
 replacement. The agent run for prompt engineering

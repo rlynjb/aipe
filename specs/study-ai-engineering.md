@@ -13,9 +13,11 @@ as topics of study:
   → The set of AI and ML concepts to cover (the
     full SECTION 03 + SECTION 04 content extracted
     from the original study.md)
-  → The three-project anchor framing (loopd /
-    aipe / contrl-mo as the three shapes of AI work)
-  → The output folder name and structure
+  → A three-shapes framing for recognizing which
+    *kind* of AI/ML work the codebase exercises
+    (LLM application engineering, classical ML,
+    or a mix), used to weight coverage
+  → The output folder convention
   → AI/ML-specific constraints relocated from
     study.md's CONSTRAINTS block
 
@@ -24,6 +26,18 @@ of it. The agent reads both: `study.md` for *how*
 to write each concept file (block structure,
 diagrams, validate levels, etc.), and this spec for
 *what* to write about.
+
+**Scope: per-codebase, per-repo.** This spec runs
+against one codebase at a time, exactly like the
+base study generator. When the command is run
+inside a repo, the agent analyzes that repo's code
+and produces an AI engineering guide for *that
+codebase*. The spec does not span multiple
+codebases or read content from anywhere outside
+the current repo. If you want AI engineering
+guides for loopd, contrl-mo, and another project,
+you run the command three times — once in each
+repo's working directory.
 
 ═════════════════════════════════════════════════
 THE PERSONA
@@ -57,22 +71,33 @@ original persona.)
 OUTPUT FOLDER NAME
 ═════════════════════════════════════════════════
 
-Following the convention in `study.md`'s "Naming
-the output folder" section, AI engineering guides
-save to:
+Following the `.aipe/` convention used in
+`study.md`, AI engineering guides save to:
 
   .aipe/study-ai-engineering/
 
-This is a fixed folder name — not derived from a
-2-word descriptor — because AI engineering is the
-topic itself, not a per-codebase study guide. The
-codebases being studied (typically loopd, aipe,
-and contrl-mo) inform the *examples* inside the
-files, not the folder name.
+`.aipe/` is a per-repo directory — it lives at the
+root of whichever repo the command was run in.
+So loopd's AI engineering guide lives at
+`<loopd-repo>/.aipe/study-ai-engineering/`, and
+contrl-mo's lives at
+`<contrl-mo-repo>/.aipe/study-ai-engineering/`.
+No collision, no cross-repo coordination — each
+repo's `.aipe/` is independent.
+
+The folder name `study-ai-engineering/` is fixed
+across repos, because it names the *topic*, not
+the codebase. The same convention applies to the
+base study generator (`study-system-design-dsa/`)
+and the prompt engineering spec
+(`study-prompt-engineering/`) — each topic spec
+has its own fixed folder name, derived from the
+topic it covers.
 
 The directory structure inherits from `study.md`'s
 rules but is shaped by the two sections this spec
-contains. The top-level layout:
+contains. The top-level layout, generated per
+codebase:
 
 ```
 .aipe/study-ai-engineering/
@@ -156,20 +181,27 @@ contains. The top-level layout:
     01-recommender-system.md
     02-anomaly-detection.md
     03-object-detection-cv.md
-  ai-features-in-portfolio.md       ← cross-codebase AI features table
-  ml-features-in-portfolio.md       ← cross-codebase ML features table
+  ai-features-in-this-codebase.md   ← features in this codebase that use AI
+  ml-features-in-this-codebase.md   ← features in this codebase that use ML
 ```
 
-The "features in portfolio" files at the root are
-the cross-codebase synthesis — they list every AI
-or ML feature across the user's projects (loopd's
-chains, aipe's templates, contrl-mo's classifier
-and recommender) with the patterns each uses. They
-replace the "How this codebase uses AI/ML
-specifically" sub-sections that lived inside the
-old sections, because those sub-sections assumed
-one codebase per study guide and this spec spans
-multiple.
+The two "features in this codebase" files at the root
+describe how *this codebase* uses AI and ML — what
+chains exist, what models are deployed, what each
+feature does and which patterns it uses. They are
+per-codebase, generated from the code in the repo
+the command was run in. If the codebase has no AI
+features, `ai-features-in-this-codebase.md` is
+still generated but says so honestly ("This codebase
+does not currently use any LLM-powered features.
+The AI engineering concepts below are covered as
+study material; project exercises identify the
+features that *could* be added."). Same for ML.
+
+These files restore the per-codebase "How this
+codebase uses AI/ML specifically" pattern from the
+original SECTION 03 / SECTION 04 — they describe a
+single codebase, not a portfolio.
 
 Naming follows the kebab-case rule from `study.md`.
 Each sub-section directory has its own README.md
@@ -186,10 +218,9 @@ per-codebase study guide generator. Running the
 per-codebase generator (with `study.md` against a
 target codebase) does not include this spec, and
 should not — the per-codebase generator produces
-`.aipe/study-<purpose>/` for whatever codebase it's
-pointed at, containing only system overview, system
-design, and DSA content. AI engineering and ML
-content lives exclusively in
+`.aipe/study-system-design-dsa/`, containing only
+system overview, system design, and DSA content.
+AI engineering and ML content lives exclusively in
 `.aipe/study-ai-engineering/`, produced by this
 spec's workflow.
 
@@ -221,13 +252,17 @@ study works like this:
      concepts (Phase 1, Phase 2A/2B, Phase 2C,
      Phase 3, Phase 4, Phase 5 concepts).
 
-  4. Agent reads the codebase context for all
-     three project anchors — loopd, aipe, and
-     contrl-mo — since this spec spans the
-     portfolio rather than a single project.
+  4. Agent reads the codebase context of the
+     repo where the command was run. This spec
+     runs against one codebase at a time — the
+     same per-repo scope as the base study
+     generator. Whatever repo the command is
+     invoked in is the codebase the AI
+     engineering guide will analyze and describe.
 
   5. Agent generates `.aipe/study-ai-engineering/`
-     with sub-directories per sub-section
+     (inside that repo's `.aipe/` directory) with
+     sub-directories per sub-section
      (01-llm-foundations/, 02-context-and-prompts/,
      etc.), each containing per-concept files
      following `study.md`'s per-concept template.
@@ -301,17 +336,15 @@ systems. For each pattern: explain what it is, show
 it visually, show what the code does at each step,
 and name the tradeoff.
 
-Three project anchors map to three shapes of AI work,
-deliberately separated. Every sub-section below
-declares its primary anchor and curriculum phase.
-When generating a guide for one of these projects,
-the agent weights coverage toward sub-sections
-anchored to that project — but every sub-section is
-covered, because the interview story depends on the
-contrast.
+AI engineering work comes in three recognizable
+shapes. The table below names them with one example
+codebase per shape. When generating a guide, the
+agent first identifies which shape the codebase
+being studied most resembles — that determines how
+the rest of this spec is weighted.
 
   ┌──────────────┬─────────────────────────────────┐
-  │ Anchor       │ Shape of AI work                │
+  │ Example      │ Shape of AI work                │
   ├──────────────┼─────────────────────────────────┤
   │ loopd        │ LLM application engineering —   │
   │              │ single-purpose chains, retrieval│
@@ -330,11 +363,29 @@ contrast.
   │              │ in SECTION 04                   │
   └──────────────┴─────────────────────────────────┘
 
-  The anchor on each sub-section names which project
-  exemplifies the shape. When the codebase being
-  studied is not one of these three projects, the
+  Each sub-section in this spec declares which
+  shape it primarily belongs to via its `Anchor:`
+  line. The shape names a *category* of codebase,
+  not a specific project — loopd happens to
+  exemplify "LLM application engineering" but any
+  codebase that fits that shape would have the
+  same sub-sections weighted toward it.
+
+  When the codebase being studied matches one of
+  the example shapes (it's LLM app eng like loopd,
+  or classical ML like contrl-mo), the agent
+  weights coverage toward sub-sections with that
+  anchor. Concepts from other shapes still appear
+  if the codebase exercises them — coverage is
+  weighted, not exclusive. When the codebase
+  doesn't cleanly match any single shape, the
   agent treats anchors as instructional examples
-  rather than required mappings.
+  and covers what the code actually exercises.
+
+  Important: this spec runs against ONE codebase
+  per invocation, not all three. The shape table
+  is for recognition, not portfolio coverage. The
+  agent does not read multiple codebases.
 
 ═════════════════════════════════════════════════
 LLM foundations
@@ -2553,9 +2604,12 @@ System design templates (interview reframes)
   These are Phase 5 synthesis layers — the reader
   has built up classifier training, evaluation,
   on-device serving, and recommender concepts; now
-  they reframe contrl-mo's existing work as three
-  different IK interview templates. For codebases
-  other than contrl-mo, the templates are still
+  they reframe the codebase's existing work as three
+  different IK interview templates. When the
+  codebase being studied is contrl-mo-shaped (or
+  matches that ML shape), the templates land
+  naturally. For codebases that don't exercise
+  these patterns, the templates are still
   generated, with "Applies" set honestly and "How
   to make it apply" naming the concrete refactor.
 
@@ -3019,7 +3073,7 @@ AI engineering generation workflow.
    concrete deliverable), `**Why it earns its
    place:**` (one sentence on the interview
    signal it produces), `**Files to touch:**`
-   (real file paths in the anchor codebase, or
+   (real file paths in this codebase, or
    expected paths if Case B), `**Done when:**`
    (measurable end-state), `**Estimated effort:**`
    (one of `<1hr`, `1–4hr`, `1–2 days`, `≥1
@@ -3034,42 +3088,48 @@ AI engineering generation workflow.
    Build item.
 
 → Files for AI Engineering and Machine Learning
-   are generated for every curriculum concept in
-   scope across the portfolio, not only for
-   concepts found in any one codebase. A
-   curriculum concept (`[Cx.y]`) is in scope when
-   the curriculum tags it for at least one of the
-   anchor projects (loopd, aipe, contrl-mo) and
-   when its status is `covered`, `learn-only`, or
-   `deferred` — concepts marked out-of-scope
-   explicitly are excluded. Concepts already
-   implemented in the anchor codebase use Case A
-   of the Project exercises block; concepts not
-   yet implemented use Case B. (The per-codebase
-   study guide generator, driven by study.md,
-   remains codebase-driven for its sections —
-   system design and DSA — and generates files
-   only for patterns found in the actual code.)
+   are generated for every curriculum concept that
+   is in scope for the codebase being studied. A
+   curriculum concept (`[Cx.y]`) is in scope when:
+   (a) the codebase actually exercises the
+   concept, OR (b) the concept's curriculum status
+   is `covered`, `learn-only`, or `deferred` AND
+   the concept is relevant to the shape this
+   codebase matches (LLM app engineering shape,
+   classical ML shape, or a mix). Concepts marked
+   out-of-scope explicitly are excluded. Concepts
+   the codebase already exercises use Case A of
+   the Project exercises block (next-step
+   exercise); concepts it doesn't yet exercise but
+   are in scope for its shape use Case B (the
+   exercise becomes the primary buildable
+   target). Concepts that don't apply to this
+   codebase's shape at all (e.g. classical ML
+   concepts when the codebase is a pure LLM app)
+   are skipped — no file generated. (The base
+   study generator, driven by study.md, remains
+   codebase-driven for its sections — system
+   design and DSA — and generates files only for
+   patterns found in the actual code.)
 
 → The two "System design templates (interview
    reframes)" sub-sections — one in the AI
    Engineering body (sub-section 07), one in the
    Machine Learning body (sub-section 09) —
-   reframe the anchor codebases as IK Module
-   interview templates. AI side covers C5.10
-   (Search ranking) and C5.14 (Tech support
-   chatbot). ML side covers C5.11 (Recommender),
-   C5.12 (Anomaly detection), C5.13 (Object
-   detection / CV). Templates are generated for
-   **every** AI engineering study guide
-   regardless of current applicability — the
-   "Applies to this codebase" bullet is honest
-   about current state (`yes` / `partially` /
-   `no`), and the "How to make it apply" bullet
-   names the concrete refactor that would let the
-   reader defend the codebase as this template.
-   Output: one file per template under the
-   `07-system-design-templates/` or
+   reframe the codebase as IK Module interview
+   templates. AI side covers C5.10 (Search
+   ranking) and C5.14 (Tech support chatbot). ML
+   side covers C5.11 (Recommender), C5.12 (Anomaly
+   detection), C5.13 (Object detection / CV).
+   Templates are generated for **every** AI
+   engineering study guide regardless of current
+   applicability — the "Applies to this codebase"
+   bullet is honest about current state (`yes` /
+   `partially` / `no`), and the "How to make it
+   apply" bullet names the concrete refactor that
+   would let the reader defend the codebase as
+   this template. Output: one file per template
+   under the `07-system-design-templates/` or
    `09-ml-system-design-templates/` sub-directory.
    These template files use the fixed 9-bullet
    shape defined in this spec's "Template shape"
@@ -3079,14 +3139,19 @@ AI engineering generation workflow.
 → Each `═════` sub-section divider in this spec's
    content (sub-sections under both the AI
    Engineering and Machine Learning bodies)
-   includes an `Anchor:` line naming the primary
-   project (loopd, aipe, or contrl-mo) and a
-   `Curriculum:` line naming the phase and
-   concept ID range. When the agent is generating
-   guides oriented around one of these anchored
-   projects, it weights coverage toward
-   sub-sections anchored to that project — but
-   every sub-section is covered, because the
-   three-shapes interview story depends on the
-   contrast.
+   includes an `Anchor:` line naming an example
+   shape (loopd-shaped, aipe-shaped, contrl-mo-
+   shaped) and a `Curriculum:` line naming the
+   phase and concept ID range. The anchor names
+   the *category* of codebase the sub-section
+   primarily belongs to — not a project to be
+   read or coordinated with. When the codebase
+   being studied matches the sub-section's
+   anchor shape, the agent weights coverage
+   toward that sub-section. Sub-sections from
+   other shapes still appear if the codebase
+   exercises their concepts, but they're
+   secondary. This spec runs against ONE codebase
+   per invocation; "anchor" is a recognition
+   aid, not portfolio coverage.
 ```

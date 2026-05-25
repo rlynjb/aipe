@@ -4,9 +4,9 @@ description: Per-codebase visual study guide — system design + DSA, diagrams-f
 
 The user invoked `/aipe:study`.
 
-This command takes **no arguments**. There is one study guide per project, saved at `.aipe/study-<purpose>/` — where `<purpose>` is a 2-word descriptor capturing the app's main purpose (e.g., `study-ai-journal/`, `study-ml-fitness/`, `study-prompt-tooling/`). The agent derives `<purpose>` from the codebase on first run (Step 4); re-running `/aipe:study` from the same project detects the existing `.aipe/study-*/` directory and enters UPDATE MODE.
+This command takes **no arguments**. There is one study guide per repo, saved at the fixed path `.aipe/study-system-design-dsa/`. `.aipe/` is per-repo (lives at the root of whichever repo the command is run in), and the folder name is fixed across repos — it names the *topic*, not the codebase. Re-running `/aipe:study` from the same repo enters UPDATE MODE on the existing directory.
 
-**Scope.** This command covers system design and DSA only. **AI engineering and ML have moved to their own spec** — invoke `/aipe:study-ai-engineering` for LLM foundations, retrieval, agents, evals, production serving, and machine learning. **Prompt engineering** has its own spec too — invoke `/aipe:study-prompt-engineering` for that. Both companion specs produce fixed portfolio-wide folders (`.aipe/study-ai-engineering/`, `.aipe/study-prompt-engineering/`), not per-codebase folders like this one.
+**Scope.** This command covers system design and DSA only. **AI engineering and ML have moved to their own spec** — invoke `/aipe:study-ai-engineering` for LLM foundations, retrieval, agents, evals, production serving, and machine learning. **Prompt engineering** has its own spec too — invoke `/aipe:study-prompt-engineering` for that. Both companion specs are also per-repo with fixed folder names (`.aipe/study-ai-engineering/`, `.aipe/study-prompt-engineering/`).
 
 ## Step 1 — Initialize if needed
 
@@ -48,8 +48,6 @@ Read these files (skip missing ones):
 - `~/.config/aipe/global/stack.md` (optional)
 - `~/.config/aipe/global/skills.md` (optional)
 
-(No curriculum loading — that was AI/ML-specific and has moved to `/aipe:study-ai-engineering`.)
-
 ## Step 3 — Load the `study` template
 
 Read the template at:
@@ -62,32 +60,12 @@ If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to sear
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
-Look for an existing study guide directory in `.aipe/`:
+Check whether `.aipe/study-system-design-dsa/` already contains the guide. The signal is the presence of `00-overview.md` at the root OR any file inside `01-system-design/` or `02-dsa/`. (The directory may exist as an empty placeholder; that's not the same as having a guide already.)
 
-```bash
-ls -d .aipe/study-*/ 2>/dev/null
-```
+- **Existing guide found** → go to UPDATE MODE (Step 5U onward). **Do NOT regenerate from scratch.**
+- **No existing guide** → go to CREATE MODE (Step 5C onward).
 
-A match counts as an existing guide only if the directory contains `00-overview.md` at its root OR any file inside `01-system-design/` or `02-dsa/`. (The directory may exist as an empty placeholder; that's not the same as having a guide already.)
-
-Branch on what's found:
-
-- **One existing guide found** → record its path as `<study-dir>` and go to UPDATE MODE (Step 5U onward). **Do NOT regenerate from scratch.**
-
-- **Multiple existing guides found** (rare — usually means the project's purpose was renamed) → list them and ask the user which one to update. Honor the choice; set `<study-dir>` and go to UPDATE MODE.
-
-- **No existing guide** → derive the 2-word `<purpose>` descriptor from the codebase context and set `<study-dir>` = `.aipe/study-<purpose>/`. Then go to CREATE MODE (Step 5C onward).
-
-  **How to derive `<purpose>`:**
-  - The descriptor names *what the app does*, not what it's built with. "Next.js app" is a stack, not a purpose. "Ai journal" is a purpose.
-  - **Exactly 2 words** when possible; reach for 3 only if 2 genuinely cannot capture the purpose; never more than 3.
-  - **Kebab-case, all lowercase**: `study-ai-journal`, not `study-AiJournal` or `study-ai_journal`.
-  - **Concrete nouns and clear adjectives** over marketing language. `study-fitness-tracker` over `study-personal-wellness`. `study-prompt-tooling` over `study-developer-productivity`.
-  - **No abbreviations the reader wouldn't recognize.** `study-ai-journal` is fine; `study-pjt-tool` is not.
-  - Worked examples: `loopd` → `study-ai-journal/`; `contrl-mo` → `study-ml-fitness/`; `aipe` → `study-prompt-tooling/`; a docs Q&A app → `study-doc-search/`; a customer support chatbot → `study-support-chatbot/`.
-  - The agent decides `<purpose>` *itself* from the codebase evidence. It does NOT ask the user unless the codebase is genuinely ambiguous (e.g., the README describes one purpose but the actual code does something different). In that case, ask exactly one clarifying question naming the two candidate descriptors before proceeding.
-
-Throughout the rest of this procedure, references to `.aipe/study-<purpose>/` mean `<study-dir>` — the directory established in this step.
+**Legacy directory check.** Earlier versions of this command used `.aipe/study-<purpose>/` with a derived 2-word descriptor (e.g., `.aipe/study-ai-journal/`). If any directory matching `.aipe/study-*/` exists *other than* the four fixed names (`study-system-design-dsa/`, `study-ai-engineering/`, `study-prompt-engineering/`), treat it as a legacy guide and flag it in the report. In CREATE mode, prompt the user once: "Found a legacy guide at `<path>` — migrate its content into `.aipe/study-system-design-dsa/` or leave it as archive?" In UPDATE mode, note the legacy directory in the Step 7U change plan and let the user decide.
 
 ---
 
@@ -97,7 +75,7 @@ Runs only when no existing study guide is found.
 
 ## Step 5C — Plan the study guide
 
-The study spec produces a visual reference — diagrams first, prose second, designed for skimming. It is **not** an interview prep guide (that's `/aipe:interview`). The study guide explains the codebase so a reader can understand it.
+The study spec produces a visual reference — diagrams first, prose second, designed for skimming. It is **not** an interview prep guide. The study guide explains the codebase so a reader can understand it.
 
 Apply the template's structure (loaded in Step 3) and the project context. The output is a **nested directory of per-concept files**, not flat-per-section files. Scope is **system design + DSA only** — refer the user to `/aipe:study-ai-engineering` for AI/ML and `/aipe:study-prompt-engineering` for prompt engineering.
 
@@ -141,16 +119,16 @@ If the codebase has substantial AI/ML or prompt engineering content, mention it 
 Create:
 
 ```
-.aipe/study-<purpose>/
-.aipe/study-<purpose>/01-system-design/
-.aipe/study-<purpose>/02-dsa/
+.aipe/study-system-design-dsa/
+.aipe/study-system-design-dsa/01-system-design/
+.aipe/study-system-design-dsa/02-dsa/
 ```
 
 (Use `mkdir -p`.) Sections without applicable patterns are not created — leaving an empty `02-dsa/` for a project with no real DSA surface is misleading. The inventory from Step 6C decides which directories exist.
 
 ## Step 8C — Generate `00-overview.md`
 
-One full-system diagram + bullet legend (one line per component: what it is, what it does, what it talks to). **No prose paragraphs.** Save to `.aipe/study-<purpose>/00-overview.md`.
+One full-system diagram + bullet legend (one line per component: what it is, what it does, what it talks to). **No prose paragraphs.** Save to `.aipe/study-system-design-dsa/00-overview.md`.
 
 ## Step 9C — Generate per-concept files in each section
 
@@ -174,7 +152,7 @@ The section READMEs are the navigation — the first thing a reader opens when t
 Print exactly:
 
 ```
-✓ Study guide created at .aipe/study-<purpose>/
+✓ Study guide created at .aipe/study-system-design-dsa/
   00-overview.md
   01-system-design/                            (<N> files + README.md)
   02-dsa/                                      (<N> files + README.md)
@@ -185,9 +163,15 @@ Then a 3-sentence summary: what the codebase being studied is, which section was
 If the codebase has AI/ML or prompt engineering surface, add a fourth sentence:
 
 ```
-  AI/ML or prompt engineering content detected — generate the portfolio-wide guides with:
+  AI/ML or prompt engineering content detected — generate per-repo companion guides with:
     /aipe:study-ai-engineering
     /aipe:study-prompt-engineering
+```
+
+If a legacy `.aipe/study-<purpose>/` directory was detected (older versions of this command), add:
+
+```
+  Legacy guide detected at <path> — migrate content or leave as archive? (see migration note)
 ```
 
 **Stop. Wait for the user's next instruction.** They'll typically pick a concept file to drill on, ask for a deeper trace, or ask which operation to fix first. Do NOT auto-fix or auto-revise.
@@ -200,7 +184,7 @@ Runs when Step 4 found an existing study guide. Goal: make the guide accurate ag
 
 ## Step 5U — Read the existing guide
 
-Walk `.aipe/study-<purpose>/` recursively. Read every `.md` file in:
+Walk `.aipe/study-system-design-dsa/` recursively. Read every `.md` file in:
 
 - the root (`00-overview.md`)
 - `01-system-design/` (README.md + every per-pattern file)
@@ -241,7 +225,7 @@ Specific flags to raise per file:
 Print a structured summary:
 
 ```
-Changes detected for .aipe/study-<purpose>/
+Changes detected for .aipe/study-system-design-dsa/
 ─────────────────────────────────────────────────
 
 00-overview.md
@@ -270,6 +254,10 @@ ORPHAN content (AI/ML moved to /aipe:study-ai-engineering):
   04-machine-learning/ exists (<N> files)
   Action:   ask the user — delete, migrate, or leave as archive?
 
+[If a legacy .aipe/study-<purpose>/ directory exists:]
+LEGACY directory at <path>:
+  Action:   ask the user — migrate content into .aipe/study-system-design-dsa/, or leave as archive?
+
 Files unchanged: <list>
 ```
 
@@ -293,13 +281,14 @@ Do NOT rewrite accurate sections. Do NOT migrate stale AI/ML directories without
 Print:
 
 ```
-Update complete for .aipe/study-<purpose>/
+Update complete for .aipe/study-system-design-dsa/
 ─────────────────────────────────────────────────
 Files updated:        <list>
 Files added:          <list>
 Files unchanged:      <count or list>
 Section READMEs:      <updated / unchanged>
 Orphan content:       <left as-is / removed / migrated, per user's choice>
+Legacy directory:     <left as-is / removed / migrated, per user's choice>
 ```
 
 **Stop. Wait for the user's next instruction.**

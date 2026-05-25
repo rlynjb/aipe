@@ -28,11 +28,7 @@ This spec asks: "Do you actually understand this?"
 ```
 Study guide directory structure
 
-  study-<purpose>/
-  │   └─ folder name uses the 2-word purpose
-  │      descriptor derived per the "Naming the
-  │      output folder" section below
-  │      (e.g. study-ai-journal/, study-ml-fitness/)
+  study-system-design-dsa/
   │
   ├── 00-overview.md              one-page system map + legend
   │
@@ -148,86 +144,9 @@ pressure-tests it, Validate proves you got it.
 
 ---
 
-## Naming the output folder
-
-Before generating any files, the agent does one thing
-first: **examine the codebase (or pasted spec/README/
-architecture doc) and decide on a 2-word descriptor
-that captures the app's main purpose.** That
-descriptor becomes the output folder name, with the
-prefix `study-` and kebab-case between the two words.
-
-```
-.aipe/study-<purpose>/
-       └─ derived per-codebase, 2 words, kebab-case
-```
-
-### How to pick the two words
-
-The descriptor names *what the app does*, not what
-it's built with. "Next.js app" is a stack, not a
-purpose. "Ai journal" is a purpose. The reader should
-be able to glance at the folder name and know
-roughly what the project is, without opening any file.
-
-Format rules:
-- **Exactly 2 words** when possible. Reach for 3
-  only if 2 genuinely cannot capture the purpose;
-  never more than 3.
-- **Kebab-case** between words: `study-ai-journal`,
-  not `study-AiJournal` or `study-ai_journal`.
-- **All lowercase**.
-- **Concrete nouns and clear adjectives** over
-  marketing language. `study-fitness-tracker` over
-  `study-personal-wellness`. `study-prompt-tooling`
-  over `study-developer-productivity`.
-- **No abbreviations the reader wouldn't recognize.**
-  `study-ai-journal` is fine; `study-pjt-tool` is
-  not.
-
-### Worked examples
-
-For Rein's three project anchors, the descriptors are:
-
-| Codebase    | 2-word purpose       | Folder name              |
-|-------------|----------------------|--------------------------|
-| loopd       | ai journal           | `study-ai-journal/`      |
-| contrl-mo   | ml fitness           | `study-ml-fitness/`      |
-| aipe        | prompt tooling       | `study-prompt-tooling/`  |
-
-For other common project shapes:
-
-| Project shape                | 2-word purpose      |
-|------------------------------|---------------------|
-| Documentation search/Q&A     | doc search          |
-| Customer support chatbot     | support chatbot     |
-| Personal todo manager        | todo tracker        |
-| E-commerce product catalog   | product catalog     |
-| Real-time chat app           | realtime chat       |
-| Code review assistant        | code review         |
-| Internal admin dashboard     | admin dashboard     |
-| Recipe recommender           | recipe recommender  |
-
-### When to ask vs decide
-
-The agent decides the 2-word descriptor *itself* from
-the codebase evidence. It does not ask the user
-unless the codebase content is genuinely ambiguous —
-for example, if the README describes one purpose but
-the actual code does something different. In that
-case, ask one clarifying question before generating,
-naming the two candidate descriptors.
-
-After deciding, the agent uses `study-<descriptor>`
-as the output folder name throughout. Every file
-path in the rest of the output uses this folder as
-the root.
-
----
-
 ## The prompt
 
-Paste your codebase spec, README, or architecture document and send this. The agent generates a study guide directory at `.aipe/study-<purpose>/` (where `<purpose>` is the 2-word descriptor derived per the section above — `study-ai-journal/`, `study-ml-fitness/`, etc.).
+Paste your codebase spec, README, or architecture document and send this. The agent generates a study guide directory at `.aipe/study-system-design-dsa/`.
 
 ```
 You are a staff engineer with 12 years of industry
@@ -4165,10 +4084,10 @@ CONSTRAINTS
    workflow against `study-ai-engineering.md`.
 ```
 
-> 💾 Save output → `.aipe/study-<purpose>/` with this structure (where `<purpose>` is the 2-word descriptor derived in the "Naming the output folder" step):
+> 💾 Save output → `.aipe/study-system-design-dsa/` with this structure:
 >
 > ```
-> study-<purpose>/
+> study-system-design-dsa/
 >   00-overview.md
 >   01-system-design/
 >     README.md                ← index of all pattern files
@@ -4188,7 +4107,7 @@ CONSTRAINTS
 
 ## Check for existing guide
 
-Before generating, check whether a study guide already exists at `.aipe/study-<purpose>/` (using the same 2-word descriptor the current run would derive).
+Before generating, check whether a study guide already exists at `.aipe/study-system-design-dsa/`.
 
 ```
 If found:
