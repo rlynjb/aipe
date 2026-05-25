@@ -1,140 +1,195 @@
-# aipe
+# AIPE Specs
 
-Spec workflow for AI-assisted development. 11 prompt templates that turn a one-line intent + your project context into a filled, structured spec your coding agent can implement from.
+A system for AI-assisted app development. Each spec is a prompt template with built-in discipline — constraints that keep Claude (or any AI assistant) from doing more than what was asked.
 
-aipe ships as a **plugin** for both Claude Code and Codex CLI. There is no separate binary to install — the agent in your session does the work using its own model.
+The specs work together. They're not a menu to pick from; they're a flow with handoffs between them.
 
----
 
-## Install
+## The system at a glance
 
-Pick the agent you use. (You can install both — the same template files back both plugins.)
-
-### Claude Code
-
-In any Claude Code session:
+Two flows. The action flow (top) is for getting work done. The reflective flow (bottom) is for thinking and learning.
 
 ```
-/plugin marketplace add rlynjb/aipe
-/plugin install aipe@rlynjb-aipe
+ACTION FLOW
+═══════════
+
+DESCRIBE        →    DIAGNOSE          →    ACT
+(no action)          (triage)                (changes code)
+
+audit.md             audit-cleanup.md        refactor.md
+audit-frontend-a11y.md                       refactor-frontend-behaviour.md
+                                             refactor-frontend-visual.md
+
+
+REFLECTIVE FLOW
+═══════════════
+
+EVALUATE                       TEACH
+(opinions, no action)          (concepts, anchored to code)
+
+audit-refactor.md              study.md
+                               study-ai-engineering.md
+                               study-prompt-engineering.md
 ```
 
-After install, `/aipe <type> <intent>` is available in every session.
+  - **Describe** — take stock of what exists. No changes, no proposals, no grading.
+  - **Diagnose** — find debt and decide what's worth paying down. Produces a triaged list.
+  - **Act** — execute one specific, named change. Behaviour-preserving by default.
+  - **Evaluate** — staff-engineer opinions on the codebase, organized as a book. Not a fix list; a notebook you return to.
+  - **Teach** — concept-by-concept study guides anchored to this specific codebase. System design, DSA, AI/ML patterns walked end-to-end.
 
-### Codex CLI
+Findings in the action flow move downward: an audit surfaces debt → cleanup audit triages it → refactor spec executes. The discipline is in **not skipping layers** — acting without diagnosing leads to scope creep; diagnosing without describing leads to fixing the wrong things.
 
-From your terminal:
+The reflective flow is separate. Read it when you want to think about or learn from a codebase, not when you want to change it. Both reflective specs hand off to the action flow when you're ready to act, but the artifacts themselves aren't action-oriented.
 
-```bash
-codex plugin marketplace add rlynjb/aipe
-```
 
-Codex auto-installs and tracks the plugin in `~/.codex/config.toml`. After install, `/aipe <type> <intent>` is available in every Codex session.
+## "I want to..." — which spec?
 
----
 
-## Usage
+### Take stock of a project
 
-Once installed, you get one slash command per spec type. The flow is the same in both agents:
+You don't want to fix anything yet. You want to know what's there.
 
-```
-/aipe:feature add dark mode toggle
-/aipe:debugging cart total shows wrong amount
-/aipe:study
-/aipe:refactor extract the auth middleware
-```
+  - General codebase snapshot → **audit.md**
+  - Accessibility state of a frontend → **audit-frontend-a11y.md**
 
-The first time you run any of them in a project, the command scaffolds `.aipe/project/context.md` and asks you to fill it in (your stack, data model, file structure, constraints). That file is the project context the agent uses to fill the template.
+Common reasons: coming back after time away, writing portfolio descriptions, briefing an interviewer, periodic check-ins.
 
-After context is in place, every `/aipe:<type>` invocation:
 
-1. Loads the matching template (e.g. `specs/feature.md` for `/aipe:feature`).
-2. Loads your project context (`.aipe/project/*.md` and any global config at `~/.config/aipe/global/*.md`).
-3. Composes a filled spec using the agent's own model.
-4. Saves it to `.aipe/specs/<type-plural>/<slug>.md`.
-5. Summarises and stops — waiting for you to say "implement it" or refine.
+### Clean up accumulated debt
 
-Tab completion: type `/aipe:` and tab to see all 14 spec types.
+You can feel the codebase getting heavy. You want to fix what's worth fixing, accept the rest, and move on.
 
----
+  - **audit-cleanup.md** — produces a triaged debt list, then hands off to refactor specs
 
-## Spec types
+Common signs: hesitating before touching certain files, finding the same logic in three places, names that no longer match what the code does.
 
-| Command | Use when |
-|---------|----------|
-| `/aipe:plan` | Multi-phase project that spans sessions |
-| `/aipe:feature` | Building something new |
-| `/aipe:debugging` | A bug keeps coming back |
-| `/aipe:study` | Understanding a codebase as a visual reference (system design, DSA, AI engineering) |
-| `/aipe:audit` | Reviewing existing code before adding to it |
-| `/aipe:testing` | Writing or improving tests |
-| `/aipe:user-stories` | Rewriting tasks in different personas |
-| `/aipe:refactor` | Restructuring without changing behaviour |
-| `/aipe:migration` | Changing a schema, dependency, or storage layer |
-| `/aipe:performance` | Diagnosing speed or bundle issues |
-| `/aipe:integration` | Connecting an external service |
 
-The templates are plain markdown in [`specs/`](specs/) — read them directly to see what each one produces.
+### Think about a codebase without committing to act
 
----
+You're not planning work. You want a staff engineer's opinions on the codebase — what's well-built, what's tangled, what techniques would apply where, what tradeoffs were made. Something you can read and return to like a book.
 
-## Configuration
+  - **audit-refactor.md** — produces a six-chapter notebook organized by refactor category, with staff-engineer takes and verdicts on what's worth doing
 
-| Where | What |
-|-------|------|
-| `.aipe/project/context.md`, `rules.md`, `stack.md` | Per-project context — committed to the repo, edited as the codebase evolves |
-| `.aipe/specs/<type-plural>/<slug>.md` | Generated specs — also typically committed |
-| `.aipe/specs/study/` | Visual study guide — `00-overview.md` at root + nested section directories `01-system-design/`, `02-dsa/`, `03-ai-engineering/` each with a `README.md` index plus one file per concept (e.g., `01-request-flow.md`, `02-auth-boundary.md`, …). One study guide per project. |
-| `~/.config/aipe/global/*.md` | Cross-project context — your identity, default stack, skills, conventions |
+Common reasons: stepping back after a build phase, preparing to brief someone, building intuition for interviews, deciding what to focus on next.
 
-Global files are optional. Project context is what makes the difference between a generic spec and one that names your real files and constraints.
 
----
+### Learn concepts from a codebase
 
-## Editing or adding spec templates
+You want to deeply understand the patterns in a codebase — system design, DSA, AI engineering, ML, prompt engineering — concept by concept, anchored to the actual code you wrote. One file per pattern, walked end-to-end from curiosity hook to validated understanding. The three specs below split the topic surface: pick the one (or ones) that match what you want to study.
 
-The templates are the heart of the tool. Editing them is just markdown work — no build step, no compile.
+  - **study.md** — base study guide spec. Produces `.aipe/study-system-design-dsa/` with one file per pattern found in the codebase, covering system overview, system design, and DSA, in a staff-engineer voice. Diagrams, tradeoffs, validation blocks. Per-codebase, runs from inside the repo.
+  - **study-ai-engineering.md** — topic-focused companion to study.md. Produces `.aipe/study-ai-engineering/` with files covering LLM foundations, retrieval, agents, evals, production serving, classical ML, recommender systems, on-device inference, and IK system design templates. Same staff-engineer voice as study.md. Per-codebase: identifies which of three AI shapes the codebase matches (LLM app / prompt tooling / classical ML) and weights coverage accordingly. Inherits study.md's structure.
+  - **study-prompt-engineering.md** — topic-focused companion to study.md. Produces `.aipe/study-prompt-engineering/` with 13 prompt-engineering concepts (anatomy, structured outputs, prompts-as-code, token budgeting, eval-driven iteration, prompt injection defenses, and more), in a working-AI-engineer voice. Per-codebase, runs from inside the repo. Inherits study.md's structure; differs in persona and concept list.
 
-**Edit an existing template:**
+Common reasons: building real comprehension (not memorization) before interviews, working through a curriculum with your own code as the anchor, returning to specific concepts as reference.
 
-```bash
-git clone https://github.com/rlynjb/aipe.git
-cd aipe
-vim specs/feature.md     # edit
-git commit -am "tweak feature template"
-git push
-```
 
-Users get the new template the next time they update the plugin (`/plugin update aipe` in Claude Code; `codex plugin marketplace upgrade` in Codex).
+### Restructure code without changing what it does
 
-**Add a new spec type:**
+You know what you want to change. Behaviour stays identical.
 
-1. Drop the new template at `specs/<new-type>.md`.
-2. Add `commands/<new-type>.md` (Claude Code) — copy any existing command file, swap the `description`, the `/aipe:<type>` references, and the output folder name in the Step 5 Path line.
-3. Add `skills/<new-type>/SKILL.md` (Codex) — same content as the Claude Code command.
-4. Add `"./skills/<new-type>"` to the `skills` array in `.codex-plugin/plugin.json`.
-5. Bump `version` in both `.claude-plugin/plugin.json` and `.codex-plugin/plugin.json`.
-6. Commit, push.
+  - Any code, any language → **refactor.md**
+  - Frontend behaviour and structure (state, effects, components, data flow) → **refactor-frontend-behaviour.md**
+  - Frontend visual surface (CSS, design tokens, semantic HTML) → **refactor-frontend-visual.md**
 
-That's it — there's no code to compile, no tests to update.
+Use the most specific spec that applies. The frontend specs extend `refactor.md` — read it first, then layer the specific one on top.
 
----
 
-## Repo layout
+### Add capability or fix bugs
+
+These aren't in this system yet. Use feature specs or fix mini-specs (referenced by the audits, but not provided here as templates).
+
+If an audit surfaces something that requires *new behaviour* (adding keyboard navigation, fixing a real bug, building a new screen), that's not a refactor — it's feature work. The audits explicitly hand it off rather than trying to do it themselves.
+
+
+## How the specs hand off to each other
 
 ```
-aipe/
-  .claude-plugin/         ← Claude Code plugin manifest + marketplace listing
-  .codex-plugin/          ← Codex plugin manifest
-  commands/<type>.md      ← 14 Claude Code slash commands (one per spec type)
-  skills/<type>/SKILL.md  ← 14 Codex skills (same content, Codex's directory layout)
-  specs/                  ← 14 template markdowns — single source of truth
-  html/                   ← static cheatsheet site (separate from the plugin)
-  docs/                   ← roadmap and historical plans
+audit.md  ────────────────►  identifies debt
+                                    │
+                                    ▼
+                             audit-cleanup.md  ─────►  triages, fix-now list
+                                                              │
+                                                              ▼
+                                                       refactor.md
+                                                       refactor-frontend-behaviour.md
+                                                       refactor-frontend-visual.md
+
+audit-frontend-a11y.md  ────►  identifies a11y gaps
+                                    │
+                                    ├──►  new capability needed  →  feature spec
+                                    ├──►  broken behaviour       →  fix mini-spec
+                                    └──►  semantic markup change →  refactor-frontend-visual.md
+
+audit-refactor.md  ───►  staff-engineer takes (book)
+                                    │
+                                    └──►  when ready to act  →  audit-cleanup.md
+                                                                (then refactor specs)
+
+study.md  ──────────────►  system design + DSA concept files
+                            anchored to this codebase
+                              (output: .aipe/study-system-design-dsa/)
+                                    │
+                                    └──►  no automatic handoff — the artifact is
+                                          the deliverable; you read and return to it
+
+study-ai-engineering.md  ───►  AI + ML concept files anchored
+  (inherits study.md structure)   to this codebase
+                                  (output: .aipe/study-ai-engineering/)
+                                    │
+                                    └──►  no automatic handoff — same as study.md
+
+study-prompt-engineering.md  ───►  13 prompt-engineering concept files
+  (inherits study.md structure)         anchored to this codebase
+                                        (output: .aipe/study-prompt-engineering/)
+                                    │
+                                    └──►  no automatic handoff — same as study.md
 ```
 
----
+The arrows are one-way. Refactors don't loop back to audits; audits don't execute refactors. The reflective specs hand off to the action flow but never receive from it. Each spec stays in its layer.
 
-## License
 
-MIT.
+## Why the constraints matter
+
+Every spec has a "must not change / must not introduce / what this does not do" section. These exist because AI assistants will, by default, do more than what's asked. Without explicit constraints:
+
+  - **Refactors** turn into rewrites — Claude "improves" things you didn't ask about
+  - **Audits** turn into action plans — Claude finds problems and starts fixing them
+  - **Cleanup** turns into scope creep — one fix becomes five, behaviour changes silently
+
+The discipline is what makes the specs useful. If you find yourself softening the constraints to make a task work, you've picked the wrong spec.
+
+
+## Conventions
+
+  - **One spec per session.** Don't combine refactor types or audit lenses across a single Claude Code session.
+  - **Save outputs to predictable paths.** Each spec specifies where its output goes (`.aipe/audits/`, `.aipe/specs/refactors/`). Keeping these consistent makes the history searchable later.
+  - **Reference, don't duplicate.** When you write a spec instance (a real refactor or audit), reference the template, don't copy its rules into the instance.
+  - **Update context.md after major changes.** The audits write to dated snapshots; `.aipe/project/context.md` is the living document that should reflect the current state.
+
+
+## Spec reference
+
+| Spec | Layer | Scope | Best for |
+|------|-------|-------|----------|
+| `audit.md` | Describe | Any codebase | Snapshots, onboarding, portfolio writing, interview prep |
+| `audit-frontend-a11y.md` | Describe | Frontend a11y | Finding accessibility gaps without committing to fix them |
+| `audit-cleanup.md` | Diagnose | Any codebase | Producing a triaged debt list with explicit fix/accept/defer decisions |
+| `audit-refactor.md` | Evaluate | Any codebase | Staff-engineer notebook of takes on what's worth refactoring — book-style, returnable |
+| `study.md` | Teach | Any codebase | Per-codebase concept guides — system design + DSA — staff-engineer voice |
+| `study-ai-engineering.md` | Teach | Any codebase, AI/ML topic | Per-codebase AI + ML concept guides — LLM foundations, retrieval, agents, evals, classical ML, system design templates — staff-engineer voice |
+| `study-prompt-engineering.md` | Teach | Any codebase, prompt engineering topic | Per-codebase guide of 13 prompt-engineering concepts — working-AI-engineer voice |
+| `refactor.md` | Act | Any code, language-agnostic | Named, behaviour-preserving restructures |
+| `refactor-frontend-behaviour.md` | Act | Frontend behaviour | State placement, effects, components, data flow, perf |
+| `refactor-frontend-visual.md` | Act | Frontend visuals | CSS organization, design tokens, semantic HTML |
+
+
+## Reading order if you're new to this
+
+  1. **refactor.md** — establishes the discipline (must-not-change / must-not-introduce). Everything else inherits from this.
+  2. **audit.md** — the describe-don't-act discipline. Mirrors refactor.md's constraint style at a different layer.
+  3. **audit-cleanup.md** — how diagnosis bridges describe and act.
+  4. The frontend specs — once you've internalized the general patterns, the frontend ones are extensions.
+
+> The specs are designed to be read in this order, but used in any order. Reading order builds the mental model; usage depends on what you're trying to do.
