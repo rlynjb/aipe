@@ -1,7 +1,7 @@
 {
   "name": "aipe",
-  "description": "Spec workflow for AI-assisted development. 9 disciplined skills across two flows: action (Describe → Diagnose → Act) and reflective (Evaluate, Teach) — audit, audit-cleanup, audit-frontend-a11y, audit-refactor, refactor, refactor-frontend-behaviour, refactor-frontend-visual, study, study-prompt-engineering — generate filled specs from your project context using your agent's own model, no external CLI.",
-  "version": "1.36.0",
+  "description": "Spec workflow for AI-assisted development. 10 disciplined skills across two flows: action (Describe → Diagnose → Act) and reflective (Evaluate, Teach) — audit, audit-cleanup, audit-frontend-a11y, audit-refactor, refactor, refactor-frontend-behaviour, refactor-frontend-visual, study, study-ai-engineering, study-prompt-engineering — generate filled specs from your project context using your agent's own model, no external CLI.",
+  "version": "1.37.0",
   "developerName": "rlynjb",
   "websiteURL": "https://github.com/rlynjb/aipe",
   "category": "productivity",
@@ -14,6 +14,7 @@
     "./skills/refactor-frontend-behaviour",
     "./skills/refactor-frontend-visual",
     "./skills/study",
+    "./skills/study-ai-engineering",
     "./skills/study-prompt-engineering"
   ],
   "license": "MIT"
