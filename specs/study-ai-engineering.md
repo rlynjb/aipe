@@ -387,6 +387,62 @@ the rest of this spec is weighted.
   is for recognition, not portfolio coverage. The
   agent does not read multiple codebases.
 
+  ┌─────────────────────────────────────────────────┐
+  │ HOW TO READ THE loopd / aipe / contrl-mo         │
+  │ MENTIONS IN THIS SPEC — READ THIS BEFORE         │
+  │ GENERATING ANYTHING                              │
+  ├─────────────────────────────────────────────────┤
+  │ Throughout this spec, blocks contain pre-filled  │
+  │ text like "For loopd: `partially` — the RAG…"    │
+  │ or "For aipe: extend the existing retrieval…".   │
+  │                                                   │
+  │ These are INSTRUCTIONAL EXAMPLES showing the     │
+  │ SHAPE of a good answer. They are NOT the answer. │
+  │ loopd, aipe, and contrl-mo are illustration      │
+  │ codebases the spec author used to demonstrate    │
+  │ how to fill each block. They are almost          │
+  │ certainly NOT the codebase you are studying.     │
+  │                                                   │
+  │ When generating the guide:                       │
+  │  • The codebase being studied is the repo where  │
+  │    the command was run — and ONLY that repo.     │
+  │  • Every "Applies to this codebase" bullet must  │
+  │    be answered about THAT repo's actual code,    │
+  │    by reading THAT repo's files. Never copy or   │
+  │    adapt the loopd/aipe/contrl-mo answer.        │
+  │  • Every "How to make it apply" bullet must name │
+  │    refactors to THAT repo's files, with THAT     │
+  │    repo's real paths.                            │
+  │  • Every `Files to touch:` path must be a real   │
+  │    path in THAT repo (or an expected path in     │
+  │    THAT repo for Case B). Never a loopd/aipe/    │
+  │    contrl-mo path.                               │
+  │  • Do not read, open, reference, or cite loopd,  │
+  │    aipe, contrl-mo, or any repo other than the   │
+  │    one being studied. If the studied repo is     │
+  │    "blooming-insights", the guide cites only     │
+  │    blooming-insights' files and says nothing     │
+  │    about loopd/aipe/contrl-mo except where this  │
+  │    spec uses them as a generic shape label.      │
+  │                                                   │
+  │ The ONE exception: the System design template    │
+  │ sub-sections (07 and 09) are generic interview   │
+  │ reframes generated for every guide. Their        │
+  │ standard architecture / data model / scale       │
+  │ concerns are generic, but the "Applies to this   │
+  │ codebase" and "How to make it apply" bullets are │
+  │ STILL answered about the studied repo only.      │
+  │                                                   │
+  │ The curriculum (`aieng-curriculum.md`) is the    │
+  │ ONLY cross-repo input. It supplies concept and   │
+  │ Build-item IDs (`Cx.y`, `Bx.y`). Project-        │
+  │ exercise blocks cite those IDs for provenance    │
+  │ but TARGET the studied repo's own files. Citing  │
+  │ a curriculum ID is not anchoring to another      │
+  │ repo — the curriculum is a concept index, not a  │
+  │ codebase.                                         │
+  └─────────────────────────────────────────────────┘
+
 ═════════════════════════════════════════════════
 LLM foundations
   Anchor: loopd (primary) · aipe (secondary)
@@ -3086,6 +3142,15 @@ AI engineering generation workflow.
    Project exercises becomes the primary
    buildable target built from the curriculum's
    Build item.
+   REPO SCOPE: `**Files to touch:**` paths are
+   ALWAYS paths in the studied repo — the repo
+   where the command was run. Never a loopd, aipe,
+   or contrl-mo path (those appear in this spec
+   only as instructional examples). The `[Bx.y]`
+   curriculum ID is cited for provenance; the
+   exercise itself targets the studied repo's own
+   files. Citing a curriculum Build item is not
+   anchoring to another codebase.
 
 → Files for AI Engineering and Machine Learning
    are generated for every curriculum concept that
