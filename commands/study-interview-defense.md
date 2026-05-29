@@ -1,14 +1,14 @@
 ---
-description: Interview defense guide for this codebase — one file per question, anchored to real code, with "I don't know" recovery
+description: Interview defense book for this codebase — 8 chapters in coach voice, book-style visual treatments, "I don't know" recovery
 ---
 
 The user invoked `/aipe:study-interview-defense`.
 
-This command takes **no arguments**. There is one interview defense guide per repo, saved at the fixed path `.aipe/study-interview-defense/`. `.aipe/` is per-repo (lives at the root of whichever repo the command is run in); the folder name is fixed across repos because it names the *topic*, not the codebase. Re-running enters UPDATE MODE on the existing directory.
+This command takes **no arguments**. There is one interview defense book per repo, saved at the fixed path `.aipe/study-interview-defense/`. `.aipe/` is per-repo (lives at the root of whichever repo the command is run in); the folder name is fixed across repos because it names the *topic*, not the codebase. Re-running enters UPDATE MODE on the existing directory.
 
-This command produces a question-first companion to `/aipe:study` — for the reader who is about to defend their own work in a 45-minute interview. The unit of organization is the **question an interviewer would ask**, not the concept the system uses. The output anticipates questions, names what each is really probing, and shows what a strong answer sounds like in the *reader's* voice, anchored to *their* code.
+This command produces a **book** — 8 chapters of continuous narrative prose flowing through visual aids, in **coach voice**, for the reader who is days away from defending their own work in an interview. Unlike the other study specs (reference-grid shape, optimized for lookup), this one is optimized for sequential reading and re-reading. The unit of organization is the **chapter**, not the question.
 
-**Per-repo scope.** This spec runs against one codebase at a time — the repo where the command was invoked. Questions are derived from what's actually in this code, not from a fixed catalog.
+**Per-repo scope.** This spec runs against one codebase at a time — the repo where the command was invoked. Defenses anchor to what's actually in this code.
 
 ## Step 1 — Initialize if needed
 
@@ -52,226 +52,142 @@ Read these files (skip missing ones):
 
 Per-repo scope: do NOT load context files from other repos. The codebase being defended is the one this command was invoked in.
 
-## Step 3 — Load both templates
+## Step 3 — Load the template chain
 
-Interview defense inherits formatting rules and the constraint summary from `study.md` but uses its *own* per-question template. Load both:
+Interview defense reads four files in order — structure, writer persona, reader calibration, then the spec itself:
 
 ```
 ${CLAUDE_PLUGIN_ROOT}/specs/study.md
+${CLAUDE_PLUGIN_ROOT}/specs/teacher.md
+${CLAUDE_PLUGIN_ROOT}/specs/me.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-interview-defense.md
 ```
 
-If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for `specs/study.md` and `specs/study-interview-defense.md` upward from this file's location.
+If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
-`study.md` is read for **inheritable rules** — formatting (no markdown pipe-tables, kebab-case file names, no Mermaid/images, box-drawing diagram characters), the "use real software, not analogies" rule, the hedging ban, the constraint summary. `study-interview-defense.md` is read for **the persona, the question-derivation logic, the per-question template, and the interview-defense-specific constraints**.
+What each file supplies:
+- **`study.md`** — formatting rules, diagram quality standards, the "use real software, not analogies" rule, the no-hedging rule, the hard rules.
+- **`teacher.md`** — the base writer persona (the staff engineer with 12 years' experience). This spec shifts that persona from *teacher* to **coach** — see teacher.md's "THE POSTURE" section and this spec's persona section.
+- **`me.md`** — reader-side calibration: who the reader is professionally, what voice the strong answers should embody, what defenses the reader can credibly make from her actual portfolios (DSA + system design), and what gaps she should defer on rather than fake. `me.md` does NOT override study.md's structural rules or teacher.md's voice rules — it calibrates examples, depth, and what's defensible. For this spec `me.md` carries extra weight: the book is the reader's own defense, so its anchors must be things the reader has actually shipped.
+- **`study-interview-defense.md`** — the book shape (8 chapters), the six required visual conventions, the per-chapter template.
 
-## Step 4 — Detect existing guide → branch CREATE or UPDATE
+## Step 4 — Detect existing book → branch CREATE or UPDATE
 
-Check whether `.aipe/study-interview-defense/` already contains the guide. The signal is the presence of `00-overview.md` at the root, OR `the-ai-question.md` at the root, OR any file inside `01-architecture/`, `02-tech-choices/`, `03-scale-and-load/`, `04-failure-modes/`, `05-code-walkthroughs/`, `06-counterfactuals/`, `07-dsa-decisions/`, or `08-hard-questions/`.
+Check whether `.aipe/study-interview-defense/` already contains the book. The signal is the presence of `00-overview.md` at the root OR any file matching `0[1-8]-*.md`.
 
-- **Existing guide found** → go to UPDATE MODE (Step 5U onward). **Do NOT regenerate from scratch.**
-- **No existing guide** → go to CREATE MODE (Step 5C onward).
+- **Existing book found** → go to UPDATE MODE (Step 5U onward). **Do NOT regenerate from scratch.**
+- **No existing book** → go to CREATE MODE (Step 5C onward).
 
-(The `.aipe/study-interview-defense/` directory itself may exist as an empty placeholder; that's not the same as having a guide already.)
+**Legacy structure check.** Earlier versions of this command generated a per-question directory tree (`01-architecture/`, `02-tech-choices/`, … plus `the-ai-question.md`). If that structure is detected instead of the 8-chapter book, flag it in the report and ask the user whether to migrate to the book shape or leave the old guide as archive.
+
+(The `.aipe/study-interview-defense/` directory itself may exist as an empty placeholder; that's not the same as having a book already.)
 
 ---
 
 # CREATE MODE
 
-Runs only when no existing guide is found.
+Runs only when no existing book is found.
 
-## Step 5C — Derive the question inventory
+## Step 5C — Identify the per-chapter content
 
-The agent's first job is to identify the questions an interviewer would actually ask about *this codebase*. Questions are derived from the code, not from a fixed list. Walk the project context and produce a list per category:
+For each of the 8 chapters, identify the content that's specific to this codebase, cross-referenced against `me.md`'s portfolios so the defenses anchor to things the reader has actually shipped:
 
-- **01-architecture** — derived from the system's actual shape. Always include "walk me through how this app works" (the universal opener) and at least one request-flow walkthrough. Add a data-flow question if the system has non-trivial state. Add a "how does feature X work end-to-end" question for each major user-facing feature.
-- **02-tech-choices** — one question per **load-bearing** technology choice (system would be meaningfully different if a different choice were made). Examples: database, vector store, LLM provider, framework, state management, deployment target. **Skip choices that don't matter** (CSS tool, testing framework — rarely probed at senior level).
-- **03-scale-and-load** — one question per realistic scale bottleneck this codebase has. Anchored to the actual architecture; questions whose answers the candidate could verify in code.
-- **04-failure-modes** — one question per realistic failure surface ("what happens if the LLM API is down for 10 minutes?", "what if Postgres goes read-only?", "what if a user uploads malformed input?"). Tied to real surfaces in the code.
-- **05-code-walkthroughs** — one question per load-bearing code region the interviewer might ask the candidate to walk through. Pick regions where depth would be visible.
-- **06-counterfactuals** — one question per decision the candidate would honestly reconsider. **Don't fabricate counterfactuals for decisions that were obviously right** — padding undermines the senior-engineer signal this section produces.
-- **07-dsa-decisions** — one question per non-trivial data-structure or algorithm choice. Only generate when there's a real decision — many codebases have few or none, and that's fine.
-- **08-hard-questions** — a fixed set of open-ended reflection questions, lightly tailored to the codebase. Always include: "what's the hardest bug you debugged in this app," "what would you do differently if you started over," "what part of this codebase are you least confident defending."
-- **the-ai-question** — single file at the root, **always generated** regardless of whether the agent can detect AI assistance. The 2026 baseline assumption is significant AI use; the file produces a calibrated-honest answer template.
+- **01 — The pitch** — the project pitched in three lengths: 10 seconds (elevator), 30 seconds (hallway), 90 seconds (the real "tell me about a project" answer).
+- **02 — The architecture** — the system as a labeled whiteboard diagram, request flow walked end-to-end, plus "where they'll interrupt and what to say."
+- **03 — The choices** — one section per load-bearing technology choice (database, vector store, framework, deployment target, …). Skip trivial ones (CSS tool, test runner). Name alternatives, decision criteria, the cost being paid.
+- **04 — The scale story** — three realistic scale scenarios (10x users, 100x data, 10x latency-sensitive requests); for each, the first bottleneck, the second, what you'd add when, and how you'd measure.
+- **05 — The failure story** — failure surfaces in the codebase (network failures, LLM API outages, DB read-only, malformed input, partial writes) and what the system does in each.
+- **06 — The hard parts** — 3–5 reflection prompts: hardest bug, proudest part, least-confident-to-defend part. Teach answering honestly without collapsing.
+- **07 — The counterfactuals** — the 3–4 most reconsiderable decisions and what the strong counterfactual sounds like for each. Anti-pattern: fabricating regrets for decisions that were obviously right.
+- **08 — The AI question** — always generated. "Did you use AI to build this?" and its follow-ups. The calibrated-honest answer.
 
-**What NOT to include:**
-- Questions whose answers are trivial ("why did you use a function") — below the senior bar.
-- Questions about libraries the codebase barely uses (lodash imported once for `debounce` is not a tech choice).
-- Questions the interviewer is unlikely to ask ("why this specific ESLint rule").
-- Questions that have the same answer as other questions in the same category — merge them.
+## Step 6C — Plan the book
 
-**Target count.** ~15–30 question files for a typical codebase. Fewer is fine for small/simple codebases. More than 40 is over-generation — merge or drop. Empty subdirectories are NOT created — a content-heavy site with no meaningful DSA decisions skips `07-dsa-decisions/` entirely.
+The non-negotiables — inherited from `study.md`, `teacher.md`, `me.md`, and this spec:
 
-## Step 6C — Plan the guide
+1. **Coach voice throughout.** Address the reader as "you." The book is a conversation between the staff-engineer-as-coach persona (teacher.md in coach posture) and the candidate, not a third-person narration. The coach optimizes for the reader being ready in the room.
+2. **Book shape, not reference grid.** Each chapter is one continuous narrative — opening hook → chapter-opening diagram → the body (questions and defenses) → "I don't know" recovery box → "what you'd change" → one-page summary. The reader reads front-to-back the first time and skims the visual treatments on re-reading.
+3. **Exactly 8 chapters (00-overview plus 01–08).** Do not add chapters. Do not collapse chapters. The chapter list is the contract.
+4. **The six required visual treatments** appear throughout (a reader who skims only these gets ~70% of the book):
+   - **Chapter-opening diagram** — one large (15–30 line) ASCII visual anchor per chapter, wrapped in one sentence before and after.
+   - **"What they're really asking" callout** — single-line box (`┌ ┐ └ ┘ │ ─`) before every interview question: surface question on top, the probe underneath.
+   - **Strong-answer / weak-answer side-by-side** — two-column table where a failure pattern is distinctive enough to teach against; the contrast does the teaching.
+   - **"I don't know" recovery box** — at least one per chapter, with a **double-line border (`╔ ╗ ╚ ╝ ═ ║`)** so the eye finds it on re-reading. Names the kind of pushback, what to say, what it signals, and what NOT to say.
+   - **Follow-up decision tree** — at least one per chapter, branching ASCII tree showing the 2–4 likely follow-ups and what to say to each.
+   - **Pull quotes** — 2–4 per chapter, single sentences in distinct treatment (heavy bar `┃` prefix or indented `▸` marker) — the lines the reader memorizes.
+5. **All "strong answer" prose is in the reader's voice** — first person, present tense, directly speakable. "I picked pgvector because…" not "the developer picked…". Third-person prose is banned in strong-answer blocks.
+6. **Every claim grounded in the codebase must be verifiable.** Library versions, file paths, function names must match the repo. If a defense requires a claim the agent can't verify, the question is wrong for this codebase — drop it rather than fabricate.
+7. **Chapter 8 (the AI question) is always generated**, regardless of detectable AI use. The 2026 baseline assumes the reader used AI heavily; if they didn't, the chapter teaches how to say so without sounding defensive. AI-assistance honesty is woven through *every* chapter, distinguishing three modes of decision-making: deliberate (reader's choice), evaluated-and-accepted (AI suggested, reader evaluated), defaulted-to (AI's default, reader didn't deeply evaluate). The third is riskiest to own and most senior-signal-positive when owned well.
+8. **Every chapter closes with a "what you'd change" treatment** — even Chapter 2 (architecture). The senior-engineer habit of always being able to name what you'd reconsider.
+9. **No marketing language.** Banned across the whole book: "scalable solution," "robust architecture," "leveraging modern best practices," "cutting-edge," "best-in-class," "state-of-the-art," "industry-leading," "enterprise-grade."
+10. **Hedging banned (inherited).** "I might have used X" is weaker than "I used X" or "I didn't use X." Pick one.
 
-Apply the per-question template from `study-interview-defense.md` (NOT `study.md`'s per-concept template — they're similar quality but different units of organization).
+## Step 7C — Create the directory and generate the book
 
-The non-negotiables — inherited from both specs:
+Create:
 
-1. **Persona: staff engineer who has been on the hiring side of senior+ loops.** 12 years industry, 8 at Google/Meta, the last 4 also conducting senior+ interviews and sitting in hiring committees. Knows what makes a "strong yes" vs "leaning yes" vs "weak no." Calm and pragmatic about the 2026 reality that candidates built with significant AI assistance.
-2. **Strong-answer prose is written in the *candidate's* voice — first person, present tense, anchored to specific files and functions.** "I picked pgvector because..." not "the developer picked pgvector because..." The reader should be able to read the strong-answer block aloud and have it sound natural.
-3. **Every claim in a "Strong answer" block must be grounded in the actual codebase.** Library versions must match what's in the repo. File paths must exist. Function names must be real. **If a strong answer requires a claim the agent can't verify, the question is wrong for this codebase — drop it rather than fabricate.**
-4. **Every question file includes a "Where to expect pushback" block AND an "I don't know" recovery block.** These are the load-bearing differentiators of this spec vs other interview-prep material. A file without these blocks is incomplete. The "I don't know" recovery block teaches the skill of saying "I don't know" with poise — a learnable skill, not a character flaw.
-5. **"What they're really asking" names the underlying probe, not the surface form.** Generic restatements are banned. Name the signal the interviewer is looking for and what gets tested.
-6. **`the-ai-question.md` is always generated.** Always. The 2026 baseline assumes the candidate used AI heavily; the file teaches how to answer honestly without sounding defensive or evasive. Strong answer is matter-of-fact, specific about the AI's role, specific about the candidate's role, ends with thoughtful reflection on what AI tools have actually taught the candidate.
-7. **AI assistance honesty is woven throughout, not isolated.** Every "why did you choose X" answer should be honest about whether the choice was the candidate's deliberate decision, the AI's suggestion the candidate evaluated and accepted, or the AI's default the candidate didn't question. The third mode is the riskiest to own — and the most senior-signal-positive when owned well.
-8. **Hedging is banned (inherited from `study.md`).** "I might have used X" is weaker than either "I used X" or "I didn't use X." Pick one.
-9. **No marketing language.** Banned phrasings: "scalable solution," "robust architecture," "leveraging modern best practices," "cutting-edge," "best-in-class," "state-of-the-art." Interviewers hear these as "I don't actually understand what I built."
-10. **"What you'd change" is required in every file** — even for decisions the candidate wouldn't change. For those, name what would change at a different scale or under different constraints. The senior-engineer habit of always being able to name what you'd reconsider is what this block builds.
-
-## Step 7C — Create the directory structure
-
-Create the root and only the category subdirectories that have at least one question from Step 5C's inventory:
-
-```
-.aipe/study-interview-defense/
-.aipe/study-interview-defense/01-architecture/             (always — universal opener lives here)
-.aipe/study-interview-defense/02-tech-choices/             (skip if no load-bearing tech choices)
-.aipe/study-interview-defense/03-scale-and-load/           (skip if no realistic scale bottlenecks)
-.aipe/study-interview-defense/04-failure-modes/            (skip if no surfaces worth probing)
-.aipe/study-interview-defense/05-code-walkthroughs/        (skip if no regions worth walking)
-.aipe/study-interview-defense/06-counterfactuals/          (skip if no honest counterfactuals)
-.aipe/study-interview-defense/07-dsa-decisions/            (skip if no real DSA decisions)
-.aipe/study-interview-defense/08-hard-questions/           (always — the fixed reflection set)
+```bash
+mkdir -p .aipe/study-interview-defense
 ```
 
-(Use `mkdir -p`.) Empty subdirectories are not generated — a content-heavy site won't have `07-dsa-decisions/`.
-
-## Step 8C — Generate each question file
-
-For each question in the Step 5C inventory, write one file using the per-question template from `study-interview-defense.md`. Use this exact structure:
+Generate 9 files (flat — no subdirectories), in chapter order so each builds on the previous:
 
 ```
-# [Question, verbatim as an interviewer would ask it]
-
-## What they're really asking
-  One paragraph naming the underlying probe.
-
-## Why they ask this question
-  One sentence on the signal this question produces in a hiring decision.
-
-## The strong answer
-  2–5 paragraphs in the candidate's voice — first person, present tense,
-  anchored to specific files and functions. Every factual claim verifiable
-  in the codebase.
-
-## Key facts to know cold
-  Labelled bullets, 5–10 items. Library versions, file paths, function
-  names, design choices.
-
-## Common follow-ups
-  The 3–5 questions the interviewer is most likely to ask next, each with
-  one-line guidance on how to handle it.
-
-## Where to expect pushback
-  The weakest part of the strong answer. Name the weakness, name what to
-  say. This is the most important block — if the candidate can hold here,
-  they pass.
-
-## The "I don't know" recovery
-  When the interviewer pushes into territory the candidate genuinely
-  doesn't know, what to say. Name the kind of pushback, then the
-  recovery. Strong recovery looks like: confidence about what you do
-  know, no fake bullshit about what you don't, willingness to learn in
-  real time.
-
-## What you'd change
-  One paragraph. Volunteers what the candidate would reconsider — at a
-  different scale, under different constraints, or just on reflection.
-  Required, even when the candidate wouldn't actually change anything.
-
-## Practice prompt
-  One sentence. A short prompt the candidate uses for recorded practice.
+00-overview.md                 TOC + how to use this book + master "system at a glance" diagram
+01-the-pitch.md                first 60 seconds — the project in 10s / 30s / 90s
+02-the-architecture.md         walk me through the system
+03-the-choices.md              why this stack
+04-the-scale-story.md          what breaks first at 10x
+05-the-failure-story.md        what happens when things go wrong
+06-the-hard-parts.md           hardest bug, proudest part, weakest spot
+07-the-counterfactuals.md      what you'd do differently
+08-the-ai-question.md          modern table-stakes
 ```
 
-The H1 uses the **actual interviewer phrasing**, not a sanitized version. "Why pgvector and not Pinecone?" not "Discuss the vector database selection."
+Each chapter file follows the per-chapter template: `# Chapter N — [title]` → Opening hook (1–2 paragraphs, direct address, no interview-prep platitudes) → the chapter-opening diagram → the body (each question treated with the callout, strong-answer prose, optional side-by-side, follow-up decision tree, ≥1 pull quote) → ≥1 "I don't know" recovery box → "what you'd change" → one-page summary (core claim, questions with one-line answers, pull quotes, the "what you'd change" sentence).
 
-## Step 9C — Generate `the-ai-question.md` (always)
+`00-overview.md` maps all 8 chapters with one-line descriptions and the questions each covers, suggests a reading order (first read: in order; review: skim summaries + pull quotes; night-before: read only each chapter's one-page summary), contains the master "system at a glance" diagram, and connects to the rest of the study system (the concept-level Interview defense blocks live inside `.aipe/study-system-design-dsa/` and `.aipe/study-ai-engineering/` concept files; this book is the wide opener, those are the deep dives).
 
-Single file at the root (not in a numbered subdirectory) because it cuts across every other question. Uses the same per-question template.
-
-Required follow-ups for this file:
-- "How much of the code did you actually write yourself?"
-- "Can you explain [pick a complex section]? Walk me through it line by line."
-- "What did AI get wrong?"
-- "What's a decision Claude (or another tool) suggested that you overrode?"
-- "What would you have built if you didn't have AI?"
-
-The strong-answer voice here is more conversational than other defense files — the candidate should sound like they've thought about this honestly and arrived at a stable, grounded position, not like they memorized a defense. The worst possible answer is defensive, evasive, or pretending AI wasn't used.
-
-## Step 10C — Generate `00-overview.md`
-
-The candidate's at-a-glance map of every question. Two purposes: pre-interview review the night before, and identification of gaps (a question the candidate hadn't thought about). Format:
-
-```
-# Interview defense — [codebase name]
-
-## All questions, by category
-
-### Architecture
-- Walk me through how this app works → 01-architecture/01-system-overview.md
-- How does a typical request flow through the system? → 01-architecture/02-request-flow.md
-...
-
-### Tech choices
-- Why pgvector and not Pinecone? → 02-tech-choices/01-vector-store.md
-- Why Next.js and not Remix? → 02-tech-choices/02-framework.md
-...
-
-[...for each category...]
-
-### The AI question
-- Did you use AI to build this? → the-ai-question.md
-```
-
-End with a one-paragraph note on practice approach: read each file out loud as if answering an interviewer; the "I don't know" recovery block is the load-bearing one — practice that block more than the others, because it's the muscle most candidates haven't built.
-
-## Step 11C — Generate section README indexes
-
-Each category subdirectory gets its own `README.md` listing the questions in that category with their file names. Also generate `.aipe/study-interview-defense/README.md` at the root: full guide index, reading order suggestion (start with the AI question, then 01-architecture's universal opener, then work through tech-choices), and a one-paragraph note on how to practice (read aloud, time yourself, drill the pushback block specifically).
-
-## Step 12C — Report + stop
+## Step 8C — Report + stop
 
 Print exactly:
 
 ```
-✓ Interview defense guide created at .aipe/study-interview-defense/
+✓ Interview defense book created at .aipe/study-interview-defense/
   00-overview.md
-  README.md
-  the-ai-question.md
-  01-architecture/                  (<N> files + README.md)
-  02-tech-choices/                  (<N> files + README.md)   [omit if not created]
-  03-scale-and-load/                (<N> files + README.md)   [omit if not created]
-  04-failure-modes/                 (<N> files + README.md)   [omit if not created]
-  05-code-walkthroughs/             (<N> files + README.md)   [omit if not created]
-  06-counterfactuals/               (<N> files + README.md)   [omit if not created]
-  07-dsa-decisions/                 (<N> files + README.md)   [omit if not created]
-  08-hard-questions/                (<N> files + README.md)
+  01-the-pitch.md
+  02-the-architecture.md
+  03-the-choices.md
+  04-the-scale-story.md
+  05-the-failure-story.md
+  06-the-hard-parts.md
+  07-the-counterfactuals.md
+  08-the-ai-question.md
 ```
 
-Then a 3–5 sentence summary: total question count (should be 15–30 for a typical codebase), which category was richest, any category that was deliberately skipped (and why), and a one-line note on the strongest pushback target the candidate should drill first.
+Then a 3–5 sentence summary: how many load-bearing tech choices Chapter 3 defends, which chapter has the densest content for this codebase, the single question the reader is most likely to get pushed past their depth on (and which chapter's "I don't know" box covers it), and a one-line note that the book pairs with the concept-level Interview defense blocks in the other study guides.
 
-**Stop. Wait for the user's next instruction.** They'll typically pick a question to drill or ask for a recorded-practice prompt. Do NOT auto-revise.
+**Stop. Wait for the user's next instruction.** They'll typically pick a chapter to drill or ask for a mock-interview run. Do NOT auto-revise.
 
 ---
 
 # UPDATE MODE
 
-Runs when Step 4 found an existing guide. Goal: refresh stale answers without rewriting accurate ones. **Do NOT regenerate from scratch.**
+Runs when Step 4 found an existing book. Goal: refresh stale defenses without rewriting accurate ones. **Do NOT regenerate from scratch.**
 
-## Step 5U — Read the existing guide
+## Step 5U — Read the existing book
 
-Walk `.aipe/study-interview-defense/` recursively. Read every `.md` file in every subdirectory, plus `00-overview.md`, `README.md`, and `the-ai-question.md`.
+Walk `.aipe/study-interview-defense/` and read `00-overview.md` plus `01-the-pitch.md` through `08-the-ai-question.md`. If the legacy per-question directory structure is present instead, flag it in Step 7U (migrate to the book shape, or leave as archive — user's call).
 
-## Step 6U — Diff each file against the current codebase AND the loaded templates
+## Step 6U — Diff each chapter against the current codebase AND the loaded templates
 
-Three diff sources to check per file:
+Three diff sources to check per chapter:
 
-- **Codebase drift** — file paths that have moved, function names that have changed, library versions named in "Key facts to know cold" that have been upgraded, design decisions that have shifted.
-- **Template drift** — block structure has changed since the file was written (e.g., a new block added to the per-question template). Identify missing blocks. Current required blocks: What they're really asking / Why they ask this question / The strong answer / Key facts to know cold / Common follow-ups / Where to expect pushback / The "I don't know" recovery / What you'd change / Practice prompt.
-- **Inventory drift** — new load-bearing tech choices added to the codebase that warrant new files, removed features whose question files are now obsolete, questions that no longer have a real anchor in the code (drop them).
+- **Codebase drift** — file paths that have moved, function names that changed, library versions in the defenses that have been upgraded, decisions that have shifted.
+- **Template drift** — a chapter missing one of the six required visual treatments, a chapter missing its one-page summary, a strong-answer block written in third person instead of the reader's voice.
+- **Inventory drift** — new load-bearing tech choices that warrant a new section in Chapter 3, new failure surfaces for Chapter 5, decisions that are now reconsiderable for Chapter 7.
 
-Output a structured change plan grouped by category.
+Output a structured change plan grouped by chapter.
 
 ## Step 7U — Output the plan and STOP for confirmation
 
@@ -279,14 +195,14 @@ Print the change plan. **Wait for user confirmation** before editing any files. 
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only the sections identified in Step 6U. Maintain the candidate-voice convention for "Strong answer" blocks. Append a changelog entry at the bottom of each updated file:
+Edit only the sections identified in Step 6U. Maintain the coach voice and the reader's-voice convention for strong answers. Append a changelog entry at the bottom of each updated chapter:
 
 ```
 ---
 Updated: <today's ISO date> — <one-line summary of what changed and why>
 ```
 
-Do NOT rewrite accurate sections. Do NOT add fabricated questions whose answers can't be grounded in the actual code — drop them instead.
+Do NOT rewrite accurate sections. Do NOT add or collapse chapters — the 8-chapter list is the contract. Do NOT fabricate defenses whose claims can't be grounded in the actual code — drop the question instead.
 
 ## Step 9U — Report + stop
 
@@ -295,10 +211,9 @@ Print:
 ```
 Update complete for .aipe/study-interview-defense/
 ─────────────────────────────────────────────────
-Files updated:        <list>
-Files added:          <list>
-Files removed:        <list, with one-line reason each>
-Files unchanged:      <count or list>
+Chapters updated:     <list>
+Chapters unchanged:   <count or list>
+Legacy structure:     <migrated / left as archive, per user's choice>
 ```
 
 **Stop. Wait for the user's next instruction.**

@@ -52,18 +52,26 @@ Read these files (skip missing ones):
 - `~/.config/aipe/global/skills.md` (optional)
 - `~/.config/aipe/global/aieng-curriculum.md` or `~/.config/aipe/global/curriculum.md` (optional)
 
-## Step 3 — Load both templates
+## Step 3 — Load the template chain
 
-Prompt engineering inherits the per-concept-file template from `study.md`. Load both:
+Prompt engineering reads four files in order — structure, the default persona it diverges from, reader calibration, then the spec itself:
 
 ```
 ${CLAUDE_PLUGIN_ROOT}/specs/study.md
+${CLAUDE_PLUGIN_ROOT}/specs/teacher.md
+${CLAUDE_PLUGIN_ROOT}/specs/me.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-prompt-engineering.md
 ```
 
-If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for `specs/study.md` and `specs/study-prompt-engineering.md` upward from this file's location.
+If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
-`study.md` is read for **structure** — per-concept template, formatting rules, diagram requirements, hard rules, Validate block, constraint summary. `study-prompt-engineering.md` is read for **topic and voice** — the persona, the 13 concepts to cover, the anchoring rules. The agent uses both in tandem.
+What each file supplies:
+- **`study.md`** — structure: per-concept template, formatting rules, diagram requirements, hard rules, Validate block, constraint summary.
+- **`teacher.md`** — the *default* writer persona across the study family. **This spec does NOT use it** — prompt engineering has its own inline working-AI-engineer persona (defined in `study-prompt-engineering.md`). Read teacher.md only to honor its "WHEN NOT TO USE THIS PERSONA" section, which names this spec's divergence explicitly. The persona that actually governs this guide is the one inline in the prompt-engineering spec.
+- **`me.md`** — reader-side calibration: voice and format register, what the reader already knows, what examples land. `me.md` is read by *every* spec in the family regardless of which writer persona the spec uses — the persona shifts; the reader does not. It does NOT override study.md's structural rules or this spec's inline persona.
+- **`study-prompt-engineering.md`** — topic, the inline working-AI-engineer persona, the 13 concepts to cover, the anchoring rules.
+
+Precedence when they conflict: study.md wins on **structure**; the inline persona in `study-prompt-engineering.md` wins on **voice** (not teacher.md's); `me.md` wins on **calibration**.
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 

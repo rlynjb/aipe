@@ -40,32 +40,104 @@ you run the command three times — once in each
 repo's working directory.
 
 ═════════════════════════════════════════════════
-THE PERSONA
+THE PERSONA — references `teacher.md`
 ═════════════════════════════════════════════════
 
-Same as `study.md` — the staff engineer with 12
-years of industry experience, 8 years at Google
-and Meta on distributed systems at scale, 4 years
-as EM/principal at a Series B startup. Writes
-internal training material engineers keep open in
-a second tab. Authoritative, systems-focused,
-comparison-rich, treats interview prep as a
-second-order benefit of solid systems thinking.
+The persona is defined in `teacher.md` — the staff
+engineer with 12 years of industry experience, 8
+at Google and Meta on distributed systems at
+scale, 4 as EM/principal at Series B. Read that
+file for the full persona, voice rules, format
+hierarchy, and what's banned. Do not restate.
 
-No persona shift here. The AI engineering and ML
-content in this spec is already systems-shaped —
-distributed inference, scale concerns, architecture
-diagrams, on-device deployment, retraining
-pipelines. The staff engineer voice is the right
-one for that work.
+This spec uses the **teacher posture** from
+`teacher.md` (the default). No shift. The AI
+engineering and ML content here is systems-shaped
+— distributed inference, scale concerns,
+architecture diagrams, on-device deployment,
+retraining pipelines. The teacher voice in
+`teacher.md` is the right one for that work.
 
-(Prompt engineering, by contrast, lives in its own
-spec — `study-prompt-engineering.md` — with a
-different persona. The discipline is different,
-the failure modes are different, and the voice
-that teaches it credibly is different. AI
-engineering as a systems topic stays with the
-original persona.)
+(Prompt engineering, by contrast, lives in its
+own spec — `study-prompt-engineering.md` — with a
+different persona, defined inline there rather
+than via `teacher.md`. See `teacher.md`'s "WHEN
+NOT TO USE THIS PERSONA" section for why the
+disciplines diverge here.)
+
+═════════════════════════════════════════════════
+THE READER — calibrate to `me.md`
+═════════════════════════════════════════════════
+
+`teacher.md` defines who is *writing* the guide.
+`me.md` defines who is *reading* it. Read `me.md`
+before generating, and treat its contents as the
+source of truth for reader-side calibration:
+
+  → **Voice and format register.** `me.md`'s
+     "HOW TO WRITE FOR YOU" section names the
+     rules that apply on top of `teacher.md`'s
+     voice rules: diagram-first, pattern as the
+     primary anchor (not vendor-specific),
+     concept → mechanism → code in the reader's
+     own repo.
+
+  → **What examples land.** When this spec calls
+     for an anchor example or a worked walkthrough,
+     reach into `me.md`'s system design portfolio
+     (dryrun, buffr, contrl, aipe, AdvntrCue) and
+     DSA portfolio rather than inventing. The
+     five system shapes in `me.md` are particularly
+     relevant here — AdvntrCue is a classic RAG
+     example, contrl is on-device ML, buffr is
+     local-first + AI compose. AI engineering
+     concepts anchor naturally to these.
+
+  → **The shape-matching logic.** This spec
+     identifies which of three AI shapes the
+     codebase being studied most resembles (LLM
+     app engineering / prompt tooling / classical
+     ML). `me.md`'s system design portfolio
+     describes the shapes the reader has already
+     built. When the target codebase matches one
+     of those five, the agent has rich
+     pre-existing context to anchor against.
+
+  → **What the reader already knows.** `me.md`
+     names ML depth as a known gap — the reader
+     has built one ML pipeline (contrl, pose
+     landmarking with MediaPipe) but classical
+     ML beyond that is new ground. SECTION 04
+     (Machine Learning) should teach this as new
+     ground, not as a refresher. The reader has
+     strong AI-application instincts from
+     building loopd, aipe, AdvntrCue — Phase 1
+     concepts can move faster.
+
+  → **The cognitive shape.** Visual-first
+     thinking. Ideas arrive as pictures; details
+     and logic take longer. The shape-matching
+     opener of this spec already aligns with
+     this — the reader sees the codebase as one
+     of three shapes (a picture) before any
+     mechanism is walked.
+
+**Precedence when three files overlap:**
+
+  1. This spec wins on **structure** (block
+     templates, three-shapes framing, the two
+     system-design-template sub-sections,
+     constraint summaries).
+  2. `teacher.md` wins on **voice register**
+     (tone, posture, what's banned).
+  3. `me.md` wins on **calibration** (which
+     examples land, what's already known, depth
+     modulation).
+
+These three layers compose. The spec defines what
+gets generated; `teacher.md` defines how the
+writer speaks; `me.md` defines how it lands for
+this specific reader.
 
 ═════════════════════════════════════════════════
 OUTPUT FOLDER NAME
@@ -240,19 +312,38 @@ study works like this:
      diagram requirements, hard rules, and
      constraint summary.
 
-  2. Agent reads this spec (named
+  2. Agent reads `teacher.md` to learn the
+     writer persona — the staff engineer voice,
+     teaching philosophy, format hierarchy
+     (diagrams primary, prose fills in,
+     pseudocode for logic, real code when syntax
+     matters), and what's banned (hedging,
+     marketing language, etc.).
+
+  3. Agent reads `me.md` to learn reader-side
+     calibration: voice register on top of
+     `teacher.md`, example preferences, the
+     reader's DSA and system design portfolios
+     (used for anchoring), and the cognitive
+     shape (visual-first, ideas before details).
+     `me.md` does not override the structural
+     rules from `study.md` or this spec, and
+     does not override `teacher.md`'s voice
+     rules — it calibrates examples and depth.
+
+  4. Agent reads this spec (named
      `study-ai-engineering.md` to mirror the
      output folder name) to learn the AI/ML
      concept list, the three-project anchor
      framing, and the AI/ML-specific
      constraints.
 
-  3. Agent reads `aieng-curriculum.md` for
+  5. Agent reads `aieng-curriculum.md` for
      curriculum concept IDs that map to AI/ML
      concepts (Phase 1, Phase 2A/2B, Phase 2C,
      Phase 3, Phase 4, Phase 5 concepts).
 
-  4. Agent reads the codebase context of the
+  6. Agent reads the codebase context of the
      repo where the command was run. This spec
      runs against one codebase at a time — the
      same per-repo scope as the base study
@@ -260,12 +351,15 @@ study works like this:
      invoked in is the codebase the AI
      engineering guide will analyze and describe.
 
-  5. Agent generates `.aipe/study-ai-engineering/`
+  7. Agent generates `.aipe/study-ai-engineering/`
      (inside that repo's `.aipe/` directory) with
      sub-directories per sub-section
      (01-llm-foundations/, 02-context-and-prompts/,
      etc.), each containing per-concept files
-     following `study.md`'s per-concept template.
+     following `study.md`'s per-concept template,
+     written in the teacher voice from
+     `teacher.md`, and calibrated to the reader
+     as defined in `me.md`.
 
 The AI Engineering and Machine Learning sections
 that used to live inside `study.md` as SECTION 03
@@ -308,10 +402,44 @@ Refer to `study.md` for the canonical definition:
   → The general constraint summary at the bottom
     of `study.md`
 
-If a future change to `study.md` updates one of
-these (e.g. a new block added to the template),
-this spec automatically inherits it. No
-duplication, no drift.
+Inherited from `teacher.md` without restatement.
+Refer to `teacher.md` for the canonical
+definition:
+
+  → The writer persona (staff engineer, 12
+    years, FAANG → Series B)
+  → The teaching philosophy (comprehension over
+    performance)
+  → The format hierarchy (diagrams primary,
+    prose fills in, pseudocode for logic, real
+    code only when syntax matters)
+  → Voice rules: direct, opinionated, specific,
+    occasionally blunt, always constructive
+  → What's banned: hedging, marketing language,
+    apologetic tradeoff naming, slow on-ramps,
+    physical-world analogies as primary anchor
+
+Inherited from `me.md` without restatement.
+Refer to `me.md` for the canonical definition:
+
+  → Reader voice and format calibration (the
+    "HOW TO WRITE FOR YOU" section)
+  → Reader portfolios — DSA (Graph, BST, Heaps,
+    PQ, sorting, state-space search) and system
+    design (dryrun, buffr, contrl, aipe,
+    AdvntrCue) — used for example anchoring
+  → Reader cognitive shape (visual-first,
+    ideas-then-details, language-agnostic,
+    fundamentals + hands-on)
+  → Honest gap inventory — distributed systems
+    at scale, ML beyond contrl, competitive
+    programming DSA. The agent teaches gaps as
+    new ground rather than assuming familiarity.
+
+If a future change to `study.md`, `teacher.md`,
+or `me.md` updates one of these, this spec
+automatically inherits it. No duplication, no
+drift.
 
 The constraints that are AI/ML-specific —
 generating files for in-scope curriculum concepts

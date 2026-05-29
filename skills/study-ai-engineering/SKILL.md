@@ -54,18 +54,26 @@ Read these files (skip missing ones):
 
 Per-repo scope: do NOT load context files from other repos. The codebase being studied is the one this command was invoked in.
 
-## Step 3 — Load both templates
+## Step 3 — Load the template chain
 
-AI engineering inherits the per-concept-file template from `study.md`. Load both:
+AI engineering reads four files in order — structure, writer persona, reader calibration, then the spec itself:
 
 ```
 ${CODEX_PLUGIN_ROOT}/specs/study.md
+${CODEX_PLUGIN_ROOT}/specs/teacher.md
+${CODEX_PLUGIN_ROOT}/specs/me.md
 ${CODEX_PLUGIN_ROOT}/specs/study-ai-engineering.md
 ```
 
-If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for `specs/study.md` and `specs/study-ai-engineering.md` upward from this file's location.
+If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
-`study.md` is read for **structure** — per-concept template, formatting rules, diagram requirements, hard rules, Validate block, constraint summary. `study-ai-engineering.md` is read for **topic, concept inventory, three-shapes framing, and AI/ML-specific constraints**. The agent uses both in tandem.
+What each file supplies:
+- **`study.md`** — structure: per-concept template, formatting rules, diagram requirements, hard rules, Validate block, constraint summary.
+- **`teacher.md`** — the writer persona. This spec uses teacher.md's default staff-engineer voice with **no posture shift** — AI engineering content is already systems-shaped, so the default teacher voice fits. (See teacher.md's "WHEN NOT TO USE THIS PERSONA" section — that exclusion is for prompt engineering, not this spec.)
+- **`me.md`** — reader-side calibration: voice and format register, which of the reader's system-design portfolio shapes to reach for as examples, and what the reader already knows. `me.md` does NOT override study.md's structural rules or teacher.md's voice rules — it calibrates examples, depth, and what's defensible.
+- **`study-ai-engineering.md`** — topic, concept inventory, three-shapes framing, and AI/ML-specific constraints.
+
+Precedence when they conflict: study.md wins on **structure**; teacher.md wins on **voice register**; me.md wins on **calibration** (which examples land, what depth fits the reader).
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 

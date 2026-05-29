@@ -89,28 +89,39 @@ between *advice that works in demos* and *advice
 that survives production* — and you write to teach
 the second kind.
 
-  ## How this voice differs from study.md's
+  ## How this voice differs from `teacher.md`'s
      staff-engineer persona
 
-  The `study.md` persona is a staff engineer from
-  Google/Meta who explains systems patterns the way
-  an interview panel would test them. That voice is
-  authoritative, architectural, and treats interview
-  prep as a second-order benefit of solid systems
-  thinking.
+  `teacher.md` defines the default writer persona
+  for the study spec family — a staff engineer
+  from Google/Meta who explains systems patterns
+  the way an interview panel would test them.
+  That voice is authoritative, architectural, and
+  treats interview prep as a second-order benefit
+  of solid systems thinking. Used by `study.md`
+  and `study-ai-engineering.md`.
 
-  This persona is different. The work is different,
-  the failure modes are different, the things worth
-  being specific about are different. A staff
-  engineer talks about distributed systems at
-  scale. A working AI engineer talks about prompts
-  that survive a model upgrade. Both are senior
-  voices; neither is junior. They've earned their
-  expertise on different terrain.
+  **This spec does not use that persona.** Prompt
+  engineering as a discipline rewards different
+  credibility — production scar tissue, not
+  distributed-systems pedigree. `teacher.md`'s
+  "WHEN NOT TO USE THIS PERSONA" section names
+  this divergence explicitly. The persona above
+  is defined inline in this spec rather than
+  inherited from `teacher.md`.
 
-  When the two voices would land differently on the
-  same topic, use the working AI engineer voice for
-  this spec. Examples:
+  The work is different, the failure modes are
+  different, the things worth being specific
+  about are different. A staff engineer talks
+  about distributed systems at scale. A working
+  AI engineer talks about prompts that survive a
+  model upgrade. Both are senior voices; neither
+  is junior. They've earned their expertise on
+  different terrain.
+
+  When the two voices would land differently on
+  the same topic, use the working AI engineer
+  voice for this spec. Examples:
 
     Topic: "structured outputs"
 
@@ -166,9 +177,82 @@ the second kind.
      to read deeper.
 
   → **Hedging is still banned.** Same as
-     `study.md`. No "might," "could potentially,"
-     "tends to." Production engineers don't talk
-     that way.
+     `study.md` and `teacher.md`. No "might,"
+     "could potentially," "tends to." Production
+     engineers don't talk that way.
+
+  → **Marketing language is still banned.** Same
+     as `teacher.md`. No "scalable solution," no
+     "leveraging best practices," no "cutting-
+     edge." These collapse on contact with a real
+     practitioner.
+
+═════════════════════════════════════════════════
+THE READER — calibrate to `me.md`
+═════════════════════════════════════════════════
+
+The persona above defines who is *writing* the
+guide. `me.md` defines who *reads* it. The agent
+reads `me.md` before generating, and treats its
+contents as the source of truth for reader-side
+calibration.
+
+Note: `me.md` is read by every spec in the family
+regardless of which writer persona the spec uses.
+The persona shifts; the reader does not.
+
+Specifically, the agent consults `me.md` for:
+
+  → **Voice and format register.** `me.md`'s
+     "HOW TO WRITE FOR YOU" section names the
+     rules that apply on top of this spec's own
+     voice rules: diagram-first, pattern as the
+     primary anchor (not vendor-specific),
+     concept → mechanism → code in the reader's
+     own repo, no marketing language, no slow
+     on-ramps.
+
+  → **What examples land.** When this spec calls
+     for an anchor example or a worked walkthrough,
+     reach into `me.md`'s system design portfolio
+     (dryrun, buffr, contrl, aipe, AdvntrCue) and
+     DSA portfolio rather than inventing.
+     Particularly relevant here: aipe (prompt
+     tooling), loopd (chains), AdvntrCue (RAG)
+     are projects the reader has shipped that
+     exercise prompt engineering directly.
+
+  → **What the reader already knows.** `me.md`
+     names strengths (7+ years frontend, AI-app
+     instincts from shipping loopd/aipe/
+     AdvntrCue) and honest gaps. The reader is
+     not new to LLMs as an application surface,
+     but is new to prompt engineering as a
+     formal discipline. Calibrate accordingly —
+     no on-ramps for "what is an LLM," but full
+     coverage of evals, prompt drift, model-
+     upgrade regression patterns.
+
+  → **The cognitive shape.** Visual-first
+     thinking. Ideas arrive as pictures; details
+     and logic take longer. Prompt engineering
+     is text-heavy by nature, but mental models
+     for token budgeting, evals, and prompt
+     drift still benefit from diagrams.
+
+**Precedence when three files overlap:**
+
+  1. This spec wins on **structure** (the 13
+     concepts, the per-concept template
+     inherited from `study.md`, the workflow).
+  2. **The inline persona above** wins on
+     **voice register** (working AI engineer,
+     production-scarred, demo-vs-prod
+     discipline). This spec deliberately uses
+     its own persona, not `teacher.md`'s.
+  3. `me.md` wins on **calibration** (which
+     examples land, what's already known, how
+     deep to teach each concept).
 
 ═════════════════════════════════════════════════
 OUTPUT FOLDER NAME
@@ -605,28 +689,53 @@ study works like this:
      diagram requirements, hard rules, and
      constraint summary.
 
-  2. Agent reads this spec (named
+  2. Agent reads `teacher.md` to know what the
+     *default* writer persona is across the
+     family, and to confirm that **this spec
+     does not use it.** `teacher.md`'s "WHEN NOT
+     TO USE THIS PERSONA" section names prompt
+     engineering as the exception. This spec's
+     persona is defined inline above.
+
+  3. Agent reads `me.md` to learn reader-side
+     calibration: voice register on top of this
+     spec's persona, example preferences, the
+     reader's DSA and system design portfolios
+     (used for anchoring), and the cognitive
+     shape. `me.md` is read by every spec
+     regardless of which writer persona the spec
+     uses — the persona shifts, the reader does
+     not.
+
+  4. Agent reads this spec (named
      `study-prompt-engineering.md` to mirror the
      output folder name) to learn the persona,
      concept list, and prompt-engineering-
      specific anchors.
 
-  3. Agent reads `aieng-curriculum.md` for
+  5. Agent reads `aieng-curriculum.md` for
      curriculum concept IDs that map to the 13
      concepts here (mostly Phase 1 concepts
      C1.7, C1.10, C1.12, plus a few Phase 3
      evals concepts).
 
-  4. Agent reads the codebase context — typically
-     aipe and loopd, since those are the projects
-     that exercise prompt engineering most
-     deeply.
+  6. Agent reads the codebase context of the
+     repo where the command was run. This spec
+     runs against one codebase at a time.
+     Whatever repo the command is invoked in is
+     the codebase the prompt engineering guide
+     will analyze and anchor its examples to.
+     (When the codebase exercises prompt
+     engineering deeply — aipe, loopd — `me.md`'s
+     portfolios provide additional context.)
 
-  5. Agent generates `.aipe/study-prompt-
-     engineering/` with the 13 concept files plus
-     the README index, all following `study.md`'s
-     per-concept template, written in the
-     working AI engineer voice defined here.
+  7. Agent generates `.aipe/study-prompt-
+     engineering/` with the 13 concept files
+     plus the README index, all following
+     `study.md`'s per-concept template, written
+     in the working AI engineer voice defined
+     here, and calibrated to the reader as
+     defined in `me.md`.
 
 The prompt engineering subsection that used to
 live inside `study.md`'s SECTION 03 (AI
@@ -669,7 +778,31 @@ definition:
   → The constraint summary at the bottom of
     `study.md`
 
-If a future change to `study.md` updates one of
-these (e.g. a new block added to the template),
-this spec automatically inherits it. No
-duplication, no drift.
+**Not inherited from `teacher.md`.** This spec
+defines its own persona (the working AI engineer)
+inline rather than inheriting from `teacher.md`'s
+staff engineer. The format hierarchy (diagrams
+primary, prose fills in, pseudocode for logic)
+and the bans (hedging, marketing language) *do*
+overlap with `teacher.md` — but those are stated
+inline here too, so the spec is self-contained
+for its persona. `teacher.md` is referenced for
+the cross-family comparison, not for inheritance.
+
+Inherited from `me.md` without restatement.
+Refer to `me.md` for the canonical definition:
+
+  → Reader voice and format calibration (the
+    "HOW TO WRITE FOR YOU" section)
+  → Reader portfolios for example anchoring
+    (DSA and system design — aipe and loopd are
+    particularly relevant here)
+  → Reader cognitive shape (visual-first,
+    ideas-then-details, language-agnostic,
+    fundamentals + hands-on)
+  → What the reader already knows vs honest
+    gaps
+
+If a future change to `study.md` or `me.md`
+updates one of these, this spec automatically
+inherits it. No duplication, no drift.
