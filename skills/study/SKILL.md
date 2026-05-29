@@ -48,15 +48,24 @@ Read these files (skip missing ones):
 - `~/.config/aipe/global/stack.md` (optional)
 - `~/.config/aipe/global/skills.md` (optional)
 
-## Step 3 — Load the `study` template
+## Step 3 — Load the template chain
 
-Read the template at:
+`study.md` now references two companion persona files instead of inlining the persona. Read all three:
 
 ```
 ${CODEX_PLUGIN_ROOT}/specs/study.md
+${CODEX_PLUGIN_ROOT}/specs/teacher.md
+${CODEX_PLUGIN_ROOT}/specs/me.md
 ```
 
-If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for `specs/study.md` upward from this file's location.
+If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
+
+What each file supplies:
+- **`study.md`** — structure: the per-concept template, formatting rules, diagram requirements, hard rules, the constraint summary.
+- **`teacher.md`** — the writer persona, used in **teacher posture** (the default — not the coach posture, which is for interview defense). The reader is sitting next to you; you're explaining a concept with time and patience. Diagrams primary, mechanism walked slowly, tradeoffs named.
+- **`me.md`** — reader-side calibration: voice and format register, what examples land (reach into the reader's DSA and system-design portfolios before inventing), what the reader already knows vs honest gaps, and the visual-first cognitive shape (lead with the mental-model diagram, walk the mechanism slowly).
+
+Precedence when they overlap: this spec/`study.md` wins on **structure**; `teacher.md` wins on **voice register**; `me.md` wins on **calibration** (which examples land, what's already known, how deep to teach). Treat `teacher.md` and `me.md` as input data to respect, not reinterpret.
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 

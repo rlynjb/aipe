@@ -1,7 +1,7 @@
 {
   "name": "aipe",
-  "description": "Spec workflow for AI-assisted development. 13 disciplined skills across three flows: action (Describe → Diagnose → Act), reflective (Evaluate, Teach), and communicate (demo + user docs) — audit, audit-cleanup, audit-frontend-a11y, audit-refactor, refactor, refactor-frontend-behaviour, refactor-frontend-visual, study, study-ai-engineering, study-interview-defense, study-prompt-engineering, generate-demo-guide, generate-user-guide — generate filled specs from your project context using your agent's own model, no external CLI.",
-  "version": "1.42.0",
+  "description": "Spec workflow for AI-assisted development. 14 disciplined skills across three flows: action (Describe → Diagnose → Act), reflective (Evaluate, Teach), and communicate (demo + user docs) — audit, audit-cleanup, audit-frontend-a11y, audit-refactor, refactor, refactor-frontend-behaviour, refactor-frontend-visual, study, study-ai-engineering, study-agent-architecture, study-interview-defense, study-prompt-engineering, generate-demo-guide, generate-user-guide — generate filled specs from your project context using your agent's own model, no external CLI.",
+  "version": "1.43.0",
   "developerName": "rlynjb",
   "websiteURL": "https://github.com/rlynjb/aipe",
   "category": "productivity",
@@ -15,6 +15,7 @@
     "./skills/refactor-frontend-visual",
     "./skills/study",
     "./skills/study-ai-engineering",
+    "./skills/study-agent-architecture",
     "./skills/study-interview-defense",
     "./skills/study-prompt-engineering",
     "./skills/generate-demo-guide",
