@@ -9,7 +9,7 @@
         "source": "github",
         "repo": "rlynjb/aipe"
       },
-      "description": "Generate filled specs from 14 disciplined templates across three flows — action (Describe → Diagnose → Act), reflective (Evaluate, Teach), and communicate (demo + user docs) — using your agent's own model, no external CLI."
+      "description": "Generate filled specs from 12 disciplined templates across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach) — using your agent's own model, no external CLI."
     }
   ]
 }
