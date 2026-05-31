@@ -39,7 +39,7 @@ study-system-design-dsa.md     → .aipe/study-system-design-dsa/   (this spec)
 study-ai-engineering.md        → .aipe/study-ai-engineering/
 study-prompt-engineering.md    → .aipe/study-prompt-engineering/
 study-agent-architecture.md    → .aipe/study-agent-architecture/
-study-interview-defense.md     → .aipe/study-interview-defense/
+rehearse-interview-defense.md     → .aipe/rehearse-interview-defense/
 ```
 
 Each generator spec runs per-repo and produces a fixed-name folder. `study.md` is the single entry point — it invokes all five generators, detecting per-folder whether each run is a create or an update. `teacher.md` and `me.md` are read by every generator before producing output. They do not generate anything themselves — they calibrate **voice** (teacher.md) and **fit** (me.md) for the reader. The generator specs handle structure; the two persona specs handle who's speaking and who's listening; the orchestrator handles running them all.

@@ -1,5 +1,5 @@
 ─────────────────────────────────────────────────
-STUDY — INTERVIEW DEFENSE SPEC
+REHEARSE — INTERVIEW DEFENSE SPEC
 ─────────────────────────────────────────────────
 
 A per-codebase study spec for **defending a project
@@ -292,12 +292,12 @@ OUTPUT FOLDER NAME
 Following the `.aipe/` convention, interview
 defense books save to:
 
-  .aipe/study-interview-defense/
+  .aipe/rehearse-interview-defense/
 
 `.aipe/` is a per-repo directory — it lives at
 the root of whichever repo the command was run
 in. Each repo gets its own
-`.aipe/study-interview-defense/`.
+`.aipe/rehearse-interview-defense/`.
 
 The folder name is fixed across repos, because it
 names the *topic*, not the codebase. The same
@@ -318,7 +318,7 @@ a sitting, but the full benefit comes from
 reading through in order at least once.
 
 ```
-.aipe/study-interview-defense/
+.aipe/rehearse-interview-defense/
   00-overview.md                 ← TOC + how to use this book
   01-the-pitch.md                ← first 60 seconds
   02-the-architecture.md         ← walk me through the system
@@ -790,21 +790,26 @@ when they need to re-anchor.
 HOW THE WORKFLOW RUNS
 ═════════════════════════════════════════════════
 
-This spec drives a **separate workflow** from
-the base study guide generator and the other
-topic specs. Running the base generator with
-`study-system-design-dsa.md` does not include this spec. To
-produce the interview defense book for a repo,
-run this spec's command from inside that repo.
+This spec can run standalone (run its command from
+inside a repo to produce just the defense book) or
+as part of the `/aipe:rehearse` orchestrator, which
+composes both rehearse books — interview defense and
+hackathon demo — in one pass. It is not part of the
+`/aipe:study` orchestrator; that one runs the
+comprehension guides.
 
-The four workflows share `format.md` as their
+The generators each share `format.md` as their
 structural foundation but are triggered
 independently:
 
-  → `study-system-design-dsa.md`                     → `.aipe/study-system-design-dsa/`
-  → `study-ai-engineering.md`      → `.aipe/study-ai-engineering/`
-  → `study-prompt-engineering.md`  → `.aipe/study-prompt-engineering/`
-  → `study-interview-defense.md`   → `.aipe/study-interview-defense/`
+  → study orchestrator (`/aipe:study`):
+      `study-system-design-dsa.md`   → `.aipe/study-system-design-dsa/`
+      `study-ai-engineering.md`      → `.aipe/study-ai-engineering/`
+      `study-prompt-engineering.md`  → `.aipe/study-prompt-engineering/`
+      `study-agent-architecture.md`  → `.aipe/study-agent-architecture/`
+  → rehearse orchestrator (`/aipe:rehearse`):
+      `rehearse-interview-defense.md` → `.aipe/rehearse-interview-defense/`
+      `rehearse-hackathon-demo.md`    → `.aipe/rehearse-hackathon-demo/`
 
 Each produces its own folder inside the repo's
 `.aipe/` directory.
@@ -859,7 +864,7 @@ like this:
 
   7. Agent generates the book — 9 files
      (00-overview.md plus 8 chapter files) in
-     `.aipe/study-interview-defense/`, written
+     `.aipe/rehearse-interview-defense/`, written
      in the staff engineer's coach voice
      (`teacher.md` in coach posture) and
      calibrated to the reader (`me.md`).
@@ -885,7 +890,7 @@ defenses are complementary:
 
   → The **project-level Interview defense
     book** (this spec, in
-    `.aipe/study-interview-defense/`) defends
+    `.aipe/rehearse-interview-defense/`) defends
     *the whole project* — the architecture,
     the tech stack, the scale story, the
     counterfactuals — for the moment the

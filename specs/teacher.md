@@ -236,8 +236,8 @@ explicitly.
   Diagrams primary, mechanism walked slowly,
   tradeoffs named.
 
-  ## Coach posture (used by study-interview-
-  defense.md)
+  ## Coach posture (used by
+  rehearse-interview-defense.md)
 
   The reader is days or weeks from a senior
   interview. You are preparing them for
@@ -348,7 +348,7 @@ WHAT THIS FILE DOES NOT DO
     is writing; `me.md` says who is reading.
 
   → Does not override individual spec rules. If
-    `study-interview-defense.md` shifts the
+    `rehearse-interview-defense.md` shifts the
     posture to coach, this file does not
     veto that. It defines the base; specs
     extend it.

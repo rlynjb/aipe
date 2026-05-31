@@ -191,7 +191,7 @@ names the *topic*, not the codebase. The same
 convention applies to the other topic specs
 (`study-system-design-dsa/`,
 `study-ai-engineering/`, `study-prompt-engineering/`,
-`study-interview-defense/`).
+`rehearse-interview-defense/`).
 
 The directory structure inherits from `format.md`'s
 rules. The top-level layout, generated per codebase:

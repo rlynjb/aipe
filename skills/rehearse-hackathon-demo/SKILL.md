@@ -3,9 +3,9 @@ description: Hackathon demo book for this codebase — overview + 6 chapters in 
 argument-hint: <optional slot length, e.g. "5 min">
 ---
 
-The user invoked `/aipe:study-hackathon-demo` with optional slot length: `$ARGUMENTS`.
+The user invoked `/aipe:rehearse-hackathon-demo` with optional slot length: `$ARGUMENTS`.
 
-This command produces a hackathon demo book for the current repo at the fixed path `.aipe/study-hackathon-demo/`. It is the third performance-oriented sibling alongside `/aipe:study-interview-defense` — that one helps you *defend* the work to an interviewer; this one helps you *show* the work to a room watching a clock. Coach posture, hard time discipline, choreographed live demo as the centerpiece.
+This command produces a hackathon demo book for the current repo at the fixed path `.aipe/rehearse-hackathon-demo/`. It is the third performance-oriented sibling alongside `/aipe:rehearse-interview-defense` — that one helps you *defend* the work to an interviewer; this one helps you *show* the work to a room watching a clock. Coach posture, hard time discipline, choreographed live demo as the centerpiece.
 
 The slot length defaults to **10 minutes** when `$ARGUMENTS` is empty. If supplied, treat the argument as the real number of minutes and scale every time budget proportionally — but keep the demo's share largest and keep the money shot inside the first third of the slot.
 
@@ -36,7 +36,7 @@ If `.aipe/project/context.md` does NOT exist in the current working directory:
    - public API surface, schema fields, ...
    ```
 
-3. Print: `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:study-hackathon-demo.`
+3. Print: `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:rehearse-hackathon-demo.`
 4. **Stop. Don't proceed.** The user needs to fill in real context first.
 
 ## Step 2 — Load context
@@ -61,20 +61,20 @@ Hackathon demo reads four files in order — structure, writer persona, reader c
 ${CODEX_PLUGIN_ROOT}/specs/format.md
 ${CODEX_PLUGIN_ROOT}/specs/teacher.md
 ${CODEX_PLUGIN_ROOT}/specs/me.md
-${CODEX_PLUGIN_ROOT}/specs/study-hackathon-demo.md
+${CODEX_PLUGIN_ROOT}/specs/rehearse-hackathon-demo.md
 ```
 
 If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
 What each file supplies:
-- **`format.md`** — the shared concept-file rules across the whole study family: formatting (kebab-case file names, no Mermaid/no images, box-drawing diagram chars), diagram quality, the "use real software, not analogies" rule, the no-hedging rule, the hard rules. This spec uses its own per-chapter book template (defined inline in `study-hackathon-demo.md`), but the *quality standards* come from format.md.
+- **`format.md`** — the shared concept-file rules across the whole study family: formatting (kebab-case file names, no Mermaid/no images, box-drawing diagram chars), diagram quality, the "use real software, not analogies" rule, the no-hedging rule, the hard rules. This spec uses its own per-chapter book template (defined inline in `rehearse-hackathon-demo.md`), but the *quality standards* come from format.md.
 - **`teacher.md`** — the base writer persona (the staff engineer with 12 years' experience). This spec shifts that persona to **coach posture** with a demo-coach framing layered on top: same engineer, watched a hundred hackathon demos win and lose, optimizes for the clock and the room.
 - **`me.md`** — reader-side calibration: voice (first person, present tense, directly speakable in all SAY tracks and script lines), reader portfolios (ground the build story / under-the-hood / Q&A in what the reader has actually shipped), and the visual-first cognitive shape.
-- **`study-hackathon-demo.md`** — the book shape (overview plus six chapters), the time discipline, the six visual treatments, the per-chapter template, and the demo-specific constraints (no vaporware, money shot inside the first third, every on-screen beat has an IF-IT-BREAKS backup).
+- **`rehearse-hackathon-demo.md`** — the book shape (overview plus six chapters), the time discipline, the six visual treatments, the per-chapter template, and the demo-specific constraints (no vaporware, money shot inside the first third, every on-screen beat has an IF-IT-BREAKS backup).
 
 ## Step 4 — Detect existing book → branch CREATE or UPDATE
 
-Check whether `.aipe/study-hackathon-demo/` already contains the book. The signal is the presence of `00-overview.md` at the root OR any file matching `0[1-6]-*.md`.
+Check whether `.aipe/rehearse-hackathon-demo/` already contains the book. The signal is the presence of `00-overview.md` at the root OR any file matching `0[1-6]-*.md`.
 
 - **Existing book found** → go to UPDATE MODE (Step 5U onward). **Do NOT regenerate from scratch.**
 - **No existing book** → go to CREATE MODE (Step 5C onward).
@@ -146,7 +146,7 @@ The non-negotiables — inherited from `format.md`, `teacher.md`, `me.md`, and t
 Create:
 
 ```bash
-mkdir -p .aipe/study-hackathon-demo
+mkdir -p .aipe/rehearse-hackathon-demo
 ```
 
 Generate 7 files (flat — no subdirectories) in chapter order so each builds on the previous:
@@ -161,7 +161,7 @@ Generate 7 files (flat — no subdirectories) in chapter order so each builds on
 06-the-qa.md               judge questions + crisp answers (prep, post-clock)
 ```
 
-Each chapter file follows the per-chapter template from `study-hackathon-demo.md`: `# Chapter N — [title] ([start]–[end], [duration])` → time-budget bar → opening hook (direct address, names the chapter's job in the run-of-show) → the chapter-opening diagram (15–30 lines: click-path for the demo, attention curve for the cold open, architecture for under-the-hood, etc.) → the body (SAY/SHOW tables, beats in presentation order, script lines as pull quotes) → at least one IF-IT-BREAKS recovery box for any on-screen beat → the "tighten it" cut → the one-page run sheet the reader holds while presenting.
+Each chapter file follows the per-chapter template from `rehearse-hackathon-demo.md`: `# Chapter N — [title] ([start]–[end], [duration])` → time-budget bar → opening hook (direct address, names the chapter's job in the run-of-show) → the chapter-opening diagram (15–30 lines: click-path for the demo, attention curve for the cold open, architecture for under-the-hood, etc.) → the body (SAY/SHOW tables, beats in presentation order, script lines as pull quotes) → at least one IF-IT-BREAKS recovery box for any on-screen beat → the "tighten it" cut → the one-page run sheet the reader holds while presenting.
 
 `00-overview.md` is the run-of-show: the whole slot on one timeline, every chapter's time budget visualized, the money shot scheduled by name, a reading-order recommendation (rehearse front-to-back at least twice; on demo day skim the run sheets at the back of each chapter).
 
@@ -170,7 +170,7 @@ Each chapter file follows the per-chapter template from `study-hackathon-demo.md
 Print exactly:
 
 ```
-✓ Hackathon demo book created at .aipe/study-hackathon-demo/
+✓ Hackathon demo book created at .aipe/rehearse-hackathon-demo/
   Slot length:      <N> minutes
   Money shot lands: by <T> (first third)
   00-overview.md
@@ -194,7 +194,7 @@ Runs when Step 4 found an existing book. Goal: re-derive demoable content from t
 
 ## Step 5U — Read the existing book
 
-Walk `.aipe/study-hackathon-demo/` and read `00-overview.md` plus `01-the-cold-open.md` through `06-the-qa.md`.
+Walk `.aipe/rehearse-hackathon-demo/` and read `00-overview.md` plus `01-the-cold-open.md` through `06-the-qa.md`.
 
 ## Step 6U — Diff against the current codebase AND the loaded templates
 
@@ -226,7 +226,7 @@ Do NOT regenerate unchanged chapters. Do NOT add or collapse chapters — the 6-
 Print:
 
 ```
-Update complete for .aipe/study-hackathon-demo/
+Update complete for .aipe/rehearse-hackathon-demo/
 ─────────────────────────────────────────────────
 Chapters updated:     <list>
 Chapters unchanged:   <count or list>

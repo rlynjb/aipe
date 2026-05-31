@@ -11,7 +11,7 @@ The shape of every concept file in the study family.
 The topic specs (`study-system-design-dsa.md`,
 `study-ai-engineering.md`, `study-prompt-engineering.md`,
 `study-agent-architecture.md`,
-`study-interview-defense.md`) provide the WHAT — which
+`rehearse-interview-defense.md`) provide the WHAT — which
 concepts, anchored to which codebase. This file
 provides the structure they all fill.
 
@@ -46,7 +46,20 @@ Structure and teaching shape:
      detail the reader can't yet place on a picture.
      → Block 2 (Zoom out); How it works Move 1.
 
-  2. **Conversational tone.** Write like a senior
+  2. **Structure pass before mechanics.** Before walking
+     any mechanism, read the system's skeleton: split it
+     into layers, pick one *axis* (control / state /
+     failure / trust / cost) and trace that single
+     question across the layers, then find the *seams* —
+     the boundaries where the axis-answer flips. Mechanics
+     hang on the skeleton; never teach a moving part with
+     no joint to attach it to. This is the
+     simultaneous-altitude complement to trait 1: zoom
+     moves wide→narrow over the file, the structure pass
+     holds one question constant across every layer at
+     once. → Block 3 (Structure pass).
+
+  3. **Conversational tone.** Write like a senior
      colleague explaining it over coffee — warm,
      second-person, plain-spoken, contractions fine.
      Conversational means the *register* is a person
@@ -55,13 +68,13 @@ Structure and teaching shape:
      dense content. → teacher.md (voice register);
      strongest in Block 2.
 
-  3. **Skeleton parts.** For any pattern with a kernel,
+  4. **Skeleton parts.** For any pattern with a kernel,
      isolate the irreducible core and name each part by
      *what breaks when it is missing*; separate skeleton
      from optional hardening.
      → How it works (Move 2 variant).
 
-  4. **Step by step.** Walk the mechanism one move at a
+  5. **Step by step.** Walk the mechanism one move at a
      time — one operation per line, one moving part per
      sub-heading. The reader never holds two new things
      at once. Algorithms get an execution trace
@@ -70,32 +83,32 @@ Structure and teaching shape:
 
 Code:
 
-  5. **Pseudocode.** Show logic as language-agnostic
+  6. **Pseudocode.** Show logic as language-agnostic
      pseudocode before (or instead of) real code —
      plain-English control flow, concrete variable
      names, one operation per line, annotated.
      → How it works (Move 2); PSEUDOCODE RULES.
 
-  6. **Code side by side, with a line-by-line read.**
+  7. **Code side by side, with a line-by-line read.**
      In the codebase block, show the actual repo code
      beside an explanation of what each part does —
      annotate the specific lines, never drop a block
-     raw. → Block 5 (Implementation in codebase).
+     raw. → Block 6 (Implementation in codebase).
 
 Diagrams (ASCII, box-drawing, always):
 
-  7. **Pattern diagrams.** Draw the *shape* of the
+  8. **Pattern diagrams.** Draw the *shape* of the
      pattern itself — the loop, the traversal frontier,
      the topology, the kernel. The pattern is a picture
      before it is prose. → DIAGRAM RULES; How it works
      Move 1.
 
-  8. **Flow diagrams.** Draw sequences as box-and-arrow
+  9. **Flow diagrams.** Draw sequences as box-and-arrow
      flows — request flows, auth chains, data pipelines
      — top to bottom, every arrow labelled.
      → DIAGRAM RULES.
 
-  9. **Layer + layers-and-hops diagrams.** Draw the
+ 10. **Layer + layers-and-hops diagrams.** Draw the
      bigger picture as labelled layers (UI / Service /
      Storage / Provider bands); draw anything that
      crosses layers or services as layers-and-hops,
@@ -104,9 +117,9 @@ Diagrams (ASCII, box-drawing, always):
      off-spec. → Block 2; How it works Move 2;
      DIAGRAM RULES.
 
- 10. **Use cases.** Every concept shows where it is
+ 11. **Use cases.** Every concept shows where it is
      actually reached for in this codebase — concrete
-     scenarios, not abstract definitions. → Block 5
+     scenarios, not abstract definitions. → Block 6
      (Implementation in codebase).
 
 This list is the guide's identity and is meant to
@@ -122,24 +135,25 @@ to verified understanding, in this order:
 
   1.  Subtitle                    industry name(s) + type label
   2.  Zoom out, then zoom in      orient   (replaces Why care)
-  3.  How it works                understand
-  4.  Primary diagram             recap visual
-  5.  Implementation in codebase  see it in the real code
-  6.  Elaborate                   deeper context
-  7.  Project exercises           (AI / ML sections only)
-  8.  Interview defense           pressure-test it
-  9.  Validate                    prove you got it
-  10. See also                    related files
+  3.  Structure pass              orient   layers · axes · seams
+  4.  How it works                understand
+  5.  Primary diagram             recap visual
+  6.  Implementation in codebase  see it in the real code
+  7.  Elaborate                   deeper context
+  8.  Project exercises           (AI / ML sections only)
+  9.  Interview defense           pressure-test it
+  10. Validate                    prove you got it
+  11. See also                    related files
 
 ```
-  orient            understand          implement         defend
-  ┌──────────┐      ┌──────────┐      ┌──────────────┐  ┌──────────┐
-  │ zoom out │  →   │ how it   │  →   │ in this      │  │ interview│
-  │ → zoom in│      │ works    │      │ codebase     │  │ defense  │
-  └──────────┘      └──────────┘      └──────────────┘  └──────────┘
-   layers dia        skeleton +         use cases +       Q + diagram
-   conversational    pattern/pseudo     code side by      per answer
-                     step by step       side
+  orient ───────────────►   understand          implement         defend
+  ┌──────────┐ ┌─────────┐  ┌──────────┐      ┌──────────────┐  ┌──────────┐
+  │ zoom out │→│structure│→ │ how it   │  →   │ in this      │  │ interview│
+  │ → zoom in│ │ pass    │  │ works    │      │ codebase     │  │ defense  │
+  └──────────┘ └─────────┘  └──────────┘      └──────────────┘  └──────────┘
+   layers dia   layers ·     skeleton +         use cases +       Q + diagram
+   conversational axes ·     pattern/pseudo     code side by      per answer
+                  seams      step by step       side
 ```
 
 **Changes from the older template:**
@@ -210,7 +224,172 @@ on-ramps. The zoom-out is fast — one diagram and a few
 sentences, not three paragraphs of throat-clearing.
 
 ═════════════════════════════════════════════════
-BLOCK 3 — HOW IT WORKS
+BLOCK 3 — THE STRUCTURE PASS   (orient → understand bridge)
+═════════════════════════════════════════════════
+
+Zoom-out put the concept on the map. The structure pass reads the
+*skeleton* of that map — what it's made of and where its joints are —
+before How it works walks the mechanics. Skip it and the next block teaches
+moving parts with nothing to attach them to.
+
+The four foundations below, in dependency order (axes → seams → layered
+decomposition), with the structure pass as the meta-move that sequences
+them. This is still orient — keep it tight; the depth belongs in How it
+works.
+
+### Axes (dimensions of analysis)
+
+**What it is:** A single dimension you can question every part of a system
+against. Each axis is one "x-ray" of the same machine — you understand the
+system once you've traced a few.
+
+**The recurring high-leverage axes:**
+- control     — who decides what happens next?
+- state       — who owns it, where does it live, is it mutable?
+- dependency  — who depends on whom, and which way does the arrow point?
+- failure     — where does it originate, propagate, get contained?
+- lifecycle   — when does this happen: build / deploy / request / idle?
+- cost        — latency, money, compute per unit of work?
+- guarantees  — promised vs best-effort? sync vs async? exactly-once?
+- trust       — what can each side see or tamper with?
+
+**The skill:** Picking the right axis is most of the work. The wrong axis
+makes every layer look the same; the right one makes the boundaries pop.
+Trace ONE axis at a time across the whole system — don't mix.
+
+**When to use:** First move on any unfamiliar system. Before "how does it
+work," ask "which dimension should I measure it along?"
+
+**Failure mode it fixes:** Vague "it's complicated" understanding — no
+chosen dimension means no contrast, so nothing stands out.
+
+### Seams (boundaries / joints)
+
+**What it is:** A boundary where two parts meet and where you could
+intercept, substitute, observe, or test behavior without rewriting either
+side. Seams are where contracts live.
+
+**Two orientations:**
+- horizontal seam — between stacked abstraction layers
+                    ("what does the lower layer promise the upper one?")
+- vertical seam   — between sibling modules / slices / services at the
+                    same level ("what does module A promise module B?")
+
+**The test that makes a seam worth studying:**
+  → a seam matters when an AXIS flips across it.
+If control, state-ownership, trust, or failure-containment changes from one
+side to the other, that boundary is load-bearing. If nothing flips, the
+"boundary" is cosmetic.
+
+**Why map seams before mechanics:**
+- contracts live here  — the promises that let you reason about each side alone
+- failures live here   — most bugs happen at boundaries, not inside layers
+- substitution lives here — every mock / swap / cache / auth check is a seam
+- complexity hides here — a clean-looking layer can hide a messy joint
+
+**When to use:** After naming layers, before learning internals. Locate the
+joints first; the mechanics hang off them.
+
+**Failure mode it fixes:** Studying a part in isolation and being blindsided
+by how it connects — the joints are where the surprises are.
+
+### Layered decomposition (consistent lens across layers)
+
+**Move:** Explain a system by splitting it into nested abstraction levels
+(outer/inner, top/bottom, high/low), then trace ONE invariant question
+across all levels — don't re-describe each layer with new vocabulary.
+
+**The discipline:** Pick a single dimension and hold it constant while you
+move up and down the stack. Candidate dimensions:
+- who's in control? (caller vs callee, declarative vs imperative)
+- who owns state / where does it live?
+- where does failure localize, and how does it propagate?
+- what's the cost / performance contract?
+- what's guaranteed vs best-effort?
+
+The insight comes from the *contrast at each altitude*, not from the layer
+list itself. One sentence that answers the same question at two levels
+("outer enforces order, inner chooses freely") teaches more than two
+separate paragraphs describing each layer in its own terms.
+
+**Bonus payoff — self-similarity:** when the same mechanism reappears at
+two levels, name it once and point at both occurrences. Collapsing two
+concepts into a single operation seen at different nesting depths is the
+strongest version of this move ("X is just a Y with a Z inside").
+
+**When to use:** any system with ≥2 abstraction levels where the levels
+tend to get confused with each other — framework vs application code,
+protocol vs transport, interface vs implementation, policy vs mechanism,
+schema vs data.
+
+**Failure mode it fixes:** describing layers in isolation, so the reader
+ends up seeing the parts but not how they nest, constrain, or relate to
+each other.
+
+### Structure pass before mechanics (the meta-move)
+
+Before learning HOW a system works, do a structural read of WHAT it's made
+of and WHERE its joints are. Three steps, in order:
+
+  1. layers — what are the levels of abstraction?        (decomposition)
+  2. axes   — which dimensions will I trace across them?  (measurement)
+  3. seams  — where are the boundaries, and which are
+              load-bearing (an axis flips across them)?   (joints)
+
+Only then dive into mechanics. The internals are far easier to absorb once
+you know which layer they sit in, which axis they serve, and which seam they
+sit behind. Skipping straight to mechanics = memorizing details with no
+skeleton to hang them on.
+
+**Family map (how the foundations relate):**
+- zoom out/in          — altitude over time (wide context → narrow detail)
+- layered decomposition — one axis held constant across altitudes at once
+- axes                 — which questions are worth holding constant
+- seams                — the boundaries where the axis-answers change
+
+Two supporting diagrams. First, the structure pass as a sequence — each read
+feeds the next:
+
+```
+  The structure pass — read shape before mechanics
+
+  ┌─ 1. LAYERS ───────────────────────────────────┐
+  │  split into nested levels (outer / inner)      │
+  └────────────────────────┬───────────────────────┘
+                           │  then pick one dimension
+  ┌─ 2. AXES ─────────────▼────────────────────────┐
+  │  hold ONE question constant, up & down the stack│
+  └────────────────────────┬───────────────────────┘
+                           │  then find where it flips
+  ┌─ 3. SEAMS ────────────▼────────────────────────┐
+  │  boundaries where the axis-answer changes       │
+  └────────────────────────┬───────────────────────┘
+                           │  skeleton mapped → hand to
+                           ▼
+                   Block 4 — How it works
+```
+
+And the seam test made concrete — the same axis answered two ways across one
+boundary:
+
+```
+  A seam is load-bearing when an axis flips across it
+
+  axis traced = "who decides control flow?"
+
+  ┌─ outer layer ─┐    seam     ┌─ inner layer ─┐
+  │  CODE decides │ ═════╪═════► │  LLM decides  │
+  └───────────────┘  (it flips) └───────────────┘
+         ▲                              ▲
+         └──── same axis, two answers ──┘
+               → this boundary carries a contract:
+                 study it before either side's internals
+```
+
+Hand off to How it works with the skeleton named.
+
+═════════════════════════════════════════════════
+BLOCK 4 — HOW IT WORKS
 ═════════════════════════════════════════════════
 
 The load-bearing block. Zoom-out put the reader on the
@@ -254,12 +433,14 @@ real code or cite file paths, function names, or line
 numbers here. Describe the mechanism with pseudocode
 and diagrams. The actual code from the codebase, with
 its file paths and line ranges, lives in the
-Implementation in codebase block (Block 5). Keep the
+Implementation in codebase block (Block 6). Keep the
 two cleanly separated: How it works is the general
 mechanism; Implementation is where it lives in your
 code.
 
-It runs in three moves.
+By now the structure pass (Block 3) has mapped the
+skeleton — the layers, the axis, the seams. How it works
+walks the mechanics that hang on it. It runs in three moves.
 
   #### Move 1 — the mental model (the pattern's shape)
 
@@ -302,7 +483,7 @@ It runs in three moves.
   control flow, concrete variable names, one operation
   per line, annotated. Pseudocode, not real code: the
   repo's actual code (and any line references) belongs
-  in Block 5, not here.
+  in Block 6, not here.
 
 ```
   Layers-and-hops — label every hop between bands
@@ -380,7 +561,7 @@ It runs in three moves.
   exemplifies, not a summary of what was just said.
 
 ═════════════════════════════════════════════════
-BLOCK 4 — PRIMARY DIAGRAM
+BLOCK 5 — PRIMARY DIAGRAM
 ═════════════════════════════════════════════════
 
 The full recap visual after the mechanics — one frame
@@ -389,7 +570,7 @@ box, every arrow, and every architectural layer
 labelled. The visual the reader returns to.
 
 ═════════════════════════════════════════════════
-BLOCK 5 — IMPLEMENTATION IN CODEBASE
+BLOCK 6 — IMPLEMENTATION IN CODEBASE
 ═════════════════════════════════════════════════
 
 Where the pattern lives in the actual repo. Two parts:
@@ -424,7 +605,7 @@ Where the pattern lives in the actual repo. Two parts:
 ```
 
 ═════════════════════════════════════════════════
-BLOCK 6 — ELABORATE
+BLOCK 7 — ELABORATE
 ═════════════════════════════════════════════════
 
 Deeper context: where this pattern comes from, what
@@ -432,7 +613,7 @@ problem it was invented to solve, how it connects to
 adjacent concepts, what to read next.
 
 ═════════════════════════════════════════════════
-BLOCK 7 — PROJECT EXERCISES   (AI / ML sections only)
+BLOCK 8 — PROJECT EXERCISES   (AI / ML sections only)
 ═════════════════════════════════════════════════
 
 Curriculum Build items mapped to this file's concept
@@ -443,7 +624,7 @@ Generated only for sections with a curriculum
 dependency; omitted elsewhere.
 
 ═════════════════════════════════════════════════
-BLOCK 8 — INTERVIEW DEFENSE
+BLOCK 9 — INTERVIEW DEFENSE
 ═════════════════════════════════════════════════
 
 Questions, model answers with a diagram per answer (the
@@ -453,7 +634,7 @@ part here when the concept has a kernel — naming the
 part people forget is the strongest signal.
 
 ═════════════════════════════════════════════════
-BLOCK 9 — VALIDATE
+BLOCK 10 — VALIDATE
 ═════════════════════════════════════════════════
 
 Four levels: reconstruct → explain → apply to a
@@ -461,7 +642,7 @@ scenario → defend the decision. Every level references
 real file paths and line numbers from the codebase.
 
 ═════════════════════════════════════════════════
-BLOCK 10 — SEE ALSO
+BLOCK 11 — SEE ALSO
 ═════════════════════════════════════════════════
 
 Links to related files in this guide.
@@ -508,7 +689,7 @@ Types of diagram, by situation:
   Tree              hierarchies — component/nesting trees
   State             transitions — UI states, job statuses
   Inline annotation pointing at parts of a code snippet,
-                    naming what each piece does (Block 5)
+                    naming what each piece does (Block 6)
 
 ═════════════════════════════════════════════════
 PSEUDOCODE RULES
@@ -529,7 +710,7 @@ Style:
 Real code is the last tool reached for — used only when
 the actual syntax matters (a specific hook, an
 async/await error path). When real code appears, it is
-always annotated (Block 5), never dropped raw.
+always annotated (Block 6), never dropped raw.
 
 ═════════════════════════════════════════════════
 HARD RULES
@@ -537,6 +718,12 @@ HARD RULES
 
   → Zoom out before zoom in. No concept file opens on a
     detail. Block 2's layers diagram comes first.
+  → Structure pass before mechanics. Block 3 comes
+    between Zoom out and How it works — name the layers,
+    trace ONE axis (control / state / failure / trust /
+    cost / …) across them, then locate the seams where
+    that axis flips. How it works (Block 4) must not open
+    on a mechanism until that skeleton is named.
   → No definition-first openings. Start with the
     shape/scenario, end with the term.
   → Diagrams at every move. Block 2 gets a layers
@@ -550,7 +737,7 @@ HARD RULES
     layers-and-hops diagrams — never real code, file
     paths, or line numbers. Real code and its line
     references live only in Implementation in codebase
-    (Block 5).
+    (Block 6).
   → Bridge from what the reader knows in every Move 2
     sub-section. No bridge = the work isn't done.
   → Every abstract claim is followed by a concrete

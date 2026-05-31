@@ -4,7 +4,7 @@ me.md — reader profile and thinking style
 
 A reference document the other specs (study-system-design-dsa.md,
 study-ai-engineering.md, study-prompt-engineering.md,
-study-interview-defense.md, and any future specs in
+rehearse-interview-defense.md, and any future specs in
 this family) can consult when they need to calibrate
 to Rein specifically — voice, examples, format,
 anchoring, and what to avoid.
@@ -478,7 +478,7 @@ This file is referenced, not regenerated. The
 expected pattern: when a spec in this family
 (study-system-design-dsa.md, study-ai-engineering.md,
 study-prompt-engineering.md,
-study-interview-defense.md, or future specs)
+rehearse-interview-defense.md, or future specs)
 needs to calibrate to Rein, it cites `me.md` and
 treats the contents as a contract.
 

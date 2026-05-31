@@ -1,5 +1,5 @@
 ─────────────────────────────────────────────────
-STUDY — HACKATHON DEMO SPEC
+REHEARSE — HACKATHON DEMO SPEC
 ─────────────────────────────────────────────────
 
 A per-codebase study spec for **presenting a project as
@@ -58,10 +58,10 @@ performance:
 study-system-design-dsa.md     Helps you UNDERSTAND the work
   (+ the topic generators)       (comprehension, one file per pattern)
 
-study-interview-defense.md     Helps you DEFEND the work
+rehearse-interview-defense.md     Helps you DEFEND the work
                                  (a hiring interviewer probes; you hold ground)
 
-study-hackathon-demo.md        Helps you SHOW the work
+rehearse-hackathon-demo.md        Helps you SHOW the work
   (this spec)                    (a room watches a clock; you land the wow)
 ```
 
@@ -194,7 +194,7 @@ rehearse, then holds the one-page run sheets while
 presenting.
 
 ```
-.aipe/study-hackathon-demo/
+.aipe/rehearse-hackathon-demo/
   00-overview.md             ← the run-of-show: the whole slot on one timeline
   01-the-cold-open.md        ← first 60 seconds: hook + the one-liner
   02-the-demo.md             ← the live walkthrough, the centerpiece, the money shot
@@ -452,7 +452,7 @@ It serves three purposes:
      only the run sheets and time the money shot.
   3. **Connect to the rest of the study system.** This book
      presents the project; the interview defense book in
-     `.aipe/study-interview-defense/` answers the "how does
+     `.aipe/rehearse-interview-defense/` answers the "how does
      it actually work" questions that come after; the
      concept files prepare the deepest follow-ups.
 
@@ -465,12 +465,12 @@ re-anchor on the run-of-show.
 HOW THE WORKFLOW RUNS
 ═════════════════════════════════════════════════
 
-This spec drives a **separate workflow**, like the interview
-defense spec. Running the base study generators does not
-include it; to produce a demo book for a repo, run this
-spec's command from inside that repo. It can also be added
-to the `study.md` orchestrator as a sixth generator if you
-want it reconciled alongside the others.
+This spec can run standalone (run its command from inside a
+repo to produce just the demo book) or as part of the
+`/aipe:rehearse` orchestrator, which composes both rehearse
+books — interview defense and hackathon demo — in one pass. It
+is not part of the `/aipe:study` orchestrator; that one runs the
+comprehension guides.
 
 The agent run for a hackathon demo book works like this:
 
@@ -510,7 +510,7 @@ The agent run for a hackathon demo book works like this:
      constraint).
 
   7. Agent generates the book — 7 files (00-overview.md plus
-     six chapter files) in `.aipe/study-hackathon-demo/`,
+     six chapter files) in `.aipe/rehearse-hackathon-demo/`,
      written in the staff engineer's demo-coach voice
      (`teacher.md` in coach posture) and calibrated to the
      reader (`me.md`).
@@ -520,7 +520,7 @@ CHECK FOR EXISTING GUIDE — create vs update
 ═════════════════════════════════════════════════
 
 Before generating, check whether
-`.aipe/study-hackathon-demo/` already exists, the same
+`.aipe/rehearse-hackathon-demo/` already exists, the same
 per-folder check the other generators use.
 
   → **Missing → CREATE.** Generate the full book from

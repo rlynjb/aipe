@@ -2,9 +2,9 @@
 description: Interview defense book for this codebase — 8 chapters in coach voice, book-style visual treatments, "I don't know" recovery
 ---
 
-The user invoked `/aipe:study-interview-defense`.
+The user invoked `/aipe:rehearse-interview-defense`.
 
-This command takes **no arguments**. There is one interview defense book per repo, saved at the fixed path `.aipe/study-interview-defense/`. `.aipe/` is per-repo (lives at the root of whichever repo the command is run in); the folder name is fixed across repos because it names the *topic*, not the codebase. Re-running enters UPDATE MODE on the existing directory.
+This command takes **no arguments**. There is one interview defense book per repo, saved at the fixed path `.aipe/rehearse-interview-defense/`. `.aipe/` is per-repo (lives at the root of whichever repo the command is run in); the folder name is fixed across repos because it names the *topic*, not the codebase. Re-running enters UPDATE MODE on the existing directory.
 
 This command produces a **book** — 8 chapters of continuous narrative prose flowing through visual aids, in **coach voice**, for the reader who is days away from defending their own work in an interview. Unlike the other study specs (reference-grid shape, optimized for lookup), this one is optimized for sequential reading and re-reading. The unit of organization is the **chapter**, not the question.
 
@@ -35,7 +35,7 @@ If `.aipe/project/context.md` does NOT exist in the current working directory:
    - public API surface, schema fields, ...
    ```
 
-3. Print: `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:study-interview-defense.`
+3. Print: `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:rehearse-interview-defense.`
 4. **Stop. Don't proceed.** The user needs to fill in real context first.
 
 ## Step 2 — Load context
@@ -57,30 +57,30 @@ Per-repo scope: do NOT load context files from other repos. The codebase being d
 Interview defense reads four files in order — structure, writer persona, reader calibration, then the spec itself:
 
 ```
-${CODEX_PLUGIN_ROOT}/specs/format.md
-${CODEX_PLUGIN_ROOT}/specs/teacher.md
-${CODEX_PLUGIN_ROOT}/specs/me.md
-${CODEX_PLUGIN_ROOT}/specs/study-interview-defense.md
+${CLAUDE_PLUGIN_ROOT}/specs/format.md
+${CLAUDE_PLUGIN_ROOT}/specs/teacher.md
+${CLAUDE_PLUGIN_ROOT}/specs/me.md
+${CLAUDE_PLUGIN_ROOT}/specs/rehearse-interview-defense.md
 ```
 
-If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
+If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
 What each file supplies:
-- **`format.md`** — the shared concept-file template + rules across the whole study family: house-style traits, diagram rules, pseudocode rules, the "use real software, not analogies" rule, the no-hedging rule, the hard rules. This spec uses its own per-chapter book template (defined inline in `study-interview-defense.md`), but the *quality standards* (diagram conventions, pseudocode rules, banned phrasings) come from format.md.
+- **`format.md`** — the shared concept-file template + rules across the whole study family: house-style traits, diagram rules, pseudocode rules, the "use real software, not analogies" rule, the no-hedging rule, the hard rules. This spec uses its own per-chapter book template (defined inline in `rehearse-interview-defense.md`), but the *quality standards* (diagram conventions, pseudocode rules, banned phrasings) come from format.md.
 - **`teacher.md`** — the base writer persona (the staff engineer with 12 years' experience). This spec shifts that persona from *teacher* to **coach** — see teacher.md's "THE POSTURE" section and this spec's persona section.
 - **`me.md`** — reader-side calibration: who the reader is professionally, what voice the strong answers should embody, what defenses the reader can credibly make from her actual portfolios (DSA + system design), and what gaps she should defer on rather than fake. `me.md` does NOT override format.md's quality rules or teacher.md's voice rules — it calibrates examples, depth, and what's defensible. For this spec `me.md` carries extra weight: the book is the reader's own defense, so its anchors must be things the reader has actually shipped.
-- **`study-interview-defense.md`** — the book shape (8 chapters), the six required visual conventions, the per-chapter template (distinct from format.md's per-concept template — see this spec's per-chapter template section).
+- **`rehearse-interview-defense.md`** — the book shape (8 chapters), the six required visual conventions, the per-chapter template (distinct from format.md's per-concept template — see this spec's per-chapter template section).
 
 ## Step 4 — Detect existing book → branch CREATE or UPDATE
 
-Check whether `.aipe/study-interview-defense/` already contains the book. The signal is the presence of `00-overview.md` at the root OR any file matching `0[1-8]-*.md`.
+Check whether `.aipe/rehearse-interview-defense/` already contains the book. The signal is the presence of `00-overview.md` at the root OR any file matching `0[1-8]-*.md`.
 
 - **Existing book found** → go to UPDATE MODE (Step 5U onward). **Do NOT regenerate from scratch.**
 - **No existing book** → go to CREATE MODE (Step 5C onward).
 
 **Legacy structure check.** Earlier versions of this command generated a per-question directory tree (`01-architecture/`, `02-tech-choices/`, … plus `the-ai-question.md`). If that structure is detected instead of the 8-chapter book, flag it in the report and ask the user whether to migrate to the book shape or leave the old guide as archive.
 
-(The `.aipe/study-interview-defense/` directory itself may exist as an empty placeholder; that's not the same as having a book already.)
+(The `.aipe/rehearse-interview-defense/` directory itself may exist as an empty placeholder; that's not the same as having a book already.)
 
 ---
 
@@ -127,7 +127,7 @@ The non-negotiables — inherited from `format.md`, `teacher.md`, `me.md`, and t
 Create:
 
 ```bash
-mkdir -p .aipe/study-interview-defense
+mkdir -p .aipe/rehearse-interview-defense
 ```
 
 Generate 9 files (flat — no subdirectories), in chapter order so each builds on the previous:
@@ -153,7 +153,7 @@ Each chapter file follows the per-chapter template: `# Chapter N — [title]` �
 Print exactly:
 
 ```
-✓ Interview defense book created at .aipe/study-interview-defense/
+✓ Interview defense book created at .aipe/rehearse-interview-defense/
   00-overview.md
   01-the-pitch.md
   02-the-architecture.md
@@ -177,7 +177,7 @@ Runs when Step 4 found an existing book. Goal: refresh stale defenses without re
 
 ## Step 5U — Read the existing book
 
-Walk `.aipe/study-interview-defense/` and read `00-overview.md` plus `01-the-pitch.md` through `08-the-ai-question.md`. If the legacy per-question directory structure is present instead, flag it in Step 7U (migrate to the book shape, or leave as archive — user's call).
+Walk `.aipe/rehearse-interview-defense/` and read `00-overview.md` plus `01-the-pitch.md` through `08-the-ai-question.md`. If the legacy per-question directory structure is present instead, flag it in Step 7U (migrate to the book shape, or leave as archive — user's call).
 
 ## Step 6U — Diff each chapter against the current codebase AND the loaded templates
 
@@ -209,7 +209,7 @@ Do NOT rewrite accurate sections. Do NOT add or collapse chapters — the 8-chap
 Print:
 
 ```
-Update complete for .aipe/study-interview-defense/
+Update complete for .aipe/rehearse-interview-defense/
 ─────────────────────────────────────────────────
 Chapters updated:     <list>
 Chapters unchanged:   <count or list>
