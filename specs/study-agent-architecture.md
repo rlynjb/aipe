@@ -4,7 +4,7 @@ STUDY — AGENT ARCHITECTURE SPEC
 
 A topic-focused study guide spec for agent
 architecture and orchestration. Inherits all
-structural rules from `study.md` — the per-concept-
+structural rules from `study-system-design-dsa.md` — the per-concept-
 file template, the formatting rules, the diagram
 requirements, the hard rules, the constraint
 summary. What this spec defines is what's *unique*
@@ -36,8 +36,8 @@ owns. Where a concept is already covered in
 `study-ai-engineering.md`, this spec cross-
 references rather than duplicates.
 
-This spec is run alongside `study.md`, not instead
-of it. The agent reads both: `study.md` for *how*
+This spec is run alongside `study-system-design-dsa.md`, not instead
+of it. The agent reads both: `study-system-design-dsa.md` for *how*
 to write each concept file (block structure,
 diagrams, validate levels, etc.), and this spec for
 *what* to write about.
@@ -93,7 +93,7 @@ opinion ("here is when this topology earns its
 overhead, and here is when it doesn't"), not as a
 separate persona. Where this spec names a
 production reality, it names it as a decision with a
-breakpoint, the same way `study.md`'s Tradeoffs
+breakpoint, the same way `study-system-design-dsa.md`'s Tradeoffs
 block does.
 
 ═════════════════════════════════════════════════
@@ -178,7 +178,7 @@ OUTPUT FOLDER NAME
 ═════════════════════════════════════════════════
 
 Following the `.aipe/` convention used in
-`study.md`, agent architecture guides save to:
+`study-system-design-dsa.md`, agent architecture guides save to:
 
   .aipe/study-agent-architecture/
 
@@ -193,7 +193,7 @@ convention applies to the other topic specs
 `study-ai-engineering/`, `study-prompt-engineering/`,
 `study-interview-defense/`).
 
-The directory structure inherits from `study.md`'s
+The directory structure inherits from `study-system-design-dsa.md`'s
 rules. The top-level layout, generated per codebase:
 
 ```
@@ -260,7 +260,7 @@ templates in sub-section 05 identify the topologies
 this codebase could adopt and the refactor each
 would require.").
 
-Naming follows the kebab-case rule from `study.md`.
+Naming follows the kebab-case rule from `study-system-design-dsa.md`.
 Each sub-section directory has its own README.md
 that indexes the files in that directory and notes
 the reading order (within a sub-section most files
@@ -273,12 +273,12 @@ RELATIONSHIP TO STUDY.MD AND STUDY-AI-ENGINEERING.MD
 
 This spec drives a **separate workflow** from every
 other generator in the family. Running the base
-generator (`study.md`) produces
+generator (`study-system-design-dsa.md`) produces
 `.aipe/study-system-design-dsa/`. Running
 `study-ai-engineering.md` produces
 `.aipe/study-ai-engineering/`. Running this spec
 produces `.aipe/study-agent-architecture/`. The
-workflows share `study.md` as their structural
+workflows share `study-system-design-dsa.md` as their structural
 foundation but are triggered independently and
 produce independent outputs.
 
@@ -321,10 +321,10 @@ and reflexion, when to escalate past it) — not to
 re-explain the Thought-Action-Observation loop the
 AI-engineering file already walks.
 
-This spec is *additive* to `study.md`. The agent run
+This spec is *additive* to `study-system-design-dsa.md`. The agent run
 for agent architecture study works like this:
 
-  1. Agent reads `study.md` to learn the per-
+  1. Agent reads `study-system-design-dsa.md` to learn the per-
      concept-file template, formatting rules,
      diagram requirements, hard rules, and
      constraint summary.
@@ -352,7 +352,7 @@ for agent architecture study works like this:
   6. Agent generates `.aipe/study-agent-architecture/`
      (inside that repo's `.aipe/` directory) with
      sub-directories per sub-section, each containing
-     per-concept files following `study.md`'s per-
+     per-concept files following `study-system-design-dsa.md`'s per-
      concept template, written in the teacher voice
      from `teacher.md`, and calibrated to the reader
      as defined in `me.md`. Concept files for
@@ -367,8 +367,8 @@ for agent architecture study works like this:
 WHAT THIS SPEC DOES NOT REDEFINE
 ═════════════════════════════════════════════════
 
-Inherited from `study.md` without restatement.
-Refer to `study.md` for the canonical definition:
+Inherited from `study-system-design-dsa.md` without restatement.
+Refer to `study-system-design-dsa.md` for the canonical definition:
 
   → The per-concept-file template (Subtitle, Why
     care, How it works, primary diagram, In this
@@ -389,7 +389,7 @@ Refer to `study.md` for the canonical definition:
   → The Validate block's levels (reconstruct,
     explain, apply, defend, quick check)
   → The general constraint summary at the bottom of
-    `study.md`
+    `study-system-design-dsa.md`
   → The "Check for existing guide" diff-and-update
     behavior
 
@@ -419,7 +419,7 @@ Inherited from `me.md` without restatement:
     is newer ground; teach it as new ground rather
     than assuming familiarity
 
-If a future change to `study.md`, `teacher.md`, or
+If a future change to `study-system-design-dsa.md`, `teacher.md`, or
 `me.md` updates one of these, this spec
 automatically inherits it. No duplication, no
 drift.
@@ -1509,7 +1509,7 @@ CONSTRAINTS — AGENT-ARCHITECTURE-SPECIFIC
 ═════════════════════════════════════════════════
 
 These constraints apply *in addition to* the general
-constraint summary in `study.md`.
+constraint summary in `study-system-design-dsa.md`.
 
 ```
 → This spec is codebase-driven AND shape-driven.
@@ -1538,7 +1538,7 @@ constraint summary in `study.md`.
    block (it has no curriculum dependency) — unlike
    `study-ai-engineering.md`. If a future curriculum
    maps to these concepts, a Project exercises block
-   can be added per `study.md`'s definition; until
+   can be added per `study-system-design-dsa.md`'s definition; until
    then, the system design templates are the
    buildable targets.
 

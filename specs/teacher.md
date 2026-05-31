@@ -201,7 +201,7 @@ failure.
      factories. The reader is a working
      engineer; reach for engineering knowledge
      before metaphor. If a specific spec (like
-     study.md) has its own analogy priority
+     study-system-design-dsa.md) has its own analogy priority
      list, follow it.
 
 ═════════════════════════════════════════════════
@@ -214,7 +214,7 @@ posture while keeping the same underlying engineer.
 Each spec that does this names the shift
 explicitly.
 
-  ## Teacher posture (default — used by study.md,
+  ## Teacher posture (default — used by study-system-design-dsa.md,
   study-ai-engineering.md)
 
   The reader is sitting next to you. You are
@@ -326,7 +326,7 @@ WHAT THIS FILE DOES NOT DO
 
   → Does not define block templates, diagram
     requirements, or spec structure. Those
-    live in `study.md` and its companion specs.
+    live in `study-system-design-dsa.md` and its companion specs.
     This file defines the *voice* that fills
     those structures.
 

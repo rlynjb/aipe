@@ -1,12 +1,18 @@
 ---
-description: Per-codebase visual study guide — system design + DSA, diagrams-first, one file per concept
+description: Study orchestrator — run all five study generators in one pass, with a single confirmation gate and a consolidated summary
 ---
 
 The user invoked `/aipe:study`.
 
-This command takes **no arguments**. There is one study guide per repo, saved at the fixed path `.aipe/study-system-design-dsa/`. `.aipe/` is per-repo (lives at the root of whichever repo the command is run in), and the folder name is fixed across repos — it names the *topic*, not the codebase. Re-running `/aipe:study` from the same repo enters UPDATE MODE on the existing directory.
+This command takes **no arguments**. It is the **orchestrator**: it does not generate any concept content of its own — it runs each of the five study generators in the right mode (create or update) and reports what changed. Use this command after a nontrivial codebase change when you want every study guide reconciled in one pass.
 
-**Scope.** This command covers system design and DSA only. **AI engineering and ML have moved to their own spec** — invoke `/aipe:study-ai-engineering` for LLM foundations, retrieval, agents, evals, production serving, and machine learning. **Prompt engineering** has its own spec too — invoke `/aipe:study-prompt-engineering` for that. Both companion specs are also per-repo with fixed folder names (`.aipe/study-ai-engineering/`, `.aipe/study-prompt-engineering/`).
+If you changed only one slice of the codebase and want only that guide refreshed, reach for the matching standalone command instead:
+
+- `/aipe:study-system-design-dsa` — system design + DSA
+- `/aipe:study-ai-engineering` — LLM foundations, retrieval, agents, evals, production serving, ML
+- `/aipe:study-prompt-engineering` — the 13 prompt engineering concepts (working AI engineer voice)
+- `/aipe:study-agent-architecture` — reasoning patterns, agentic retrieval, multi-agent orchestration
+- `/aipe:study-interview-defense` — the 8-chapter project defense book (coach voice)
 
 ## Step 1 — Initialize if needed
 
@@ -43,261 +49,145 @@ Read these files (skip missing ones):
 - `.aipe/project/context.md` (required — exists after Step 1)
 - `.aipe/project/rules.md` (optional)
 - `.aipe/project/stack.md` (optional)
+- `.aipe/project/aieng-curriculum.md` or `.aipe/project/curriculum.md` (optional — read once and pass to the AI-engineering and prompt-engineering generators when present; degrade gracefully when absent — never block a run on a missing curriculum file)
 - `~/.config/aipe/global/identity.md` (optional)
 - `~/.config/aipe/global/rules.md` (optional)
 - `~/.config/aipe/global/stack.md` (optional)
 - `~/.config/aipe/global/skills.md` (optional)
+- `~/.config/aipe/global/aieng-curriculum.md` or `~/.config/aipe/global/curriculum.md` (optional)
 
-## Step 3 — Load the template chain
+## Step 3 — Resolve all the inputs each generator needs
 
-`study.md` now references two companion persona files instead of inlining the persona. Read all three:
+The orchestrator reads every input once and hands it to the generators. Resolve these:
 
 ```
-${CODEX_PLUGIN_ROOT}/specs/study.md
-${CODEX_PLUGIN_ROOT}/specs/teacher.md
-${CODEX_PLUGIN_ROOT}/specs/me.md
+${CODEX_PLUGIN_ROOT}/specs/study.md                       (this orchestrator spec)
+${CODEX_PLUGIN_ROOT}/specs/study-system-design-dsa.md     (structure + DSA topic)
+${CODEX_PLUGIN_ROOT}/specs/study-ai-engineering.md
+${CODEX_PLUGIN_ROOT}/specs/study-prompt-engineering.md
+${CODEX_PLUGIN_ROOT}/specs/study-agent-architecture.md
+${CODEX_PLUGIN_ROOT}/specs/study-interview-defense.md
+${CODEX_PLUGIN_ROOT}/specs/teacher.md                     (writer persona)
+${CODEX_PLUGIN_ROOT}/specs/me.md                          (reader profile)
 ```
 
 If `${CODEX_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
-What each file supplies:
-- **`study.md`** — structure: the per-concept template, formatting rules, diagram requirements, hard rules, the constraint summary.
-- **`teacher.md`** — the writer persona, used in **teacher posture** (the default — not the coach posture, which is for interview defense). The reader is sitting next to you; you're explaining a concept with time and patience. Diagrams primary, mechanism walked slowly, tradeoffs named.
-- **`me.md`** — reader-side calibration: voice and format register, what examples land (reach into the reader's DSA and system-design portfolios before inventing), what the reader already knows vs honest gaps, and the visual-first cognitive shape (lead with the mental-model diagram, walk the mechanism slowly).
+**`study-system-design-dsa.md` is special:** it is both a generator AND the structural foundation (per-concept template, formatting rules, diagram requirements, hard rules, constraint summary). Every other generator reads it for structure even when generating a different topic. Read it once; pass it to all five.
 
-Precedence when they overlap: this spec/`study.md` wins on **structure**; `teacher.md` wins on **voice register**; `me.md` wins on **calibration** (which examples land, what's already known, how deep to teach). Treat `teacher.md` and `me.md` as input data to respect, not reinterpret.
+**Persona routing is not uniform:**
+- Four generators use `teacher.md` — `study-system-design-dsa`, `study-ai-engineering`, and `study-agent-architecture` in **teacher posture**; `study-interview-defense` in **coach posture**.
+- `study-prompt-engineering` uses its own **inline persona** (working AI engineer) and must NOT be given `teacher.md`'s persona to apply. (It still reads `teacher.md` only to honor its "WHEN NOT TO USE THIS PERSONA" exclusion.)
 
-## Step 4 — Detect existing guide → branch CREATE or UPDATE
+Respect each generator spec's persona declaration.
 
-Check whether `.aipe/study-system-design-dsa/` already contains the guide. The signal is the presence of `00-overview.md` at the root OR any file inside `01-system-design/` or `02-dsa/`. (The directory may exist as an empty placeholder; that's not the same as having a guide already.)
+## Step 4 — Detection pass (no writes)
 
-- **Existing guide found** → go to UPDATE MODE (Step 5U onward). **Do NOT regenerate from scratch.**
-- **No existing guide** → go to CREATE MODE (Step 5C onward).
+For each generator, check whether its output folder already exists in this repo's `.aipe/` directory, and build a per-folder plan. Do not edit anything yet.
 
-**Legacy directory check.** Earlier versions of this command used `.aipe/study-<purpose>/` with a derived 2-word descriptor (e.g., `.aipe/study-ai-journal/`). If any directory matching `.aipe/study-*/` exists *other than* the four fixed names (`study-system-design-dsa/`, `study-ai-engineering/`, `study-prompt-engineering/`), treat it as a legacy guide and flag it in the report. In CREATE mode, prompt the user once: "Found a legacy guide at `<path>` — migrate its content into `.aipe/study-system-design-dsa/` or leave it as archive?" In UPDATE mode, note the legacy directory in the Step 7U change plan and let the user decide.
+```
+Generator                       Output folder                       Decision
+─────────────────────────────   ─────────────────────────────────   ───────
+study-system-design-dsa.md      .aipe/study-system-design-dsa/      CREATE or UPDATE
+study-ai-engineering.md         .aipe/study-ai-engineering/         CREATE or UPDATE
+study-prompt-engineering.md     .aipe/study-prompt-engineering/     CREATE or UPDATE
+study-agent-architecture.md     .aipe/study-agent-architecture/     CREATE or UPDATE
+study-interview-defense.md      .aipe/study-interview-defense/      CREATE or UPDATE
+```
+
+A folder exists (UPDATE) when its generator's own "Check for existing guide" signal is met. Apply each generator's signal uniformly here:
+
+- `study-system-design-dsa/` — `00-overview.md` at root OR any file in `01-system-design/` / `02-dsa/`
+- `study-ai-engineering/` — `00-overview.md` at root OR any file in `01-llm-foundations/` … `09-ml-system-design-templates/`
+- `study-prompt-engineering/` — `00-overview.md` at root OR any `[0-9][0-9]-*.md` file
+- `study-agent-architecture/` — `00-overview.md` at root OR any file in `01-reasoning-patterns/` … `06-orchestration-system-design-templates/`
+- `study-interview-defense/` — `00-overview.md` at root OR any `0[1-8]-*.md` file
+
+For each UPDATE-mode generator, perform the diff its own spec defines (codebase drift, template drift, inventory drift) and build a per-file change list: what's outdated, what's missing, what action to take.
+
+For each CREATE-mode generator, mark "full generate."
+
+## Step 5 — Print the consolidated plan
+
+Output one combined plan across all five guides:
+
+```
+STUDY RUN PLAN — <repo name> — <today's ISO date>
+
+┌──────────────────────────────┬──────────┬────────────────────────────┐
+│ Guide                        │ Mode     │ Preview                    │
+├──────────────────────────────┼──────────┼────────────────────────────┤
+│ study-system-design-dsa      │ <mode>   │ <full generate | N edits>  │
+│ study-ai-engineering         │ <mode>   │ <…>                        │
+│ study-prompt-engineering     │ <mode>   │ <…>                        │
+│ study-agent-architecture     │ <mode>   │ <…>                        │
+│ study-interview-defense      │ <mode>   │ <…>                        │
+└──────────────────────────────┴──────────┴────────────────────────────┘
+```
+
+Below the table, for each UPDATE-mode guide, list the per-file changes (which files will be edited, what each edit does in one line). For each CREATE-mode guide, list the top-level directories that will be created. The user should be able to read this plan once and know exactly what every guide is about to do.
+
+## Step 6 — Single confirmation gate
+
+**Wait for one confirmation** before editing any file. The five generators' "wait for confirmation before editing" contracts are batched into this single gate.
+
+If the run is non-interactive (a `--yes`-style invocation or an automated context where the user already accepted), skip the gate and execute the plan directly.
+
+## Step 7 — Execute in run order
+
+Run the generators in this order — independent for correctness, but the order produces a readable progression and a sensible summary:
+
+1. `study-system-design-dsa`
+2. `study-ai-engineering`
+3. `study-prompt-engineering`
+4. `study-agent-architecture`
+5. `study-interview-defense`
+
+For each generator:
+
+- **CREATE mode** — generate the full guide per the generator's spec (directory structure, every concept/chapter file, every README index). The generator's standalone spec defines the exact procedure; follow it faithfully.
+- **UPDATE mode** — apply only the section-level edits identified in Step 4. Never rewrite a whole file when a section edit will do. Append to each updated file:
+
+  ```
+  ---
+  Updated: <today's ISO date> — <one-line summary of what changed and why>
+  ```
+
+  Update each affected `README.md` index when files were added or removed.
+
+The orchestrator emits no concept content of its own — all content comes from the generator specs.
+
+## Step 8 — The final report
+
+After execution, print a summary table so the user can see at a glance what changed for each guide.
+
+```
+STUDY RUN SUMMARY — <repo name> — <today's ISO date>
+
+┌──────────────────────────────┬──────────┬────────────────────────────┐
+│ Guide                        │ Mode     │ Result                     │
+├──────────────────────────────┼──────────┼────────────────────────────┤
+│ study-system-design-dsa      │ <mode>   │ <e.g. 2 files edited, 1+>  │
+│ study-ai-engineering         │ <mode>   │ <e.g. no change (current)> │
+│ study-prompt-engineering     │ <mode>   │ <e.g. 13 files generated>  │
+│ study-agent-architecture     │ <mode>   │ <e.g. full guide generated>│
+│ study-interview-defense      │ <mode>   │ <e.g. 1 chapter edited>    │
+└──────────────────────────────┴──────────┴────────────────────────────┘
+```
+
+Below the table, one section per guide listing the specific files touched and a one-line reason for each.
+
+**Stop. Wait for the user's next instruction.** Do NOT auto-act on findings. Do NOT generate follow-up specs.
 
 ---
 
-# CREATE MODE
-
-Runs only when no existing study guide is found.
-
-## Step 5C — Plan the study guide
-
-The study spec produces a visual reference — diagrams first, prose second, designed for skimming. It is **not** an interview prep guide. The study guide explains the codebase so a reader can understand it.
-
-Apply the template's structure (loaded in Step 3) and the project context. The output is a **nested directory of per-concept files**, not flat-per-section files. Scope is **system design + DSA only** — refer the user to `/aipe:study-ai-engineering` for AI/ML and `/aipe:study-prompt-engineering` for prompt engineering.
-
-The non-negotiables from the template:
-
-1. **Visual before verbal — but the primary diagram is the recap.** Every concept has ONE primary diagram (ASCII box-drawing in a fenced code block) that sits AFTER `## How it works` as the recap visual — a reader who only looks at it should grasp the structure. Inside `## How it works`, every paragraph that introduces jargon must anchor it with a secondary visual in the same paragraph: a small diagram, a pseudocode block, a comparison table, or an execution trace. Prose alone is the last resort. The primary diagram must label every architectural layer it spans — UI layer, Service layer, Storage layer, Network boundary, Provider layer — using a left-margin label, a horizontal divider with the layer name, or grouped boxes inside a labelled band.
-2. **Skim-first structure.** Every individual concept gets its own `###` header — and its own file. A reader should be able to find any concept in under 10 seconds by scanning the section's `README.md` index.
-3. **Self-contained blocks.** A reader who jumps to any file should not need to have read prior files to understand it. Cross-references via "**See also:**" links are fine; required reading order is not.
-4. **Every algorithm gets a step-by-step execution trace** — every variable at every step, not just before/after. (DSA files especially.)
-5. **Decisions and tradeoffs inline.** The why is part of the what. Every non-trivial decision gets one line on the tradeoff.
-6. **Every concept file ends with an Elaborate block** — Where this pattern comes from / The deeper principle / Where this breaks down / What to explore next.
-7. **Every concept file ends with an Interview defense block** AFTER the Tradeoffs section — What an interviewer is really asking / Likely questions (each labelled `[mid]` `[senior]` `[arch]`) / The question candidates always dodge / One-line anchors. Each question carries its own diagram sized to the question level.
-8. **Every concept file ends with a Validate block** AFTER the Interview defense section — 4 levels (Reconstruct the diagram → Explain it out loud → Apply it to a new scenario → Defend the decision you'd change) plus a "Quick check — code reference test". Each level builds on the last; do not skip levels. Level 3 must reference the specific file and line range the reader checks their answer against.
-9. **Every "In this codebase" section must include a real code reference** — `**File:**` + `**Function / class:**` + `**Line range:**` (e.g., `L42–L67`). For multi-file patterns, list every file with the role each plays.
-10. **Every concept file opens with a two-line subtitle** directly under the H1 and BEFORE the blockquote summary. Two fields: `**Industry name(s):**` and `**Type:**` (one of: `Industry standard` / `Language-agnostic` / `Industry standard · Language-agnostic` / `Project-specific`).
-11. **Every concept file in `01-system-design/` includes a "Checklist step" tag** as one bullet in the Summary section's Part 2 key-point list. The template defines a 6-step mental checklist for system design — `1. Data model`, `2. Request / response flow`, `3. Caching layers`, `4. State ownership`, `5. Failure handling`, `6. Scale concerns`. Each pattern lives in one or more steps; tag accordingly. The `02-dsa/` files do NOT use this field — it is system-design-only.
-12. **Voice: state decisions, not hopes.** Hedging language (`this might`, `could potentially`, `tends to`) is banned. If something is a tradeoff, name it. If something is suboptimal, say so plainly — then explain why it was still the right call at the time.
-13. **Use frontend primitives the reader builds with — not analogies, not whole products.** Reach for the lowest-level primitive that still carries the point. Banned as primary anchors: coat checks, librarians, locked doors, bouncers, factories, queues at coffee shops — and **whole-product references** ("Linear does X", "GitHub does Y") *when a lower-level primitive captures the same point*. Preferred anchor types, in priority order: frontend primitives the reader builds with daily (a todo list, a DB table, a `.map()` with `key`); patterns the reader has built in their own apps; DevTools/engineering surfaces; industry-standard protocols (JWT, OAuth, MVCC); whole products only as last resort.
-14. **Every concept file includes a "Why care" block** immediately after `**See also:**` and BEFORE `## How it works`. Five structural moves in order: The grounded scenario → Name the question the pattern answers → Why answering that question matters (load-bearing pivot, bolded transition) → Concrete before/after (optional) → The one-line summary. Move 1 must be project-agnostic and anchored to frontend primitives. Hook-sentence openings, physical-world analogies, and whole-product references (as primary anchors) are banned in Move 1.
-15. **Summary is the RECAP block, positioned after Tradeoffs and before Interview defense.** Part 1: concept recap (one paragraph, 3–5 sentences). Part 2: key points to remember (3–6 bullets, declarative, mixing shape / rule / tradeoff). **No new information** — everything in Summary must already appear earlier in the file.
-16. **Tradeoffs is a structured block, not a prose dump.** Required parts: (a) comparison table with at least four cost dimensions across two columns (path taken vs the obvious alternative); (b) Sub-block 1 — what we gave up (2–4 paragraphs in concrete terms); (c) Sub-block 2 — what the alternative would have cost; (d) Sub-block 3 — the breakpoint (one paragraph naming a quantitative or event-shaped condition under which this choice stops being the right call). Sub-block 4 (what wasn't actually a tradeoff) is optional. Hedging language is banned.
-17. **Tech-stack rule — industry pairings live in a dedicated `## Tech reference (industry pairing)` section, NOT inlined into Tradeoffs or other sections.** The section sits between `## Tradeoffs` and `## Summary` in every concept file. Inside it: one `###` subsection per tech the file references. Each subsection uses **`###` heading + labelled bullets**: `**Codebase uses:**` / `**Why it's here:**` / `**Leading today:**` (adoption-leading vs innovation-leading + year) / `**Why it leads:**` / `**Runner-up:**`. **Do NOT use markdown tables with pipes for tech entries** — they break in narrow renderings.
-18. **How it works is the load-bearing block; it follows a three-move structure with frontend bridging.** Length scales with complexity, not capped at a paragraph count. Three required moves: Move 1 (the mental model, first paragraph + diagram) anchored to a frontend primitive; Move 2 (the layered walkthrough, the body) with each sub-section requiring at least one ASCII diagram; Move 2.5 (current state vs future state) when applicable; Move 3 (the principle, final paragraph) — the takeaway that generalises beyond this codebase.
-19. **Diagrams use box-drawing characters**: `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ → ← ↑ ↓ ◀ ▶ ▲ ▼`. No Mermaid, no images, no PlantUML.
-
-Every term must be shown before it's used (jargon without a diagram is forbidden).
-
-Every file is grounded in concrete details from the project context: real file names, real operations, real data shapes.
-
-## Step 6C — Plan the file inventory
-
-Both sections are **codebase-driven**. Identify patterns and operations by walking the project context. Use the template's "What to expect by discipline" catalog (loaded in Step 3) as the first pass: determine whether the codebase is primarily frontend, backend, or full-stack, then walk the discipline's pattern list and note which ones you can ground in concrete code. Patterns you find become files; patterns you don't find are skipped (or flagged for the user).
-
-- **`01-system-design/`** — patterns the codebase actually uses (request flow, auth, storage, API design, abstraction layers, error handling — whatever the catalog and the code surface). Number files in the order they appear in the catalog (`01-request-flow.md`, `02-auth-boundary.md`, …).
-- **`02-dsa/`** — operations the codebase actually performs (sorting, deduplication, flattening, reordering, lookups — whatever the code does). Number files in the order they appear in the catalog.
-
-If the codebase has substantial AI/ML or prompt engineering content, mention it in the report but DO NOT generate those files here — point the user at `/aipe:study-ai-engineering` and `/aipe:study-prompt-engineering`.
-
-## Step 7C — Create the directory structure
-
-Create:
-
-```
-.aipe/study-system-design-dsa/
-.aipe/study-system-design-dsa/01-system-design/
-.aipe/study-system-design-dsa/02-dsa/
-```
-
-(Use `mkdir -p`.) Sections without applicable patterns are not created — leaving an empty `02-dsa/` for a project with no real DSA surface is misleading. The inventory from Step 6C decides which directories exist.
-
-## Step 8C — Generate `00-overview.md`
-
-One full-system diagram + bullet legend (one line per component: what it is, what it does, what it talks to). **No prose paragraphs.** Save to `.aipe/study-system-design-dsa/00-overview.md`.
-
-## Step 9C — Generate per-concept files in each section
-
-For each section that the inventory included (`01-system-design/`, `02-dsa/`), iterate the inventory from Step 6C. Compose ONE file per concept. Save immediately before moving to the next.
-
-Every concept file uses the per-concept structure from the loaded template — Subtitle, blockquote summary, See also, Why care (5 moves), How it works (3 moves with diagrams at every move and every sub-section), primary diagram, In this codebase (with real `**File:**` / `**Function / class:**` / `**Line range:**`), Elaborate, Tradeoffs (comparison table + 3 sub-blocks), Tech reference (with `###` heading + labelled bullets, never pipe-tables), Summary (Part 1 recap paragraph + Part 2 key-points bullets; for system-design files, include the Checklist step tag), Interview defense (with diagrams per Q&A), Validate (4 levels + Quick check).
-
-DSA files include a step-by-step execution trace — every variable at every step.
-
-## Step 10C — Generate section README indexes
-
-Each section directory gets its own `README.md`:
-
-- **`01-system-design/README.md`** — index of pattern files (one-line each), plus the 6-step mental checklist (`1. Data model` / `2. Request / response flow` / `3. Caching layers` / `4. State ownership` / `5. Failure handling` / `6. Scale concerns`) with each listed pattern tagged by its checklist step(s).
-- **`02-dsa/README.md`** — index of operation files (one-line each), plus a complexity cheat sheet (operation → time complexity → space complexity).
-
-The section READMEs are the navigation — the first thing a reader opens when they enter a section.
-
-## Step 11C — Report + stop
-
-Print exactly:
-
-```
-✓ Study guide created at .aipe/study-system-design-dsa/
-  00-overview.md
-  01-system-design/                            (<N> files + README.md)
-  02-dsa/                                      (<N> files + README.md)
-```
-
-Then a 3-sentence summary: what the codebase being studied is, which section was richest given the actual surface area, and any operations in the DSA section that are currently O(n²) where O(n) is easy (since the spec asks for these to be flagged plainly).
-
-If the codebase has AI/ML or prompt engineering surface, add a fourth sentence:
-
-```
-  AI/ML or prompt engineering content detected — generate per-repo companion guides with:
-    /aipe:study-ai-engineering
-    /aipe:study-prompt-engineering
-```
-
-If a legacy `.aipe/study-<purpose>/` directory was detected (older versions of this command), add:
-
-```
-  Legacy guide detected at <path> — migrate content or leave as archive? (see migration note)
-```
-
-**Stop. Wait for the user's next instruction.** They'll typically pick a concept file to drill on, ask for a deeper trace, or ask which operation to fix first. Do NOT auto-fix or auto-revise.
-
----
-
-# UPDATE MODE
-
-Runs when Step 4 found an existing study guide. Goal: make the guide accurate again without rewriting accurate sections. **Do NOT regenerate from scratch.**
-
-## Step 5U — Read the existing guide
-
-Walk `.aipe/study-system-design-dsa/` recursively. Read every `.md` file in:
-
-- the root (`00-overview.md`)
-- `01-system-design/` (README.md + every per-pattern file)
-- `02-dsa/` (README.md + every per-operation file)
-
-If the existing guide contains stale `03-ai-engineering/` or `04-machine-learning/` directories (from older versions of this command), do NOT touch them in this run — flag them in the Step 7U change plan as orphan content that has moved to `/aipe:study-ai-engineering`, and ask the user whether to delete or migrate them.
-
-## Step 6U — Diff the guide against the current codebase AND the current template
-
-Two diff sources:
-
-**Diff A — codebase drift** (always runs):
-- File paths that have moved
-- Function names that have changed
-- Line ranges that no longer match the implementation
-- New patterns the system-design or DSA inventory should now cover
-- Changed architectural decisions
-
-**Diff B — template drift** (always runs):
-- `study.md` has added new blocks (e.g., a new Move sub-section to How it works, a new field to Tech reference, a new Validate level) since the file was last written. Identify missing blocks. The current template defines: Subtitle (2 lines), blockquote summary, See also, Why care (5 moves), How it works (3 moves with diagrams at every move and every sub-section), primary diagram, In this codebase (with file + function + line range), Elaborate, Tradeoffs (comparison table + 3 sub-blocks), Tech reference (with `###` heading + labelled bullets), Summary (Part 1 recap + Part 2 key-points, with Checklist step tag for system-design only), Interview defense (with diagrams per Q&A), Validate (4 levels + Quick check).
-
-Specific flags to raise per file:
-
-- "Missing Why care block" — older files may go straight from See also to How it works
-- "Why care lacks the 5-move structure" — older files may have a single paragraph instead of the structured 5 moves
-- "How it works lacks Move 2 sub-section diagrams" — every Move 2 sub-section needs at least one ASCII diagram
-- "Missing Tech reference section" — older files may inline tech mentions in Tradeoffs or How it works
-- "Tech reference uses markdown pipe-tables" — must be rewritten with `###` heading + labelled bullets
-- "Summary positioned before Tradeoffs" — Summary moved to after Tradeoffs in newer template versions
-- "Summary lacks Part 1 / Part 2 structure" — older files may have prose only or bullets only
-- "Missing Checklist step tag in system-design file" — every `01-system-design/` file needs the tag in Summary Part 2
-- "Interview defense answers lack diagrams" — every Q&A needs a small ASCII diagram sized to the question level
-- "Validate block lacks Level 3 code reference" — Level 3 must reference a specific file + line range
-- "Stale tech reference values" — leader/runner-up should be re-evaluated when the codebase has churned
-
-## Step 7U — Output the change plan and STOP for confirmation
-
-Print a structured summary:
-
-```
-Changes detected for .aipe/study-system-design-dsa/
-─────────────────────────────────────────────────
-
-00-overview.md
-  Outdated: <e.g. layer X removed but still in the system diagram>
-  Missing:  <e.g. new background-jobs layer not on the map>
-  Action:   <update diagram + bullet legend / no change>
-
-01-system-design/
-  README.md
-    Outdated: <e.g. checklist tag missing for new pattern>
-    Action:   update index + checklist tags
-
-  03-serverless-functions.md
-    Outdated: references Netlify Blobs, now Neon Postgres
-    Missing:  Tech reference section (legacy file)
-    Action:   update "In this codebase"; add Tech reference; append changelog
-
-  ... (one block per file)
-
-02-dsa/
-  ...
-
-[If stale AI/ML directories exist:]
-ORPHAN content (AI/ML moved to /aipe:study-ai-engineering):
-  03-ai-engineering/ exists (<N> files)
-  04-machine-learning/ exists (<N> files)
-  Action:   ask the user — delete, migrate, or leave as archive?
-
-[If a legacy .aipe/study-<purpose>/ directory exists:]
-LEGACY directory at <path>:
-  Action:   ask the user — migrate content into .aipe/study-system-design-dsa/, or leave as archive?
-
-Files unchanged: <list>
-```
-
-**Wait for user confirmation** before editing any files. Do NOT auto-apply.
-
-## Step 8U — Apply changes (after user confirms)
-
-Edit only the sections identified in Step 7U. Maintain the existing voice and per-concept file structure. Append a changelog entry at the bottom of each updated file:
-
-```
----
-Updated: <today's ISO date, e.g. 2026-05-24> — <one-line summary of what changed and why>
-```
-
-For new files added: include the standard concept file structure (the file is new, so no "updated" history yet).
-
-Do NOT rewrite accurate sections. Do NOT migrate stale AI/ML directories without explicit user confirmation — those belong in `/aipe:study-ai-engineering` now, and the migration is a separate decision.
-
-## Step 9U — Report + stop
-
-Print:
-
-```
-Update complete for .aipe/study-system-design-dsa/
-─────────────────────────────────────────────────
-Files updated:        <list>
-Files added:          <list>
-Files unchanged:      <count or list>
-Section READMEs:      <updated / unchanged>
-Orphan content:       <left as-is / removed / migrated, per user's choice>
-Legacy directory:     <left as-is / removed / migrated, per user's choice>
-```
-
-**Stop. Wait for the user's next instruction.**
+## Scope and constraints
+
+- **Per-repo.** The orchestrator runs against ONE repo — the directory the command was invoked in. It never reads or writes another repo. Every reference, file path, and code citation is about this repo only.
+- **All five always run.** The orchestrator does NOT skip a generator because the repo "doesn't do that topic." Each generator's own spec decides what to emit for a topic the codebase doesn't exercise (honest "not yet implemented" files, system-design templates as buildable targets, etc.). Skipping is the generator's call, never the orchestrator's.
+- **Structure source is read once.** `study-system-design-dsa.md` is the structural foundation. Read it once and hand it to all five generators; do not re-derive structure per generator.
+- **Persona routing is not uniform.** See Step 3 — four generators use `teacher.md` (one in coach posture, three in teacher posture); `study-prompt-engineering` uses its own inline persona.
+- **Edits are surgical in UPDATE mode.** Never rewrite a whole file when a section-level edit will do. Preserve everything the codebase still supports; change only what the codebase changed.
+- **A guide that is already current produces no edits.** UPDATE mode is a no-op when the code and the guide already agree — the expected outcome for guides whose topic you didn't touch this round.
+- **Curriculum files are optional inputs.** Read `aieng-curriculum.md` when present; degrade gracefully when absent. Never block a run on a missing curriculum file.
+- **The orchestrator emits no concept content of its own.** It produces only the run plan, the confirmation gate, and the summary report.

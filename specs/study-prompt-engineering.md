@@ -4,7 +4,7 @@ PROMPT ENGINEERING SPEC
 
 A topic-focused study guide spec for prompt
 engineering. Inherits all structural rules from
-`study.md` — the per-concept-file template, the
+`study-system-design-dsa.md` — the per-concept-file template, the
 formatting rules, the diagram requirements, the
 hard rules, the constraint summary. What this spec
 defines is what's *unique* to prompt engineering as
@@ -18,8 +18,8 @@ a topic of study:
   → Curriculum anchoring specific to prompt
     engineering
 
-This spec is run alongside `study.md`, not instead
-of it. The agent reads both: `study.md` for *how*
+This spec is run alongside `study-system-design-dsa.md`, not instead
+of it. The agent reads both: `study-system-design-dsa.md` for *how*
 to write each concept file (block structure,
 diagrams, validate levels, etc.), and this spec for
 *what* to write about and *in whose voice*.
@@ -98,7 +98,7 @@ the second kind.
   the way an interview panel would test them.
   That voice is authoritative, architectural, and
   treats interview prep as a second-order benefit
-  of solid systems thinking. Used by `study.md`
+  of solid systems thinking. Used by `study-system-design-dsa.md`
   and `study-ai-engineering.md`.
 
   **This spec does not use that persona.** Prompt
@@ -177,7 +177,7 @@ the second kind.
      to read deeper.
 
   → **Hedging is still banned.** Same as
-     `study.md` and `teacher.md`. No "might,"
+     `study-system-design-dsa.md` and `teacher.md`. No "might,"
      "could potentially," "tends to." Production
      engineers don't talk that way.
 
@@ -244,7 +244,7 @@ Specifically, the agent consults `me.md` for:
 
   1. This spec wins on **structure** (the 13
      concepts, the per-concept template
-     inherited from `study.md`, the workflow).
+     inherited from `study-system-design-dsa.md`, the workflow).
   2. **The inline persona above** wins on
      **voice register** (working AI engineer,
      production-scarred, demo-vs-prod
@@ -259,7 +259,7 @@ OUTPUT FOLDER NAME
 ═════════════════════════════════════════════════
 
 Following the `.aipe/` convention used in
-`study.md`, prompt engineering guides save to:
+`study-system-design-dsa.md`, prompt engineering guides save to:
 
   .aipe/study-prompt-engineering/
 
@@ -276,7 +276,7 @@ spec (`study-ai-engineering/`) — each topic spec
 has its own fixed folder name, derived from the
 topic it covers.
 
-The directory structure follows `study.md`'s rules:
+The directory structure follows `study-system-design-dsa.md`'s rules:
 
 ```
 .aipe/study-prompt-engineering/
@@ -297,7 +297,7 @@ The directory structure follows `study.md`'s rules:
   13-forbidden-patterns.md
 ```
 
-Naming follows the kebab-case rule from `study.md`.
+Naming follows the kebab-case rule from `study-system-design-dsa.md`.
 The README.md indexes all 13 concepts with one-line
 descriptions and indicates the recommended reading
 order for someone new to the discipline (the
@@ -313,13 +313,13 @@ THE 13 CONCEPTS
 These are the concepts to cover. Order matches the
 recommended reading order — operational discipline
 first, specific techniques after. Each concept gets
-a full file following the `study.md` per-concept-
+a full file following the `study-system-design-dsa.md` per-concept-
 file template.
 
 Codebase anchors for each concept name the project
 (aipe or loopd) whose code best exercises that
 concept. If the codebase doesn't yet implement the
-concept, the file uses Case B from study.md's
+concept, the file uses Case B from study-system-design-dsa.md's
 Project exercises block (concept is curriculum
 target, file says "not yet implemented" honestly,
 Project exercises become the primary buildable
@@ -330,7 +330,7 @@ target).
   Anchor: aipe (templates explicitly named) +
           loopd (5 chains, each with its own
           anatomy)
-  Curriculum: existing concept from `study.md`
+  Curriculum: existing concept from `study-system-design-dsa.md`
               SECTION 03 prompt engineering
               subsection
   Covers:
@@ -470,7 +470,7 @@ target).
   ## 6. Single-purpose chains
 
   Anchor: loopd (5 chains, each with one job)
-  Curriculum: existing concept from `study.md`
+  Curriculum: existing concept from `study-system-design-dsa.md`
   Covers:
     - The pipeline pattern: one chain, one job,
       composed into longer flows
@@ -486,7 +486,7 @@ target).
 
   Anchor: loopd (where chains have explicit
           output modes)
-  Curriculum: existing concept from `study.md`
+  Curriculum: existing concept from `study-system-design-dsa.md`
   Covers:
     - Every chain has one output mode declared
       in its schema
@@ -499,7 +499,7 @@ target).
   Anchor: loopd (intent classifier with explicit
           examples) + aipe (template literals
           carrying examples)
-  Curriculum: existing concept from `study.md`
+  Curriculum: existing concept from `study-system-design-dsa.md`
   Covers:
     - Why examples constrain output more than
       instructions do
@@ -515,7 +515,7 @@ target).
 
   Anchor: loopd (decisions that benefit from
           step-by-step reasoning)
-  Curriculum: existing concept from `study.md`
+  Curriculum: existing concept from `study-system-design-dsa.md`
   Covers:
     - The reasoning prompt pattern
     - When it helps (multi-step problems)
@@ -598,7 +598,7 @@ target).
     - What this complements: the runtime-side
       defenses (output validation, never
       letting LLM output trigger side effects)
-      that live in `study.md`'s Production
+      that live in `study-system-design-dsa.md`'s Production
       Serving section
   Voice notes: this is the most security-flavoured
   concept. The voice acknowledges that prompt
@@ -609,7 +609,7 @@ target).
 
   Anchor: loopd (caption chain with rotation
           history)
-  Curriculum: existing concept from `study.md`
+  Curriculum: existing concept from `study-system-design-dsa.md`
   Covers:
     - LLMs converge on phrasings — every output
       from the same chain sounds the same
@@ -664,7 +664,7 @@ RELATIONSHIP TO STUDY.MD
 
 This spec drives a **separate workflow** from the
 per-codebase study guide generator. Running the
-per-codebase generator (with `study.md` against a
+per-codebase generator (with `study-system-design-dsa.md` against a
 target codebase) does not include this spec, and
 should not — the per-codebase generator produces
 `.aipe/study-system-design-dsa/`, while this spec
@@ -673,18 +673,18 @@ are per-repo: the `.aipe/` directory lives at the
 root of whichever repo the command was run in, so
 each repo gets its own pair of folders.
 
-The two workflows share `study.md` as their
+The two workflows share `study-system-design-dsa.md` as their
 structural foundation but are triggered
 independently and produce independent outputs.
 To produce the prompt engineering guide for a
 repo, run this spec's command from inside that
 repo.
 
-This spec is *additive* to `study.md`, not a
+This spec is *additive* to `study-system-design-dsa.md`, not a
 replacement. The agent run for prompt engineering
 study works like this:
 
-  1. Agent reads `study.md` to learn the per-
+  1. Agent reads `study-system-design-dsa.md` to learn the per-
      concept-file template, formatting rules,
      diagram requirements, hard rules, and
      constraint summary.
@@ -732,14 +732,14 @@ study works like this:
   7. Agent generates `.aipe/study-prompt-
      engineering/` with the 13 concept files
      plus the README index, all following
-     `study.md`'s per-concept template, written
+     `study-system-design-dsa.md`'s per-concept template, written
      in the working AI engineer voice defined
      here, and calibrated to the reader as
      defined in `me.md`.
 
 The prompt engineering subsection that used to
-live inside `study.md`'s SECTION 03 (AI
-Engineering) has been removed. `study.md`'s AI
+live inside `study-system-design-dsa.md`'s SECTION 03 (AI
+Engineering) has been removed. `study-system-design-dsa.md`'s AI
 Engineering section now contains a pointer to
 this spec. The six concepts that were originally
 defined there have been carried over to this
@@ -751,8 +751,8 @@ WHAT THIS SPEC DOES NOT REDEFINE
 ═════════════════════════════════════════════════
 
 To keep this file focused, the following are
-inherited from `study.md` without restatement
-here. Refer to `study.md` for the canonical
+inherited from `study-system-design-dsa.md` without restatement
+here. Refer to `study-system-design-dsa.md` for the canonical
 definition:
 
   → The per-concept-file template (Subtitle, Why
@@ -776,7 +776,7 @@ definition:
   → The Validate block's 5 levels (reconstruct,
     explain, apply, defend, quick check)
   → The constraint summary at the bottom of
-    `study.md`
+    `study-system-design-dsa.md`
 
 **Not inherited from `teacher.md`.** This spec
 defines its own persona (the working AI engineer)
@@ -803,6 +803,6 @@ Refer to `me.md` for the canonical definition:
   → What the reader already knows vs honest
     gaps
 
-If a future change to `study.md` or `me.md`
+If a future change to `study-system-design-dsa.md` or `me.md`
 updates one of these, this spec automatically
 inherits it. No duplication, no drift.

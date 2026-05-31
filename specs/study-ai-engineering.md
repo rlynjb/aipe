@@ -4,7 +4,7 @@ STUDY — AI ENGINEERING SPEC
 
 A topic-focused study guide spec for AI engineering
 and machine learning. Inherits all structural rules
-from `study.md` — the per-concept-file template,
+from `study-system-design-dsa.md` — the per-concept-file template,
 the formatting rules, the diagram requirements, the
 hard rules, the constraint summary. What this spec
 defines is what's *unique* to AI engineering and ML
@@ -12,17 +12,17 @@ as topics of study:
 
   → The set of AI and ML concepts to cover (the
     full SECTION 03 + SECTION 04 content extracted
-    from the original study.md)
+    from the original study-system-design-dsa.md)
   → A three-shapes framing for recognizing which
     *kind* of AI/ML work the codebase exercises
     (LLM application engineering, classical ML,
     or a mix), used to weight coverage
   → The output folder convention
   → AI/ML-specific constraints relocated from
-    study.md's CONSTRAINTS block
+    study-system-design-dsa.md's CONSTRAINTS block
 
-This spec is run alongside `study.md`, not instead
-of it. The agent reads both: `study.md` for *how*
+This spec is run alongside `study-system-design-dsa.md`, not instead
+of it. The agent reads both: `study-system-design-dsa.md` for *how*
 to write each concept file (block structure,
 diagrams, validate levels, etc.), and this spec for
 *what* to write about.
@@ -144,7 +144,7 @@ OUTPUT FOLDER NAME
 ═════════════════════════════════════════════════
 
 Following the `.aipe/` convention used in
-`study.md`, AI engineering guides save to:
+`study-system-design-dsa.md`, AI engineering guides save to:
 
   .aipe/study-ai-engineering/
 
@@ -166,7 +166,7 @@ and the prompt engineering spec
 has its own fixed folder name, derived from the
 topic it covers.
 
-The directory structure inherits from `study.md`'s
+The directory structure inherits from `study-system-design-dsa.md`'s
 rules but is shaped by the two sections this spec
 contains. The top-level layout, generated per
 codebase:
@@ -275,7 +275,7 @@ codebase uses AI/ML specifically" pattern from the
 original SECTION 03 / SECTION 04 — they describe a
 single codebase, not a portfolio.
 
-Naming follows the kebab-case rule from `study.md`.
+Naming follows the kebab-case rule from `study-system-design-dsa.md`.
 Each sub-section directory has its own README.md
 that indexes the files in that directory and notes
 the reading order if any (most are
@@ -287,7 +287,7 @@ RELATIONSHIP TO STUDY.MD
 
 This spec drives a **separate workflow** from the
 per-codebase study guide generator. Running the
-per-codebase generator (with `study.md` against a
+per-codebase generator (with `study-system-design-dsa.md` against a
 target codebase) does not include this spec, and
 should not — the per-codebase generator produces
 `.aipe/study-system-design-dsa/`, containing only
@@ -296,18 +296,18 @@ AI engineering and ML content lives exclusively in
 `.aipe/study-ai-engineering/`, produced by this
 spec's workflow.
 
-The two workflows share `study.md` as their
+The two workflows share `study-system-design-dsa.md` as their
 structural foundation but are triggered
 independently and produce independent outputs. To
 produce the AI engineering guide, the agent must be
-explicitly invoked with this spec plus `study.md`
+explicitly invoked with this spec plus `study-system-design-dsa.md`
 plus the example codebases.
 
-This spec is *additive* to `study.md`, not a
+This spec is *additive* to `study-system-design-dsa.md`, not a
 replacement. The agent run for AI engineering
 study works like this:
 
-  1. Agent reads `study.md` to learn the per-
+  1. Agent reads `study-system-design-dsa.md` to learn the per-
      concept-file template, formatting rules,
      diagram requirements, hard rules, and
      constraint summary.
@@ -327,7 +327,7 @@ study works like this:
      (used for anchoring), and the cognitive
      shape (visual-first, ideas before details).
      `me.md` does not override the structural
-     rules from `study.md` or this spec, and
+     rules from `study-system-design-dsa.md` or this spec, and
      does not override `teacher.md`'s voice
      rules — it calibrates examples and depth.
 
@@ -356,28 +356,28 @@ study works like this:
      sub-directories per sub-section
      (01-llm-foundations/, 02-context-and-prompts/,
      etc.), each containing per-concept files
-     following `study.md`'s per-concept template,
+     following `study-system-design-dsa.md`'s per-concept template,
      written in the teacher voice from
      `teacher.md`, and calibrated to the reader
      as defined in `me.md`.
 
 The AI Engineering and Machine Learning sections
-that used to live inside `study.md` as SECTION 03
-and SECTION 04 have been removed. `study.md`'s
+that used to live inside `study-system-design-dsa.md` as SECTION 03
+and SECTION 04 have been removed. `study-system-design-dsa.md`'s
 opener now contains a pointer to this spec. The
 content has been carried over verbatim below, with
 the only change being that "SECTION 03" and
 "SECTION 04" references have been preserved
 internally — they refer to the structure within
-this spec, not within study.md.
+this spec, not within study-system-design-dsa.md.
 
 ═════════════════════════════════════════════════
 WHAT THIS SPEC DOES NOT REDEFINE
 ═════════════════════════════════════════════════
 
 To keep this file focused, the following are
-inherited from `study.md` without restatement here.
-Refer to `study.md` for the canonical definition:
+inherited from `study-system-design-dsa.md` without restatement here.
+Refer to `study-system-design-dsa.md` for the canonical definition:
 
   → The per-concept-file template (Subtitle, Why
     care, How it works, primary diagram, In this
@@ -400,7 +400,7 @@ Refer to `study.md` for the canonical definition:
   → The Validate block's 5 levels (reconstruct,
     explain, apply, defend, quick check)
   → The general constraint summary at the bottom
-    of `study.md`
+    of `study-system-design-dsa.md`
 
 Inherited from `teacher.md` without restatement.
 Refer to `teacher.md` for the canonical
@@ -436,7 +436,7 @@ Refer to `me.md` for the canonical definition:
     programming DSA. The agent teaches gaps as
     new ground rather than assuming familiarity.
 
-If a future change to `study.md`, `teacher.md`,
+If a future change to `study-system-design-dsa.md`, `teacher.md`,
 or `me.md` updates one of these, this spec
 automatically inherits it. No duplication, no
 drift.
@@ -862,7 +862,7 @@ Prompt engineering as a discipline
   The prompt engineering spec uses a different
   persona — a working AI engineer who has shipped
   production LLM features and iterated thousands of
-  prompts — rather than `study.md`'s staff-engineer-
+  prompts — rather than `study-system-design-dsa.md`'s staff-engineer-
   from-FAANG persona. The voice difference matters:
   prompt engineering knowledge that survives
   production comes from a different career path
@@ -870,11 +870,11 @@ Prompt engineering as a discipline
   and the writing should reflect that.
 
   Structurally, the prompt engineering spec inherits
-  everything from `study.md`: the per-concept-file
+  everything from `study-system-design-dsa.md`: the per-concept-file
   template, all formatting rules, the diagram
   requirements, the hard rules, the Validate block.
   Run the prompt engineering generator by giving the
-  agent both files (`study.md` for structure,
+  agent both files (`study-system-design-dsa.md` for structure,
   `study-prompt-engineering.md` for topic and voice)
   along with the relevant codebases (typically aipe
   and loopd).
@@ -3238,9 +3238,9 @@ CONSTRAINTS — AI/ML-SPECIFIC
 ═════════════════════════════════════════════════
 
 These constraints apply *in addition to* the
-general constraint summary in `study.md`. They
+general constraint summary in `study-system-design-dsa.md`. They
 were relocated here when the AI/ML sections moved
-out of study.md, because they only apply to the
+out of study-system-design-dsa.md, because they only apply to the
 AI engineering generation workflow.
 
 ```
@@ -3300,7 +3300,7 @@ AI engineering generation workflow.
    codebase's shape at all (e.g. classical ML
    concepts when the codebase is a pure LLM app)
    are skipped — no file generated. (The base
-   study generator, driven by study.md, remains
+   study generator, driven by study-system-design-dsa.md, remains
    codebase-driven for its sections — system
    design and DSA — and generates files only for
    patterns found in the actual code.)

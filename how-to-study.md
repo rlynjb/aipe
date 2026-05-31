@@ -76,9 +76,46 @@ If you don't pass Levels 1-2, the file isn't done. Move on only when you can.
 
 **Why this works for you:** you said ideas come fast and details take time. Validate Level 1 (redraw the diagram) is precisely the test for "have the details landed yet." If the diagram won't come back from memory, the details haven't lodged — the idea was fast (the *what*) but the mechanism (the *how*) isn't there. The Validate block is your detection mechanism. Use it as one.
 
+**One important refinement — the blurry-but-generative pass.** Sometimes you'll pass Level 1 (diagram reconstructs cleanly) and pass Level 3 (you can name where the pattern applies in your codebases) but the concept still *feels* blurry. That's not a fail. That's the **principle solidifying while the mechanics are still consolidating** — it's a real intermediate state, named in `me.md` observation #2. The signal that the principle has actually landed is whether you can produce use cases the spec didn't name (the next tip walks this). If you can do that, move on. Mechanics will finish consolidating through use, not through re-reading.
+
 ---
 
-## Tip 4 — Read the book-style guide differently from the concept-file guides
+## Tip 4 — Questions and angles, not re-reading
+
+This is the tip that came directly from working through provider abstraction. The spec said *"a switching layer that lets the caller pick which LLM provider runs."* You read it, looked at the diagram, and the *shape* clicked — but the *why* didn't. So you asked Claude. The seam concept surfaced. You kept pulling on threads. You went over to dryrun and worked the concept from different angles (test mocks, fallbacks, network-aware swaps). And what came out the other side wasn't the spec's framing — it was yours: *"a single file's change propagating to many callers without those callers knowing."*
+
+That sequence — read → ask → work multiple angles → arrive at your own framing — is observation #5 in `me.md`. It's how understanding actually consolidates for you. Reading more carefully doesn't do it. Re-reading the same file three times doesn't do it. **Asking questions and working multiple angles does it.**
+
+### After each Wave 2 file, run these three diagnostic questions
+
+Before moving on, ask yourself (or ask Claude):
+
+1. **"Can I name three other use cases for this pattern that the spec didn't mention?"** If yes — the principle has generalized. If no — keep asking questions until you can. Three use cases is the threshold where recognition becomes generalization.
+
+2. **"Where else in my codebases is this pattern hiding, even if it wasn't called that?"** For provider abstraction: context providers in React, middleware chains in Express, plugin systems, feature flags, A/B test wrappers, environment-aware clients. Naming three places exercises the recognition muscle and grounds the abstract in code you've actually written.
+
+3. **"If I stripped this pattern out, what specifically would I lose?"** This is the inverse test. For provider abstraction, the answer is: the ability to change one file and affect many. If you can name that loss, you have the principle. If you can only say "it would be harder to maintain" — that's recognition, not understanding.
+
+### When to bring Claude in
+
+Use Claude as the question partner the spec can't be. Open a fresh conversation. Tell Claude what concept you're working through and where it gets blurry. Then pull on threads. Specific moves that work:
+
+- "I think I understand X but here's where it gets blurry — [specific gap]. Can you walk me through it?"
+- "The spec frames X as Y. Is there a different framing that might land better?"
+- "What's the *opposite* of this pattern? What does it look like when this pattern is absent?"
+- "Show me three codebases or libraries that use this pattern, with different shapes."
+
+The point isn't to get Claude to explain the concept better than the spec did. The point is to surface the sub-concepts that your specific mental model is missing — the seams, the bridges, the framings that no spec author can predict for you specifically.
+
+### Why this isn't a workaround
+
+Worth being explicit: asking Claude questions isn't "cheating" or compensating for an unclear spec. It's the actual learning mechanism for your cognitive style. The spec hands you a document; the document gives you the shape. The understanding that *transfers* — that lets you recognize the pattern in unfamiliar codebases six months from now — gets built in the conversation that follows.
+
+Reading harder isn't the move. Asking better questions is.
+
+---
+
+## Tip 5 — Read the book-style guide differently from the concept-file guides
 
 The four study generators produce *two different artifact shapes*:
 
@@ -97,7 +134,7 @@ The book has a different reading strategy:
 
 ---
 
-## Tip 5 — Anchor every reading session to one of your projects
+## Tip 6 — Anchor every reading session to one of your projects
 
 Don't read in the abstract. Before each session, pick one of your five system shapes (dryrun, buffr, contrl, aipe, AdvntrCue) and read everything in that session *as if defending that codebase*. Even concept files from study.md that don't mention the codebase — read them through that lens.
 
@@ -107,7 +144,7 @@ Don't read in the abstract. Before each session, pick one of your five system sh
 
 ---
 
-## Tip 6 — Build the cross-reference matrix yourself
+## Tip 7 — Build the cross-reference matrix yourself
 
 This is the one most people skip and the one that pays the highest interview dividend. As you work through the materials, maintain a single document — call it `cross-references.md` or similar — that maps:
 
@@ -132,7 +169,7 @@ This document is yours. **Don't ask Claude to generate it; building it *is* the 
 
 ---
 
-## Tip 7 — Pair Validate Level 2 with the interview defense practice prompts
+## Tip 8 — Pair Validate Level 2 with the interview defense practice prompts
 
 study-interview-defense.md has a "Practice prompt" at the bottom of each question file — designed for video recording. Use these as your Validate Level 2 ("explain it"). One unified loop:
 
@@ -146,7 +183,7 @@ This collapses two separate study activities into one. The concept becomes the a
 
 ---
 
-## Tip 8 — Re-read in three frequencies
+## Tip 9 — Re-read in three frequencies
 
 Forgetting is real. Spaced repetition is the only fix that's been shown to stick.
 
@@ -160,7 +197,7 @@ Forgetting is real. Spaced repetition is the only fix that's been shown to stick
 
 ---
 
-## Tip 9 — Don't try to "finish" all the material before starting interviews
+## Tip 10 — Don't try to "finish" all the material before starting interviews
 
 This is the most important tip and also the one you'll resist hardest. You will *not* finish 200 files before your first interview. That's fine. The right move is:
 
@@ -202,11 +239,17 @@ The risk isn't reading too slowly; it's *reading the wrong things slowly*. The d
 
 ## One thing to consider beyond solo study
 
-Every tip above is something you can do alone. But your learning style explicitly values hands-on, and explanation-out-loud (Validate Level 2) lands harder with a real listener.
+Tip 4 already names Claude conversations as core to how understanding consolidates for you — not a fallback. Worth being explicit about *two* roles Claude can play, because they're different and both useful:
 
-**If you can find one person** — another engineer in IK, a study partner — and trade weekly "explain this concept to me" sessions, that single change will outperform almost anything else on this list. The act of explaining to someone who will ask follow-up questions is the highest-bandwidth comprehension test available, and it's how senior engineering interviews actually work.
+**Claude as question partner (Tip 4's framing).** You bring a concept that feels blurry; Claude asks the questions that surface the sub-concepts your mental model is missing. This is what worked for you with provider abstraction — the seam idea didn't come from the spec, it came from the conversation. Use this for *understanding consolidation*. Open a fresh chat, name the concept and the gap, pull on threads.
 
-**If that's not available,** use Claude in a fresh conversation as the listener. Not for the explanation generation, but for the follow-up questions. Tell Claude you want to explain a concept; it'll ask you the questions a senior interviewer would ask. That's a usable substitute for a study partner, though a worse one than a real human.
+**Claude as interviewer (Validate Level 2's framing).** You bring a concept you think you understand; Claude asks you the questions a senior interviewer would ask, in the order they'd ask them, with follow-ups that probe where you're vague. This is what works for *interview defense*. Open a fresh chat, name the concept, ask Claude to interview you on it.
+
+These are two different conversations and you'll want both at different times. Question partner mode is for "I don't fully get this yet." Interviewer mode is for "I think I get this — let me test it."
+
+**A human study partner is even better, when available.** Another engineer in IK, a senior engineer at work, a friend pivoting through the same material. Trade weekly "explain this concept to me" sessions. A real human has unpredictable follow-ups in a way Claude doesn't quite — they bring their own confusions, their own bridge concepts, their own counterexamples. That unpredictability is exactly what tests whether your understanding can survive *someone else's* mental model, which is the closest analog to an interview.
+
+But not having a human partner is not a blocker. Claude is genuinely the right tool for the day-to-day consolidation work. The human partner is the upgrade.
 
 ---
 
@@ -226,6 +269,15 @@ Every tip above is something you can do alone. But your learning style explicitl
    │  validate IMMEDIATELY at end      │
    │  (Levels 1-5)                     │
    │  anchor to one of your projects   │
+   └─────────────┬─────────────────────┘
+                 │
+                 ▼
+   ┌───────────────────────────────────┐
+   │  QUESTIONS + ANGLES               │
+   │  ask Claude about gaps            │
+   │  work concept from 3+ angles      │
+   │  produce 3 use cases spec didn't  │
+   │  name → principle has generalized │
    └─────────────┬─────────────────────┘
                  │
                  ▼

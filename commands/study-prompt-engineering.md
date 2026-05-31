@@ -57,7 +57,7 @@ Read these files (skip missing ones):
 Prompt engineering reads four files in order — structure, the default persona it diverges from, reader calibration, then the spec itself:
 
 ```
-${CLAUDE_PLUGIN_ROOT}/specs/study.md
+${CLAUDE_PLUGIN_ROOT}/specs/study-system-design-dsa.md
 ${CLAUDE_PLUGIN_ROOT}/specs/teacher.md
 ${CLAUDE_PLUGIN_ROOT}/specs/me.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-prompt-engineering.md
@@ -66,12 +66,12 @@ ${CLAUDE_PLUGIN_ROOT}/specs/study-prompt-engineering.md
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
 What each file supplies:
-- **`study.md`** — structure: per-concept template, formatting rules, diagram requirements, hard rules, Validate block, constraint summary.
+- **`study-system-design-dsa.md`** — structure: per-concept template, formatting rules, diagram requirements, hard rules, Validate block, constraint summary.
 - **`teacher.md`** — the *default* writer persona across the study family. **This spec does NOT use it** — prompt engineering has its own inline working-AI-engineer persona (defined in `study-prompt-engineering.md`). Read teacher.md only to honor its "WHEN NOT TO USE THIS PERSONA" section, which names this spec's divergence explicitly. The persona that actually governs this guide is the one inline in the prompt-engineering spec.
-- **`me.md`** — reader-side calibration: voice and format register, what the reader already knows, what examples land. `me.md` is read by *every* spec in the family regardless of which writer persona the spec uses — the persona shifts; the reader does not. It does NOT override study.md's structural rules or this spec's inline persona.
+- **`me.md`** — reader-side calibration: voice and format register, what the reader already knows, what examples land. `me.md` is read by *every* spec in the family regardless of which writer persona the spec uses — the persona shifts; the reader does not. It does NOT override study-system-design-dsa.md's structural rules or this spec's inline persona.
 - **`study-prompt-engineering.md`** — topic, the inline working-AI-engineer persona, the 13 concepts to cover, the anchoring rules.
 
-Precedence when they conflict: study.md wins on **structure**; the inline persona in `study-prompt-engineering.md` wins on **voice** (not teacher.md's); `me.md` wins on **calibration**.
+Precedence when they conflict: study-system-design-dsa.md wins on **structure**; the inline persona in `study-prompt-engineering.md` wins on **voice** (not teacher.md's); `me.md` wins on **calibration**.
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
@@ -90,12 +90,12 @@ Runs only when no existing guide is found.
 
 ## Step 5C — Plan the guide
 
-Apply the structure from `study.md` (the per-concept-file template loaded in Step 3) and the topic + voice from `study-prompt-engineering.md`.
+Apply the structure from `study-system-design-dsa.md` (the per-concept-file template loaded in Step 3) and the topic + voice from `study-prompt-engineering.md`.
 
 The non-negotiables — inherited from both specs:
 
-1. **Voice: working AI engineer, not staff engineer.** The persona has 6–8 years in software, 3–4 of them heads-down on production LLM systems. Has shipped RAG, multi-step chains, meta-tooling, safety systems, code-aware features. Has iterated thousands of prompts. Reads Hamel Husain on evals, follows Simon Willison, has opinions about Latent Space episodes. **Not** authoritative-systems-architect; instead practitioner-skeptical, concrete-over-abstract, distinguishes "advice that works in demos" from "advice that survives production." When `study.md`'s staff-engineer voice would land differently on the same topic, the working-AI-engineer voice wins for this guide.
-2. **All structural rules from `study.md` apply unchanged** — the per-concept-file template (Subtitle, Why care's five moves, How it works's three moves, primary ASCII diagram, In this codebase, Elaborate, Tradeoffs, Tech reference, Project exercises, Summary, Interview defense, Validate, See also), all formatting rules (no markdown pipe-tables for Tech reference, kebab-case file names, no Mermaid/no images, box-drawing diagram characters), the frontend-primitive-first anchor priority order, the Validate block's 5 levels.
+1. **Voice: working AI engineer, not staff engineer.** The persona has 6–8 years in software, 3–4 of them heads-down on production LLM systems. Has shipped RAG, multi-step chains, meta-tooling, safety systems, code-aware features. Has iterated thousands of prompts. Reads Hamel Husain on evals, follows Simon Willison, has opinions about Latent Space episodes. **Not** authoritative-systems-architect; instead practitioner-skeptical, concrete-over-abstract, distinguishes "advice that works in demos" from "advice that survives production." When `study-system-design-dsa.md`'s staff-engineer voice would land differently on the same topic, the working-AI-engineer voice wins for this guide.
+2. **All structural rules from `study-system-design-dsa.md` apply unchanged** — the per-concept-file template (Subtitle, Why care's five moves, How it works's three moves, primary ASCII diagram, In this codebase, Elaborate, Tradeoffs, Tech reference, Project exercises, Summary, Interview defense, Validate, See also), all formatting rules (no markdown pipe-tables for Tech reference, kebab-case file names, no Mermaid/no images, box-drawing diagram characters), the frontend-primitive-first anchor priority order, the Validate block's 5 levels.
 3. **Hedging is banned in both voices** — "might," "could potentially," "tends to" are out everywhere. Production engineers don't talk that way.
 4. **Concrete over abstract.** Specific bugs the persona debugged, specific dates the underlying model changed, specific phrasings that drifted in production. Generic "best practices" prose is banned.
 5. **Practitioner skepticism.** When folklore from blog posts contradicts what actually happens in production, name the contradiction. "Internet advice says X. In a production system I shipped, X did Y, and here's why."
@@ -139,7 +139,7 @@ Write the files in this order so each builds on prior context where useful:
 13-forbidden-patterns.md            Forbidden patterns and rotating formulas
 ```
 
-Each file uses the full per-concept structure from `study.md` — Subtitle, blockquote summary, See also, Why care (5 moves), How it works (3 moves with diagrams at every move and every sub-section), primary diagram, In this codebase (with real file + function + line range references), Elaborate, Tradeoffs (with comparison table + breakpoint), Tech reference (with `###` heading + labelled bullets, never pipe-tables), Project exercises (curriculum-driven if curriculum loaded), Summary, Interview defense (with diagrams per Q&A), Validate.
+Each file uses the full per-concept structure from `study-system-design-dsa.md` — Subtitle, blockquote summary, See also, Why care (5 moves), How it works (3 moves with diagrams at every move and every sub-section), primary diagram, In this codebase (with real file + function + line range references), Elaborate, Tradeoffs (with comparison table + breakpoint), Tech reference (with `###` heading + labelled bullets, never pipe-tables), Project exercises (curriculum-driven if curriculum loaded), Summary, Interview defense (with diagrams per Q&A), Validate.
 
 Anchor each concept to *this* codebase. The example anchors below (from `study-prompt-engineering.md`) describe what each concept *typically* looks like in well-shaped codebases — use them to recognize the pattern, then describe how this specific codebase implements it (Case A) or hasn't yet (Case B):
 
@@ -205,7 +205,7 @@ Walk `.aipe/study-prompt-engineering/` and read every `.md` file: `00-overview.m
 For each concept file, check three diff sources:
 
 - **Codebase drift** — file paths that have moved, function names that have changed, line ranges that no longer match the implementation, model versions named in Tech reference that have been upgraded.
-- **Template drift** — `study.md` has added new blocks (e.g., a new sub-section to How it works, a new field to Tech reference, a new Validate level) since the file was last written. Identify missing blocks.
+- **Template drift** — `study-system-design-dsa.md` has added new blocks (e.g., a new sub-section to How it works, a new field to Tech reference, a new Validate level) since the file was last written. Identify missing blocks.
 - **Voice drift** — sections that read like blog-post advice instead of working-AI-engineer practitioner takes. Hedging language ("tends to," "might," "could potentially") that crept in. Concept claims that aren't anchored to specific codebase references.
 
 Output a structured change plan in this shape:
@@ -216,7 +216,7 @@ Changes detected for .aipe/study-prompt-engineering/
 
 01-anatomy.md
   Outdated: file path aipe/prompts/legacy.md no longer exists
-  Missing:  Move 2.5 (current state vs future state) — required by study.md v1.32+
+  Missing:  Move 2.5 (current state vs future state) — required by study-system-design-dsa.md v1.32+
   Action:   update path references; add Move 2.5 block
 
 02-structured-outputs.md

@@ -6,13 +6,13 @@ A per-codebase study spec for **defending a project
 as a whole** in a senior-engineering interview.
 Inherits formatting rules, diagram requirements,
 the no-analogy rule, the no-hedging rule, and hard
-rules from `study.md`. What this spec defines is
+rules from `study-system-design-dsa.md`. What this spec defines is
 what's *unique* to project defense as a topic of
 study:
 
   → A book-style sequential structure (8 chapters,
     read in order) rather than the reference-grid
-    shape of `study.md` and the other topic specs
+    shape of `study-system-design-dsa.md` and the other topic specs
   → A visual-first treatment optimized for visual
     learners — callout boxes, recurring motifs,
     side-by-side answer comparisons, decision trees
@@ -23,8 +23,8 @@ study:
     ("did you use AI to build this?") as the
     eighth and final chapter
 
-This spec is run alongside `study.md`, not instead
-of it. The agent reads both: `study.md` for *how*
+This spec is run alongside `study-system-design-dsa.md`, not instead
+of it. The agent reads both: `study-system-design-dsa.md` for *how*
 to write (block-quality standards, diagrams, the
 "use real software, not analogies" rule, the
 no-hedging rule), and this spec for *what* to
@@ -41,7 +41,7 @@ The spec does not span multiple codebases.
 THE RELATIONSHIP TO STUDY.MD
 ═════════════════════════════════════════════════
 
-`study.md` itself opens with a table contrasting
+`study-system-design-dsa.md` itself opens with a table contrasting
 "the interview spec" against the study spec:
 
 ```
@@ -55,11 +55,11 @@ Proves you built it               Teaches what you built
 Output: document to memorise      Output: one file per pattern
 ```
 
-This spec is the interview spec study.md is
-pointing at. Not a duplicate of study.md — its
+This spec is the interview spec study-system-design-dsa.md is
+pointing at. Not a duplicate of study-system-design-dsa.md — its
 complement. The reader uses both:
 
-  → **study.md** prepares the comprehension. The
+  → **study-system-design-dsa.md** prepares the comprehension. The
     reader works through concept files and
     understands the patterns deeply, without
     pressure, one file at a time.
@@ -68,7 +68,7 @@ complement. The reader uses both:
     to translate it into speech under interviewer
     pressure, at the project level.
 
-The reader who studies only study.md will
+The reader who studies only study-system-design-dsa.md will
 understand their code but freeze when an
 interviewer asks "walk me through your project."
 The reader who studies only this spec will sound
@@ -90,7 +90,7 @@ what's banned. Do not restate.
 This spec uses the **coach posture** described in
 `teacher.md`'s "THE POSTURE" section. Same
 engineer, different stance. In the default
-teacher posture (used by `study.md` and
+teacher posture (used by `study-system-design-dsa.md` and
 `study-ai-engineering.md`), you are explaining a
 concept to someone who has time and patience.
 Here you are coaching someone who is days or
@@ -216,14 +216,14 @@ Specifically, the agent consults `me.md` for:
 
   → **The reader's professional posture.** `me.md`
      names the career arc: 7+ years frontend
-     specialist at Switch shipping to enterprise
-     customers (FedEx, Amazon, CoreWeave), now
-     pivoting into AI engineering. The book
-     calibrates strong-answer voice to this
-     posture — a senior frontend engineer who is
-     also building AI-native projects, not a
-     junior pretending to be senior, not a
-     distributed-systems generalist.
+     specialist shipping to enterprise customers
+     (FedEx, Amazon, CoreWeave), now pivoting into
+     AI engineering. The book calibrates
+     strong-answer voice to this posture — a
+     senior frontend engineer who is also building
+     AI-native projects, not a junior pretending
+     to be senior, not a distributed-systems
+     generalist.
 
   → **The reader's voice in spoken answers.**
      Strong-answer prose throughout the book is
@@ -792,15 +792,15 @@ HOW THE WORKFLOW RUNS
 This spec drives a **separate workflow** from
 the base study guide generator and the other
 topic specs. Running the base generator with
-`study.md` does not include this spec. To
+`study-system-design-dsa.md` does not include this spec. To
 produce the interview defense book for a repo,
 run this spec's command from inside that repo.
 
-The four workflows share `study.md` as their
+The four workflows share `study-system-design-dsa.md` as their
 structural foundation but are triggered
 independently:
 
-  → `study.md`                     → `.aipe/study-system-design-dsa/`
+  → `study-system-design-dsa.md`                     → `.aipe/study-system-design-dsa/`
   → `study-ai-engineering.md`      → `.aipe/study-ai-engineering/`
   → `study-prompt-engineering.md`  → `.aipe/study-prompt-engineering/`
   → `study-interview-defense.md`   → `.aipe/study-interview-defense/`
@@ -811,7 +811,7 @@ Each produces its own folder inside the repo's
 The agent run for interview defense study works
 like this:
 
-  1. Agent reads `study.md` to learn the
+  1. Agent reads `study-system-design-dsa.md` to learn the
      formatting rules, diagram quality
      standards, the "use real software, not
      analogies" rule, the no-hedging rule, and
@@ -832,7 +832,7 @@ like this:
      portfolios (DSA + system design), and what
      gaps she should defer on rather than fake.
      `me.md` does not override the structural
-     rules from `study.md` or this spec, and
+     rules from `study-system-design-dsa.md` or this spec, and
      does not override `teacher.md`'s voice
      rules — it calibrates examples, depth, and
      what's defensible.
@@ -867,7 +867,7 @@ like this:
 RELATIONSHIP TO THE EXISTING INTERVIEW DEFENSE BLOCK
 ═════════════════════════════════════════════════
 
-`study.md`'s per-concept-file template already
+`study-system-design-dsa.md`'s per-concept-file template already
 includes an "Interview defense" block scoped to
 *one concept*. That block stays exactly where
 it is — this spec does not modify it. The two
@@ -899,7 +899,7 @@ wide opener.
 WHAT THIS SPEC DOES NOT REDEFINE
 ═════════════════════════════════════════════════
 
-Inherited from `study.md` without restatement:
+Inherited from `study-system-design-dsa.md` without restatement:
 
   → All formatting rules (no markdown tables
     with pipes for tech reference, kebab-case
@@ -909,7 +909,7 @@ Inherited from `study.md` without restatement:
     rule (frontend primitives first, whole
     products last)
   → The general constraint summary at the
-    bottom of `study.md`
+    bottom of `study-system-design-dsa.md`
 
 Inherited from `teacher.md` without restatement
 (this spec uses the coach posture variation —

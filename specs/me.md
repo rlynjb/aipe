@@ -2,7 +2,7 @@
 me.md — reader profile and thinking style
 ─────────────────────────────────────────────────
 
-A reference document the other specs (study.md,
+A reference document the other specs (study-system-design-dsa.md,
 study-ai-engineering.md, study-prompt-engineering.md,
 study-interview-defense.md, and any future specs in
 this family) can consult when they need to calibrate
@@ -26,13 +26,12 @@ inventing each time.
 WHO YOU ARE — the spine
 ═════════════════════════════════════════════════
 
-You are Rein, Software Engineer 3 at Switch (a
-data-center company), based in Seattle. Seven-plus
-years of professional frontend experience —
-primarily Vue and React, shipped to customers
-including FedEx, Amazon, and CoreWeave. You're
-credited with ~$700K in client cost savings across
-that span.
+You are Rein, a Software Engineer 3, based in
+Seattle. Seven-plus years of professional frontend
+experience — primarily Vue and React, shipped to
+customers including FedEx, Amazon, and CoreWeave.
+You're credited with ~$700K in client cost savings
+across that span.
 
 You are now pivoting deliberately into AI
 engineering. Not abandoning frontend — composing it
@@ -126,7 +125,7 @@ direct consequence for how to write *for* you:
   even if you can recite it. Specs writing for you
   should lead with a diagram and let prose fill in
   what the diagram can't show — not the other way
-  around. This is consistent with how study.md
+  around. This is consistent with how study-system-design-dsa.md
   already operates ("diagrams are your primary
   tool. Prose fills in what diagrams can't show").
 
@@ -204,7 +203,7 @@ direct consequence for how to write *for* you:
   code in your own repo*. The concept names the
   fundamental. The mechanism walks the layers. The
   code anchors the abstract to something you can
-  open and read. This is the spine of how study.md
+  open and read. This is the spine of how study-system-design-dsa.md
   is structured (Why care → How it works → In this
   codebase). The combination of foundation +
   hands-on is the whole point — neither alone is
@@ -445,8 +444,8 @@ hold across every spec in the family.
      factories. Banned as the lead. The reader
      has built apps; reach for app-building
      knowledge before metaphor. (This rule is
-     already in study.md; restating here so
-     other specs that don't inherit study.md
+     already in study-system-design-dsa.md; restating here so
+     other specs that don't inherit study-system-design-dsa.md
      still get it.)
 
   → **Whole-product anchors when a primitive
@@ -477,7 +476,7 @@ HOW OTHER SPECS REFERENCE THIS FILE
 
 This file is referenced, not regenerated. The
 expected pattern: when a spec in this family
-(study.md, study-ai-engineering.md,
+(study-system-design-dsa.md, study-ai-engineering.md,
 study-prompt-engineering.md,
 study-interview-defense.md, or future specs)
 needs to calibrate to Rein, it cites `me.md` and
@@ -536,7 +535,7 @@ WHAT THIS FILE DOES NOT DO
     document.
 
   → Does not override individual spec rules. If
-    study.md says "the Why care block has 5
+    study-system-design-dsa.md says "the Why care block has 5
     moves," this file does not change that. It
     adds layer-on-top calibration — voice,
     examples, anchoring — to whatever the

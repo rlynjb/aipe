@@ -6,7 +6,7 @@ The user invoked `/aipe:study-ai-engineering`.
 
 This command takes **no arguments**. There is one AI engineering guide per repo, saved at the fixed path `.aipe/study-ai-engineering/`. `.aipe/` is per-repo (lives at the root of whichever repo the command is run in); the folder name is fixed across repos because it names the *topic*, not the codebase. Re-running enters UPDATE MODE on the existing directory.
 
-This command produces a topic-focused companion to `/aipe:study` — same per-concept template, same staff-engineer persona, but a fixed concept inventory spanning AI engineering (LLM foundations, retrieval, agents, evals, production serving) and machine learning. **AI engineering and ML content lives exclusively here** — `/aipe:study` no longer covers it (study.md was reduced to system-design + DSA).
+This command produces a topic-focused companion to `/aipe:study` — same per-concept template, same staff-engineer persona, but a fixed concept inventory spanning AI engineering (LLM foundations, retrieval, agents, evals, production serving) and machine learning. **AI engineering and ML content lives exclusively here** — `/aipe:study` no longer covers it (study-system-design-dsa.md was reduced to system-design + DSA).
 
 **Per-repo scope.** This spec runs against one codebase at a time — the repo where the command was invoked. It does not span multiple codebases. The "three shapes of AI work" framing (LLM application engineering / prompt engineering as discipline / classical ML) is used to *recognize* which kind of codebase you're in, not to require references to other projects. Examples per shape are illustrative, not mandatory.
 
@@ -59,7 +59,7 @@ Per-repo scope: do NOT load context files from other repos. The codebase being s
 AI engineering reads four files in order — structure, writer persona, reader calibration, then the spec itself:
 
 ```
-${CLAUDE_PLUGIN_ROOT}/specs/study.md
+${CLAUDE_PLUGIN_ROOT}/specs/study-system-design-dsa.md
 ${CLAUDE_PLUGIN_ROOT}/specs/teacher.md
 ${CLAUDE_PLUGIN_ROOT}/specs/me.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-ai-engineering.md
@@ -68,12 +68,12 @@ ${CLAUDE_PLUGIN_ROOT}/specs/study-ai-engineering.md
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
 What each file supplies:
-- **`study.md`** — structure: per-concept template, formatting rules, diagram requirements, hard rules, Validate block, constraint summary.
+- **`study-system-design-dsa.md`** — structure: per-concept template, formatting rules, diagram requirements, hard rules, Validate block, constraint summary.
 - **`teacher.md`** — the writer persona. This spec uses teacher.md's default staff-engineer voice with **no posture shift** — AI engineering content is already systems-shaped, so the default teacher voice fits. (See teacher.md's "WHEN NOT TO USE THIS PERSONA" section — that exclusion is for prompt engineering, not this spec.)
-- **`me.md`** — reader-side calibration: voice and format register, which of the reader's system-design portfolio shapes to reach for as examples, and what the reader already knows. `me.md` does NOT override study.md's structural rules or teacher.md's voice rules — it calibrates examples, depth, and what's defensible.
+- **`me.md`** — reader-side calibration: voice and format register, which of the reader's system-design portfolio shapes to reach for as examples, and what the reader already knows. `me.md` does NOT override study-system-design-dsa.md's structural rules or teacher.md's voice rules — it calibrates examples, depth, and what's defensible.
 - **`study-ai-engineering.md`** — topic, concept inventory, three-shapes framing, and AI/ML-specific constraints.
 
-Precedence when they conflict: study.md wins on **structure**; teacher.md wins on **voice register**; me.md wins on **calibration** (which examples land, what depth fits the reader).
+Precedence when they conflict: study-system-design-dsa.md wins on **structure**; teacher.md wins on **voice register**; me.md wins on **calibration** (which examples land, what depth fits the reader).
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
@@ -102,12 +102,12 @@ Most codebases lean toward one shape but exercise patterns from the others. Reco
 
 ## Step 6C — Plan the guide
 
-Apply the structure from `study.md` (the per-concept-file template loaded in Step 3) and the topic + inventory from `study-ai-engineering.md`.
+Apply the structure from `study-system-design-dsa.md` (the per-concept-file template loaded in Step 3) and the topic + inventory from `study-ai-engineering.md`.
 
 The non-negotiables — inherited from both specs:
 
-1. **Persona: staff engineer.** Same as `study.md` — 12 years industry, 8 at Google/Meta on distributed systems at scale, 4 as EM/principal at Series B. Authoritative, systems-focused, comparison-rich. AI engineering content is already systems-shaped (distributed inference, scale concerns, on-device deployment, retraining pipelines), so the staff-engineer voice fits. (Prompt engineering lives in its own spec — `/aipe:study-prompt-engineering` — with a different persona.)
-2. **All structural rules from `study.md` apply unchanged** — the per-concept-file template (Subtitle, Why care's five moves, How it works's three moves with diagrams at every move and every sub-section, primary ASCII diagram, In this codebase, Elaborate, Tradeoffs, Tech reference, Project exercises when curriculum loaded, Summary, Interview defense with diagrams per Q&A, Validate), formatting rules (no markdown pipe-tables for Tech reference, kebab-case file names, no Mermaid/no images, box-drawing diagram characters), the frontend-primitive-first anchor priority order, the Validate block's 5 levels.
+1. **Persona: staff engineer.** Same as `study-system-design-dsa.md` — 12 years industry, 8 at Google/Meta on distributed systems at scale, 4 as EM/principal at Series B. Authoritative, systems-focused, comparison-rich. AI engineering content is already systems-shaped (distributed inference, scale concerns, on-device deployment, retraining pipelines), so the staff-engineer voice fits. (Prompt engineering lives in its own spec — `/aipe:study-prompt-engineering` — with a different persona.)
+2. **All structural rules from `study-system-design-dsa.md` apply unchanged** — the per-concept-file template (Subtitle, Why care's five moves, How it works's three moves with diagrams at every move and every sub-section, primary ASCII diagram, In this codebase, Elaborate, Tradeoffs, Tech reference, Project exercises when curriculum loaded, Summary, Interview defense with diagrams per Q&A, Validate), formatting rules (no markdown pipe-tables for Tech reference, kebab-case file names, no Mermaid/no images, box-drawing diagram characters), the frontend-primitive-first anchor priority order, the Validate block's 5 levels.
 3. **Three-shapes framing as categories, not required references.** Each `═════` sub-section divider in `study-ai-engineering.md` declares which shape it primarily belongs to. The shape names a *category* of codebase, not a specific project — examples (loopd / aipe / contrl-mo) are illustrative. When the codebase being studied matches one of the shapes, weight coverage toward sub-sections in that shape. **Cover every sub-section** that the curriculum or codebase touches — even thinly — because the contrast between shapes is itself instructive.
    - **Hard repo-scope rule (read this before generating anything).** The spec is full of pre-filled example text like "For loopd: `partially` — the RAG…" or "For aipe: extend the existing retrieval…". These are **instructional examples showing the SHAPE of a good answer — they are NOT the answer.** loopd, aipe, and contrl-mo are illustration codebases the spec author used; they are almost certainly NOT the repo you're studying. Therefore:
      - The codebase being studied is the repo where the command was run — and ONLY that repo. **Do NOT read, open, reference, or cite loopd, aipe, contrl-mo, or any repo other than the one being studied.**
@@ -116,7 +116,7 @@ The non-negotiables — inherited from both specs:
      - If the studied repo is e.g. "blooming-insights", the guide cites only blooming-insights' files and says nothing about loopd/aipe/contrl-mo except where the spec uses them as a generic shape label.
 4. **Curriculum-driven inventory when curriculum is loaded.** In curriculum-loaded mode, each sub-section generates one file per in-scope `[Cx.y]` concept (status `covered`, `learn-only`, or `deferred`) — including Case B for not-yet-implemented concepts. In codebase-driven mode (no curriculum), inventory falls back to the fixed concept catalog the spec defines. Both modes are first-class. **The curriculum (`aieng-curriculum.md`) is the ONLY cross-repo input** — it supplies concept and Build-item IDs (`Cx.y`, `Bx.y`). Project-exercise blocks cite those IDs for provenance but TARGET the studied repo's own files. Citing a curriculum ID is not anchoring to another codebase — the curriculum is a concept index, not a codebase.
 5. **Per-codebase synthesis files** (`ai-features-in-this-codebase.md`, `ml-features-in-this-codebase.md`) at the root of `.aipe/study-ai-engineering/` describe how *this codebase* uses AI and ML. They list every AI or ML feature in this repo (chains, models, prompts, classifiers) with the patterns each uses. If the codebase has no AI features, `ai-features-in-this-codebase.md` is still generated but says so honestly ("This codebase does not currently use any LLM-powered features. The concepts below are covered as study material; project exercises identify features that *could* be added."). Same for ML.
-6. **System design templates are non-negotiable.** Sub-section 07 (AI side) and Sub-section 09 (ML side) generate IK-style interview-prompt reframes regardless of codebase applicability. The fixed list: AI side gets `01-search-ranking.md`, `02-tech-support-chatbot.md`; ML side gets `01-recommender-system.md`, `02-anomaly-detection.md`, `03-object-detection-cv.md`. Curriculum can extend with additional templates at the next available numeric prefix. Templates use the 9-labelled-bullet shape from study.md (`**The prompt:**` / `**Standard architecture:**` / `**Data model:**` / `**Key components:**` / `**Scale concerns:**` / `**Eval framing:**` / `**Common failure modes:**` / `**Applies to this codebase:**` / `**How to make it apply:**`), not the per-concept template. The standard architecture / data model / scale concerns are generic (the same for every guide), but `**Applies to this codebase:**` and `**How to make it apply:**` are STILL answered about the studied repo only — never about loopd/aipe/contrl-mo.
+6. **System design templates are non-negotiable.** Sub-section 07 (AI side) and Sub-section 09 (ML side) generate IK-style interview-prompt reframes regardless of codebase applicability. The fixed list: AI side gets `01-search-ranking.md`, `02-tech-support-chatbot.md`; ML side gets `01-recommender-system.md`, `02-anomaly-detection.md`, `03-object-detection-cv.md`. Curriculum can extend with additional templates at the next available numeric prefix. Templates use the 9-labelled-bullet shape from study-system-design-dsa.md (`**The prompt:**` / `**Standard architecture:**` / `**Data model:**` / `**Key components:**` / `**Scale concerns:**` / `**Eval framing:**` / `**Common failure modes:**` / `**Applies to this codebase:**` / `**How to make it apply:**`), not the per-concept template. The standard architecture / data model / scale concerns are generic (the same for every guide), but `**Applies to this codebase:**` and `**How to make it apply:**` are STILL answered about the studied repo only — never about loopd/aipe/contrl-mo.
 7. **Prompt engineering is NOT in this spec.** It lives in `/aipe:study-prompt-engineering` with its own persona. This spec covers everything *except* prompt engineering as a discipline — LLM foundations, context window management (operational, not prompt-craft), retrieval, agents, evals, production serving, machine learning.
 
 ## Step 7C — Create the directory structure
@@ -144,7 +144,7 @@ System map of this codebase's AI/ML surface plus a one-line legend per major fea
 
 ## Step 9C — Generate per-concept files in each sub-section
 
-Walk the inventory from Step 6C (curriculum-loaded or codebase-driven). For each sub-section, generate one file per concept following `study.md`'s per-concept template. Use `study-ai-engineering.md`'s sub-section breakdown:
+Walk the inventory from Step 6C (curriculum-loaded or codebase-driven). For each sub-section, generate one file per concept following `study-system-design-dsa.md`'s per-concept template. Use `study-ai-engineering.md`'s sub-section breakdown:
 
 - **01-llm-foundations/** — what an LLM is, tokenization, sampling parameters, structured outputs, streaming, token economics, heuristic before LLM, provider abstraction, user override locks
 - **02-context-and-prompts/** — context window, lost in the middle, prompt chaining
@@ -233,7 +233,7 @@ If the existing guide contains older-style `ai-features-in-portfolio.md` or `ml-
 Three diff sources to check per file:
 
 - **Codebase drift** — file paths that have moved, function names that have changed, line ranges that no longer match the implementation, model versions named in Tech reference that have been upgraded.
-- **Template drift** — `study.md` has added new blocks (e.g., a new Move sub-section, a new Tech reference field, a new Validate level) since the file was written. Identify missing blocks.
+- **Template drift** — `study-system-design-dsa.md` has added new blocks (e.g., a new Move sub-section, a new Tech reference field, a new Validate level) since the file was written. Identify missing blocks.
 - **Inventory drift** — curriculum concepts whose status changed (newly in-scope, newly out-of-scope), new codebase features that warrant a new file, removed features whose file should be archived.
 
 Output a structured change plan grouped by sub-section.
