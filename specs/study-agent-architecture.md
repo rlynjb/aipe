@@ -203,11 +203,12 @@ rules. The top-level layout, generated per codebase:
   01-reasoning-patterns/
     README.md
     01-chains-vs-agents.md
-    02-react.md
-    03-plan-and-execute.md
-    04-reflexion-self-critique.md
-    05-tree-of-thoughts.md
-    06-routing.md
+    02-agent-loop-skeleton.md
+    03-react.md
+    04-plan-and-execute.md
+    05-reflexion-self-critique.md
+    06-tree-of-thoughts.md
+    07-routing.md
   02-agentic-retrieval/
     README.md
     01-agentic-rag.md
@@ -568,6 +569,112 @@ the family, and the escalation ladder between them.
   as the *entry point to the reasoning-pattern
   family* — every pattern below is a way of
   structuring what happens inside the loop.
+
+  ### The agent loop skeleton
+
+  Before the named patterns, isolate the kernel they
+  all instantiate. Chains-vs-agents answers *is there
+  a loop at all*; this file answers *what is in the
+  loop, and which parts are load-bearing*. ReAct,
+  plan-and-execute, reflexion, and every SECTION C
+  topology are this same skeleton with a different
+  step function — teach it once here so the rest can
+  refer back to it instead of re-deriving it.
+
+  This is the load-bearing-skeleton treatment from
+  `study-system-design-dsa.md` (How it works, Move 2
+  variant) applied to the agent loop: isolate the
+  kernel, name each part by what breaks when it is
+  missing, separate skeleton from hardening. The agent
+  loop is one instance of that lens — BFS, a rate
+  limiter, and a retry policy are others.
+
+  The kernel (pseudocode — this is the whole pattern):
+
+    runLoop(state, tools):
+      while not done:
+        action = step(state)        # model picks next move
+        if action.is_final:         # termination: success
+          return action.output
+        result = execute(action, tools)
+        state  = update(state, result)   # accumulate
+        if budget_exceeded(state):  # termination: hard stop
+          return fallback(state)
+
+  Four load-bearing parts. Teach each by what BREAKS
+  when it is missing — that framing is the point of
+  this file, not a flat definition list:
+
+    → state (accumulate) — without it every turn is
+      amnesiac and you have N independent calls, not a
+      loop. State is the thing that makes it a loop.
+    → step function (the single LLM call) — without it
+      nothing chooses the next action. This is the
+      only "smart" part; everything else is plumbing.
+    → execute (run the tool, feed the result back) —
+      the model emits *intent*, the harness runs it.
+      The model never touches the tool directly, and
+      that boundary IS the control / safety story.
+    → termination — two exits, both required (below).
+      This is the part people actually forget.
+
+  Termination is TWO exits, and naming both is the
+  load-bearing insight of the whole file:
+
+    success exit  — model signals done (emits the
+                    final structured output)
+    budget exit   — max iterations or a timeout
+
+  The success exit is obvious. The budget exit is the
+  one that matters, because *nothing guarantees the
+  model ever reaches the success exit* — it can cycle
+  tool calls indefinitely. The cap is not bolt-on
+  hardening; it is part of the skeleton. An agent
+  shipped without it burns tokens in a silent loop.
+  (The full control envelope — caps, cost ceiling,
+  human gate — is its own concept in
+  `04-agent-infrastructure/05-guardrails-and-control.md`.
+  This file's job is narrower: establish that the
+  budget exit belongs to the skeleton, not to a
+  hardening pass you add later.)
+
+  Single-turn vs multi-turn is not two patterns — it
+  is the same skeleton with a different iteration
+  count. A one-pass detector exits the `while` after
+  one step; a multi-step retrieval loop runs it
+  several times. Same kernel, different loop count.
+
+  Everything past the four parts is optional hardening,
+  not skeleton: retry/backoff on tool failure, a
+  scratchpad/memory store when state outgrows the
+  context window, step-transition logging for
+  observability, and structured-output validation
+  before you trust `action.is_final`.
+
+  The bridge to SECTION C: multi-agent is not a new
+  primitive — it is N of this skeleton composed. And
+  it is only "N independent loops merged" when the
+  agents are genuinely independent (true fan-out /
+  fan-in). The moment one agent needs another's output
+  you are traversing a *dependency DAG of agents* with
+  an orchestrator/supervisor and a merge strategy, not
+  running N copies of one loop. Forward-reference
+  `03-multi-agent-orchestration/`; do not resolve the
+  topology here.
+
+  The interview-grade point: an agent is
+  `step + execute + accumulate + terminate`, and
+  termination needs BOTH a success condition and a
+  hard budget. Naming the budget unprompted is the
+  signal that you have actually shipped an agent loop,
+  not just read about one.
+
+  Cross-reference: `study-ai-engineering.md`'s
+  `04-agents-and-tool-use/` walks the ReAct
+  Thought-Action-Observation mechanics; this file
+  covers the *loop-shape invariant* underneath every
+  reasoning pattern, independent of how the step
+  function is prompted.
 
   ### ReAct
 

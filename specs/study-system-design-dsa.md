@@ -1034,6 +1034,82 @@ Every individual concept file uses this structure exactly:
   one sentence of prose before it and one after — a
   diagram never stands alone. No Mermaid, no images.
 
+  #### Move 2 variant — the load-bearing skeleton (for patterns with a kernel)
+
+  Some patterns are not a set of co-equal parts — they
+  have an irreducible *kernel*: a loop, a traversal, a
+  protocol exchange, or a single data-structure
+  operation that the whole pattern is built around.
+  BFS, binary search, a sliding window, union-find, a
+  rate limiter, a read-through cache, a write-ahead
+  log, leader election, a retry policy, an agent loop
+  — each has a smallest core that still *is* the
+  pattern. When the concept has a kernel, run Move 2 as
+  a load-bearing-skeleton walkthrough rather than a
+  flat list of parts. Three steps:
+
+  1. **Isolate the kernel.** Show the smallest
+     pseudocode or shape that is still the pattern —
+     nothing removed that the pattern can survive
+     losing. This is the thing the reader should be
+     able to reconstruct from memory.
+
+       BFS:          frontier queue + visited set +
+                     dequeue → expand → enqueue +
+                     termination (frontier empty)
+       Rate limiter: counter + window + allow/deny
+                     decision + window reset
+       Read cache:   lookup → hit returns / miss fills
+                     → evict under pressure
+
+  2. **Name each part by what BREAKS when it is
+     missing — not by definition.** This is the move,
+     and it is the whole difference between a reader who
+     memorised the parts and one who understands them.
+     "Drop BFS's visited set and it revisits nodes and
+     never terminates on a cyclic graph." "Drop the
+     rate limiter's window reset and it locks out
+     permanently after the first burst." "Drop the
+     cache's eviction and it grows until it OOMs."
+     What-breaks-if-removed is how the reader learns
+     which parts are load-bearing and which are
+     incidental.
+
+  3. **Separate skeleton from optional hardening.** The
+     kernel is the minimum that makes it the pattern;
+     everything else is hardening layered on top — and
+     saying which is which is itself the lesson.
+     Union-find's path compression and union-by-rank
+     are hardening, not skeleton (the kernel is parent
+     array + find + union; it works without them, just
+     slower). A retry's backoff jitter, a cache's
+     read-through-vs-write-through choice, an agent
+     loop's retry and observability — all hardening.
+     The reader who can say "this part is the skeleton,
+     this part is the optimisation bolted on" is the
+     one who actually understands the pattern.
+
+  The interview-defense payoff: naming a load-bearing
+  part people routinely forget — BFS's termination on
+  the empty frontier, a rate limiter's reset, an agent
+  loop's hard iteration budget — is the single
+  strongest signal that the reader built the thing
+  rather than read about it. Surface that part in
+  Move 2 and again in the concept file's Interview
+  defense block.
+
+  **Diagram required, same as any Move 2 sub-section:**
+  draw the kernel as a shape (the loop, the traversal
+  frontier, the protocol exchange) before listing the
+  parts. The skeleton is a picture before it is a list.
+
+  This variant is a tool, not a mandatory block. Use it
+  when the concept has a recognisable kernel; skip it
+  for concepts that genuinely are co-equal independent
+  parts with no central loop or operation (defense in
+  depth is two independent gates, not a kernel — walk
+  it as a flat list of parts instead).
+
   #### Move 2.5 — Current state vs future state (when applicable)
 
   Whenever the concept involves something built-but-

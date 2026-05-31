@@ -135,7 +135,7 @@ Create the root and the sub-section directories that the shape + codebase warran
 
 Following `study-agent-architecture.md`'s sub-section breakdown (generate the in-scope files per Step 6C):
 
-- **01-reasoning-patterns/** — chains-vs-agents (boundary, always), react (placement in family; cross-ref study-ai-engineering for mechanics), plan-and-execute, reflexion-self-critique, tree-of-thoughts, routing (the bridge to SECTION C)
+- **01-reasoning-patterns/** — chains-vs-agents (boundary, always), **agent-loop-skeleton** (the kernel ReAct / plan-and-execute / reflexion / every SECTION C topology all instantiate — teach the loop's four load-bearing parts and the two-exit termination here so the rest can refer back instead of re-deriving; uses the Move 2 skeleton variant from `study-system-design-dsa.md`), react (placement in family; cross-ref study-ai-engineering for mechanics), plan-and-execute, reflexion-self-critique, tree-of-thoughts, routing (the bridge to SECTION C)
 - **02-agentic-retrieval/** — agentic-rag, self-corrective-rag, retrieval-routing (retrieval as a control loop; cross-ref study-ai-engineering for RAG/embedding mechanics)
 - **03-multi-agent-orchestration/** — when-not-to-go-multi-agent (boundary, always), supervisor-worker, sequential-pipeline, parallel-fan-out, debate-verifier-critic, swarm-handoff, graph-orchestration, shared-state-and-message-passing, coordination-failure-modes
 - **04-agent-infrastructure/** — context-engineering, agent-memory-tiers, tool-calling-and-mcp, agent-evaluation (trajectory / tool-call accuracy / topology), guardrails-and-control
