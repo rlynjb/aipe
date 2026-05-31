@@ -213,41 +213,80 @@ sentences, not three paragraphs of throat-clearing.
 BLOCK 3 — HOW IT WORKS
 ═════════════════════════════════════════════════
 
-The load-bearing block. Zoom-out oriented the reader;
-How it works builds the actual understanding.
-Everything below assumes the reader finished this block
-with the concept fully clicking. Length scales with
-complexity — short for a debounce, long (15–20
+The load-bearing block. Zoom-out put the reader on the
+map; How it works is where they actually come to
+understand the thing. By the end of it the concept
+should *click* — not "I read the definition" but "I
+could rebuild this from memory." Length scales with
+complexity: short for a debounce, long (15–20
 paragraphs with sub-headings and interspersed visuals)
 for multi-layer auth or a prompt-routing loop.
 
-This block carries five house-style traits: **skeleton
-parts, pattern diagrams, pseudocode, step by step, and
-layers-and-hops diagrams.** It runs in three moves.
+**Tone: stay conversational — the same register as the
+Zoom-out block.** Write like a senior colleague at the
+whiteboard walking you through it: second person,
+plain-spoken, "okay, watch what happens when the queue
+empties," "here's the part everyone trips on." The
+register is a person talking; the content stays dense
+and precise. No lecturing, no definition-dumps, no slow
+on-ramps.
+
+**Describe the mechanics with these five tools — and
+lean on them, not prose paragraphs:**
+
+  → **skeleton parts** — isolate the kernel, name each
+    part by what breaks without it (Move 2 variant)
+  → **pattern ascii diagrams** — the shape of the
+    mechanism itself: the loop, the traversal, the
+    topology, the kernel
+  → **pseudocode** — plain-English control flow for the
+    logic, concrete variable names, one operation per
+    line, annotated
+  → **step by step** — one moving part at a time, in
+    order; the reader never holds two new things at once
+  → **layers-and-hops ascii diagrams** — for anything
+    that crosses layers or services, the bands plus
+    every hop between them labelled
+
+**No code line references in this block.** How it works
+teaches the *pattern*, not your repo — so don't paste
+real code or cite file paths, function names, or line
+numbers here. Describe the mechanism with pseudocode
+and diagrams. The actual code from the codebase, with
+its file paths and line ranges, lives in the
+Implementation in codebase block (Block 5). Keep the
+two cleanly separated: How it works is the general
+mechanism; Implementation is where it lives in your
+code.
+
+It runs in three moves.
 
   #### Move 1 — the mental model (the pattern's shape)
 
-  Open with the shape, not a definition. Anchor to a
-  primitive the reader already builds with (a
-  re-rendering list, a DB table, a `fetch()` and its
-  states). Then one sentence names the underlying
-  strategy in plain English.
+  Start with the shape, not a definition. Anchor to a
+  primitive the reader already builds with — "you know
+  how a `fetch()` has loading / success / error states?
+  same idea here" — then, in one plain-English sentence,
+  name the underlying strategy. Keep it warm and direct;
+  you're pointing at a picture, not reciting a glossary.
 
   **Required: one PATTERN ascii diagram** — the literal
   shape of the pattern (the loop, the traversal
   frontier, the topology, the kernel). This is the
   picture the reader paraphrases six weeks later. 5–12
-  lines, placed right after the opening paragraph.
+  lines, right after the opening paragraph.
 
   #### Move 2 — the step-by-step walkthrough (the body)
 
-  Break the mechanism into its moving parts and walk
-  each one separately. **Step by step: one operation
-  per line, one moving part per bolded sub-heading. The
-  reader never holds more than one new part in their
-  head at a time.** For each part: name the real term,
-  bridge from what the reader already knows, give the
-  concrete consequence, name the boundary condition.
+  Walk the mechanism one moving part at a time. **Step
+  by step: one operation per line, one moving part per
+  bolded sub-heading — the reader never holds more than
+  one new part in their head at once.** For each part,
+  talk it through like you're at the whiteboard: name
+  the real term, bridge from what the reader already
+  knows, say what concretely happens, then name the
+  boundary condition ("and here's where it breaks if
+  you're not careful").
 
   **Every Move 2 sub-section gets at least one diagram.**
   Pick the type that matches what it describes:
@@ -257,12 +296,13 @@ layers-and-hops diagrams.** It runs in three moves.
       label every hop between them (what travels, in
       which direction)
     → an EXECUTION TRACE for an algorithm — variable
-      state at every step, not just before/after
+      state at each step (the values, not code lines)
 
-  Use **PSEUDOCODE** for logic before reaching for real
-  code: plain-English control flow, concrete variable
-  names, one operation per line, annotated. Real code
-  only when the syntax itself matters.
+  Use **PSEUDOCODE** for the logic — plain-English
+  control flow, concrete variable names, one operation
+  per line, annotated. Pseudocode, not real code: the
+  repo's actual code (and any line references) belongs
+  in Block 5, not here.
 
 ```
   Layers-and-hops — label every hop between bands
@@ -504,6 +544,13 @@ HARD RULES
     every Move 2 sub-section gets at least one mechanism
     diagram. A prose-only mechanism walkthrough is
     incomplete.
+  → How it works carries no code line references. It
+    teaches the pattern with skeleton parts, pattern
+    diagrams, pseudocode, step-by-step, and
+    layers-and-hops diagrams — never real code, file
+    paths, or line numbers. Real code and its line
+    references live only in Implementation in codebase
+    (Block 5).
   → Bridge from what the reader knows in every Move 2
     sub-section. No bridge = the work isn't done.
   → Every abstract claim is followed by a concrete

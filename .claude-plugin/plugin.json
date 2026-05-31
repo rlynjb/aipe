@@ -1,7 +1,7 @@
 {
   "name": "aipe",
   "description": "Spec workflow for AI-assisted development. 13 disciplined slash commands across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach) — plus a study orchestrator that runs every study generator in one pass. Commands: /aipe:audit, /aipe:audit-cleanup, /aipe:audit-frontend-a11y, /aipe:audit-refactor, /aipe:refactor, /aipe:refactor-frontend-behaviour, /aipe:refactor-frontend-visual, /aipe:study (orchestrator), /aipe:study-system-design-dsa, /aipe:study-ai-engineering, /aipe:study-agent-architecture, /aipe:study-interview-defense, /aipe:study-prompt-engineering — generate filled specs from your project context using your agent's own model, no external CLI, no extra API keys.",
-  "version": "1.47.0",
+  "version": "1.48.0",
   "author": { "name": "rlynjb" },
   "homepage": "https://github.com/rlynjb/aipe",
   "repository": "https://github.com/rlynjb/aipe",
