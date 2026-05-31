@@ -4,11 +4,11 @@ STUDY — AGENT ARCHITECTURE SPEC
 
 A topic-focused study guide spec for agent
 architecture and orchestration. Inherits all
-structural rules from `study-system-design-dsa.md` — the per-concept-
-file template, the formatting rules, the diagram
-requirements, the hard rules, the constraint
-summary. What this spec defines is what's *unique*
-to agent architecture as a topic of study:
+structural rules from `format.md` — the per-concept-
+file template, the house-style traits, the formatting
+rules, the diagram requirements, the hard rules. What
+this spec defines is what's *unique* to agent
+architecture as a topic of study:
 
   → The set of agent reasoning patterns, retrieval-
     as-a-capability patterns, multi-agent
@@ -36,11 +36,11 @@ owns. Where a concept is already covered in
 `study-ai-engineering.md`, this spec cross-
 references rather than duplicates.
 
-This spec is run alongside `study-system-design-dsa.md`, not instead
-of it. The agent reads both: `study-system-design-dsa.md` for *how*
-to write each concept file (block structure,
-diagrams, validate levels, etc.), and this spec for
-*what* to write about.
+This spec is run alongside `study-system-design-dsa.md`
+(its sibling topic spec), not instead of it. The agent
+reads `format.md` for *how* to write each concept file
+(block structure, diagrams, validate levels, etc.), and
+this spec for *what* to write about.
 
 **Scope: per-codebase, per-repo.** This spec runs
 against one codebase at a time, exactly like the
@@ -93,8 +93,8 @@ opinion ("here is when this topology earns its
 overhead, and here is when it doesn't"), not as a
 separate persona. Where this spec names a
 production reality, it names it as a decision with a
-breakpoint, the same way `study-system-design-dsa.md`'s Tradeoffs
-block does.
+breakpoint — when this topology earns its overhead and
+when it doesn't — rather than as an apologetic aside.
 
 ═════════════════════════════════════════════════
 THE READER — calibrate to `me.md`
@@ -193,7 +193,7 @@ convention applies to the other topic specs
 `study-ai-engineering/`, `study-prompt-engineering/`,
 `study-interview-defense/`).
 
-The directory structure inherits from `study-system-design-dsa.md`'s
+The directory structure inherits from `format.md`'s
 rules. The top-level layout, generated per codebase:
 
 ```
@@ -261,7 +261,7 @@ templates in sub-section 05 identify the topologies
 this codebase could adopt and the refactor each
 would require.").
 
-Naming follows the kebab-case rule from `study-system-design-dsa.md`.
+Naming follows the kebab-case rule from `format.md`.
 Each sub-section directory has its own README.md
 that indexes the files in that directory and notes
 the reading order (within a sub-section most files
@@ -279,7 +279,7 @@ generator (`study-system-design-dsa.md`) produces
 `study-ai-engineering.md` produces
 `.aipe/study-ai-engineering/`. Running this spec
 produces `.aipe/study-agent-architecture/`. The
-workflows share `study-system-design-dsa.md` as their structural
+workflows share `format.md` as their structural
 foundation but are triggered independently and
 produce independent outputs.
 
@@ -322,13 +322,13 @@ and reflexion, when to escalate past it) — not to
 re-explain the Thought-Action-Observation loop the
 AI-engineering file already walks.
 
-This spec is *additive* to `study-system-design-dsa.md`. The agent run
+This spec is *additive* to `format.md`. The agent run
 for agent architecture study works like this:
 
-  1. Agent reads `study-system-design-dsa.md` to learn the per-
-     concept-file template, formatting rules,
-     diagram requirements, hard rules, and
-     constraint summary.
+  1. Agent reads `format.md` to learn the per-
+     concept-file template, the house-style traits,
+     formatting rules, diagram requirements, and
+     hard rules.
 
   2. Agent reads `teacher.md` to learn the writer
      persona (teacher posture).
@@ -353,7 +353,7 @@ for agent architecture study works like this:
   6. Agent generates `.aipe/study-agent-architecture/`
      (inside that repo's `.aipe/` directory) with
      sub-directories per sub-section, each containing
-     per-concept files following `study-system-design-dsa.md`'s per-
+     per-concept files following `format.md`'s per-
      concept template, written in the teacher voice
      from `teacher.md`, and calibrated to the reader
      as defined in `me.md`. Concept files for
@@ -368,31 +368,36 @@ for agent architecture study works like this:
 WHAT THIS SPEC DOES NOT REDEFINE
 ═════════════════════════════════════════════════
 
-Inherited from `study-system-design-dsa.md` without restatement.
-Refer to `study-system-design-dsa.md` for the canonical definition:
+Inherited from `format.md` without restatement.
+Refer to `format.md` for the canonical definition:
 
-  → The per-concept-file template (Subtitle, Why
-    care, How it works, primary diagram, In this
-    codebase, Elaborate, Tradeoffs, Tech reference,
-    Summary, Interview defense, Validate, See also)
-  → Why care's five moves (scenario → name the
-    question → why it matters → before/after →
-    one-line summary)
+  → The per-concept-file template (Subtitle, Zoom
+    out → zoom in, How it works, primary diagram,
+    Implementation in codebase, Elaborate, Project
+    exercises, Interview defense, Validate, See also).
+    Note: Why care is replaced by Zoom out → zoom in,
+    and Tradeoffs, Tech reference, and Summary have
+    been removed.
+  → The Zoom-out block (bigger-picture layers diagram,
+    conversational opener, orient before detail)
   → How it works's three moves (mental model →
-    layered walkthrough → principle) plus the ASCII
+    step-by-step walkthrough → principle), the
+    load-bearing-skeleton variant, plus the ASCII
     diagram requirements per move
-  → All formatting rules (no markdown tables for
-    Tech reference, kebab-case file names, no
+  → The house-style traits (skeleton parts, pattern /
+    flow / layer / layers-and-hops diagrams, pseudocode,
+    step by step, use cases, code side by side, zoom
+    out then in, conversational tone)
+  → All formatting rules (kebab-case file names, no
     Mermaid / no images, box-drawing diagram chars)
   → The "Use real software, not analogies" rule (and
     its priority order: frontend primitives first,
     whole products last)
   → The Validate block's levels (reconstruct,
-    explain, apply, defend, quick check)
-  → The general constraint summary at the bottom of
-    `study-system-design-dsa.md`
+    explain, apply, defend)
+  → The hard rules at the bottom of `format.md`
   → The "Check for existing guide" diff-and-update
-    behavior
+    behavior (defined in `study-system-design-dsa.md`)
 
 Inherited from `teacher.md` without restatement:
 
@@ -420,7 +425,8 @@ Inherited from `me.md` without restatement:
     is newer ground; teach it as new ground rather
     than assuming familiarity
 
-If a future change to `study-system-design-dsa.md`, `teacher.md`, or
+If a future change to `format.md`,
+`study-system-design-dsa.md`, `teacher.md`, or
 `me.md` updates one of these, this spec
 automatically inherits it. No duplication, no
 drift.
@@ -582,7 +588,7 @@ the family, and the escalation ladder between them.
   refer back to it instead of re-deriving it.
 
   This is the load-bearing-skeleton treatment from
-  `study-system-design-dsa.md` (How it works, Move 2
+  `format.md` (How it works, Move 2
   variant) applied to the agent loop: isolate the
   kernel, name each part by what breaks when it is
   missing, separate skeleton from hardening. The agent
@@ -1615,8 +1621,8 @@ AGENT PATTERNS IN THIS CODEBASE
 CONSTRAINTS — AGENT-ARCHITECTURE-SPECIFIC
 ═════════════════════════════════════════════════
 
-These constraints apply *in addition to* the general
-constraint summary in `study-system-design-dsa.md`.
+These constraints apply *in addition to* the hard
+rules in `format.md`.
 
 ```
 → This spec is codebase-driven AND shape-driven.
@@ -1645,7 +1651,7 @@ constraint summary in `study-system-design-dsa.md`.
    block (it has no curriculum dependency) — unlike
    `study-ai-engineering.md`. If a future curriculum
    maps to these concepts, a Project exercises block
-   can be added per `study-system-design-dsa.md`'s definition; until
+   can be added per `format.md`'s definition; until
    then, the system design templates are the
    buildable targets.
 
@@ -1697,5 +1703,5 @@ constraint summary in `study-system-design-dsa.md`.
    bullets are answered about the studied repo only,
    using the nine-bullet template shape from
    `study-ai-engineering.md` (NOT the per-concept
-   template — no Why care, How it works, etc.).
+   template — no Zoom out, How it works, etc.).
 ```

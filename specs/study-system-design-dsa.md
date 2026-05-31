@@ -50,6 +50,29 @@ One exception: `study-prompt-engineering.md` uses a different persona (working A
 
 ---
 
+## Concept-file format — defined in format.md
+
+The structure of every concept file — the block template,
+the diagram rules, the pseudocode rules, the hard rules,
+and the house-style traits — is defined in **`format.md`**,
+the shared format reference for the whole study family
+(alongside `teacher.md` for voice and `me.md` for reader
+calibration). This spec reads `format.md` for structure and
+supplies the system-design + DSA *topic* content below.
+
+**Precedence: `format.md` is the single source of truth for
+concept structure. Where an older template section in this
+spec differs from `format.md`, `format.md` wins.** In
+particular, per `format.md`: the opening block is **Zoom
+out, then zoom in** (not "Why care"), and **Tradeoffs**,
+**Tech reference**, and **Summary** are **removed** from
+the concept file. The legacy "Why care," "Tradeoffs,"
+"Tech reference," and "Summary" sections that remain in
+this spec's body are superseded and retained only as
+historical detail.
+
+---
+
 ## What the output looks like
 
 ```
@@ -3572,6 +3595,11 @@ Types of diagrams to use per situation:
                     relationships, cardinality
   Layer diagram     for architecture — each layer as a
                     row, arrows showing what crosses layers
+  Pattern diagram   for the shape of a pattern or algorithm
+                    — the loop, the traversal frontier, the
+                    topology, the kernel skeleton; the
+                    mental-model picture the reader recalls
+                    six weeks later (How it works Move 1)
 
 ─────────────────────────────────────────────────
 PSEUDOCODE RULES

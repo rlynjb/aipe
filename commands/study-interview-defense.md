@@ -57,7 +57,7 @@ Per-repo scope: do NOT load context files from other repos. The codebase being d
 Interview defense reads four files in order — structure, writer persona, reader calibration, then the spec itself:
 
 ```
-${CLAUDE_PLUGIN_ROOT}/specs/study-system-design-dsa.md
+${CLAUDE_PLUGIN_ROOT}/specs/format.md
 ${CLAUDE_PLUGIN_ROOT}/specs/teacher.md
 ${CLAUDE_PLUGIN_ROOT}/specs/me.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-interview-defense.md
@@ -66,10 +66,10 @@ ${CLAUDE_PLUGIN_ROOT}/specs/study-interview-defense.md
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
 What each file supplies:
-- **`study-system-design-dsa.md`** — formatting rules, diagram quality standards, the "use real software, not analogies" rule, the no-hedging rule, the hard rules.
+- **`format.md`** — the shared concept-file template + rules across the whole study family: house-style traits, diagram rules, pseudocode rules, the "use real software, not analogies" rule, the no-hedging rule, the hard rules. This spec uses its own per-chapter book template (defined inline in `study-interview-defense.md`), but the *quality standards* (diagram conventions, pseudocode rules, banned phrasings) come from format.md.
 - **`teacher.md`** — the base writer persona (the staff engineer with 12 years' experience). This spec shifts that persona from *teacher* to **coach** — see teacher.md's "THE POSTURE" section and this spec's persona section.
-- **`me.md`** — reader-side calibration: who the reader is professionally, what voice the strong answers should embody, what defenses the reader can credibly make from her actual portfolios (DSA + system design), and what gaps she should defer on rather than fake. `me.md` does NOT override study-system-design-dsa.md's structural rules or teacher.md's voice rules — it calibrates examples, depth, and what's defensible. For this spec `me.md` carries extra weight: the book is the reader's own defense, so its anchors must be things the reader has actually shipped.
-- **`study-interview-defense.md`** — the book shape (8 chapters), the six required visual conventions, the per-chapter template.
+- **`me.md`** — reader-side calibration: who the reader is professionally, what voice the strong answers should embody, what defenses the reader can credibly make from her actual portfolios (DSA + system design), and what gaps she should defer on rather than fake. `me.md` does NOT override format.md's quality rules or teacher.md's voice rules — it calibrates examples, depth, and what's defensible. For this spec `me.md` carries extra weight: the book is the reader's own defense, so its anchors must be things the reader has actually shipped.
+- **`study-interview-defense.md`** — the book shape (8 chapters), the six required visual conventions, the per-chapter template (distinct from format.md's per-concept template — see this spec's per-chapter template section).
 
 ## Step 4 — Detect existing book → branch CREATE or UPDATE
 
@@ -103,7 +103,7 @@ For each of the 8 chapters, identify the content that's specific to this codebas
 
 ## Step 6C — Plan the book
 
-The non-negotiables — inherited from `study-system-design-dsa.md`, `teacher.md`, `me.md`, and this spec:
+The non-negotiables — inherited from `format.md`, `teacher.md`, `me.md`, and this spec:
 
 1. **Coach voice throughout.** Address the reader as "you." The book is a conversation between the staff-engineer-as-coach persona (teacher.md in coach posture) and the candidate, not a third-person narration. The coach optimizes for the reader being ready in the room.
 2. **Book shape, not reference grid.** Each chapter is one continuous narrative — opening hook → chapter-opening diagram → the body (questions and defenses) → "I don't know" recovery box → "what you'd change" → one-page summary. The reader reads front-to-back the first time and skims the visual treatments on re-reading.

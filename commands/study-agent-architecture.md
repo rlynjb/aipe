@@ -57,7 +57,7 @@ Per-repo scope: do NOT load context files from other repos. The codebase being s
 Agent architecture reads four files in order — structure, writer persona, reader calibration, then the spec itself. It also reads any existing `study-ai-engineering` guide to cross-reference instead of duplicate:
 
 ```
-${CLAUDE_PLUGIN_ROOT}/specs/study-system-design-dsa.md
+${CLAUDE_PLUGIN_ROOT}/specs/format.md
 ${CLAUDE_PLUGIN_ROOT}/specs/teacher.md
 ${CLAUDE_PLUGIN_ROOT}/specs/me.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-agent-architecture.md
@@ -66,14 +66,14 @@ ${CLAUDE_PLUGIN_ROOT}/specs/study-agent-architecture.md
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
 What each file supplies:
-- **`study-system-design-dsa.md`** — structure: per-concept template, formatting rules, diagram requirements, hard rules, Validate block, constraint summary.
-- **`teacher.md`** — the writer persona, used in **teacher posture** (the default — no shift). Agent orchestration is systems-shaped work (control loops, message passing, shared state, coordination failure modes), so the staff-engineer-explains-distributed-systems voice fits. Production scar tissue ("don't reach for multi-agent before single-agent hits its quality ceiling") is carried as architectural opinion with a breakpoint, the way study-system-design-dsa.md's Tradeoffs block names a decision — not as a separate persona.
+- **`format.md`** — the concept-file template, house-style traits, diagram rules, pseudocode rules, hard rules. **Per format.md, the concept-file blocks are:** Subtitle → Zoom out, then zoom in → How it works → Primary diagram → Implementation in codebase → Elaborate → Interview defense → Validate → See also. **Removed from older templates: Why care (replaced by Zoom out), Tradeoffs, Tech reference, Summary.** Where legacy template sections in any loaded spec body conflict with format.md, format.md wins.
+- **`teacher.md`** — the writer persona, used in **teacher posture** (the default — no shift). Agent orchestration is systems-shaped work (control loops, message passing, shared state, coordination failure modes), so the staff-engineer-explains-distributed-systems voice fits. Production scar tissue ("don't reach for multi-agent before single-agent hits its quality ceiling") is carried as architectural opinion with a breakpoint, named inline in How it works — not as a separate persona.
 - **`me.md`** — reader-side calibration: voice register, example anchoring (agent topologies map onto frontend primitives — supervisor-worker is a manager component delegating to children; pipeline is a `.then()` chain; fan-out/fan-in is `Promise.all()` then a merge), and the reader's gaps (single-agent concepts move faster; multi-agent orchestration is the load-bearing new ground). `me.md` does NOT override structural or voice rules — it calibrates examples and depth.
 - **`study-agent-architecture.md`** — the concept list, three-shapes framing, agent-architecture-specific constraints.
 
 Also check for an existing `.aipe/study-ai-engineering/` guide in this repo. When present, cross-reference its concept files (ReAct mechanics, tool-calling, RAG/GraphRAG, agent memory, LLM-as-judge, single-call caching/cost/rate-limit/retry) in `See also` blocks rather than re-teaching them.
 
-Precedence when the files overlap: this spec wins on **structure**; `teacher.md` wins on **voice register**; `me.md` wins on **calibration**.
+Precedence when the files overlap: format.md wins on **structure**; `teacher.md` wins on **voice register**; `me.md` wins on **calibration**.
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
@@ -108,12 +108,12 @@ For not-yet-implemented patterns that are in-scope for the codebase's shape: `In
 
 The non-negotiables — inherited from all four files:
 
-1. **All structural rules from `study-system-design-dsa.md` apply unchanged** — the per-concept template (Subtitle, Why care's 5 moves, How it works's 3 moves with diagrams at every move and sub-section, primary diagram, In this codebase, Elaborate, Tradeoffs, Tech reference with `###`+labelled-bullets not pipe-tables, Summary, Interview defense, Validate), formatting rules, box-drawing diagram chars.
+1. **All structural rules from `format.md` apply** — the per-concept blocks (Subtitle, Zoom out / then zoom in with the LAYERS diagram, How it works's 3 moves with diagrams at every move and sub-section, Primary diagram, Implementation in codebase with code side-by-side + annotation, Elaborate, Interview defense, Validate, See also). Formatting rules and box-drawing diagram chars.
 2. **Cross-reference, do not duplicate.** Where a concept is already covered in `study-ai-engineering.md` (ReAct mechanics, tool-calling mechanics, RAG/GraphRAG mechanics, agent-memory two-layer split, LLM-as-judge bias, prompt-injection per-call defense, single-call caching/cost/rate-limit/retry-and-circuit-breaker mechanics), the file here cites that file in its `See also` block and covers only the agent-architecture angle (placement in the pattern family, the control loop, the topology, the trajectory). **A file that re-teaches mechanics already in `study-ai-engineering.md` is a generation failure.**
 3. **Lead with the shape.** Every SECTION C topology file opens with its topology diagram as the Move 1 mental-model visual — the topology IS the mental model. A topology file whose Move 1 is prose instead of a shape diagram is incomplete.
 4. **Each `═════` sub-section divider carries an `Anchor:` line naming the shape category** (workflow / single-agent / multi-agent) the sub-section belongs to — a CATEGORY, never a project. Weight coverage toward the sub-section matching the studied codebase's shape.
 5. **No project names in generated output except the studied repo.** Shape labels (workflow, single-agent, multi-agent) and generic worked examples (research assistant, support system, coding agent) are instructional templates only. The only project in any "In this codebase," file path, or "Applies to this codebase" bullet is the repo where the command was run.
-6. **Teacher posture, production scar tissue as breakpoints.** Architectural opinions ("here is when this topology earns its overhead, and here is when it doesn't") are named as decisions with breakpoints, the way study-system-design-dsa.md's Tradeoffs block works.
+6. **Teacher posture, production scar tissue as breakpoints.** Architectural opinions ("here is when this topology earns its overhead, and here is when it doesn't") are named inline in How it works as decisions with breakpoints — the way `teacher.md` carries judgment-with-a-breakpoint, not as a separate block (format.md removed the dedicated Tradeoffs block).
 
 ## Step 7C — Create the directory structure
 
@@ -135,13 +135,13 @@ Create the root and the sub-section directories that the shape + codebase warran
 
 Following `study-agent-architecture.md`'s sub-section breakdown (generate the in-scope files per Step 6C):
 
-- **01-reasoning-patterns/** — chains-vs-agents (boundary, always), **agent-loop-skeleton** (the kernel ReAct / plan-and-execute / reflexion / every SECTION C topology all instantiate — teach the loop's four load-bearing parts and the two-exit termination here so the rest can refer back instead of re-deriving; uses the Move 2 skeleton variant from `study-system-design-dsa.md`), react (placement in family; cross-ref study-ai-engineering for mechanics), plan-and-execute, reflexion-self-critique, tree-of-thoughts, routing (the bridge to SECTION C)
+- **01-reasoning-patterns/** — chains-vs-agents (boundary, always), **agent-loop-skeleton** (the kernel ReAct / plan-and-execute / reflexion / every SECTION C topology all instantiate — teach the loop's four load-bearing parts and the two-exit termination here so the rest can refer back instead of re-deriving; uses the Move 2 skeleton variant from `format.md`), react (placement in family; cross-ref study-ai-engineering for mechanics), plan-and-execute, reflexion-self-critique, tree-of-thoughts, routing (the bridge to SECTION C)
 - **02-agentic-retrieval/** — agentic-rag, self-corrective-rag, retrieval-routing (retrieval as a control loop; cross-ref study-ai-engineering for RAG/embedding mechanics)
 - **03-multi-agent-orchestration/** — when-not-to-go-multi-agent (boundary, always), supervisor-worker, sequential-pipeline, parallel-fan-out, debate-verifier-critic, swarm-handoff, graph-orchestration, shared-state-and-message-passing, coordination-failure-modes
 - **04-agent-infrastructure/** — context-engineering, agent-memory-tiers, tool-calling-and-mcp, agent-evaluation (trajectory / tool-call accuracy / topology), guardrails-and-control
 - **05-production-serving/** — cross-turn-caching, fan-out-backpressure, per-tool-circuit-breaking
 
-Each file uses `study-system-design-dsa.md`'s per-concept template. SECTION C topology files lead with the topology diagram.
+Each file uses `format.md`'s per-concept template. SECTION C topology files lead with the topology diagram.
 
 ## Step 9C — Generate SECTION F templates
 
@@ -192,7 +192,7 @@ Walk `.aipe/study-agent-architecture/` recursively. Read every `.md` file in eve
 Three diff sources to check per file:
 
 - **Codebase drift** — file paths that have moved, function names that changed, topologies that have evolved, a shape transition (the codebase grew from single-agent into multi-agent).
-- **Template drift** — `study-system-design-dsa.md` has added new blocks since the file was written. Identify missing blocks. Check that cross-references to `study-ai-engineering` files are still valid paths and that no file has started re-teaching mechanics it should cross-reference.
+- **Template drift** — `format.md` has added new blocks since the file was written. Identify missing blocks. Check that cross-references to `study-ai-engineering` files are still valid paths and that no file has started re-teaching mechanics it should cross-reference.
 - **Inventory drift** — new patterns the codebase now exercises that warrant a new file, patterns no longer used.
 
 Output a structured change plan grouped by sub-section.

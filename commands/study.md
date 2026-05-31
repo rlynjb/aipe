@@ -62,7 +62,8 @@ The orchestrator reads every input once and hands it to the generators. Resolve 
 
 ```
 ${CLAUDE_PLUGIN_ROOT}/specs/study.md                       (this orchestrator spec)
-${CLAUDE_PLUGIN_ROOT}/specs/study-system-design-dsa.md     (structure + DSA topic)
+${CLAUDE_PLUGIN_ROOT}/specs/format.md                      (structure — concept-file template + rules)
+${CLAUDE_PLUGIN_ROOT}/specs/study-system-design-dsa.md     (system-design + DSA topic)
 ${CLAUDE_PLUGIN_ROOT}/specs/study-ai-engineering.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-prompt-engineering.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-agent-architecture.md
@@ -73,7 +74,9 @@ ${CLAUDE_PLUGIN_ROOT}/specs/me.md                          (reader profile)
 
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
-**`study-system-design-dsa.md` is special:** it is both a generator AND the structural foundation (per-concept template, formatting rules, diagram requirements, hard rules, constraint summary). Every other generator reads it for structure even when generating a different topic. Read it once; pass it to all five.
+**`format.md` is the structural foundation for the whole family** — the per-concept-file template, the house-style traits, formatting rules, diagram rules, pseudocode rules, hard rules. Every generator reads it for structure even though each generates a different topic. Read it once; pass it to all five. (`study-system-design-dsa.md` is no longer special as a structure source — it is now just the system-design + DSA topic generator, reading `format.md` for structure like the others. The legacy template sections still in its body are superseded; `format.md` wins.)
+
+**Per format.md, the concept-file template is:** Subtitle → Zoom out, then zoom in → How it works → Primary diagram → Implementation in codebase → Elaborate → Project exercises (AI/ML only) → Interview defense → Validate → See also. **Removed from older templates: Why care (replaced by Zoom out), Tradeoffs, Tech reference, Summary.**
 
 **Persona routing is not uniform:**
 - Four generators use `teacher.md` — `study-system-design-dsa`, `study-ai-engineering`, and `study-agent-architecture` in **teacher posture**; `study-interview-defense` in **coach posture**.
@@ -185,7 +188,7 @@ Below the table, one section per guide listing the specific files touched and a 
 
 - **Per-repo.** The orchestrator runs against ONE repo — the directory the command was invoked in. It never reads or writes another repo. Every reference, file path, and code citation is about this repo only.
 - **All five always run.** The orchestrator does NOT skip a generator because the repo "doesn't do that topic." Each generator's own spec decides what to emit for a topic the codebase doesn't exercise (honest "not yet implemented" files, system-design templates as buildable targets, etc.). Skipping is the generator's call, never the orchestrator's.
-- **Structure source is read once.** `study-system-design-dsa.md` is the structural foundation. Read it once and hand it to all five generators; do not re-derive structure per generator.
+- **Structure source is read once.** `format.md` is the structural foundation for the whole family. Read it once and hand it to all five generators; do not re-derive structure per generator. (`study-system-design-dsa.md` is now a topic generator like the others, not the structure source.)
 - **Persona routing is not uniform.** See Step 3 — four generators use `teacher.md` (one in coach posture, three in teacher posture); `study-prompt-engineering` uses its own inline persona.
 - **Edits are surgical in UPDATE mode.** Never rewrite a whole file when a section-level edit will do. Preserve everything the codebase still supports; change only what the codebase changed.
 - **A guide that is already current produces no edits.** UPDATE mode is a no-op when the code and the guide already agree — the expected outcome for guides whose topic you didn't touch this round.

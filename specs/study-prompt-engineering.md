@@ -4,9 +4,9 @@ PROMPT ENGINEERING SPEC
 
 A topic-focused study guide spec for prompt
 engineering. Inherits all structural rules from
-`study-system-design-dsa.md` — the per-concept-file template, the
-formatting rules, the diagram requirements, the
-hard rules, the constraint summary. What this spec
+`format.md` — the per-concept-file template, the
+house-style traits, the formatting rules, the diagram
+requirements, the hard rules. What this spec
 defines is what's *unique* to prompt engineering as
 a topic of study:
 
@@ -18,11 +18,11 @@ a topic of study:
   → Curriculum anchoring specific to prompt
     engineering
 
-This spec is run alongside `study-system-design-dsa.md`, not instead
-of it. The agent reads both: `study-system-design-dsa.md` for *how*
-to write each concept file (block structure,
-diagrams, validate levels, etc.), and this spec for
-*what* to write about and *in whose voice*.
+This spec is run alongside `study-system-design-dsa.md`
+(its sibling topic spec), not instead of it. The agent
+reads `format.md` for *how* to write each concept file
+(block structure, diagrams, validate levels, etc.), and
+this spec for *what* to write about and *in whose voice*.
 
 ═════════════════════════════════════════════════
 THE PERSONA
@@ -244,7 +244,7 @@ Specifically, the agent consults `me.md` for:
 
   1. This spec wins on **structure** (the 13
      concepts, the per-concept template
-     inherited from `study-system-design-dsa.md`, the workflow).
+     inherited from `format.md`, the workflow).
   2. **The inline persona above** wins on
      **voice register** (working AI engineer,
      production-scarred, demo-vs-prod
@@ -276,7 +276,7 @@ spec (`study-ai-engineering/`) — each topic spec
 has its own fixed folder name, derived from the
 topic it covers.
 
-The directory structure follows `study-system-design-dsa.md`'s rules:
+The directory structure follows `format.md`'s rules:
 
 ```
 .aipe/study-prompt-engineering/
@@ -297,7 +297,7 @@ The directory structure follows `study-system-design-dsa.md`'s rules:
   13-forbidden-patterns.md
 ```
 
-Naming follows the kebab-case rule from `study-system-design-dsa.md`.
+Naming follows the kebab-case rule from `format.md`.
 The README.md indexes all 13 concepts with one-line
 descriptions and indicates the recommended reading
 order for someone new to the discipline (the
@@ -313,7 +313,7 @@ THE 13 CONCEPTS
 These are the concepts to cover. Order matches the
 recommended reading order — operational discipline
 first, specific techniques after. Each concept gets
-a full file following the `study-system-design-dsa.md` per-concept-
+a full file following the `format.md` per-concept-
 file template.
 
 Codebase anchors for each concept name the project
@@ -633,8 +633,9 @@ spec:
      across providers. Vendor specifics (XML tags
      being Anthropic-leaning, specific JSON mode
      syntax for OpenAI) appear *inside* concept
-     files under the Tech reference block, not
-     as their own concepts.
+     files in the Elaborate block, not as their own
+     concepts. (The Tech reference block they used
+     to live in has been removed; see `format.md`.)
 
   → **Tree of Thoughts and academic prompt
      research.** Real research, not yet a
@@ -673,7 +674,7 @@ are per-repo: the `.aipe/` directory lives at the
 root of whichever repo the command was run in, so
 each repo gets its own pair of folders.
 
-The two workflows share `study-system-design-dsa.md` as their
+The two workflows share `format.md` as their
 structural foundation but are triggered
 independently and produce independent outputs.
 To produce the prompt engineering guide for a
@@ -684,10 +685,10 @@ This spec is *additive* to `study-system-design-dsa.md`, not a
 replacement. The agent run for prompt engineering
 study works like this:
 
-  1. Agent reads `study-system-design-dsa.md` to learn the per-
-     concept-file template, formatting rules,
-     diagram requirements, hard rules, and
-     constraint summary.
+  1. Agent reads `format.md` to learn the per-
+     concept-file template, the house-style traits,
+     formatting rules, diagram requirements, and
+     hard rules.
 
   2. Agent reads `teacher.md` to know what the
      *default* writer persona is across the
@@ -732,7 +733,7 @@ study works like this:
   7. Agent generates `.aipe/study-prompt-
      engineering/` with the 13 concept files
      plus the README index, all following
-     `study-system-design-dsa.md`'s per-concept template, written
+     `format.md`'s per-concept template, written
      in the working AI engineer voice defined
      here, and calibrated to the reader as
      defined in `me.md`.
@@ -751,32 +752,36 @@ WHAT THIS SPEC DOES NOT REDEFINE
 ═════════════════════════════════════════════════
 
 To keep this file focused, the following are
-inherited from `study-system-design-dsa.md` without restatement
-here. Refer to `study-system-design-dsa.md` for the canonical
+inherited from `format.md` without restatement
+here. Refer to `format.md` for the canonical
 definition:
 
-  → The per-concept-file template (Subtitle, Why
-    care, How it works, primary diagram, In this
-    codebase, Elaborate, Tradeoffs, Tech
-    reference, Project exercises, Summary,
-    Interview defense, Validate, See also)
-  → Why care's five moves (scenario → name the
-    question → why it matters → before/after →
-    one-line summary)
+  → The per-concept-file template (Subtitle, Zoom
+    out → zoom in, How it works, primary diagram,
+    Implementation in codebase, Elaborate, Project
+    exercises, Interview defense, Validate, See
+    also). Note: Why care is replaced by Zoom out →
+    zoom in, and Tradeoffs, Tech reference, and
+    Summary have been removed.
+  → The Zoom-out block (bigger-picture layers
+    diagram, conversational opener, orient before
+    detail)
   → How it works's three moves (mental model →
-    layered walkthrough → principle) plus the
-    ASCII diagram requirements per move
-  → All formatting rules (no markdown tables for
-    Tech reference, kebab-case file names, no
-    Mermaid / no images, box-drawing diagram
-    chars)
+    step-by-step walkthrough → principle), the
+    load-bearing-skeleton variant, plus the ASCII
+    diagram requirements per move
+  → The house-style traits (skeleton parts, pattern
+    / flow / layer / layers-and-hops diagrams,
+    pseudocode, step by step, use cases, code side
+    by side, zoom out then in, conversational tone)
+  → All formatting rules (kebab-case file names, no
+    Mermaid / no images, box-drawing diagram chars)
   → The "Use real software, not analogies" rule
     (and its priority order: frontend primitives
     first, whole products last)
-  → The Validate block's 5 levels (reconstruct,
-    explain, apply, defend, quick check)
-  → The constraint summary at the bottom of
-    `study-system-design-dsa.md`
+  → The Validate block's levels (reconstruct,
+    explain, apply, defend)
+  → The hard rules at the bottom of `format.md`
 
 **Not inherited from `teacher.md`.** This spec
 defines its own persona (the working AI engineer)

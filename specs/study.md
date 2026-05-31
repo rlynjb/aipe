@@ -35,7 +35,8 @@ fixed-name folder under the repo's `.aipe/` directory.
 ```
                          /aipe:study
                               │
-              reads: study-system-design-dsa.md (structure),
+              reads: format.md (structure),
+                     study-system-design-dsa.md (dsa topic),
                      teacher.md, me.md, the codebase,
                      and any curriculum files present
                               │
@@ -84,37 +85,40 @@ here).
 
 ### What each generator needs as input
 
-`study-system-design-dsa.md` is special: it is both a generator **and**
-the structural foundation (per-concept-file template, formatting
-rules, diagram requirements, hard rules, constraint summary). Every
-other generator reads it for structure even when generating a
-different topic. Read it once; pass it to all five.
+`format.md` is the structural foundation for the whole family
+(per-concept-file template, the house-style traits, formatting
+rules, diagram requirements, hard rules). Every generator reads
+it for structure even though each generates a different topic.
+Read it once; pass it to all five. `study-system-design-dsa.md`
+is no longer special as a structure source — it is now just the
+system-design + DSA *topic* generator, and it reads `format.md`
+for structure like the others.
 
-  → **study-system-design-dsa.md** — reads itself (structure +
-    topic), `teacher.md` (teacher posture), `me.md`, the codebase.
-    Output: system overview, system design, DSA.
+  → **study-system-design-dsa.md** — reads `format.md`
+    (structure), `teacher.md` (teacher posture), `me.md`, the
+    codebase. Output: system overview, system design, DSA.
 
-  → **study-ai-engineering.md** — reads `study-system-design-dsa.md`
+  → **study-ai-engineering.md** — reads `format.md`
     (structure), `teacher.md` (teacher posture), `me.md`,
     `aieng-curriculum.md` if present (for `Cx.y` / `Bx.y` IDs), the
     codebase. Output: LLM foundations, retrieval/RAG, agents, evals,
     production serving, ML.
 
   → **study-prompt-engineering.md** — reads
-    `study-system-design-dsa.md` (structure), `me.md`,
+    `format.md` (structure), `me.md`,
     `aieng-curriculum.md` if present, the codebase. Persona is
     defined **inline in that spec** (working AI engineer) — it does
     **not** use `teacher.md`'s staff-engineer persona. Output: the 13
     prompt-engineering concepts.
 
   → **study-agent-architecture.md** — reads
-    `study-system-design-dsa.md` (structure), `teacher.md` (teacher
+    `format.md` (structure), `teacher.md` (teacher
     posture), `me.md`, the codebase. Output: reasoning patterns,
     agentic retrieval, multi-agent orchestration, agent
     infrastructure, production serving, orchestration templates.
 
   → **study-interview-defense.md** — reads
-    `study-system-design-dsa.md` (structure), `teacher.md` (in
+    `format.md` (structure), `teacher.md` (in
     **coach** posture), `me.md`, the codebase. Output: the 8-chapter
     project-defense book.
 
@@ -139,10 +143,11 @@ readable progression and a sensible summary:
 5. study-interview-defense
 ```
 
-Reading `study-system-design-dsa.md` first is required regardless of
-its run position, because every other generator needs it for
-structure. Reading the *file* is the dependency — not running its
-guide first.
+Reading `format.md` first is required regardless of run order,
+because every generator needs it for structure. Reading the
+*file* is the dependency — `study-system-design-dsa.md` no
+longer needs to run first, since structure now lives in
+`format.md`, not in the DSA topic spec.
 
 ---
 
@@ -263,10 +268,11 @@ specific files touched and the one-line reason for each.
    buildable targets, etc.). Skipping is the generator's call, never
    the orchestrator's.
 
-→ Structure source is read once. study-system-design-dsa.md is the
-   structural foundation for the whole family. Read it once and hand
-   it to all five generators; do not re-derive structure per
-   generator.
+→ Structure source is read once. format.md is the structural
+   foundation for the whole family. Read it once and hand it to
+   all five generators; do not re-derive structure per generator.
+   (study-system-design-dsa.md is now a topic generator like the
+   others, not the structure source.)
 
 → Persona routing is not uniform. Four generators use teacher.md
    (study-interview-defense in COACH posture, the other three in
@@ -293,10 +299,11 @@ specific files touched and the one-line reason for each.
 
 ```
 1. Resolve inputs
-     read study-system-design-dsa.md (structure + dsa topic)
+     read format.md (structure — the concept-file template + rules)
      read teacher.md, me.md
      read aieng-curriculum.md if present
-     read the five generator specs
+     read the five generator specs (incl. study-system-design-dsa.md
+       for the system-design + DSA topic)
      read the current repo's codebase context
 
 2. Detection pass (no writes)

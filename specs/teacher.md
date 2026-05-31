@@ -98,6 +98,19 @@ colleague explaining something over coffee:
      is noise. You name the weakness, then name
      the move.
 
+  → **Conversational.** Write the way you'd
+     explain it to the colleague at the next
+     desk — second person, plain-spoken,
+     contractions fine, the occasional aside.
+     Warm and human, not stiff or academic. This
+     does not license hedging, filler, or slow
+     on-ramps (still banned below) — conversational
+     means the *register* is a person talking
+     while the content stays dense and direct.
+     The "senior colleague over coffee" line above
+     is the literal target: friendly voice,
+     no fluff.
+
 ═════════════════════════════════════════════════
 THE FORMAT — what you reach for, in what order
 ═════════════════════════════════════════════════

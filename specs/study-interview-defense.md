@@ -6,13 +6,13 @@ A per-codebase study spec for **defending a project
 as a whole** in a senior-engineering interview.
 Inherits formatting rules, diagram requirements,
 the no-analogy rule, the no-hedging rule, and hard
-rules from `study-system-design-dsa.md`. What this spec defines is
+rules from `format.md`. What this spec defines is
 what's *unique* to project defense as a topic of
 study:
 
   → A book-style sequential structure (8 chapters,
     read in order) rather than the reference-grid
-    shape of `study-system-design-dsa.md` and the other topic specs
+    shape of the per-concept template in `format.md`
   → A visual-first treatment optimized for visual
     learners — callout boxes, recurring motifs,
     side-by-side answer comparisons, decision trees
@@ -23,11 +23,12 @@ study:
     ("did you use AI to build this?") as the
     eighth and final chapter
 
-This spec is run alongside `study-system-design-dsa.md`, not instead
-of it. The agent reads both: `study-system-design-dsa.md` for *how*
-to write (block-quality standards, diagrams, the
-"use real software, not analogies" rule, the
-no-hedging rule), and this spec for *what* to
+This spec is run alongside `study-system-design-dsa.md`
+(its sibling topic spec), not instead of it. The agent
+reads `format.md` for *how* to write (block-quality
+standards, diagrams, the "use real software, not
+analogies" rule, the no-hedging rule), and this spec
+for *what* to
 write, in what order, in what shape.
 
 **Scope: per-codebase, per-repo.** This spec runs
@@ -796,7 +797,7 @@ topic specs. Running the base generator with
 produce the interview defense book for a repo,
 run this spec's command from inside that repo.
 
-The four workflows share `study-system-design-dsa.md` as their
+The four workflows share `format.md` as their
 structural foundation but are triggered
 independently:
 
@@ -811,7 +812,7 @@ Each produces its own folder inside the repo's
 The agent run for interview defense study works
 like this:
 
-  1. Agent reads `study-system-design-dsa.md` to learn the
+  1. Agent reads `format.md` to learn the
      formatting rules, diagram quality
      standards, the "use real software, not
      analogies" rule, the no-hedging rule, and
@@ -832,7 +833,7 @@ like this:
      portfolios (DSA + system design), and what
      gaps she should defer on rather than fake.
      `me.md` does not override the structural
-     rules from `study-system-design-dsa.md` or this spec, and
+     rules from `format.md` or this spec, and
      does not override `teacher.md`'s voice
      rules — it calibrates examples, depth, and
      what's defensible.
@@ -867,7 +868,7 @@ like this:
 RELATIONSHIP TO THE EXISTING INTERVIEW DEFENSE BLOCK
 ═════════════════════════════════════════════════
 
-`study-system-design-dsa.md`'s per-concept-file template already
+`format.md`'s per-concept-file template already
 includes an "Interview defense" block scoped to
 *one concept*. That block stays exactly where
 it is — this spec does not modify it. The two
@@ -899,17 +900,15 @@ wide opener.
 WHAT THIS SPEC DOES NOT REDEFINE
 ═════════════════════════════════════════════════
 
-Inherited from `study-system-design-dsa.md` without restatement:
+Inherited from `format.md` without restatement:
 
-  → All formatting rules (no markdown tables
-    with pipes for tech reference, kebab-case
+  → All formatting rules (kebab-case
     file names, no Mermaid / no images,
     box-drawing diagram chars)
   → The "Use real software, not analogies"
     rule (frontend primitives first, whole
     products last)
-  → The general constraint summary at the
-    bottom of `study-system-design-dsa.md`
+  → The hard rules at the bottom of `format.md`
 
 Inherited from `teacher.md` without restatement
 (this spec uses the coach posture variation —

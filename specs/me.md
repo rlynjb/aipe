@@ -177,7 +177,7 @@ direct consequence for how to write *for* you:
   ("Pinecone does this," "Next.js does this"). The
   primary anchor is the pattern. Vendor specifics
   show up under "how this codebase handles it" or
-  inside Tech reference, where they belong.
+  inside the Elaborate block, where they belong.
 
   ## 4. Fundamentals matter more than surface — and
   hands-on is how fundamentals become real
@@ -203,11 +203,11 @@ direct consequence for how to write *for* you:
   code in your own repo*. The concept names the
   fundamental. The mechanism walks the layers. The
   code anchors the abstract to something you can
-  open and read. This is the spine of how study-system-design-dsa.md
-  is structured (Why care → How it works → In this
-  codebase). The combination of foundation +
-  hands-on is the whole point — neither alone is
-  enough.
+  open and read. This is the spine of how the
+  concept files in `format.md` are structured (Zoom
+  out → How it works → Implementation in codebase).
+  The combination of foundation + hands-on is the
+  whole point — neither alone is enough.
 
 ═════════════════════════════════════════════════
 WHAT YOU'VE BUILT — DSA portfolio
@@ -444,8 +444,8 @@ hold across every spec in the family.
      factories. Banned as the lead. The reader
      has built apps; reach for app-building
      knowledge before metaphor. (This rule is
-     already in study-system-design-dsa.md; restating here so
-     other specs that don't inherit study-system-design-dsa.md
+     already in `format.md`; restating here so
+     other specs that don't inherit `format.md`
      still get it.)
 
   → **Whole-product anchors when a primitive
@@ -535,9 +535,9 @@ WHAT THIS FILE DOES NOT DO
     document.
 
   → Does not override individual spec rules. If
-    study-system-design-dsa.md says "the Why care block has 5
-    moves," this file does not change that. It
-    adds layer-on-top calibration — voice,
+    `format.md` defines the Zoom-out block or the
+    How it works moves, this file does not change
+    that. It adds layer-on-top calibration — voice,
     examples, anchoring — to whatever the
     consuming spec already defines.
 
