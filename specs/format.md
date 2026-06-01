@@ -232,7 +232,7 @@ Zoom-out put the concept on the map. The structure pass reads the
 before How it works walks the mechanics. Skip it and the next block teaches
 moving parts with nothing to attach them to.
 
-The four foundations below, in dependency order (axes → seams → layered
+The four foundations below run in dependency order (axes → seams → layered
 decomposition), with the structure pass as the meta-move that sequences
 them. This is still orient — keep it tight; the depth belongs in How it
 works.
@@ -252,6 +252,21 @@ system once you've traced a few.
 - cost        — latency, money, compute per unit of work?
 - guarantees  — promised vs best-effort? sync vs async? exactly-once?
 - trust       — what can each side see or tamper with?
+
+The same three boxes light up differently depending on which axis you shine
+through them:
+
+```
+  One system, three axes — three different x-rays
+
+  the system:   [ A ] ──► [ B ] ──► [ C ]
+
+  control  →     A decides    B decides     C just runs
+  state    →     A owns       B borrows     C stateless
+  failure  →     A retries    B propagates  C swallows
+
+  same boxes; each axis exposes a different truth
+```
 
 **The skill:** Picking the right axis is most of the work. The wrong axis
 makes every layer look the same; the right one makes the boundaries pop.
@@ -281,6 +296,23 @@ If control, state-ownership, trust, or failure-containment changes from one
 side to the other, that boundary is load-bearing. If nothing flips, the
 "boundary" is cosmetic.
 
+Made concrete — trace one axis across a boundary and watch the answer
+change:
+
+```
+  A seam is load-bearing when an axis flips across it
+
+  axis traced = "who decides control flow?"
+
+  ┌─ outer layer ─┐    seam     ┌─ inner layer ─┐
+  │  CODE decides │ ═════╪═════► │  LLM decides  │
+  └───────────────┘  (it flips) └───────────────┘
+         ▲                              ▲
+         └──── same axis, two answers ──┘
+               → this boundary carries a contract:
+                 study it before either side's internals
+```
+
 **Why map seams before mechanics:**
 - contracts live here  — the promises that let you reason about each side alone
 - failures live here   — most bugs happen at boundaries, not inside layers
@@ -308,9 +340,30 @@ move up and down the stack. Candidate dimensions:
 - what's guaranteed vs best-effort?
 
 The insight comes from the *contrast at each altitude*, not from the layer
-list itself. One sentence that answers the same question at two levels
-("outer enforces order, inner chooses freely") teaches more than two
-separate paragraphs describing each layer in its own terms.
+list itself. Hold one question still and let the answer change as you
+descend:
+
+```
+  One question, held constant down the layers
+
+  "who decides control flow?"  — trace it downward
+
+  ┌───────────────────────────────┐
+  │ outer: pipeline (fixed order) │   → CODE decides
+  └───────────────────────────────┘
+      ┌─────────────────────────────┐
+      │ inner: ReAct loop (per step)│   → LLM decides
+      └─────────────────────────────┘
+          ┌─────────────────────────┐
+          │ innermost: tool call    │   → TOOL runs
+          └─────────────────────────┘
+
+  the answer flips at each altitude — that contrast IS the lesson
+```
+
+One sentence that answers the same question at two levels ("outer enforces
+order, inner chooses freely") teaches more than two separate paragraphs
+describing each layer in its own terms.
 
 **Bonus payoff — self-similarity:** when the same mechanism reappears at
 two levels, name it once and point at both occurrences. Collapsing two
@@ -328,26 +381,8 @@ each other.
 
 ### Structure pass before mechanics (the meta-move)
 
-Before learning HOW a system works, do a structural read of WHAT it's made
-of and WHERE its joints are. Three steps, in order:
-
-  1. layers — what are the levels of abstraction?        (decomposition)
-  2. axes   — which dimensions will I trace across them?  (measurement)
-  3. seams  — where are the boundaries, and which are
-              load-bearing (an axis flips across them)?   (joints)
-
-Only then dive into mechanics. The internals are far easier to absorb once
-you know which layer they sit in, which axis they serve, and which seam they
-sit behind. Skipping straight to mechanics = memorizing details with no
-skeleton to hang them on.
-
-**Family map (how the foundations relate):**
-- zoom out/in          — altitude over time (wide context → narrow detail)
-- layered decomposition — one axis held constant across altitudes at once
-- axes                 — which questions are worth holding constant
-- seams                — the boundaries where the axis-answers change
-
-Two supporting diagrams. First, the structure pass as a sequence — each read
+**Move:** Before learning HOW a system works, do a structural read of WHAT
+it's made of and WHERE its joints are. Three steps, in order — each read
 feeds the next:
 
 ```
@@ -369,22 +404,16 @@ feeds the next:
                    Block 4 — How it works
 ```
 
-And the seam test made concrete — the same axis answered two ways across one
-boundary:
+Only then dive into mechanics. The internals are far easier to absorb once
+you know which layer they sit in, which axis they serve, and which seam they
+sit behind. Skipping straight to mechanics = memorizing details with no
+skeleton to hang them on.
 
-```
-  A seam is load-bearing when an axis flips across it
-
-  axis traced = "who decides control flow?"
-
-  ┌─ outer layer ─┐    seam     ┌─ inner layer ─┐
-  │  CODE decides │ ═════╪═════► │  LLM decides  │
-  └───────────────┘  (it flips) └───────────────┘
-         ▲                              ▲
-         └──── same axis, two answers ──┘
-               → this boundary carries a contract:
-                 study it before either side's internals
-```
+**Family map (how the foundations relate):**
+- zoom out/in          — altitude over time (wide context → narrow detail)
+- layered decomposition — one axis held constant across altitudes at once
+- axes                 — which questions are worth holding constant
+- seams                — the boundaries where the axis-answers change
 
 Hand off to How it works with the skeleton named.
 
