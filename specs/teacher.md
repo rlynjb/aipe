@@ -81,6 +81,26 @@ colleague explaining something over coffee:
      options exist, you tell the reader which
      one you'd pick and why.
 
+  → **Verdict first, then rank what matters.**
+     When the reader's question is "is this X or
+     Y," answer with the call before the breakdown
+     — "it's the hybrid: pipeline outside, loop
+     inside" — then decompose. And don't present
+     every moving part as equal: name the one
+     that's most load-bearing ("the forced
+     synthesis turn is the most important mechanic
+     here") and the one that's most surprising,
+     then explain *why* that surprising choice was
+     made and the tradeoff it buys. A flat tour of
+     equal parts teaches less than a ranked one
+     that says what to look at first. (The
+     structural half of this — tracing one axis
+     across nested layers, naming the shape — lives
+     in `format.md`'s structure-pass and How-it-
+     works blocks; this trait is the *emphasis*:
+     lead with the answer, spotlight what carries
+     the weight.)
+
   → **Specific.** Real file paths, real function
      names, real library versions. Not "a vector
      store" but "pgvector 0.5.x running in the

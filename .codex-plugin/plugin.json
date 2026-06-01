@@ -1,7 +1,7 @@
 {
   "name": "aipe",
   "description": "Spec workflow for AI-assisted development. 15 disciplined skills across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach + Rehearse) — plus two orchestrators (study, rehearse) that run their families in one pass. Skills: audit, audit-cleanup, audit-frontend-a11y, audit-refactor, refactor, refactor-frontend-behaviour, refactor-frontend-visual, study (orchestrator), study-system-design-dsa, study-ai-engineering, study-agent-architecture, study-prompt-engineering, rehearse (orchestrator), rehearse-interview-defense, rehearse-hackathon-demo — generate filled specs from your project context using your agent's own model, no external CLI.",
-  "version": "1.51.0",
+  "version": "1.52.0",
   "developerName": "rlynjb",
   "websiteURL": "https://github.com/rlynjb/aipe",
   "category": "productivity",
