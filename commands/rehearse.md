@@ -10,6 +10,7 @@ Use this command when you are **preparing to present or interview** and want bot
 
 - `/aipe:rehearse-interview-defense` — the 8-chapter project defense book (coach voice, "I don't know" recovery)
 - `/aipe:rehearse-hackathon-demo` — the overview + 6-chapter demo run-of-show (demo-coach voice, hard time budget)
+- `/aipe:rehearse-design-doc` — staff-level design docs / RFCs (1–3 docs per repo, coach voice)
 
 **`/aipe:rehearse` is the performance-side sibling of `/aipe:study`.** Where `/aipe:study` keeps your *comprehension* guides current after a code change, `/aipe:rehearse` prepares your *performance* books when you're about to stand in front of a room. Run study on every nontrivial code change; run rehearse when you're prepping for a presentation or interview.
 
@@ -55,13 +56,14 @@ Read these files (skip missing ones):
 
 ## Step 3 — Resolve all the inputs each generator needs
 
-The orchestrator reads every input once and hands it to both generators. Resolve these:
+The orchestrator reads every input once and hands it to all three generators. Resolve these:
 
 ```
 ${CLAUDE_PLUGIN_ROOT}/specs/rehearse.md                    (this orchestrator spec)
 ${CLAUDE_PLUGIN_ROOT}/specs/format.md                      (structure — formatting + diagram + hard rules)
 ${CLAUDE_PLUGIN_ROOT}/specs/rehearse-interview-defense.md
 ${CLAUDE_PLUGIN_ROOT}/specs/rehearse-hackathon-demo.md
+${CLAUDE_PLUGIN_ROOT}/specs/rehearse-design-doc.md
 ${CLAUDE_PLUGIN_ROOT}/specs/teacher.md                     (writer persona, used in coach posture)
 ${CLAUDE_PLUGIN_ROOT}/specs/me.md                          (reader profile)
 ```
@@ -81,12 +83,14 @@ Generator                          Output folder                          Decisi
 ─────────────────────────────────  ─────────────────────────────────────  ───────
 rehearse-interview-defense.md      .aipe/rehearse-interview-defense/      CREATE or UPDATE
 rehearse-hackathon-demo.md         .aipe/rehearse-hackathon-demo/         CREATE or UPDATE
+rehearse-design-doc.md             .aipe/rehearse-design-doc/             CREATE or UPDATE
 ```
 
 A folder exists (UPDATE) when its generator's own "Check for existing book" signal is met:
 
 - `rehearse-interview-defense/` — `00-overview.md` at root OR any `0[1-8]-*.md` file (legacy per-question structure also detected and flagged for migration)
 - `rehearse-hackathon-demo/` — `00-overview.md` at root OR any `0[1-6]-*.md` file
+- `rehearse-design-doc/` — `00-overview.md` at root OR any `0[1-3]-*.md` file
 
 For each UPDATE-mode generator, perform the diff its own spec defines (codebase drift, template drift, inventory drift) and build a per-file change list: what's outdated, what's missing, what action to take.
 
@@ -100,7 +104,7 @@ In UPDATE mode, an existing demo book carries its own slot length; preserve it u
 
 ## Step 6 — Print the consolidated plan
 
-Output one combined plan across both books:
+Output one combined plan across all three books:
 
 ```
 REHEARSE RUN PLAN — <repo name> — <today's ISO date>
@@ -110,6 +114,7 @@ REHEARSE RUN PLAN — <repo name> — <today's ISO date>
 ├──────────────────────────────────┼──────────┼────────────────────────────┤
 │ rehearse-interview-defense       │ <mode>   │ <full generate | N edits>  │
 │ rehearse-hackathon-demo          │ <mode>   │ <full generate | N edits>  │
+│ rehearse-design-doc              │ <mode>   │ <full generate | N edits>  │
 └──────────────────────────────────┴──────────┴────────────────────────────┘
 
 Demo slot length: <N> minutes  [default | from $ARGUMENTS | from existing book]
@@ -119,7 +124,7 @@ Below the table, for each UPDATE-mode book, list the per-file changes (which fil
 
 ## Step 7 — Single confirmation gate
 
-**Wait for one confirmation** before editing any file. The two generators' "wait for confirmation before editing" contracts are batched into this single gate.
+**Wait for one confirmation** before editing any file. The three generators' "wait for confirmation before editing" contracts are batched into this single gate.
 
 If the run is non-interactive (a `--yes`-style invocation or an automated context), skip the gate and execute the plan directly.
 
@@ -129,6 +134,7 @@ Run the generators in this order — independent for correctness, but the order 
 
 1. `rehearse-interview-defense`
 2. `rehearse-hackathon-demo`
+3. `rehearse-design-doc`
 
 For each generator:
 
@@ -156,6 +162,7 @@ REHEARSE RUN SUMMARY — <repo name> — <today's ISO date>
 ├──────────────────────────────────┼──────────┼────────────────────────────┤
 │ rehearse-interview-defense       │ <mode>   │ <e.g. 1 chapter edited>    │
 │ rehearse-hackathon-demo          │ <mode>   │ <e.g. 7 files generated>   │
+│ rehearse-design-doc              │ <mode>   │ <e.g. 2 docs created>      │
 └──────────────────────────────────┴──────────┴────────────────────────────┘
 ```
 

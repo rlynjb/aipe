@@ -1,7 +1,7 @@
 {
   "name": "aipe",
-  "description": "Spec workflow for AI-assisted development. 17 disciplined skills across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach + Rehearse + Read) — plus two orchestrators (study, rehearse) that run their families in one pass. Skills: audit, audit-cleanup, audit-frontend-a11y, audit-refactor, refactor, refactor-frontend-behaviour, refactor-frontend-visual, study (orchestrator), study-system-design-dsa, study-software-design, study-ai-engineering, study-agent-architecture, study-prompt-engineering, rehearse (orchestrator), rehearse-interview-defense, rehearse-hackathon-demo, read-aposd — generate filled specs from your project context using your agent's own model, no external CLI.",
-  "version": "1.53.0",
+  "description": "Spec workflow for AI-assisted development. 21 disciplined skills across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach + Rehearse + Read) — plus two orchestrators (study, rehearse) that run their families in one pass. Skills: audit, audit-cleanup, audit-frontend-a11y, audit-refactor, refactor, refactor-frontend-behaviour, refactor-frontend-visual, study (orchestrator), study-system-design-dsa, study-software-design, study-security, study-testing, study-data-modeling, study-ai-engineering, study-agent-architecture, study-prompt-engineering, rehearse (orchestrator), rehearse-interview-defense, rehearse-hackathon-demo, rehearse-design-doc, read-aposd — generate filled specs from your project context using your agent's own model, no external CLI.",
+  "version": "1.54.0",
   "developerName": "rlynjb",
   "websiteURL": "https://github.com/rlynjb/aipe",
   "category": "productivity",
@@ -16,12 +16,16 @@
     "./skills/study",
     "./skills/study-system-design-dsa",
     "./skills/study-software-design",
+    "./skills/study-security",
+    "./skills/study-testing",
+    "./skills/study-data-modeling",
     "./skills/study-ai-engineering",
     "./skills/study-agent-architecture",
     "./skills/study-prompt-engineering",
     "./skills/rehearse",
     "./skills/rehearse-interview-defense",
     "./skills/rehearse-hackathon-demo",
+    "./skills/rehearse-design-doc",
     "./skills/read-aposd"
   ],
   "license": "MIT"

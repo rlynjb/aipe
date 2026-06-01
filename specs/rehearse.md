@@ -3,12 +3,12 @@
 One command that creates or updates **every** rehearsal book for the
 current repo — the performance artifacts you read *out loud*, not the
 study guides you read to *understand*. Run it when you're preparing to
-present or interview and want both rehearsal books current with the
+present or interview and want every rehearsal book current with the
 codebase in one pass — without running each `/aipe:rehearse-*` command
 by hand.
 
 This file is the orchestrator. It does not define any chapter
-template, voice, or content of its own. It reads the two rehearse
+template, voice, or content of its own. It reads the three rehearse
 generator specs, the foundation references, and the current repo, then
 runs each generator in the right mode (create or update) and reports
 what changed.
@@ -26,8 +26,8 @@ THE PROBLEM THIS SOLVES
   about to present / interview        about to present / interview
   /aipe:rehearse-interview-defense    /aipe:rehearse   ← one command
   /aipe:rehearse-hackathon-demo            │
-  (two runs, by hand, every time)          ▼
-                                      detects create vs update
+  /aipe:rehearse-design-doc                ▼
+  (three runs, by hand, every time)   detects create vs update
                                       per book, runs them all,
                                       reports a single summary
 ```
@@ -36,7 +36,7 @@ THE PROBLEM THIS SOLVES
 
 ## What it does, in one diagram
 
-The orchestrator fans out to two generators, each producing one
+The orchestrator fans out to three generators, each producing one
 fixed-name folder under the repo's `.aipe/` directory.
 
 ```
@@ -46,19 +46,13 @@ fixed-name folder under the repo's `.aipe/` directory.
                     teacher.md (coach posture), me.md,
                     the codebase
                              │
-            ┌────────────────┴────────────────┐
-            ▼                                 ▼
-   ┌──────────────────┐            ┌──────────────────┐
-   │ interview-       │            │ hackathon-       │
-   │ defense          │            │ demo             │
-   └────────┬─────────┘            └────────┬─────────┘
-            ▼                               ▼
-   .aipe/                          .aipe/
-   rehearse-                       rehearse-
-   interview-defense/              hackathon-demo/
-            │                               │
-            └───────────────┬───────────────┘
-                            ▼
+                             ▼   fans out, one folder each
+                             │
+   rehearse-interview-defense.md  →  .aipe/rehearse-interview-defense/
+   rehearse-hackathon-demo.md     →  .aipe/rehearse-hackathon-demo/
+   rehearse-design-doc.md         →  .aipe/rehearse-design-doc/
+                             │
+                             ▼
               each folder: create if missing,
               update-in-place if it already exists
 ```
@@ -67,9 +61,9 @@ fixed-name folder under the repo's `.aipe/` directory.
 
 ## The generators it runs
 
-Both run against the **current repo** — the directory the command was
+All three run against the **current repo** — the directory the command was
 invoked in. Each is per-repo and per-folder; there is no cross-repo
-coordination. The orchestrator runs both generators on every
+coordination. The orchestrator runs all three generators on every
 invocation; each generator's own spec decides what to emit for a
 codebase (e.g. demoing only what actually runs).
 
@@ -79,6 +73,7 @@ codebase (e.g. demoing only what actually runs).
 ├──────────────────────────────┼──────────────────────────────────┤
 │ rehearse-interview-defense.md │ rehearse-interview-defense/      │
 │ rehearse-hackathon-demo.md    │ rehearse-hackathon-demo/         │
+│ rehearse-design-doc.md        │ rehearse-design-doc/             │
 └──────────────────────────────┴──────────────────────────────────┘
 ```
 
@@ -87,13 +82,13 @@ codebase (e.g. demoing only what actually runs).
 `format.md` is the structural foundation for the whole family
 (formatting rules, diagram requirements, the no-analogy rule, the
 no-hedging rule, hard rules). Every generator reads it for structure.
-Read it once; hand it to both.
+Read it once; hand it to all three.
 
 Unlike the study orchestrator, **persona routing here is uniform**:
-both rehearse generators use `teacher.md` in **coach posture** — the
+all three rehearse generators use `teacher.md` in **coach posture** — the
 same staff engineer, shifted to prepare someone for performance under
 pressure. The interview-defense coach and the demo-coach are that one
-engineer in two framings.
+engineer in three framings.
 
   → **rehearse-interview-defense.md** — reads `format.md` (structure),
     `teacher.md` (coach posture), `me.md`, the codebase. Output: the
@@ -104,6 +99,12 @@ engineer in two framings.
     codebase, and the target slot length (default 10 minutes). Output:
     the overview + 6-chapter demo run-of-show.
 
+  → **rehearse-design-doc.md** — reads `format.md` (structure),
+    `teacher.md` (coach posture), `me.md`, the codebase. Output: an
+    overview + one staff-level design doc / RFC per significant,
+    non-obvious decision in the repo (cap ~3). The written
+    communication artifact — the human/staff-signal layer.
+
 If the target slot length isn't supplied for the demo book, default to
 ten minutes and scale every time budget to it. Do not block a run on a
 missing slot length.
@@ -112,17 +113,18 @@ missing slot length.
 
 ## Run order
 
-The two generators are independent — neither reads the other's output,
+The three generators are independent — neither reads the other's output,
 so order does not affect correctness. Run them in this order for a
 readable summary:
 
 ```
 1. rehearse-interview-defense
 2. rehearse-hackathon-demo
+3. rehearse-design-doc
 ```
 
 Reading `format.md` first is required regardless of run order, because
-both generators need it for structure.
+all three generators need it for structure.
 
 ---
 
@@ -131,8 +133,7 @@ both generators need it for structure.
 For each generator, before generating anything, check whether its
 output folder already exists in the repo's `.aipe/` directory. This is
 the same per-folder check each generator defines in its own "Check for
-existing guide" section; the orchestrator applies it uniformly across
-both.
+existing guide" section; the orchestrator applies it uniformly across all three.
 
 ```
 For each generator G with output folder F:
@@ -168,8 +169,10 @@ the current codebase:
      Stale ref: file paths / versions that moved
      Action:    the specific edit to make
 → Edit ONLY the sections identified — never rewrite whole chapters
-→ Add chapters only if the book's contract allows (it does not —
-   both books have a fixed chapter count; reconcile within it)
+→ Add chapters only if the book's contract allows: the interview-
+   defense and demo books have a fixed chapter count (reconcile
+   within it); the design-doc book may add or drop a doc when the
+   repo's significant decisions change, within its ~3 cap.
 → Update the overview's run-of-show / table of contents if a
    chapter's content materially changed
 → Append to each updated file:
@@ -185,14 +188,14 @@ no-op when the code and the book already agree.
 ## Confirmation — one gate for the whole run
 
 Each generator's update behavior says "wait for confirmation before
-editing." Running two generators, that would mean two prompts. The
+editing." Running three generators, that would mean three prompts. The
 orchestrator batches it into a single gate:
 
 ```
-1. Run both generators in detection-only pass:
+1. Run all three generators in detection-only pass:
      CREATE-mode books → list as "will create (full)"
      UPDATE-mode books → produce the per-file change list
-2. Print one consolidated plan across both books
+2. Print one consolidated plan across all three books
 3. Wait for a single confirmation
 4. On confirm → execute every create and every edit
 ```
@@ -214,6 +217,7 @@ REHEARSE RUN SUMMARY — <repo name> — <date>
 ├──────────────────────────────┼──────────┼────────────────────────┤
 │ rehearse-interview-defense   │ update   │ 1 chapter edited       │
 │ rehearse-hackathon-demo      │ create   │ 7 files generated      │
+│ rehearse-design-doc          │ create   │ 3 files generated      │
 └──────────────────────────────┴──────────┴────────────────────────┘
 
 Per-book detail follows below, one section each, listing the specific
@@ -236,14 +240,14 @@ files touched and the one-line reason for each.
    Rehearsal books are performance artifacts; you refresh them when
    you're about to perform, not on every commit.
 
-→ Both always run. The orchestrator does not skip a generator. Each
+→ All three always run. The orchestrator does not skip a generator. Each
    generator's own spec decides what to emit (the demo book demos only
    what the code actually does; the defense book drops questions it
    can't ground in the repo). Skipping is the generator's call, never
    the orchestrator's. To produce just one book, run that generator's
    single command instead.
 
-→ Persona routing is uniform. Both generators use `teacher.md` in
+→ Persona routing is uniform. All three generators use `teacher.md` in
    COACH posture. This is the defining contrast with the study
    orchestrator, whose generators split across teacher posture, coach
    posture, and an inline persona.
@@ -269,7 +273,7 @@ files touched and the one-line reason for each.
 1. Resolve inputs
      read format.md (structure — formatting, diagrams, hard rules)
      read teacher.md (coach posture), me.md
-     read the two rehearse generator specs
+     read the three rehearse generator specs
      read the current repo's codebase context
      note the target slot length for the demo book (default 10 min)
 
@@ -280,7 +284,7 @@ files touched and the one-line reason for each.
        CREATE → mark "full generate"
 
 3. Plan
-     print the consolidated plan (both books, one view)
+     print the consolidated plan (all three books, one view)
 
 4. Confirm (single gate; skipped if non-interactive)
 
@@ -303,7 +307,7 @@ composes them. Each `/aipe:rehearse-*` command still runs its one
 generator standalone, with the same create-or-update detection. Reach
 for a single command when you only need one book (just the demo for a
 hackathon, just the defense for an interview). Reach for
-`/aipe:rehearse` when you're prepping for both at once.
+`/aipe:rehearse` when you're prepping for more than one at once.
 
 ---
 
@@ -313,11 +317,11 @@ The family has two orchestrators, cleanly partitioned by what they
 produce:
 
 ```
-/aipe:study      runs the four study-* generators
+/aipe:study      runs the seven study-* generators
                  → comprehension guides (understand the codebase)
                  → run after a code change, to keep guides current
 
-/aipe:rehearse   runs the two rehearse-* generators
+/aipe:rehearse   runs the three rehearse-* generators
                  → performance books (present / defend the codebase)
                  → run when preparing to present or interview
 ```

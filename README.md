@@ -1,354 +1,201 @@
-# AIPE Specs
+# AIPE — study & rehearse specs
 
-A system for AI-assisted app development. Each spec is a prompt template with built-in discipline — constraints that keep Claude (or any AI assistant) from doing more than what was asked.
-
-The specs work together. They're not a menu to pick from; they're a flow with handoffs between them.
-
-
-## The system at a glance
-
-Two flows, plus a foundation layer. The action flow (top) is for getting work done. The reflective flow (middle) is for thinking and learning. The foundation layer (bottom) defines who's writing, who's reading, and how each concept file is structured.
+A spec system for generating per-repo learning and performance artifacts.
+Point a command at a codebase and it produces structured guides written in
+a consistent voice: **study** guides to *understand* the code, **rehearse**
+books to *present and defend* it. Every artifact is grounded in the real
+repo and refreshed in place as the code changes.
 
 ```
-ACTION FLOW
-═══════════
-
-DESCRIBE        →    DIAGNOSE          →    ACT
-(no action)          (triage)                (changes code)
-
-audit.md             audit-cleanup.md        refactor.md
-audit-frontend-a11y.md                       refactor-frontend-behaviour.md
-                                             refactor-frontend-visual.md
-
-
-REFLECTIVE FLOW
-═══════════════
-
-EVALUATE                       TEACH  (two orchestrators)
-(opinions, no action)          (concepts + performance, anchored to code)
-
-audit-refactor.md              study.md  ← /aipe:study — runs the four study-*
-                                 study-system-design-dsa.md
-                                 study-ai-engineering.md
-                                 study-prompt-engineering.md
-                                 study-agent-architecture.md
-                               rehearse.md  ← /aipe:rehearse — runs the two rehearse-*
-                                 rehearse-interview-defense.md
-                                 rehearse-hackathon-demo.md
-
-
-FOUNDATION LAYER
-════════════════
-
-REFERENCES  (read by every generator above — study and rehearse)
-
-format.md    ← concept-file format — how each file is structured
-teacher.md   ← writer persona — who teaches, what voice
-me.md        ← reader profile — who reads, how they think
+  study      → comprehension   (understand the codebase, for you)
+  rehearse   → performance     (present / defend it, for a room)
 ```
 
-  - **Describe** — take stock of what exists. No changes, no proposals, no grading.
-  - **Diagnose** — find debt and decide what's worth paying down. Produces a triaged list.
-  - **Act** — execute one specific, named change. Behaviour-preserving by default.
-  - **Evaluate** — staff-engineer opinions on the codebase, organized as a book. Not a fix list; a notebook you return to.
-  - **Teach** — anchored to this specific codebase, split across two orchestrators. `study.md` (the `/aipe:study` command) runs the four **study** generators — concept-by-concept comprehension guides for system design + DSA, AI/ML, prompt engineering, and agent architecture; run it after a code change to keep guides current. `rehearse.md` (the `/aipe:rehearse` command) runs the two **rehearse** books — performance artifacts you read out loud (an interview defense and a hackathon demo run-of-show); run it when you're about to present or interview.
-  - **References** — `format.md`, `teacher.md`, and `me.md` are foundational references, not generators. They produce no artifact of their own. Every study generator reads all three before producing output: `format.md` defines the concept-file structure (the block template, the house-style traits, the diagram/pseudocode/hard rules); `teacher.md` defines the writer voice; `me.md` defines the reader being written for.
+---
 
-Findings in the action flow move downward: an audit surfaces debt → cleanup audit triages it → refactor spec executes. The discipline is in **not skipping layers** — acting without diagnosing leads to scope creep; diagnosing without describing leads to fixing the wrong things.
+## The foundation — three files everything reads
 
-The reflective flow is separate. Read it when you want to think about or learn from a codebase, not when you want to change it. Both reflective specs hand off to the action flow when you're ready to act, but the artifacts themselves aren't action-oriented.
-
-
-## "I want to..." — which spec?
-
-
-### Take stock of a project
-
-You don't want to fix anything yet. You want to know what's there.
-
-  - General codebase snapshot → **audit.md**
-  - Accessibility state of a frontend → **audit-frontend-a11y.md**
-
-Common reasons: coming back after time away, writing portfolio descriptions, briefing an interviewer, periodic check-ins.
-
-
-### Clean up accumulated debt
-
-You can feel the codebase getting heavy. You want to fix what's worth fixing, accept the rest, and move on.
-
-  - **audit-cleanup.md** — produces a triaged debt list, then hands off to refactor specs
-
-Common signs: hesitating before touching certain files, finding the same logic in three places, names that no longer match what the code does.
-
-
-### Think about a codebase without committing to act
-
-You're not planning work. You want a staff engineer's opinions on the codebase — what's well-built, what's tangled, what techniques would apply where, what tradeoffs were made. Something you can read and return to like a book.
-
-  - **audit-refactor.md** — produces a six-chapter notebook organized by refactor category, with staff-engineer takes and verdicts on what's worth doing
-
-Common reasons: stepping back after a build phase, preparing to brief someone, building intuition for interviews, deciding what to focus on next.
-
-
-### Learn concepts from a codebase
-
-You want to deeply understand the patterns in a codebase — system design, DSA, AI engineering, ML, prompt engineering, agent architecture — concept by concept, anchored to the actual code you wrote. One file per pattern, walked end-to-end from orientation to validated understanding. There are four study generators, plus the `/aipe:study` orchestrator that runs them all and a format reference they share.
-
-  - **study.md** — the orchestrator (the `/aipe:study` command). One command that creates or updates **every** study guide for the current repo in one pass: it reads `format.md` for structure, runs each of the four generators below in create-or-update mode, and reports a single summary. Run a generator standalone when you changed only one slice of the codebase; run `study.md` when you want everything reconciled at once. (Run it after a code change to keep guides current — it's the comprehension-side command.)
-  - **study-system-design-dsa.md** — produces `.aipe/study-system-design-dsa/` with one file per pattern found in the codebase, covering system overview, system design, and DSA, in a staff-engineer voice. Per-codebase, runs from inside the repo.
-  - **study-ai-engineering.md** — produces `.aipe/study-ai-engineering/` covering LLM foundations, retrieval, agents, evals, production serving, classical ML, recommender systems, on-device inference, and system design templates. Identifies which of three AI shapes the codebase matches (LLM app / prompt tooling / classical ML) and weights coverage accordingly.
-  - **study-prompt-engineering.md** — produces `.aipe/study-prompt-engineering/` with 13 prompt-engineering concepts (anatomy, structured outputs, prompts-as-code, token budgeting, eval-driven iteration, prompt injection defenses, and more), in a working-AI-engineer voice (deliberately different from the staff-engineer persona — production scars matter more than distributed-systems pedigree here).
-  - **study-agent-architecture.md** — produces `.aipe/study-agent-architecture/` covering everything *above* a single agent: reasoning patterns (incl. the agent-loop skeleton), agentic retrieval, multi-agent orchestration topologies, agent infrastructure, and production serving for loops. Identifies which of three shapes the codebase matches (workflow/chain, single-agent, multi-agent) and weights coverage accordingly. Cross-references `study-ai-engineering.md` rather than duplicating single-agent mechanics.
-
-All four study generators read `format.md` for structure, plus `teacher.md` and `me.md` for voice and reader calibration, before producing output. See "The shape of the system now" below.
-
-Common reasons: building real comprehension (not memorization) before interviews, working through a curriculum with your own code as the anchor, returning to specific concepts as reference.
-
-
-### Rehearse for a presentation or interview
-
-You already understand the codebase — now you have to *perform* it: defend the project to an interviewer, or demo it to a room against a clock. You want performance books you read out loud, not comprehension guides.
-
-  - **rehearse.md** — the orchestrator (the `/aipe:rehearse` command). Runs both rehearse books below in one pass, with the same create-or-update detection and single summary as `study.md`. Run it when you're preparing to present or interview — not on every code change. To produce just one book, run that generator's single command instead.
-  - **rehearse-interview-defense.md** — book-style interview defense generator. Produces `.aipe/rehearse-interview-defense/` as 8 sequential chapters (the pitch, the architecture, the choices, the scale story, the failure story, the hard parts, the counterfactuals, the AI question) plus an overview. Visual-first treatment: callout boxes, recurring diagrams, strong-vs-weak answer side-by-sides, "I don't know" recovery boxes, follow-up decision trees, pull quotes. Coach posture. Pair with `study-system-design-dsa.md` — the concept files prepare the deep dive; this book prepares the wide opener.
-  - **rehearse-hackathon-demo.md** — book-style hackathon demo generator. Produces `.aipe/rehearse-hackathon-demo/` as an overview plus six chapters (the cold open, the demo, under the hood, the build story, the close, the Q&A). Built around a hard time budget (up to 10 minutes, scalable to a shorter slot); the live demo is the centerpiece, with a designated "money shot" scheduled in the first third. Demo-specific visual treatments: time-budget bars, SAY/SHOW tables, verbatim script lines, IF-IT-BREAKS recovery boxes, and "tighten it" cuts for when you're running long. Coach posture. Demos only what the codebase actually does — unbuilt features go in the close as clearly-framed "what's next."
-
-Both rehearse books read `format.md`, `teacher.md` (coach posture), and `me.md`, like the study generators — they differ in shape (book, not per-concept grid) and posture (coach, not teacher).
-
-Common reasons: prepping for a senior interview, a hackathon submission demo, a demo-day pitch, rehearsing a timed walkthrough so you don't run over.
-
-
-### Calibrate the format, the writer voice, or the reader profile
-
-These aren't generators — they're foundational reference specs that every study generator above consults.
-
-  - **format.md** — defines the concept-file format shared across the whole study family: the per-concept block template (Subtitle → Zoom out → How it works → Primary diagram → Implementation in codebase → Elaborate → Project exercises → Interview defense → Validate → See also), the house-style traits (skeleton parts; pattern / flow / layer / layers-and-hops diagrams; pseudocode; step-by-step; use cases; code side by side; zoom out then in; conversational tone), and the diagram / pseudocode / hard rules. This is the single source of truth for *how a concept file is structured*; the generators supply *what* goes in it.
-  - **teacher.md** — defines the default writer persona (staff engineer, 12 years industry, FAANG → Series B) used in teacher posture by `study-system-design-dsa.md`, `study-ai-engineering.md`, and `study-agent-architecture.md`, and in coach posture by `rehearse-interview-defense.md` and `rehearse-hackathon-demo.md`. Names the teaching philosophy, format hierarchy (diagrams primary, prose fills in, pseudocode for logic, real code only when syntax matters), the conversational-tone trait, and what's banned (hedging, marketing language, etc.). Documents the *posture variations* — teacher vs coach — and names when *not* to use this persona (the prompt engineering exception).
-  - **me.md** — defines the reader profile: who reads the artifacts, how they think, what they've already built, what they know vs honest gaps. Contains the DSA portfolio and the system design portfolio. Used by every study generator for example anchoring and depth calibration.
-
-Update these when the format, the reader's knowledge, or the writer's voice should shift. Every study generator automatically inherits the changes — no duplication, no drift.
-
-
-### Restructure code without changing what it does
-
-You know what you want to change. Behaviour stays identical.
-
-  - Any code, any language → **refactor.md**
-  - Frontend behaviour and structure (state, effects, components, data flow) → **refactor-frontend-behaviour.md**
-  - Frontend visual surface (CSS, design tokens, semantic HTML) → **refactor-frontend-visual.md**
-
-Use the most specific spec that applies. The frontend specs extend `refactor.md` — read it first, then layer the specific one on top.
-
-
-### Add capability or fix bugs
-
-These aren't in this system yet. Use feature specs or fix mini-specs (referenced by the audits, but not provided here as templates).
-
-If an audit surfaces something that requires *new behaviour* (adding keyboard navigation, fixing a real bug, building a new screen), that's not a refactor — it's feature work. The audits explicitly hand it off rather than trying to do it themselves.
-
-
-## The shape of the system now
-
-The TEACH branch has a clean separation between *how it's structured*, *who writes*, *who reads*, and *what gets written*:
+These are referenced by every generator; they are never restated inside a
+generator (inherit, don't restate).
 
 ```
-format.md    ← concept-file format (block template, traits, rules)
-teacher.md   ← writer persona (staff engineer; teacher + coach postures)
-me.md        ← reader profile (who you are, how you think)
-   │              │              │
-   └──────────────┴──────────────┘
-        read by every generator below
-                   │
-        ┌──────────┴───────────┐
-        ▼                      ▼
-study.md (/aipe:study)    rehearse.md (/aipe:rehearse)
-runs the four study-*     runs the two rehearse-*
-   │                          │
-   ├─ study-system-design-dsa.md   → .aipe/study-system-design-dsa/
-   ├─ study-ai-engineering.md      → .aipe/study-ai-engineering/
-   ├─ study-prompt-engineering.md  → .aipe/study-prompt-engineering/  (own persona)
-   └─ study-agent-architecture.md  → .aipe/study-agent-architecture/
-                              │
-                              ├─ rehearse-interview-defense.md → .aipe/rehearse-interview-defense/  (coach)
-                              └─ rehearse-hackathon-demo.md    → .aipe/rehearse-hackathon-demo/     (coach)
+  format.md    STRUCTURE — the per-concept-file template, the house
+               style, ASCII-diagram rules, the hard rules. Includes the
+               concept-file block order:
+                 Subtitle → Zoom out → Structure pass → How it works →
+                 Primary diagram → Implementation in codebase → Elaborate
+                 → Project exercises → Interview defense → Validate → See also
+
+  teacher.md   VOICE — the staff-engineer persona. Teacher posture
+               (study) and coach posture (rehearse) are the same engineer,
+               different stance. Sets tone, what's banned, what's reached
+               for first.
+
+  me.md        READER — calibration: what's already known, which examples
+               land, how deep to teach each concept.
 ```
 
-`format.md`, `teacher.md`, and `me.md` form the foundation. `format.md` is *how the file is shaped*; `teacher.md` is the *writer*; `me.md` is the *reader*. Each generator reads all three, and the artifact emerges from the conversation between them.
+Precedence when they conflict: the consuming spec wins on **structure**,
+`teacher.md` on **voice**, `me.md` on **calibration**.
 
-The precedence rule is four layers:
+---
 
-  1. **Generator wins on topic** — which concepts to cover, the topic-specific constraints, the output path.
-  2. **`format.md` wins on concept-file structure** — the block template, the house-style traits, the diagram / pseudocode / hard rules.
-  3. **`teacher.md` wins on voice register** — tone, posture, what's banned, the format hierarchy.
-  4. **`me.md` wins on calibration** — which examples land, depth modulation, what's already known vs honest gaps.
+## `/aipe:study` — the comprehension orchestrator
 
-Each consuming spec states this precedence explicitly so the agent can't get confused about what overrides what.
-
-
-### How each spec handles the foundation layer
-
-Every generator reads `format.md` for structure (the block template, the house-style traits, the diagram / pseudocode / hard rules). On top of that shared structure, each handles the *voice* foundation differently — tailored treatment, not carbon copies:
-
-  - **study-system-design-dsa.md** references `teacher.md` in the default **teacher posture**. It is now just the system-design + DSA topic generator; it no longer carries the format (that moved to `format.md`).
-  - **study-ai-engineering.md** references `teacher.md` in the default **teacher posture**, no shift.
-  - **study-agent-architecture.md** references `teacher.md` in the default **teacher posture** — orchestration is systems-shaped work, so the staff-engineer voice fits. Cross-references `study-ai-engineering.md` for single-agent mechanics rather than re-teaching them.
-  - **rehearse-interview-defense.md** references `teacher.md` in **coach posture** — same engineer, different stance. The coach-posture-specific framing (hiring committees, more direct, optimized for landing) stays in this spec because it's specific to interview defense; the underlying engineer comes from `teacher.md`.
-  - **rehearse-hackathon-demo.md** references `teacher.md` in **coach posture** too, with a demo-coach framing layered on (watched a hundred demos win and lose; optimizes for the clock and the room). Like interview defense, it's book-style — an overview plus chapters, not the per-concept grid — and runs under the `/aipe:rehearse` orchestrator alongside the defense book.
-  - **study-prompt-engineering.md** is the exception. It references `teacher.md` to explicitly *not* use it, citing the "WHEN NOT TO USE THIS PERSONA" section. Its persona (working AI engineer with production scars) stays inline. `format.md` and `me.md` are still inherited because the structure and the reader are constant across the family.
-  - **study.md** and **rehearse.md** (the two orchestrators) each read `format.md` once and hand it to their generators — `study.md` to the four study generators, `rehearse.md` to the two rehearse books — then run each in create-or-update mode and print one summary. No spec belongs to both.
-
-
-### Why this matters
-
-The format extraction did for *structure* what the persona extraction did for *voice*: it pulled the concept-file template out of the system-design spec into `format.md`, a single source of truth every generator reads. The payoff is that changing the format is now a one-place edit that the whole family inherits. Recent changes that landed in one file and propagated to every generator: the opening block became **Zoom out, then zoom in** (replacing "Why care"); **Tradeoffs**, **Tech reference**, and **Summary** were removed; the **house-style traits** were named (skeleton parts, the four diagram types, pseudocode, step-by-step, use cases, code side by side, zoom out then in, conversational tone); and the **load-bearing-skeleton** lens was added (isolate a pattern's kernel, name each part by what breaks when it's missing, separate skeleton from optional hardening).
-
-The persona extraction made the **coach vs teacher posture distinction** explicit at the system level. Previously this distinction was implicit — interview defense said "same persona, different posture" but there was no canonical reference to *what the default posture was* vs *how coach differs*. Now `teacher.md` has a "THE POSTURE" section that names both postures, and the interview defense spec cites it directly.
-
-This is useful for future specs. If you later build, say, a `study-onboarding.md` (a spec to onboard new engineers to your codebases), you'd reference `teacher.md` and possibly define a *new* posture — maybe "mentor" — that's a documented extension rather than an arbitrary override. The system has a vocabulary for posture shifts now.
-
-`teacher.md` is the *default* persona, but the system explicitly accommodates exceptions (`study-prompt-engineering.md`). That's by design — different disciplines reward different credibility, and forcing a single persona across all topics would weaken the voice on topics where the default doesn't fit. The "WHEN NOT TO USE THIS PERSONA" section in `teacher.md` gives future specs a place to opt out cleanly when warranted.
-
-
-## How the specs hand off to each other
+One command; creates or updates **all seven** study guides for the current
+repo. Run it after changing the codebase.
 
 ```
-audit.md  ────────────────►  identifies debt
-                                    │
-                                    ▼
-                             audit-cleanup.md  ─────►  triages, fix-now list
-                                                              │
-                                                              ▼
-                                                       refactor.md
-                                                       refactor-frontend-behaviour.md
-                                                       refactor-frontend-visual.md
-
-audit-frontend-a11y.md  ────►  identifies a11y gaps
-                                    │
-                                    ├──►  new capability needed  →  feature spec
-                                    ├──►  broken behaviour       →  fix mini-spec
-                                    └──►  semantic markup change →  refactor-frontend-visual.md
-
-audit-refactor.md  ───►  staff-engineer takes (book)
-                                    │
-                                    └──►  when ready to act  →  audit-cleanup.md
-                                                                (then refactor specs)
-
-format.md  ─┐
-teacher.md  ─┤  read by every generator before producing output
-me.md  ──────┤  (no artifact of their own; foundation references only)
-             │
-             ▼
-
-study.md     ──►  /aipe:study — runs the four study-* generators below
-                  (comprehension guides; run after a code change)
-rehearse.md  ──►  /aipe:rehearse — runs the two rehearse-* books below
-                  (performance artifacts; run when about to present)
-   each: reads format.md once, hands it to its generators, prints a summary
-
-study-system-design-dsa.md  ──►  system design + DSA concept files
-  (reads format.md for structure)   anchored to this codebase
-                                  (output: .aipe/study-system-design-dsa/)
-                                    │
-                                    └──►  no automatic handoff — the artifact is
-                                          the deliverable; you read and return to it
-
-study-ai-engineering.md  ───►  AI + ML concept files anchored
-  (reads format.md for structure)  to this codebase
-                                  (output: .aipe/study-ai-engineering/)
-                                    │
-                                    └──►  no automatic handoff — same as above
-
-study-prompt-engineering.md  ───►  13 prompt-engineering concept files
-  (reads format.md for structure)       anchored to this codebase
-  (own working-AI-engineer persona)     (output: .aipe/study-prompt-engineering/)
-                                    │
-                                    └──►  no automatic handoff — same as above
-
-study-agent-architecture.md  ───►  agent reasoning + orchestration concept
-  (reads format.md for structure)      files anchored to this codebase
-                                       (output: .aipe/study-agent-architecture/)
-                                    │
-                                    └──►  no automatic handoff — same as above
-
-rehearse-interview-defense.md  ───►  8-chapter book defending the project
-  (reads format.md for structure)     at the interview level
-  (coach posture from teacher.md)     (output: .aipe/rehearse-interview-defense/)
-                                    │
-                                    └──►  pair with the concept files:
-                                          concepts prepare the deep dive,
-                                          this book prepares the wide opener
-
-rehearse-hackathon-demo.md  ───►  overview + 6-chapter demo run-of-show
-  (reads format.md for structure)   for a timed presentation
-  (coach posture from teacher.md)   (output: .aipe/rehearse-hackathon-demo/)
-                                    │
-                                    └──►  no automatic handoff — the book is
-                                          the script you present from
+  #  generator                     output folder              posture
+  ─  ─────────────────────────     ──────────────────────     ───────────
+  1  study-system-design-dsa       study-system-design-dsa/   teacher
+  2  study-software-design         study-software-design/     teacher
+  3  study-security                study-security/            teacher
+  4  study-testing                 study-testing/             teacher
+  5  study-ai-engineering          study-ai-engineering/      teacher
+  6  study-prompt-engineering      study-prompt-engineering/  inline*
+  7  study-agent-architecture      study-agent-architecture/  teacher
 ```
 
-The arrows are one-way. Refactors don't loop back to audits; audits don't execute refactors. The reflective specs hand off to the action flow but never receive from it. Each spec stays in its layer.
+\* `study-prompt-engineering` uses its own inline persona (a working AI
+engineer), not `teacher.md`.
 
-`format.md`, `teacher.md`, and `me.md` flow *into* every generator (study and rehearse) but receive nothing back — they're foundations, not artifacts.
+What each covers:
 
+```
+  system-design-dsa   architecture + data structures & algorithms
+  software-design     module/interface quality, complexity (Ousterhout)
+  security            trust boundaries, authn/authz, injection, secrets
+  testing             deterministic correctness, coverage, test design
+  ai-engineering      LLM foundations, RAG, agents, evals, serving, ML
+  prompt-engineering  the prompt-engineering concepts
+  agent-architecture  reasoning patterns, multi-agent orchestration
+```
 
-## Why the constraints matter
+---
 
-Every spec has a "must not change / must not introduce / what this does not do" section. These exist because AI assistants will, by default, do more than what's asked. Without explicit constraints:
+## `/aipe:rehearse` — the performance orchestrator
 
-  - **Refactors** turn into rewrites — Claude "improves" things you didn't ask about
-  - **Audits** turn into action plans — Claude finds problems and starts fixing them
-  - **Cleanup** turns into scope creep — one fix becomes five, behaviour changes silently
+One command; creates or updates **all three** rehearse books. Run it when
+preparing to present or interview. All three use **coach** posture.
 
-The discipline is what makes the specs useful. If you find yourself softening the constraints to make a task work, you've picked the wrong spec.
+```
+  #  generator                     output folder                  produces
+  ─  ─────────────────────────     ────────────────────────────   ────────
+  1  rehearse-interview-defense    rehearse-interview-defense/    8-chapter defense book
+  2  rehearse-hackathon-demo       rehearse-hackathon-demo/       demo run-of-show
+  3  rehearse-design-doc           rehearse-design-doc/           staff design docs / RFCs
+```
 
+---
 
-## Conventions
+## Standalone specs (not in an orchestrator)
 
-  - **One spec per session.** Don't combine refactor types or audit lenses across a single Claude Code session.
-  - **Save outputs to predictable paths.** Each spec specifies where its output goes (`.aipe/audits/`, `.aipe/specs/refactors/`). Keeping these consistent makes the history searchable later.
-  - **Reference, don't duplicate.** When you write a spec instance (a real refactor or audit), reference the template, don't copy its rules into the instance.
-  - **Update context.md after major changes.** The audits write to dated snapshots; `.aipe/project/context.md` is the living document that should reflect the current state.
+Run these directly when relevant; they are not part of the one-command
+sweeps.
 
+```
+  /aipe:study-data-modeling   audits persistent-data design (schema,
+                              indexing, transactions, migrations). Run on
+                              repos with real persistence.
 
-## Spec reference
+  /aipe:read-aposd            a book-style guide to the primitives in
+                              "A Philosophy of Software Design" — teaches
+                              the framework itself (not a codebase audit).
+```
 
-| Spec | Layer | Scope | Best for |
-|------|-------|-------|----------|
-| `audit.md` | Describe | Any codebase | Snapshots, onboarding, portfolio writing, interview prep |
-| `audit-frontend-a11y.md` | Describe | Frontend a11y | Finding accessibility gaps without committing to fix them |
-| `audit-cleanup.md` | Diagnose | Any codebase | Producing a triaged debt list with explicit fix/accept/defer decisions |
-| `audit-refactor.md` | Evaluate | Any codebase | Staff-engineer notebook of takes on what's worth refactoring — book-style, returnable |
-| `study.md` | Teach (orchestrator) | Any codebase | `/aipe:study` — runs the four study generators in create-or-update mode and reports a single summary |
-| `study-system-design-dsa.md` | Teach (study) | Any codebase | Per-codebase concept guides — system design + DSA — staff-engineer voice |
-| `study-ai-engineering.md` | Teach (study) | Any codebase, AI/ML topic | Per-codebase AI + ML concept guides — LLM foundations, retrieval, agents, evals, classical ML, system design templates — staff-engineer voice |
-| `study-prompt-engineering.md` | Teach (study) | Any codebase, prompt engineering topic | Per-codebase guide of 13 prompt-engineering concepts — working-AI-engineer voice |
-| `study-agent-architecture.md` | Teach (study) | Any codebase, agent topic | Per-codebase guide of reasoning patterns, multi-agent orchestration, and agent infrastructure — everything above a single agent — staff-engineer voice |
-| `rehearse.md` | Teach (orchestrator) | Any codebase | `/aipe:rehearse` — runs the two rehearse books in create-or-update mode and reports a single summary |
-| `rehearse-interview-defense.md` | Teach (rehearse) | Any codebase, project-level interview defense | Book-style 8-chapter defense of the whole project — coach posture, visual-first treatment |
-| `rehearse-hackathon-demo.md` | Teach (rehearse) | Any codebase, timed demo presentation | Book-style overview + 6-chapter run-of-show for a ≤10-min demo — coach posture, time-budgeted, demo-as-centerpiece |
-| `format.md` | Foundation | Format reference (concept-file structure) | Defines the concept-file block template, the house-style traits, and the diagram / pseudocode / hard rules every generator inherits |
-| `teacher.md` | Foundation | Persona reference (writer) | Defines the staff-engineer voice across the generators; named posture variations (teacher / coach); named exceptions |
-| `me.md` | Foundation | Persona reference (reader) | Defines who reads the artifacts — career arc, cognitive shape, DSA + system design portfolios, honest gap inventory |
-| `refactor.md` | Act | Any code, language-agnostic | Named, behaviour-preserving restructures |
-| `refactor-frontend-behaviour.md` | Act | Frontend behaviour | State placement, effects, components, data flow, perf |
-| `refactor-frontend-visual.md` | Act | Frontend visuals | CSS organization, design tokens, semantic HTML |
+---
 
+## How the specs partition — altitude, no overlap
 
-## Reading order if you're new to this
+Every spec owns one altitude or concern; a finding belongs to exactly one.
 
-For the **action flow** (audit / cleanup / refactor):
+```
+  intelligence   ai-engineering · prompt-engineering · agent-architecture
+       ▲
+  systems        system-design-dsa            (services, scale, DSA)
+       │
+  code-level     software-design · security · testing · data-modeling
+       │         (modules, trust, correctness, persistent data)
+       ▼
+  foundations    read-aposd                   (learn the primitives)
 
-  1. **refactor.md** — establishes the discipline (must-not-change / must-not-introduce). Everything else inherits from this.
-  2. **audit.md** — the describe-don't-act discipline. Mirrors refactor.md's constraint style at a different layer.
-  3. **audit-cleanup.md** — how diagnosis bridges describe and act.
-  4. The frontend specs — once you've internalized the general patterns, the frontend ones are extensions.
+  human layer    rehearse-design-doc          (communicate decisions)
+```
 
-For the **reflective flow** (study + rehearse):
+Key seams:
+- **software-design vs system-design-dsa** — module/interface/complexity
+  here; service/architecture/algorithm there.
+- **testing vs ai-engineering evals** — deterministic "equals expected"
+  here; probabilistic "good enough / didn't regress" there.
+- **data-modeling vs system-design** — schema/index/query shape here;
+  which datastore + scaling there.
+- **read-aposd vs study-software-design** — learn the framework vs apply
+  it to your repo.
 
-  1. **format.md** — read this first to understand the concept-file structure every generator produces: the block template, the house-style traits, the diagram / pseudocode / hard rules. This is the spine the topic specs fill.
-  2. **me.md** — the reader profile every generator consults. Read it to understand who the artifacts are calibrated for.
-  3. **teacher.md** — the writer persona. Names the default voice, the format hierarchy, the bans, and the posture variations (teacher vs coach).
-  4. The four **study** generators (`study-system-design-dsa.md`, `study-ai-engineering.md`, `study-prompt-engineering.md`, `study-agent-architecture.md`) and the two **rehearse** books (`rehearse-interview-defense.md`, `rehearse-hackathon-demo.md`) — once you've internalized `format.md`'s structure, each is just a topic + voice layered on top. The two rehearse books layer the coach posture on top of that.
-  5. **study.md** and **rehearse.md** — the two orchestrators. Read last: `study.md` ties the four study generators into `/aipe:study`; `rehearse.md` ties the two rehearse books into `/aipe:rehearse`. No spec belongs to both.
+---
 
-> The specs are designed to be read in this order, but used in any order. Reading order builds the mental model; usage depends on what you're trying to do.
+## How a run works
+
+```
+  1. detect    for each generator, does .aipe/<folder>/ exist?
+                 NO  → CREATE (full generate from the spec)
+                 YES → UPDATE (reconcile vs the codebase, surgically)
+  2. plan      one consolidated change list across all generators
+  3. confirm   a single gate for the whole run (skipped if non-interactive)
+  4. execute   run each in its detected mode, in run order
+  5. report    one summary table + per-guide detail
+```
+
+- **Per-repo.** Every reference, path, and citation is about the invoked
+  repo only.
+- **UPDATE reconciles against the CODE, not the specs.** A `format.md` or
+  `teacher.md` change does *not* propagate through UPDATE — that needs a
+  regenerate (delete the folder, or re-run as CREATE).
+- **Honest output.** A generator emits "not yet implemented / not
+  exercised" rather than inventing content for a topic the repo doesn't
+  hit. Findings are grounded in real files; nothing is fabricated.
+
+---
+
+## Output layout
+
+```
+  .aipe/
+    study-system-design-dsa/      study-prompt-engineering/
+    study-software-design/        study-agent-architecture/
+    study-security/               study-data-modeling/      (standalone)
+    study-testing/                read-aposd/               (standalone)
+    study-ai-engineering/
+    rehearse-interview-defense/
+    rehearse-hackathon-demo/
+    rehearse-design-doc/
+```
+
+---
+
+## What's new
+
+```
+  + study-software-design   new generator — applies A Philosophy of
+                            Software Design to the repo. Wired into
+                            /aipe:study.
+  + study-security          new generator — trust-axis audit. Wired in.
+  + study-testing           new generator — correctness/test audit,
+                            partitioned from ai-engineering evals. Wired in.
+  + study-data-modeling     new generator — persistent-data audit.
+                            Standalone.
+  + read-aposd              new standalone spec — book-style guide to
+                            the design primitives.
+  + rehearse-design-doc     new generator — staff design docs / RFCs,
+                            the human/communication layer. Wired into
+                            /aipe:rehearse.
+
+  ~ format.md               added Block 3 "Structure pass" (layers · axes
+                            · seams) between Zoom out and How it works;
+                            blocks renumbered to 11.
+  ~ teacher.md              added the "verdict first, then rank what
+                            matters" teaching trait.
+  ~ study.md                orchestrator: 4 → 7 generators.
+  ~ rehearse.md             orchestrator: 2 → 3 generators.
+```

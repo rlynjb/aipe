@@ -1,18 +1,22 @@
 ---
-description: Study orchestrator — run all five study generators in one pass, with a single confirmation gate and a consolidated summary
+description: Study orchestrator — run all seven study generators in one pass, with a single confirmation gate and a consolidated summary
 ---
 
 The user invoked `/aipe:study`.
 
-This command takes **no arguments**. It is the **orchestrator**: it does not generate any concept content of its own — it runs each of the five study generators in the right mode (create or update) and reports what changed. Use this command after a nontrivial codebase change when you want every study guide reconciled in one pass.
+This command takes **no arguments**. It is the **orchestrator**: it does not generate any concept content of its own — it runs each of the seven study generators in the right mode (create or update) and reports what changed. Use this command after a nontrivial codebase change when you want every study guide reconciled in one pass.
 
 If you changed only one slice of the codebase and want only that guide refreshed, reach for the matching standalone command instead:
 
 - `/aipe:study-system-design-dsa` — system design + DSA
 - `/aipe:study-software-design` — code-level design audit (deep modules, info hiding, complexity, layering — APOSD applied to your repo)
+- `/aipe:study-security` — trust boundaries, auth, input validation, secrets, data exposure, dependencies, LLM/agent security
+- `/aipe:study-testing` — what's tested vs not, test design + levels, determinism + flakiness, the AI-eval seam
 - `/aipe:study-ai-engineering` — LLM foundations, retrieval, agents, evals, production serving, ML
 - `/aipe:study-prompt-engineering` — the 13 prompt engineering concepts (working AI engineer voice)
 - `/aipe:study-agent-architecture` — reasoning patterns, agentic retrieval, multi-agent orchestration
+
+There's also `/aipe:study-data-modeling` (schema shape, normalization, indexes, integrity, migrations) — it's a study-family generator but lives **outside this orchestrator** and runs standalone only. Reach for it directly when you want the data-shape audit.
 
 The performance-side books (interview defense, hackathon demo) have moved to a sibling family. Use `/aipe:rehearse` (the rehearse orchestrator) for both, or `/aipe:rehearse-interview-defense` / `/aipe:rehearse-hackathon-demo` for one at a time. `/aipe:study` keeps your *comprehension* guides current; `/aipe:rehearse` prepares the *performance* books.
 
@@ -67,6 +71,8 @@ ${CLAUDE_PLUGIN_ROOT}/specs/study.md                       (this orchestrator sp
 ${CLAUDE_PLUGIN_ROOT}/specs/format.md                      (structure — concept-file template + rules)
 ${CLAUDE_PLUGIN_ROOT}/specs/study-system-design-dsa.md     (system-design + DSA topic)
 ${CLAUDE_PLUGIN_ROOT}/specs/study-software-design.md       (code-level design audit topic)
+${CLAUDE_PLUGIN_ROOT}/specs/study-security.md              (trust-axis audit topic)
+${CLAUDE_PLUGIN_ROOT}/specs/study-testing.md               (deterministic-correctness audit topic)
 ${CLAUDE_PLUGIN_ROOT}/specs/study-ai-engineering.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-prompt-engineering.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-agent-architecture.md
@@ -76,12 +82,12 @@ ${CLAUDE_PLUGIN_ROOT}/specs/me.md                          (reader profile)
 
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
-**`format.md` is the structural foundation for the whole family** — the per-concept-file template, the house-style traits, formatting rules, diagram rules, pseudocode rules, hard rules. Every generator reads it for structure even though each generates a different topic. Read it once; pass it to all five. (`study-system-design-dsa.md` is no longer special as a structure source — it is now just the system-design + DSA topic generator, reading `format.md` for structure like the others. The legacy template sections still in its body are superseded; `format.md` wins.)
+**`format.md` is the structural foundation for the whole family** — the per-concept-file template, the house-style traits, formatting rules, diagram rules, pseudocode rules, hard rules. Every generator reads it for structure even though each generates a different topic. Read it once; pass it to all seven. (`study-system-design-dsa.md` is no longer special as a structure source — it is now just the system-design + DSA topic generator, reading `format.md` for structure like the others. The legacy template sections still in its body are superseded; `format.md` wins.)
 
 **Per format.md, the concept-file template is:** Subtitle → Zoom out, then zoom in → How it works → Primary diagram → Implementation in codebase → Elaborate → Project exercises (AI/ML only) → Interview defense → Validate → See also. **Removed from older templates: Why care (replaced by Zoom out), Tradeoffs, Tech reference, Summary.**
 
 **Persona routing is not uniform:**
-- Four generators use `teacher.md` in **teacher posture** — `study-system-design-dsa`, `study-software-design`, `study-ai-engineering`, and `study-agent-architecture`.
+- Six generators use `teacher.md` in **teacher posture** — `study-system-design-dsa`, `study-software-design`, `study-security`, `study-testing`, `study-ai-engineering`, and `study-agent-architecture`.
 - `study-prompt-engineering` uses its own **inline persona** (working AI engineer) and must NOT be given `teacher.md`'s persona to apply. (It still reads `teacher.md` only to honor its "WHEN NOT TO USE THIS PERSONA" exclusion.)
 - The coach-posture generators (interview defense, hackathon demo) belong to the rehearse orchestrator now and are NOT run here.
 
@@ -96,6 +102,8 @@ Generator                       Output folder                       Decision
 ─────────────────────────────   ─────────────────────────────────   ───────
 study-system-design-dsa.md      .aipe/study-system-design-dsa/      CREATE or UPDATE
 study-software-design.md        .aipe/study-software-design/        CREATE or UPDATE
+study-security.md               .aipe/study-security/               CREATE or UPDATE
+study-testing.md                .aipe/study-testing/                CREATE or UPDATE
 study-ai-engineering.md         .aipe/study-ai-engineering/         CREATE or UPDATE
 study-prompt-engineering.md     .aipe/study-prompt-engineering/     CREATE or UPDATE
 study-agent-architecture.md     .aipe/study-agent-architecture/     CREATE or UPDATE
@@ -105,6 +113,8 @@ A folder exists (UPDATE) when its generator's own "Check for existing guide" sig
 
 - `study-system-design-dsa/` — `00-overview.md` at root OR any file in `01-system-design/` / `02-dsa/`
 - `study-software-design/` — `00-overview.md` at root OR any concept file matching `0[1-8]-*.md`
+- `study-security/` — `00-overview.md` at root OR any concept file matching `0[1-8]-*.md`
+- `study-testing/` — `00-overview.md` at root OR any concept file matching `0[1-7]-*.md`
 - `study-ai-engineering/` — `00-overview.md` at root OR any file in `01-llm-foundations/` … `09-ml-system-design-templates/`
 - `study-prompt-engineering/` — `00-overview.md` at root OR any `[0-9][0-9]-*.md` file
 - `study-agent-architecture/` — `00-overview.md` at root OR any file in `01-reasoning-patterns/` … `06-orchestration-system-design-templates/`
@@ -115,7 +125,7 @@ For each CREATE-mode generator, mark "full generate."
 
 ## Step 5 — Print the consolidated plan
 
-Output one combined plan across all five guides:
+Output one combined plan across all seven guides:
 
 ```
 STUDY RUN PLAN — <repo name> — <today's ISO date>
@@ -125,6 +135,8 @@ STUDY RUN PLAN — <repo name> — <today's ISO date>
 ├──────────────────────────────┼──────────┼────────────────────────────┤
 │ study-system-design-dsa      │ <mode>   │ <full generate | N edits>  │
 │ study-software-design        │ <mode>   │ <…>                        │
+│ study-security               │ <mode>   │ <…>                        │
+│ study-testing                │ <mode>   │ <…>                        │
 │ study-ai-engineering         │ <mode>   │ <…>                        │
 │ study-prompt-engineering     │ <mode>   │ <…>                        │
 │ study-agent-architecture     │ <mode>   │ <…>                        │
@@ -135,7 +147,7 @@ Below the table, for each UPDATE-mode guide, list the per-file changes (which fi
 
 ## Step 6 — Single confirmation gate
 
-**Wait for one confirmation** before editing any file. The five generators' "wait for confirmation before editing" contracts are batched into this single gate.
+**Wait for one confirmation** before editing any file. The seven generators' "wait for confirmation before editing" contracts are batched into this single gate.
 
 If the run is non-interactive (a `--yes`-style invocation or an automated context where the user already accepted), skip the gate and execute the plan directly.
 
@@ -145,9 +157,11 @@ Run the generators in this order — independent for correctness, but the order 
 
 1. `study-system-design-dsa`
 2. `study-software-design`
-3. `study-ai-engineering`
-4. `study-prompt-engineering`
-5. `study-agent-architecture`
+3. `study-security`
+4. `study-testing`
+5. `study-ai-engineering`
+6. `study-prompt-engineering`
+7. `study-agent-architecture`
 
 For each generator:
 
@@ -175,6 +189,8 @@ STUDY RUN SUMMARY — <repo name> — <today's ISO date>
 ├──────────────────────────────┼──────────┼────────────────────────────┤
 │ study-system-design-dsa      │ <mode>   │ <e.g. 2 files edited, 1+>  │
 │ study-software-design        │ <mode>   │ <e.g. 3 findings refreshed>│
+│ study-security               │ <mode>   │ <e.g. 2 findings added>    │
+│ study-testing                │ <mode>   │ <e.g. no change (current)> │
 │ study-ai-engineering         │ <mode>   │ <e.g. no change (current)> │
 │ study-prompt-engineering     │ <mode>   │ <e.g. 13 files generated>  │
 │ study-agent-architecture     │ <mode>   │ <e.g. full guide generated>│
@@ -191,8 +207,8 @@ Below the table, one section per guide listing the specific files touched and a 
 
 - **Per-repo.** The orchestrator runs against ONE repo — the directory the command was invoked in. It never reads or writes another repo. Every reference, file path, and code citation is about this repo only.
 - **All six always run.** The orchestrator does NOT skip a generator because the repo "doesn't do that topic." Each generator's own spec decides what to emit for a topic the codebase doesn't exercise (honest "not yet implemented" files, system-design templates as buildable targets, etc.). Skipping is the generator's call, never the orchestrator's.
-- **Structure source is read once.** `format.md` is the structural foundation for the whole family. Read it once and hand it to all five generators; do not re-derive structure per generator. (`study-system-design-dsa.md` is now a topic generator like the others, not the structure source.)
-- **Persona routing is not uniform.** See Step 3 — five generators use `teacher.md` (one in coach posture, three in teacher posture); `study-prompt-engineering` uses its own inline persona.
+- **Structure source is read once.** `format.md` is the structural foundation for the whole family. Read it once and hand it to all seven generators; do not re-derive structure per generator. (`study-system-design-dsa.md` is now a topic generator like the others, not the structure source.)
+- **Persona routing is not uniform.** See Step 3 — seven generators use `teacher.md` (one in coach posture, three in teacher posture); `study-prompt-engineering` uses its own inline persona.
 - **Edits are surgical in UPDATE mode.** Never rewrite a whole file when a section-level edit will do. Preserve everything the codebase still supports; change only what the codebase changed.
 - **A guide that is already current produces no edits.** UPDATE mode is a no-op when the code and the guide already agree — the expected outcome for guides whose topic you didn't touch this round.
 - **Curriculum files are optional inputs.** Read `aieng-curriculum.md` when present; degrade gracefully when absent. Never block a run on a missing curriculum file.
