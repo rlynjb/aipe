@@ -9,7 +9,7 @@
         "source": "github",
         "repo": "rlynjb/aipe"
       },
-      "description": "Generate filled specs from 15 disciplined templates across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach + Rehearse) — plus two orchestrators (study, rehearse) that run their families in one pass. Uses your agent's own model, no external CLI."
+      "description": "Generate filled specs from 17 disciplined templates across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach + Rehearse + Read) — plus two orchestrators (study, rehearse) that run their families in one pass. Uses your agent's own model, no external CLI."
     }
   ]
 }

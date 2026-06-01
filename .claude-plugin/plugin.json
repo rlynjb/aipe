@@ -1,7 +1,7 @@
 {
   "name": "aipe",
-  "description": "Spec workflow for AI-assisted development. 15 disciplined slash commands across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach + Rehearse) — plus two orchestrators that run their families in one pass. Commands: /aipe:audit, /aipe:audit-cleanup, /aipe:audit-frontend-a11y, /aipe:audit-refactor, /aipe:refactor, /aipe:refactor-frontend-behaviour, /aipe:refactor-frontend-visual, /aipe:study (orchestrator), /aipe:study-system-design-dsa, /aipe:study-ai-engineering, /aipe:study-agent-architecture, /aipe:study-prompt-engineering, /aipe:rehearse (orchestrator), /aipe:rehearse-interview-defense, /aipe:rehearse-hackathon-demo — generate filled specs from your project context using your agent's own model, no external CLI, no extra API keys.",
-  "version": "1.52.0",
+  "description": "Spec workflow for AI-assisted development. 17 disciplined slash commands across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach + Rehearse + Read) — plus two orchestrators that run their families in one pass. Commands: /aipe:audit, /aipe:audit-cleanup, /aipe:audit-frontend-a11y, /aipe:audit-refactor, /aipe:refactor, /aipe:refactor-frontend-behaviour, /aipe:refactor-frontend-visual, /aipe:study (orchestrator), /aipe:study-system-design-dsa, /aipe:study-software-design, /aipe:study-ai-engineering, /aipe:study-agent-architecture, /aipe:study-prompt-engineering, /aipe:rehearse (orchestrator), /aipe:rehearse-interview-defense, /aipe:rehearse-hackathon-demo, /aipe:read-aposd — generate filled specs from your project context using your agent's own model, no external CLI, no extra API keys.",
+  "version": "1.53.0",
   "author": { "name": "rlynjb" },
   "homepage": "https://github.com/rlynjb/aipe",
   "repository": "https://github.com/rlynjb/aipe",
