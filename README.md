@@ -5,7 +5,30 @@ A spec system for generating per-repo learning and performance artifacts. Point 
 ```text
 study      → comprehension   (understand the codebase, for you)
 rehearse   → performance     (align / present / defend, for a room)
+ready      → readiness       (score on the AI-eng hiring ladder + drill the gap)
+audit      → take stock      (status / cleanup / a11y / refactor opinions)
+code-review → per-branch     (Intent → Shape → Architecture → Correctness → Craft)
 ```
+
+## Install & update
+
+AIPE ships as a Claude Code plugin via the `rlynjb-aipe` marketplace (sourced from this repo). All commands are run inside Claude Code, not in a shell.
+
+```text
+# first-time install
+/plugin marketplace add rlynjb/aipe
+/plugin install aipe@rlynjb-aipe
+
+# update to the latest version
+/plugin marketplace update rlynjb-aipe
+/plugin install aipe@rlynjb-aipe
+```
+
+`/plugin marketplace update` refreshes the catalog from GitHub (output: `✔ Updated 1 marketplace (1 plugin bumped)` when a new version is available, or `✔ Updated 1 marketplace` when already current). Re-running `/plugin install` upgrades the installed copy. Auto-update can be toggled per marketplace in `/plugin` → **Marketplaces**; pair it with `/reload-plugins` to pick up changes mid-session.
+
+Publisher (this repo): pushing to `main` is enough — the marketplace catalog is read live from GitHub. The version that consumers see is set in `.claude-plugin/plugin.json`.
+
+For Codex CLI users, the plugin manifest ships in `.codex-plugin/` and `plugins/aipe/.codex-plugin/`. Codex install path differs by version; see Codex docs for the current `codex plugin` commands.
 
 ## The foundation — three files everything reads
 
