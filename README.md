@@ -109,7 +109,7 @@ Reviews the **current branch's diff against base** and emits a single report. No
 /aipe:code-review develop   → review current branch vs develop
 ```
 
-Inherits the lens inventory (Intent → Shape → Architecture → Correctness → Craft) from `prompts/pr-review-protocol-v2.md` and owns the framing: a required **Branch context** block up front, `file:line` anchoring inside the diff, verdict-first ranked findings, severity discipline on Pass 4, and a single-report output that mirrors to `.aipe/reviews/<branch>-<date>.md` when that directory exists.
+Five lenses walked in order (Intent → Shape → Architecture → Correctness → Craft), each with its own checklist and blocking conditions. Self-contained: the spec carries the full lens inventory plus the framing rules — a required **Branch context** block up front, `file:line` anchoring inside the diff, verdict-first ranked findings, severity discipline on Pass 4, and a single-report output that mirrors to `.aipe/reviews/<branch>-<date>.md` when that directory exists.
 
 ## How the specs partition — one owner per concern
 

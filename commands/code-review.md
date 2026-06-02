@@ -29,19 +29,18 @@ Read these files (skip missing ones — none are required for a code review, but
 
 ## Step 2 — Load the template chain
 
-Code review reads five files in order — structure, voice, reader, protocol, then the spec:
+Code review reads four files in order — structure, voice, reader, then the spec:
 
 ```
 ${CLAUDE_PLUGIN_ROOT}/specs/format.md
 ${CLAUDE_PLUGIN_ROOT}/specs/teacher.md
 ${CLAUDE_PLUGIN_ROOT}/specs/me.md
-${CLAUDE_PLUGIN_ROOT}/prompts/pr-review-protocol-v2.md
 ${CLAUDE_PLUGIN_ROOT}/specs/code-review.md
 ```
 
 If `${CLAUDE_PLUGIN_ROOT}` is unset, search upward from this file's location.
 
-Precedence when files overlap: `format.md` wins on structure; `teacher.md` wins on voice; `me.md` wins on reader calibration; `pr-review-protocol-v2.md` wins on **what to check per lens**; `code-review.md` wins on **how to frame and report findings**.
+Precedence when files overlap: `format.md` wins on structure; `teacher.md` wins on voice; `me.md` wins on reader calibration; `code-review.md` wins on **everything else** — the lens inventory, the blocking conditions, the branch-context discipline, the anchoring rules, and the report format all live in the spec.
 
 ## Step 3 — Resolve branch and base
 
@@ -51,7 +50,7 @@ Precedence when files overlap: `format.md` wins on structure; `teacher.md` wins 
 
 ## Step 4 — Gather inputs
 
-Per `pr-review-protocol-v2.md` § Inputs to gather first:
+Per `specs/code-review.md` § INPUTS:
 
 ```
 git log <base>..HEAD --oneline
@@ -88,9 +87,9 @@ This block is the single source of truth for what the branch is FOR. Every Pass-
 
 ## Step 6 — Walk the lenses in order
 
-Walk the five lenses from `pr-review-protocol-v2.md` in order: **Intent → Shape → Architecture → Correctness → Craft**. Finish each lens before starting the next — problems found higher up make lower-level findings irrelevant.
+Walk the five lenses from `specs/code-review.md` in order: **Intent → Shape → Architecture → Correctness → Craft**. Finish each lens before starting the next — problems found higher up make lower-level findings irrelevant.
 
-Honor the protocol's per-lens **blocking conditions**: if a lens fires a blocking condition, halt and report. Do not proceed to the next lens.
+Honor the spec's per-lens **blocking conditions**: if a lens fires a blocking condition, halt and report. Do not proceed to the next lens.
 
 Collect findings; do not emit them mid-pass. Rank per lens (verdict-first: name the worst issue first). Assign severity on Pass 4 (`blocking` / `important` / `minor`). Tag Pass 5 as `nit:` or `suggestion:` (always non-blocking).
 
