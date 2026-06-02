@@ -9,7 +9,7 @@
         "source": "github",
         "repo": "rlynjb/aipe"
       },
-      "description": "Generate filled specs from 21 disciplined templates across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach + Rehearse + Read) — plus two orchestrators (study, rehearse) that run their families in one pass. Uses your agent's own model, no external CLI."
+      "description": "Generate filled specs from 29 disciplined templates across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach + Rehearse + Read). Study family covers 15 CS/AI topics (system design, software design, data modeling, security, testing, runtime, networking, databases, DSA, distributed systems, observability, performance, AI eng, prompt eng, agent architecture); rehearse family covers 4 human-layer artifacts (problem selection, design docs, demo, interview defense). Two orchestrators run their families in one pass. Uses your agent's own model, no external CLI."
     }
   ]
 }
