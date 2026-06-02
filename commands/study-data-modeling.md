@@ -8,7 +8,7 @@ This command takes **no arguments**. There is one data-modeling guide per repo, 
 
 This command produces a topic-focused study generator that audits the **current repo**'s persistent data: the schema as-built, how it's normalized (or duplicated), how it's indexed against how it's queried, how integrity is enforced, and how it evolves. Findings grounded in real schema/migration/query files.
 
-This generator is **standalone** — it does NOT join `/aipe:study` (the orchestrator). Run it directly when you want the data-shape audit.
+This generator is wired into `/aipe:study` and also remains runnable standalone when only the data-shape audit changed.
 
 **Partition (two seams):**
 - `study-data-modeling` — the **SHAPE** of persistent data: schema, normalization, indexes, queries, integrity. ← this command.

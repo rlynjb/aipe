@@ -82,7 +82,7 @@ Check whether `.aipe/study-system-design-dsa/` already contains the guide. The s
 - **Existing guide found** → go to UPDATE MODE (Step 5U onward). **Do NOT regenerate from scratch.**
 - **No existing guide** → go to CREATE MODE (Step 5C onward).
 
-**Legacy directory check.** Earlier versions used `.aipe/study-<purpose>/` with a derived 2-word descriptor (e.g., `.aipe/study-ai-journal/`). If any directory matching `.aipe/study-*/` exists *other than* the four fixed study names (`study-system-design-dsa/`, `study-ai-engineering/`, `study-prompt-engineering/`, `study-agent-architecture/`) — or the two now-renamed performance folders `study-interview-defense/` and `study-hackathon-demo/` (which moved to `.aipe/rehearse-interview-defense/` and `.aipe/rehearse-hackathon-demo/`) — treat it as a legacy guide and flag it. In CREATE mode, prompt the user once: "Found a legacy guide at `<path>` — migrate to the new path or leave as archive?" In UPDATE mode, note the legacy directory in the Step 7U change plan.
+**Legacy directory check.** Earlier versions used `.aipe/study-<purpose>/` with a derived descriptor (for example `.aipe/study-ai-journal/`). Compare any `.aipe/study-*/` directory against the current fixed generator names declared in `specs/study.md`; treat only unrecognized names as legacy guides. The old `study-interview-defense/` and `study-hackathon-demo/` folders are also legacy because those artifacts moved to `.aipe/rehearse-*/`. In CREATE mode, prompt once: "Found a legacy guide at `<path>` — migrate to the new path or leave as archive?" In UPDATE mode, note the legacy directory in the Step 7U change plan.
 
 ---
 

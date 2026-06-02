@@ -1,6 +1,6 @@
 # Codebase Study Spec
 
-A spec that turns your codebase into a study guide for system design, DSA, and AI engineering. This is not interview prep. This is comprehension — one file per pattern, each file walking the reader from a curiosity hook to verified understanding. Diagrams, prose, tradeoff analysis, and self-check blocks sit in a deliberate order, so working through a file builds the concept the way you'd build it in your own head.
+A spec that turns your codebase into a study guide for system design and applied DSA. This is not interview prep. This is comprehension — one file per pattern, each file walking the reader from a curiosity hook to verified understanding. Diagrams, prose, tradeoff analysis, and self-check blocks sit in a deliberate order, so working through a file builds the concept the way you'd build it in your own head.
 
 ---
 
@@ -25,28 +25,9 @@ This spec asks: "Do you actually understand this?"
 
 ## How this spec composes with the rest of the family
 
-This spec is one of five study generators, sitting under one orchestrator, plus two persona specs that they all reference:
+This spec is the core architecture + applied-DSA generator. `/aipe:study` runs it alongside the foundation, code-level, adjacent, and intelligence generators. `format.md` is the shared structural source; `teacher.md` supplies teacher posture; `me.md` supplies reader calibration.
 
-```
-study.md                       ← ORCHESTRATOR (the /aipe:study command)
-                                  runs every generator below in create-or-update mode
-
-teacher.md                     ← writer persona (who teaches, what voice)
-me.md                          ← reader profile (who reads, how they think)
-                                  both referenced by every generator below
-
-study-system-design-dsa.md     → .aipe/study-system-design-dsa/   (this spec)
-study-ai-engineering.md        → .aipe/study-ai-engineering/
-study-prompt-engineering.md    → .aipe/study-prompt-engineering/
-study-agent-architecture.md    → .aipe/study-agent-architecture/
-rehearse-interview-defense.md     → .aipe/rehearse-interview-defense/
-```
-
-Each generator spec runs per-repo and produces a fixed-name folder. `study.md` is the single entry point — it invokes all five generators, detecting per-folder whether each run is a create or an update. `teacher.md` and `me.md` are read by every generator before producing output. They do not generate anything themselves — they calibrate **voice** (teacher.md) and **fit** (me.md) for the reader. The generator specs handle structure; the two persona specs handle who's speaking and who's listening; the orchestrator handles running them all.
-
-This spec also serves as the **structural foundation** for the whole family: the per-concept-file template, the formatting rules, the diagram requirements, the hard rules, and the constraint summary all live here. The other four generators inherit them by reference rather than restating them.
-
-One exception: `study-prompt-engineering.md` uses a different persona (working AI engineer, not staff engineer) because the discipline rewards different credibility. It still references `me.md` for reader calibration, but defines its own persona inline rather than inheriting from `teacher.md`. See `teacher.md`'s "WHEN NOT TO USE THIS PERSONA" section for why.
+Its seam is deliberate: this guide owns architectural shape, request and state flow, scaling tradeoffs, and algorithms actually exercised by the repo. `study-dsa-foundations` owns reusable DSA curriculum including gaps not exercised here. `study-runtime-systems`, `study-networking`, and `study-database-systems` own their mechanism-level foundations. Cross-link them rather than re-teaching them.
 
 ---
 

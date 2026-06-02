@@ -132,5 +132,4 @@ becomes "justify this test boundary / this mock."
 
 Create/update, confirmation, audit pass, run order, summary: family pattern,
 identical to `study-software-design.md`. Per-repo, code-grounded, original
-expression, inherit structure + voice. Wire into `/aipe:study` via a table
-row + run-order entry (teacher posture); standalone until then.
+expression, inherit structure + voice. Wired into `/aipe:study` under the shared confirmation gate and consolidated summary; also runnable standalone.

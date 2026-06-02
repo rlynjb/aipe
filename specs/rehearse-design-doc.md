@@ -48,7 +48,7 @@ you for scrutiny. For a design doc that means: write so a skeptical
 reviewer aligns; lead with the decision, not the suspense; "say this, not
 that" on framing. Inherit the banned list (no hedging, no marketing
 language) and the verdict-first / rank-what-matters trait. `me.md` for
-calibration. Persona routing stays uniform across all three rehearse
+calibration. Persona routing stays uniform across all four rehearse
 books — all coach.
 
 ═════════════════════════════════════════════════
@@ -145,8 +145,4 @@ significant decision appeared); reconcile against the code, surgically.
 RUNNING IT INSIDE `/aipe:rehearse`
 ═════════════════════════════════════════════════
 
-This belongs to the rehearse orchestrator. Once `rehearse.md` lists it,
-`/aipe:rehearse` creates/updates it alongside the interview-defense and
-demo books, under the same single confirmation gate and summary — and
-persona routing stays uniform (all three coach posture). Standalone via
-`/aipe:rehearse-design-doc` until then.
+This belongs to the rehearse orchestrator. `/aipe:rehearse` creates or updates it alongside problem selection, interview defense, and demo rehearsal under the same single confirmation gate and summary. Persona routing stays uniform: all four books use coach posture. The generator also remains runnable standalone via `/aipe:rehearse-design-doc`.
