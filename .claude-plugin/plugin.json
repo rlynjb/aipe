@@ -1,7 +1,7 @@
 {
   "name": "aipe",
   "description": "Spec workflow for AI-assisted development. 30 disciplined slash commands across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach + Rehearse + Read) — plus two orchestrators that run their families in one pass. Study family (1 orchestrator + 15 generators): /aipe:study, /aipe:study-system-design, /aipe:study-software-design, /aipe:study-data-modeling, /aipe:study-security, /aipe:study-testing, /aipe:study-runtime-systems, /aipe:study-networking, /aipe:study-database-systems, /aipe:study-dsa-foundations, /aipe:study-distributed-systems, /aipe:study-debugging-observability, /aipe:study-performance-engineering, /aipe:study-ai-engineering, /aipe:study-agent-architecture, /aipe:study-prompt-engineering. Rehearse family (1 orchestrator + 4 generators): /aipe:rehearse, /aipe:rehearse-problem-selection, /aipe:rehearse-design-doc, /aipe:rehearse-hackathon-demo, /aipe:rehearse-interview-defense. Plus /aipe:audit (+ 3 audit variants), /aipe:refactor (+ 2 refactor variants), /aipe:read-aposd, and /aipe:code-review for per-branch PR reviews. Uses your agent's own model, no external CLI, no extra API keys.",
-  "version": "1.59.1",
+  "version": "1.59.2",
   "author": { "name": "rlynjb" },
   "homepage": "https://github.com/rlynjb/aipe",
   "repository": "https://github.com/rlynjb/aipe",
