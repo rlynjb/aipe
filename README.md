@@ -1,201 +1,135 @@
 # AIPE — study & rehearse specs
 
-A spec system for generating per-repo learning and performance artifacts.
-Point a command at a codebase and it produces structured guides written in
-a consistent voice: **study** guides to *understand* the code, **rehearse**
-books to *present and defend* it. Every artifact is grounded in the real
-repo and refreshed in place as the code changes.
+A spec system for generating per-repo learning and performance artifacts. Point a command at a codebase and it produces structured guides in a consistent voice: **study** guides to understand the code and **rehearse** books to justify, communicate, present, and defend it. Every artifact is grounded in the real repo and refreshed in place as code changes.
 
+```text
+study      → comprehension   (understand the codebase, for you)
+rehearse   → performance     (align / present / defend, for a room)
 ```
-  study      → comprehension   (understand the codebase, for you)
-  rehearse   → performance     (present / defend it, for a room)
-```
-
----
 
 ## The foundation — three files everything reads
 
-These are referenced by every generator; they are never restated inside a
-generator (inherit, don't restate).
-
-```
-  format.md    STRUCTURE — the per-concept-file template, the house
-               style, ASCII-diagram rules, the hard rules. Includes the
-               concept-file block order:
-                 Subtitle → Zoom out → Structure pass → How it works →
-                 Primary diagram → Implementation in codebase → Elaborate
-                 → Project exercises → Interview defense → Validate → See also
-
-  teacher.md   VOICE — the staff-engineer persona. Teacher posture
-               (study) and coach posture (rehearse) are the same engineer,
-               different stance. Sets tone, what's banned, what's reached
-               for first.
-
-  me.md        READER — calibration: what's already known, which examples
-               land, how deep to teach each concept.
+```text
+format.md    STRUCTURE — concept-file template, house style, diagrams, hard rules
+teacher.md   VOICE     — staff-engineer teacher posture or coach posture
+me.md        READER    — calibration: prior knowledge, examples, depth
 ```
 
-Precedence when they conflict: the consuming spec wins on **structure**,
-`teacher.md` on **voice**, `me.md` on **calibration**.
-
----
+Precedence when they conflict: the consuming spec wins on **structure**, `teacher.md` on **voice**, and `me.md` on **calibration**.
 
 ## `/aipe:study` — the comprehension orchestrator
 
-One command; creates or updates **all seven** study guides for the current
-repo. Run it after changing the codebase.
+One command creates or updates **all fifteen** study guides for the current repo. Run it after a meaningful codebase change.
 
-```
-  #  generator                     output folder              posture
-  ─  ─────────────────────────     ──────────────────────     ───────────
-  1  study-system-design-dsa       study-system-design-dsa/   teacher
-  2  study-software-design         study-software-design/     teacher
-  3  study-security                study-security/            teacher
-  4  study-testing                 study-testing/             teacher
-  5  study-ai-engineering          study-ai-engineering/      teacher
-  6  study-prompt-engineering      study-prompt-engineering/  inline*
-  7  study-agent-architecture      study-agent-architecture/  teacher
-```
+```text
+FOUNDATIONS
+  1  study-runtime-systems             OS/runtime · concurrency · memory · I/O
+  2  study-networking                  DNS · TCP/UDP · TLS · HTTP · realtime · retries
+  3  study-database-systems            engines · indexes · query plans · MVCC · WAL
+  4  study-dsa-foundations             reusable structures · algorithms · practice gaps
 
-\* `study-prompt-engineering` uses its own inline persona (a working AI
-engineer), not `teacher.md`.
+CORE SOFTWARE ENGINEERING
+  5  study-system-design               architecture · boundaries · flows · scale
+  6  study-software-design             modules · interfaces · complexity (Ousterhout)
+  7  study-data-modeling               schema · normalization · queries · migrations
 
-What each covers:
+ADJACENT DISCIPLINES
+  8  study-security                    trust boundaries · authn/authz · injection · secrets
+  9  study-testing                     deterministic correctness · coverage · test design
+ 10  study-distributed-systems         partial failure · consistency · queues · coordination
+ 11  study-debugging-observability     evidence · logs · metrics · traces · incidents
+ 12  study-performance-engineering     profiling · latency · throughput · memory · cost
 
-```
-  system-design-dsa   architecture + data structures & algorithms
-  software-design     module/interface quality, complexity (Ousterhout)
-  security            trust boundaries, authn/authz, injection, secrets
-  testing             deterministic correctness, coverage, test design
-  ai-engineering      LLM foundations, RAG, agents, evals, serving, ML
-  prompt-engineering  the prompt-engineering concepts
-  agent-architecture  reasoning patterns, multi-agent orchestration
+INTELLIGENCE
+ 13  study-ai-engineering              LLM foundations · RAG · agents · evals · serving · ML
+ 14  study-prompt-engineering          prompt-engineering concepts (inline persona*)
+ 15  study-agent-architecture          reasoning patterns · multi-agent orchestration
 ```
 
----
+`study-prompt-engineering` uses its own inline working-AI-engineer persona. The other fourteen study generators use `teacher.md` in teacher posture.
 
-## `/aipe:rehearse` — the performance orchestrator
+Every study generator is also directly runnable as `/aipe:<generator>` when only one concern changed.
 
-One command; creates or updates **all three** rehearse books. Run it when
-preparing to present or interview. All three use **coach** posture.
+The former `.aipe/study-system-design-dsa/` output is a legacy archive. New runs split it into `.aipe/study-system-design/` for architecture and `.aipe/study-dsa-foundations/` for algorithms and data structures; migration is explicit and never silently deletes the old folder.
 
-```
-  #  generator                     output folder                  produces
-  ─  ─────────────────────────     ────────────────────────────   ────────
-  1  rehearse-interview-defense    rehearse-interview-defense/    8-chapter defense book
-  2  rehearse-hackathon-demo       rehearse-hackathon-demo/       demo run-of-show
-  3  rehearse-design-doc           rehearse-design-doc/           staff design docs / RFCs
-```
+## `/aipe:rehearse` — the human-layer orchestrator
 
----
+One command creates or updates **all four** rehearsal books. All four use `teacher.md` in coach posture.
 
-## Standalone specs (not in an orchestrator)
-
-Run these directly when relevant; they are not part of the one-command
-sweeps.
-
-```
-  /aipe:study-data-modeling   audits persistent-data design (schema,
-                              indexing, transactions, migrations). Run on
-                              repos with real persistence.
-
-  /aipe:read-aposd            a book-style guide to the primitives in
-                              "A Philosophy of Software Design" — teaches
-                              the framework itself (not a codebase audit).
+```text
+  1  rehearse-problem-selection    why this problem deserves investment
+  2  rehearse-design-doc           written RFCs for significant technical decisions
+  3  rehearse-hackathon-demo       demo run-of-show
+  4  rehearse-interview-defense    spoken project defense
 ```
 
----
+Together they cover the complete human layer:
 
-## How the specs partition — altitude, no overlap
-
-Every spec owns one altitude or concern; a finding belongs to exactly one.
-
+```text
+problem selection → written alignment → demonstration → defense under scrutiny
 ```
-  intelligence   ai-engineering · prompt-engineering · agent-architecture
-       ▲
-  systems        system-design-dsa            (services, scale, DSA)
-       │
-  code-level     software-design · security · testing · data-modeling
-       │         (modules, trust, correctness, persistent data)
-       ▼
-  foundations    read-aposd                   (learn the primitives)
 
-  human layer    rehearse-design-doc          (communicate decisions)
+## Standalone framework guide
+
+`/aipe:read-aposd` remains standalone. It generates a book-style guide to the primitives in *A Philosophy of Software Design*. Unlike `study-software-design`, it teaches the framework itself rather than auditing a codebase.
+
+## How the specs partition — one owner per concern
+
+```text
+intelligence   ai-engineering · prompt-engineering · agent-architecture
+     ▲
+adjacent       security · testing · distributed-systems
+               debugging-observability · performance-engineering
+     ▲
+core           system-design · software-design · data-modeling
+     ▲
+foundations    runtime-systems · networking · database-systems · dsa-foundations
+
+human layer    problem-selection · design-doc · hackathon-demo · interview-defense
 ```
 
 Key seams:
-- **software-design vs system-design-dsa** — module/interface/complexity
-  here; service/architecture/algorithm there.
-- **testing vs ai-engineering evals** — deterministic "equals expected"
-  here; probabilistic "good enough / didn't regress" there.
-- **data-modeling vs system-design** — schema/index/query shape here;
-  which datastore + scaling there.
-- **read-aposd vs study-software-design** — learn the framework vs apply
-  it to your repo.
 
----
+- **runtime-systems vs system-design** — execution inside a runtime here; architecture boundaries there.
+- **networking vs security vs system-design** — protocol mechanics here; trust there; boundary placement there.
+- **database-systems vs data-modeling vs system-design** — engine mechanisms here; schema shape here; datastore selection and scaling there.
+- **dsa-foundations vs system-design** — reusable algorithms and data structures here; architectural boundaries and scale tradeoffs there.
+- **testing vs ai-engineering evals** — deterministic expected results here; probabilistic quality and regression thresholds there.
+- **debugging-observability vs performance-engineering** — explain failures with evidence here; measure and optimize bottlenecks there.
+- **problem-selection vs design-doc** — justify investment here; communicate the selected technical design there.
 
 ## How a run works
 
-```
-  1. detect    for each generator, does .aipe/<folder>/ exist?
-                 NO  → CREATE (full generate from the spec)
-                 YES → UPDATE (reconcile vs the codebase, surgically)
-  2. plan      one consolidated change list across all generators
-  3. confirm   a single gate for the whole run (skipped if non-interactive)
-  4. execute   run each in its detected mode, in run order
-  5. report    one summary table + per-guide detail
+```text
+1. detect    each fixed .aipe/<generator>/ folder → CREATE or UPDATE
+2. plan      one consolidated change list across the orchestrator
+3. confirm   one gate for the whole run (continue after plan in non-interactive use)
+4. execute   run each generator in dependency-aware order
+5. report    one summary table plus per-guide detail
 ```
 
-- **Per-repo.** Every reference, path, and citation is about the invoked
-  repo only.
-- **UPDATE reconciles against the CODE, not the specs.** A `format.md` or
-  `teacher.md` change does *not* propagate through UPDATE — that needs a
-  regenerate (delete the folder, or re-run as CREATE).
-- **Honest output.** A generator emits "not yet implemented / not
-  exercised" rather than inventing content for a topic the repo doesn't
-  hit. Findings are grounded in real files; nothing is fabricated.
-
----
+- **Per-repo.** Every reference, path, and citation is about the invoked repo only.
+- **Surgical updates.** UPDATE reconciles claims against the codebase and retains still-correct teaching.
+- **Honest output.** A generator emits `not yet exercised` rather than inventing infrastructure, scale, or behavior.
+- **Sharp seams.** A finding belongs to exactly one generator; adjacent generators cross-link rather than duplicate it.
 
 ## Output layout
 
-```
-  .aipe/
-    study-system-design-dsa/      study-prompt-engineering/
-    study-software-design/        study-agent-architecture/
-    study-security/               study-data-modeling/      (standalone)
-    study-testing/                read-aposd/               (standalone)
-    study-ai-engineering/
-    rehearse-interview-defense/
-    rehearse-hackathon-demo/
-    rehearse-design-doc/
-```
+```text
+.aipe/
+  study-runtime-systems/           study-security/
+  study-networking/                study-testing/
+  study-database-systems/          study-distributed-systems/
+  study-dsa-foundations/           study-debugging-observability/
+  study-system-design/         study-performance-engineering/
+  study-software-design/           study-ai-engineering/
+  study-data-modeling/             study-prompt-engineering/
+                                  study-agent-architecture/
 
----
+  rehearse-problem-selection/
+  rehearse-design-doc/
+  rehearse-hackathon-demo/
+  rehearse-interview-defense/
 
-## What's new
-
-```
-  + study-software-design   new generator — applies A Philosophy of
-                            Software Design to the repo. Wired into
-                            /aipe:study.
-  + study-security          new generator — trust-axis audit. Wired in.
-  + study-testing           new generator — correctness/test audit,
-                            partitioned from ai-engineering evals. Wired in.
-  + study-data-modeling     new generator — persistent-data audit.
-                            Standalone.
-  + read-aposd              new standalone spec — book-style guide to
-                            the design primitives.
-  + rehearse-design-doc     new generator — staff design docs / RFCs,
-                            the human/communication layer. Wired into
-                            /aipe:rehearse.
-
-  ~ format.md               added Block 3 "Structure pass" (layers · axes
-                            · seams) between Zoom out and How it works;
-                            blocks renumbered to 11.
-  ~ teacher.md              added the "verdict first, then rank what
-                            matters" teaching trait.
-  ~ study.md                orchestrator: 4 → 7 generators.
-  ~ rehearse.md             orchestrator: 2 → 3 generators.
+  read-aposd/                      (standalone framework guide)
 ```

@@ -24,9 +24,9 @@ WHERE THIS SITS — partition (two seams)
 ```
   study-data-modeling   the SHAPE of persistent data: schema,           ← here
                         normalization, indexes, queries, integrity.
-  study-system-design-dsa  WHICH datastore + scaling/sharding/replication
-                           (architecture), and IN-MEMORY data structures
-                           (DSA). Not schema shape.
+  study-system-design   WHICH datastore + scaling/sharding/replication
+                        (architecture). Not schema shape.
+  study-dsa-foundations IN-MEMORY data structures and algorithms. Not schema shape.
   study-software-design information hiding / duplication in CODE — the
                         DB analog (normalization) cross-links to it.
 ```
@@ -136,5 +136,4 @@ Interview defense becomes "defend this normalization / denormalization call."
 
 Create/update, confirmation, audit pass, run order, summary: family pattern,
 identical to `study-software-design.md`. Per-repo, code-grounded, original
-expression, inherit structure + voice. Wire into `/aipe:study` via a table
-row + run-order entry (teacher posture); standalone until then.
+expression, inherit structure + voice. Wired into `/aipe:study` under the shared confirmation gate and consolidated summary; also runnable standalone.

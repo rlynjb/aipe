@@ -11,9 +11,9 @@ This command produces a topic-focused study generator that audits the **current 
 **Partition (no overlap with sibling specs):**
 - `read-aposd.md` — LEARN the primitives (book style, abstract). The framework itself.
 - `study-software-design.md` — APPLY the primitives to THIS repo. ← this command. Findings grounded in real files.
-- `study-system-design-dsa.md` — SYSTEM architecture + DSA. A different altitude (services, scaling, data structures), not module/interface-level design.
+- `study-system-design.md` — SYSTEM architecture. A different altitude (services, boundaries, scaling), not module/interface-level design.
 
-When both `study-software-design/` and `study-system-design-dsa/` seem to want the same finding, the rule is altitude: module/interface/complexity goes here; service/architecture/algorithm goes in system-design-dsa. A concept here teaches the primitive *briefly* and spends its weight on the codebase findings — for the full conceptual treatment, cross-reference the matching `read-aposd` chapter rather than re-teaching it.
+When both `study-software-design/` and `study-system-design/` seem to want the same finding, the rule is altitude: module/interface/complexity goes here; service/architecture goes in system-design; reusable algorithm teaching goes in dsa-foundations. A concept here teaches the primitive *briefly* and spends its weight on the codebase findings — for the full conceptual treatment, cross-reference the matching `read-aposd` chapter rather than re-teaching it.
 
 ## Step 1 — Initialize if needed
 

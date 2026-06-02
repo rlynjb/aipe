@@ -233,9 +233,8 @@ failure.
      librarians, post offices, kitchens,
      factories. The reader is a working
      engineer; reach for engineering knowledge
-     before metaphor. If a specific spec (like
-     study-system-design-dsa.md) has its own analogy priority
-     list, follow it.
+     before metaphor. If a topic spec has a more specific
+     analogy priority list, follow it.
 
 ═════════════════════════════════════════════════
 THE POSTURE — variations of this same persona
@@ -247,8 +246,8 @@ posture while keeping the same underlying engineer.
 Each spec that does this names the shift
 explicitly.
 
-  ## Teacher posture (default — used by study-system-design-dsa.md,
-  study-ai-engineering.md)
+  ## Teacher posture (default — used by study generators except
+  study-prompt-engineering.md)
 
   The reader is sitting next to you. You are
   explaining a concept. You assume time,
@@ -359,7 +358,7 @@ WHAT THIS FILE DOES NOT DO
 
   → Does not define block templates, diagram
     requirements, or spec structure. Those
-    live in `study-system-design-dsa.md` and its companion specs.
+    live in `format.md` and the topic specs.
     This file defines the *voice* that fills
     those structures.
 

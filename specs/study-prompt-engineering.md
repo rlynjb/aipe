@@ -18,7 +18,7 @@ a topic of study:
   → Curriculum anchoring specific to prompt
     engineering
 
-This spec is run alongside `study-system-design-dsa.md`
+This spec is run alongside `study-system-design.md`
 (its sibling topic spec), not instead of it. The agent
 reads `format.md` for *how* to write each concept file
 (block structure, diagrams, validate levels, etc.), and
@@ -98,7 +98,7 @@ the second kind.
   the way an interview panel would test them.
   That voice is authoritative, architectural, and
   treats interview prep as a second-order benefit
-  of solid systems thinking. Used by `study-system-design-dsa.md`
+  of solid systems thinking. Used by `study-system-design.md`
   and `study-ai-engineering.md`.
 
   **This spec does not use that persona.** Prompt
@@ -177,7 +177,7 @@ the second kind.
      to read deeper.
 
   → **Hedging is still banned.** Same as
-     `study-system-design-dsa.md` and `teacher.md`. No "might,"
+     `format.md` and `teacher.md`. No "might,"
      "could potentially," "tends to." Production
      engineers don't talk that way.
 
@@ -259,7 +259,7 @@ OUTPUT FOLDER NAME
 ═════════════════════════════════════════════════
 
 Following the `.aipe/` convention used in
-`study-system-design-dsa.md`, prompt engineering guides save to:
+`study-system-design.md`, prompt engineering guides save to:
 
   .aipe/study-prompt-engineering/
 
@@ -270,8 +270,8 @@ when the command is run inside that repo.
 
 The folder name is fixed across repos, because it
 names the *topic*, not the codebase. The same
-convention applies to the base study generator
-(`study-system-design-dsa/`) and the AI engineering
+convention applies to the system-design generator
+(`study-system-design/`) and the AI-engineering
 spec (`study-ai-engineering/`) — each topic spec
 has its own fixed folder name, derived from the
 topic it covers.
@@ -319,8 +319,7 @@ file template.
 Codebase anchors for each concept name the project
 (aipe or loopd) whose code best exercises that
 concept. If the codebase doesn't yet implement the
-concept, the file uses Case B from study-system-design-dsa.md's
-Project exercises block (concept is curriculum
+concept, the file uses Case B from `format.md`'s Project exercises block (concept is curriculum
 target, file says "not yet implemented" honestly,
 Project exercises become the primary buildable
 target).
@@ -330,9 +329,7 @@ target).
   Anchor: aipe (templates explicitly named) +
           loopd (5 chains, each with its own
           anatomy)
-  Curriculum: existing concept from `study-system-design-dsa.md`
-              SECTION 03 prompt engineering
-              subsection
+  Curriculum: prompt-engineering concept carried forward into this dedicated spec
   Covers:
     - The four sections: system prompt, context
       injection, few-shot examples, user message
@@ -470,7 +467,7 @@ target).
   ## 6. Single-purpose chains
 
   Anchor: loopd (5 chains, each with one job)
-  Curriculum: existing concept from `study-system-design-dsa.md`
+  Curriculum: prompt-engineering concept carried forward into this dedicated spec
   Covers:
     - The pipeline pattern: one chain, one job,
       composed into longer flows
@@ -486,7 +483,7 @@ target).
 
   Anchor: loopd (where chains have explicit
           output modes)
-  Curriculum: existing concept from `study-system-design-dsa.md`
+  Curriculum: prompt-engineering concept carried forward into this dedicated spec
   Covers:
     - Every chain has one output mode declared
       in its schema
@@ -499,7 +496,7 @@ target).
   Anchor: loopd (intent classifier with explicit
           examples) + aipe (template literals
           carrying examples)
-  Curriculum: existing concept from `study-system-design-dsa.md`
+  Curriculum: prompt-engineering concept carried forward into this dedicated spec
   Covers:
     - Why examples constrain output more than
       instructions do
@@ -515,7 +512,7 @@ target).
 
   Anchor: loopd (decisions that benefit from
           step-by-step reasoning)
-  Curriculum: existing concept from `study-system-design-dsa.md`
+  Curriculum: prompt-engineering concept carried forward into this dedicated spec
   Covers:
     - The reasoning prompt pattern
     - When it helps (multi-step problems)
@@ -598,8 +595,8 @@ target).
     - What this complements: the runtime-side
       defenses (output validation, never
       letting LLM output trigger side effects)
-      that live in `study-system-design-dsa.md`'s Production
-      Serving section
+      covered by `study-ai-engineering.md`'s production-serving
+      section and `study-security.md`'s trust-boundary audit
   Voice notes: this is the most security-flavoured
   concept. The voice acknowledges that prompt
   injection is not a fully-solved problem and
@@ -609,7 +606,7 @@ target).
 
   Anchor: loopd (caption chain with rotation
           history)
-  Curriculum: existing concept from `study-system-design-dsa.md`
+  Curriculum: prompt-engineering concept carried forward into this dedicated spec
   Covers:
     - LLMs converge on phrasings — every output
       from the same chain sounds the same
@@ -663,27 +660,12 @@ spec:
 RELATIONSHIP TO STUDY.MD
 ═════════════════════════════════════════════════
 
-This spec drives a **separate workflow** from the
-per-codebase study guide generator. Running the
-per-codebase generator (with `study-system-design-dsa.md` against a
-target codebase) does not include this spec, and
-should not — the per-codebase generator produces
-`.aipe/study-system-design-dsa/`, while this spec
-produces `.aipe/study-prompt-engineering/`. Both
-are per-repo: the `.aipe/` directory lives at the
-root of whichever repo the command was run in, so
-each repo gets its own pair of folders.
-
-The two workflows share `format.md` as their
-structural foundation but are triggered
-independently and produce independent outputs.
-To produce the prompt engineering guide for a
-repo, run this spec's command from inside that
-repo.
-
-This spec is *additive* to `study-system-design-dsa.md`, not a
-replacement. The agent run for prompt engineering
-study works like this:
+This spec is an independent topic generator inside the `/aipe:study`
+family. It produces `.aipe/study-prompt-engineering/`; neighboring
+generators produce their own fixed folders. The generators share
+`format.md` as their structural foundation and may cross-link, but none
+is embedded inside another. The agent run for prompt engineering study
+works like this:
 
   1. Agent reads `format.md` to learn the per-
      concept-file template, the house-style traits,
@@ -738,14 +720,10 @@ study works like this:
      here, and calibrated to the reader as
      defined in `me.md`.
 
-The prompt engineering subsection that used to
-live inside `study-system-design-dsa.md`'s SECTION 03 (AI
-Engineering) has been removed. `study-system-design-dsa.md`'s AI
-Engineering section now contains a pointer to
-this spec. The six concepts that were originally
-defined there have been carried over to this
-spec (concepts #1, #6, #7, #8, #9, #13 in the
-list above).
+The prompt-engineering concepts that once lived inside the former
+combined `study-system-design-dsa.md` generator now live exclusively in
+this dedicated spec. Keep prompt-engineering findings here and cross-link
+neighboring security or AI-serving guides where their mechanisms meet.
 
 ═════════════════════════════════════════════════
 WHAT THIS SPEC DOES NOT REDEFINE
@@ -808,6 +786,6 @@ Refer to `me.md` for the canonical definition:
   → What the reader already knows vs honest
     gaps
 
-If a future change to `study-system-design-dsa.md` or `me.md`
+If a future change to `format.md` or `me.md`
 updates one of these, this spec automatically
 inherits it. No duplication, no drift.
