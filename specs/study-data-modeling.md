@@ -24,9 +24,9 @@ WHERE THIS SITS — partition (two seams)
 ```
   study-data-modeling   the SHAPE of persistent data: schema,           ← here
                         normalization, indexes, queries, integrity.
-  study-system-design-dsa  WHICH datastore + scaling/sharding/replication
-                           (architecture), and IN-MEMORY data structures
-                           (DSA). Not schema shape.
+  study-system-design   WHICH datastore + scaling/sharding/replication
+                        (architecture). Not schema shape.
+  study-dsa-foundations IN-MEMORY data structures and algorithms. Not schema shape.
   study-software-design information hiding / duplication in CODE — the
                         DB analog (normalization) cross-links to it.
 ```

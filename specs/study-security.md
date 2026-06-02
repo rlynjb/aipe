@@ -26,7 +26,7 @@ WHERE THIS SITS — partition (no overlap)
 ```
   study-security        the TRUST axis as a discipline: what can     ← here
                         each side see, reach, or tamper with?
-  study-system-design-dsa  architecture & scale — NOT threat modeling.
+  study-system-design  architecture & scale — NOT threat modeling.
   study-software-design    complexity & interfaces — NOT trust.
 ```
 

@@ -10,7 +10,7 @@ This command produces a topic-focused study generator that audits the **current 
 
 **Partition (no overlap with sibling specs):**
 - `study-security` — the **trust axis** as a discipline: what can each side see, reach, or tamper with? ← this command.
-- `study-system-design-dsa` — architecture & scale (NOT threat modeling).
+- `study-system-design` — architecture & scale (NOT threat modeling).
 - `study-software-design` — complexity & interfaces (NOT trust).
 - `study-data-modeling` — schema shape; "*how data is structured*" — versus "who may read/write and how that's enforced," which lives here.
 

@@ -30,7 +30,7 @@ prepare:
     on-screen beat has a backup for when the wifi dies
     or the build crashes on stage.
 
-This spec is run alongside `study-system-design-dsa.md`
+This spec is run alongside `study-system-design.md`
 and the other study generators (its sibling specs), not
 instead of them. The agent reads `format.md` for *how*
 to write (block-quality standards, diagrams, the "use
@@ -55,7 +55,7 @@ distinct ways of turning a codebase into spoken
 performance:
 
 ```
-study-system-design-dsa.md     Helps you UNDERSTAND the work
+study-system-design.md     Helps you UNDERSTAND the work
   (+ the topic generators)       (comprehension, one file per pattern)
 
 rehearse-interview-defense.md     Helps you DEFEND the work

@@ -146,7 +146,7 @@ Generate 9 files (flat — no subdirectories), in chapter order so each builds o
 
 Each chapter file follows the per-chapter template: `# Chapter N — [title]` → Opening hook (1–2 paragraphs, direct address, no interview-prep platitudes) → the chapter-opening diagram → the body (each question treated with the callout, strong-answer prose, optional side-by-side, follow-up decision tree, ≥1 pull quote) → ≥1 "I don't know" recovery box → "what you'd change" → one-page summary (core claim, questions with one-line answers, pull quotes, the "what you'd change" sentence).
 
-`00-overview.md` maps all 8 chapters with one-line descriptions and the questions each covers, suggests a reading order (first read: in order; review: skim summaries + pull quotes; night-before: read only each chapter's one-page summary), contains the master "system at a glance" diagram, and connects to the rest of the study system (the concept-level Interview defense blocks live inside `.aipe/study-system-design-dsa/` and `.aipe/study-ai-engineering/` concept files; this book is the wide opener, those are the deep dives).
+`00-overview.md` maps all 8 chapters with one-line descriptions and the questions each covers, suggests a reading order (first read: in order; review: skim summaries + pull quotes; night-before: read only each chapter's one-page summary), contains the master "system at a glance" diagram, and connects to the rest of the study system (the concept-level Interview defense blocks live inside `.aipe/study-system-design/` and `.aipe/study-ai-engineering/` concept files; this book is the wide opener, those are the deep dives).
 
 ## Step 8C — Report + stop
 

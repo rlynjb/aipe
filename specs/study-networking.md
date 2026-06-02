@@ -15,7 +15,7 @@ Topic generator. Reads `format.md`, `teacher.md` in teacher posture, `me.md`, an
 ```
 study-networking        WHAT happens on the wire and why.
 study-security          WHETHER each trust boundary is safe.
-study-system-design-dsa WHERE network boundaries belong in the architecture.
+study-system-design WHERE network boundaries belong in the architecture.
 ```
 
 A finding belongs to the generator that owns the mechanism. Cross-link neighboring guides rather than re-teaching their material.

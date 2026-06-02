@@ -14,7 +14,7 @@ Topic generator. Reads `format.md`, `teacher.md` in teacher posture, `me.md`, an
 
 ```
 study-runtime-systems  HOW code executes inside one machine or language runtime.
-study-system-design-dsa WHERE components live and how requests cross boundaries.
+study-system-design WHERE components live and how requests cross boundaries.
 study-testing           HOW runtime behavior is verified deterministically.
 ```
 

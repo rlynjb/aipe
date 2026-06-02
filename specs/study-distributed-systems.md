@@ -14,7 +14,7 @@ Topic generator. Reads `format.md`, `teacher.md` in teacher posture, `me.md`, an
 
 ```
 study-distributed-systems correctness ACROSS coordination boundaries.
-study-system-design-dsa   architectural shape and scale tradeoffs.
+study-system-design   architectural shape and scale tradeoffs.
 study-database-systems    datastore-local consistency mechanisms.
 ```
 

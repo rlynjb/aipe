@@ -15,7 +15,7 @@ Topic generator. Reads `format.md`, `teacher.md` in teacher posture, `me.md`, an
 ```
 study-data-modeling    the SHAPE of persistent data and whether it matches access patterns.
 study-database-systems the MECHANISMS used to execute and preserve reads and writes.
-study-system-design-dsa WHICH datastore is selected and how it scales.
+study-system-design WHICH datastore is selected and how it scales.
 ```
 
 A finding belongs to the generator that owns the mechanism. Cross-link neighboring guides rather than re-teaching their material.

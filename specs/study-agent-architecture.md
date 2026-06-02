@@ -36,7 +36,7 @@ owns. Where a concept is already covered in
 `study-ai-engineering.md`, this spec cross-
 references rather than duplicates.
 
-This spec is run alongside `study-system-design-dsa.md`
+This spec is run alongside `study-system-design.md`
 (its sibling topic spec), not instead of it. The agent
 reads `format.md` for *how* to write each concept file
 (block structure, diagrams, validate levels, etc.), and
@@ -44,7 +44,7 @@ this spec for *what* to write about.
 
 **Scope: per-codebase, per-repo.** This spec runs
 against one codebase at a time, exactly like the
-base study generator. When the command is run
+sibling study generators. When the command is run
 inside a repo, the agent analyzes that repo's code
 and produces an agent architecture guide for *that
 codebase*. The spec does not span multiple
@@ -178,7 +178,7 @@ OUTPUT FOLDER NAME
 ═════════════════════════════════════════════════
 
 Following the `.aipe/` convention used in
-`study-system-design-dsa.md`, agent architecture guides save to:
+`study-system-design.md`, agent architecture guides save to:
 
   .aipe/study-agent-architecture/
 
@@ -189,7 +189,7 @@ repo gets its own `.aipe/study-agent-architecture/`.
 The folder name is fixed across repos, because it
 names the *topic*, not the codebase. The same
 convention applies to the other topic specs
-(`study-system-design-dsa/`,
+(`study-system-design/`,
 `study-ai-engineering/`, `study-prompt-engineering/`,
 `rehearse-interview-defense/`).
 
@@ -273,9 +273,9 @@ RELATIONSHIP TO STUDY.MD AND STUDY-AI-ENGINEERING.MD
 ═════════════════════════════════════════════════
 
 This spec drives a **separate workflow** from every
-other generator in the family. Running the base
-generator (`study-system-design-dsa.md`) produces
-`.aipe/study-system-design-dsa/`. Running
+other generator in the family. Running the system-design
+generator (`study-system-design.md`) produces
+`.aipe/study-system-design/`. Running
 `study-ai-engineering.md` produces
 `.aipe/study-ai-engineering/`. Running this spec
 produces `.aipe/study-agent-architecture/`. The
@@ -348,7 +348,7 @@ for agent architecture study works like this:
   5. Agent reads the codebase context of the repo
      where the command was run. This spec runs
      against one codebase at a time — the same
-     per-repo scope as the base study generator.
+     per-repo scope as the sibling study generators.
 
   6. Agent generates `.aipe/study-agent-architecture/`
      (inside that repo's `.aipe/` directory) with
@@ -396,8 +396,8 @@ Refer to `format.md` for the canonical definition:
   → The Validate block's levels (reconstruct,
     explain, apply, defend)
   → The hard rules at the bottom of `format.md`
-  → The "Check for existing guide" diff-and-update
-    behavior (defined in `study-system-design-dsa.md`)
+  → The family create/update contract: detect existing
+    output, plan changes, confirm once, reconcile surgically
 
 Inherited from `teacher.md` without restatement:
 
@@ -425,8 +425,7 @@ Inherited from `me.md` without restatement:
     is newer ground; teach it as new ground rather
     than assuming familiarity
 
-If a future change to `format.md`,
-`study-system-design-dsa.md`, `teacher.md`, or
+If a future change to `format.md`, `teacher.md`, or
 `me.md` updates one of these, this spec
 automatically inherits it. No duplication, no
 drift.

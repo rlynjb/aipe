@@ -23,7 +23,7 @@ study:
     ("did you use AI to build this?") as the
     eighth and final chapter
 
-This spec is run alongside `study-system-design-dsa.md`
+This spec is run alongside `study-system-design.md`
 (its sibling topic spec), not instead of it. The agent
 reads `format.md` for *how* to write (block-quality
 standards, diagrams, the "use real software, not
@@ -33,7 +33,7 @@ write, in what order, in what shape.
 
 **Scope: per-codebase, per-repo.** This spec runs
 against one codebase at a time, exactly like the
-base study generator. When the command is run
+sibling study generators. When the command is run
 inside a repo, the agent analyzes that repo's code
 and produces a defense book for *that* project.
 The spec does not span multiple codebases.
@@ -42,25 +42,9 @@ The spec does not span multiple codebases.
 THE RELATIONSHIP TO STUDY.MD
 ═════════════════════════════════════════════════
 
-`study-system-design-dsa.md` itself opens with a table contrasting
-"the interview spec" against the study spec:
+This spec complements the study family rather than duplicating it. The reader uses both comprehension guides and rehearsal books:
 
-```
-Interview spec                    Study spec
-──────────────────────────────    ──────────────────────────────
-Prepares you to defend work       Helps you understand work
-Translates knowledge to speech    Builds the knowledge first
-Performance under pressure        Comprehension without pressure
-You research unfamiliar terms     Patterns walked end-to-end
-Proves you built it               Teaches what you built
-Output: document to memorise      Output: one file per pattern
-```
-
-This spec is the interview spec study-system-design-dsa.md is
-pointing at. Not a duplicate of study-system-design-dsa.md — its
-complement. The reader uses both:
-
-  → **study-system-design-dsa.md** prepares the comprehension. The
+  → **study-system-design.md** prepares the comprehension. The
     reader works through concept files and
     understands the patterns deeply, without
     pressure, one file at a time.
@@ -69,7 +53,7 @@ complement. The reader uses both:
     to translate it into speech under interviewer
     pressure, at the project level.
 
-The reader who studies only study-system-design-dsa.md will
+The reader who studies only the comprehension guides may
 understand their code but freeze when an
 interviewer asks "walk me through your project."
 The reader who studies only this spec will sound
@@ -91,7 +75,7 @@ what's banned. Do not restate.
 This spec uses the **coach posture** described in
 `teacher.md`'s "THE POSTURE" section. Same
 engineer, different stance. In the default
-teacher posture (used by `study-system-design-dsa.md` and
+teacher posture (used by `study-system-design.md` and
 `study-ai-engineering.md`), you are explaining a
 concept to someone who has time and patience.
 Here you are coaching someone who is days or
@@ -301,8 +285,8 @@ in. Each repo gets its own
 
 The folder name is fixed across repos, because it
 names the *topic*, not the codebase. The same
-convention applies to the base study generator
-(`study-system-design-dsa/`), the AI engineering
+convention applies to the system-design generator
+(`study-system-design/`), the AI-engineering
 spec (`study-ai-engineering/`), and the prompt
 engineering spec (`study-prompt-engineering/`).
 
@@ -775,7 +759,7 @@ and reading guide. It serves three purposes:
      system.** This book is the project-level
      defense. The concept-level Interview
      defense blocks live inside each concept
-     file under `.aipe/study-system-design-dsa/`
+     file under `.aipe/study-system-design/`
      and `.aipe/study-ai-engineering/`. The
      two are complementary — concept files
      prepare the deep dive; this book prepares
@@ -793,8 +777,8 @@ HOW THE WORKFLOW RUNS
 This spec can run standalone (run its command from
 inside a repo to produce just the defense book) or
 as part of the `/aipe:rehearse` orchestrator, which
-composes both rehearse books — interview defense and
-hackathon demo — in one pass. It is not part of the
+composes all four rehearse books — problem selection, design docs,
+hackathon demo, and interview defense — in one pass. It is not part of the
 `/aipe:study` orchestrator; that one runs the
 comprehension guides.
 
@@ -802,14 +786,11 @@ The generators each share `format.md` as their
 structural foundation but are triggered
 independently:
 
-  → study orchestrator (`/aipe:study`):
-      `study-system-design-dsa.md`   → `.aipe/study-system-design-dsa/`
-      `study-ai-engineering.md`      → `.aipe/study-ai-engineering/`
-      `study-prompt-engineering.md`  → `.aipe/study-prompt-engineering/`
-      `study-agent-architecture.md`  → `.aipe/study-agent-architecture/`
-  → rehearse orchestrator (`/aipe:rehearse`):
-      `rehearse-interview-defense.md` → `.aipe/rehearse-interview-defense/`
-      `rehearse-hackathon-demo.md`    → `.aipe/rehearse-hackathon-demo/`
+  → study orchestrator (`/aipe:study`) runs the comprehension guides,
+    including `study-system-design.md`, `study-dsa-foundations.md`, and
+    the intelligence guides.
+  → rehearse orchestrator (`/aipe:rehearse`) runs problem selection,
+    design docs, hackathon demo, and interview defense.
 
 Each produces its own folder inside the repo's
 `.aipe/` directory.
@@ -881,7 +862,7 @@ defenses are complementary:
 
   → The **per-concept Interview defense block**
     (inside concept files in
-    `.aipe/study-system-design-dsa/` and
+    `.aipe/study-system-design/` and
     `.aipe/study-ai-engineering/`) defends
     *one decision* in depth, for the moment
     the interviewer drills into a specific

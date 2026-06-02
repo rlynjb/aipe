@@ -12,10 +12,11 @@ This generator is wired into `/aipe:study` and also remains runnable standalone 
 
 **Partition (two seams):**
 - `study-data-modeling` — the **SHAPE** of persistent data: schema, normalization, indexes, queries, integrity. ← this command.
-- `study-system-design-dsa` — **WHICH** datastore + scaling/sharding/replication (architecture), and IN-MEMORY data structures (DSA). Not schema shape.
+- `study-system-design` — **WHICH** datastore + scaling/sharding/replication (architecture). Not schema shape.
+- `study-dsa-foundations` — IN-MEMORY data structures and algorithm curriculum. Not persistent schema shape.
 - `study-software-design` — information hiding / duplication in *code*; the DB analog (normalization) cross-links to it.
 
-Two seams to keep straight. Against **system-design**: "use Postgres, shard by tenant, add a read replica" is architecture (→ system-design-dsa); "this table is shaped wrong / this query has no index" is data modeling (→ here). Against **DSA**: a heap in memory is DSA; a B-tree index on disk is data modeling. Normalization is information-hiding for data — cross-link to software-design's information-hiding concept; don't re-teach it.
+Two seams to keep straight. Against **system-design**: "use Postgres, shard by tenant, add a read replica" is architecture (→ system-design); "this table is shaped wrong / this query has no index" is data modeling (→ here). Against **DSA**: a heap in memory is DSA; a B-tree index on disk is data modeling. Normalization is information-hiding for data — cross-link to software-design's information-hiding concept; don't re-teach it.
 
 ## Step 1 — Initialize if needed
 
@@ -92,7 +93,7 @@ Non-negotiables:
 
 1. **All structural rules from `format.md` apply** — the 11-block per-concept template.
 2. **Implementation in codebase is the heavy block** — real schema files, real migrations, real query call sites, the specific fix per finding. Every finding cites `**File:**` + `**Function / class:**` + `**Line range:**`.
-3. **Stay in the data-modeling lane.** Architecture findings (sharding, replicas, datastore choice) go to `study-system-design-dsa`. In-memory DSA goes to `study-system-design-dsa`. Information hiding *in code* goes to `study-software-design` — but normalization (its data analog) lives here.
+3. **Stay in the data-modeling lane.** Architecture findings (sharding, replicas, datastore choice) go to `study-system-design`. In-memory DSA goes to `study-dsa-foundations`. Information hiding *in code* goes to `study-software-design` — but normalization (its data analog) lives here.
 4. **Honest assessment.** A repo with no persistent data (a client-only app) means most concepts are N/A — name that plainly, don't invent.
 5. **No project names in generated output except the studied repo.**
 

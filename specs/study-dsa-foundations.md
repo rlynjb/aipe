@@ -13,8 +13,8 @@ Topic generator. Reads `format.md`, `teacher.md` in teacher posture, `me.md`, an
 ## Where this sits — partition
 
 ```
-study-system-design-dsa APPLIES algorithms actually found in the repo while teaching architecture.
-study-dsa-foundations      teaches the REUSABLE DSA vocabulary, including honest curriculum gaps.
+study-system-design   owns architectural shape and scale tradeoffs.
+study-dsa-foundations owns reusable algorithms and data structures, including repo examples and honest curriculum gaps.
 ```
 
 A finding belongs to the generator that owns the mechanism. Cross-link neighboring guides rather than re-teaching their material.

@@ -21,7 +21,7 @@ ${CODEX_PLUGIN_ROOT}/specs/study-runtime-systems.md
 ${CODEX_PLUGIN_ROOT}/specs/study-networking.md
 ${CODEX_PLUGIN_ROOT}/specs/study-database-systems.md
 ${CODEX_PLUGIN_ROOT}/specs/study-dsa-foundations.md
-${CODEX_PLUGIN_ROOT}/specs/study-system-design-dsa.md
+${CODEX_PLUGIN_ROOT}/specs/study-system-design.md
 ${CODEX_PLUGIN_ROOT}/specs/study-software-design.md
 ${CODEX_PLUGIN_ROOT}/specs/study-data-modeling.md
 ${CODEX_PLUGIN_ROOT}/specs/study-security.md
@@ -42,7 +42,7 @@ If `${CODEX_PLUGIN_ROOT}` is unset, search upward from this file. `format.md` is
 - `study-networking` → `.aipe/study-networking/`
 - `study-database-systems` → `.aipe/study-database-systems/`
 - `study-dsa-foundations` → `.aipe/study-dsa-foundations/`
-- `study-system-design-dsa` → `.aipe/study-system-design-dsa/`
+- `study-system-design` → `.aipe/study-system-design/`
 - `study-software-design` → `.aipe/study-software-design/`
 - `study-data-modeling` → `.aipe/study-data-modeling/`
 - `study-security` → `.aipe/study-security/`
@@ -55,6 +55,8 @@ If `${CODEX_PLUGIN_ROOT}` is unset, search upward from this file. `format.md` is
 - `study-agent-architecture` → `.aipe/study-agent-architecture/`
 
 For each folder, numbered content or `00-overview.md` means UPDATE; otherwise CREATE.
+
+Also check for legacy `.aipe/study-system-design-dsa/`. If present, include a migration note in the consolidated plan: architecture moves to `.aipe/study-system-design/`, DSA learning moves to `.aipe/study-dsa-foundations/`, and the legacy folder is never silently deleted or overwritten.
 
 ## Step 4 — Plan once and confirm once
 

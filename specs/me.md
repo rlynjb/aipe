@@ -2,7 +2,7 @@
 me.md — reader profile and thinking style
 ─────────────────────────────────────────────────
 
-A reference document the other specs (study-system-design-dsa.md,
+A reference document the other specs (study-system-design.md,
 study-ai-engineering.md, study-prompt-engineering.md,
 rehearse-interview-defense.md, and any future specs in
 this family) can consult when they need to calibrate
@@ -125,9 +125,9 @@ direct consequence for how to write *for* you:
   even if you can recite it. Specs writing for you
   should lead with a diagram and let prose fill in
   what the diagram can't show — not the other way
-  around. This is consistent with how study-system-design-dsa.md
-  already operates ("diagrams are your primary
-  tool. Prose fills in what diagrams can't show").
+  around. This is consistent with the shared `format.md` rule:
+  diagrams are primary; prose fills in what diagrams
+  cannot show.
 
   ## 2. Ideas come fast, details take time
 
@@ -476,7 +476,7 @@ HOW OTHER SPECS REFERENCE THIS FILE
 
 This file is referenced, not regenerated. The
 expected pattern: when a spec in this family
-(study-system-design-dsa.md, study-ai-engineering.md,
+(study-system-design.md, study-ai-engineering.md,
 study-prompt-engineering.md,
 rehearse-interview-defense.md, or future specs)
 needs to calibrate to Rein, it cites `me.md` and

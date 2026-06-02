@@ -29,7 +29,7 @@ FOUNDATIONS
   4  study-dsa-foundations             reusable structures · algorithms · practice gaps
 
 CORE SOFTWARE ENGINEERING
-  5  study-system-design-dsa           architecture · scale · applied DSA
+  5  study-system-design               architecture · boundaries · flows · scale
   6  study-software-design             modules · interfaces · complexity (Ousterhout)
   7  study-data-modeling               schema · normalization · queries · migrations
 
@@ -49,6 +49,8 @@ INTELLIGENCE
 `study-prompt-engineering` uses its own inline working-AI-engineer persona. The other fourteen study generators use `teacher.md` in teacher posture.
 
 Every study generator is also directly runnable as `/aipe:<generator>` when only one concern changed.
+
+The former `.aipe/study-system-design-dsa/` output is a legacy archive. New runs split it into `.aipe/study-system-design/` for architecture and `.aipe/study-dsa-foundations/` for algorithms and data structures; migration is explicit and never silently deletes the old folder.
 
 ## `/aipe:rehearse` — the human-layer orchestrator
 
@@ -79,7 +81,7 @@ intelligence   ai-engineering · prompt-engineering · agent-architecture
 adjacent       security · testing · distributed-systems
                debugging-observability · performance-engineering
      ▲
-core           system-design-dsa · software-design · data-modeling
+core           system-design · software-design · data-modeling
      ▲
 foundations    runtime-systems · networking · database-systems · dsa-foundations
 
@@ -88,10 +90,10 @@ human layer    problem-selection · design-doc · hackathon-demo · interview-de
 
 Key seams:
 
-- **runtime-systems vs system-design-dsa** — execution inside a runtime here; architecture boundaries there.
-- **networking vs security vs system-design-dsa** — protocol mechanics here; trust there; boundary placement there.
-- **database-systems vs data-modeling vs system-design-dsa** — engine mechanisms here; schema shape here; datastore selection and scaling there.
-- **dsa-foundations vs system-design-dsa** — reusable curriculum here; repo-applied algorithms and architecture there.
+- **runtime-systems vs system-design** — execution inside a runtime here; architecture boundaries there.
+- **networking vs security vs system-design** — protocol mechanics here; trust there; boundary placement there.
+- **database-systems vs data-modeling vs system-design** — engine mechanisms here; schema shape here; datastore selection and scaling there.
+- **dsa-foundations vs system-design** — reusable algorithms and data structures here; architectural boundaries and scale tradeoffs there.
 - **testing vs ai-engineering evals** — deterministic expected results here; probabilistic quality and regression thresholds there.
 - **debugging-observability vs performance-engineering** — explain failures with evidence here; measure and optimize bottlenecks there.
 - **problem-selection vs design-doc** — justify investment here; communicate the selected technical design there.
@@ -119,7 +121,7 @@ Key seams:
   study-networking/                study-testing/
   study-database-systems/          study-distributed-systems/
   study-dsa-foundations/           study-debugging-observability/
-  study-system-design-dsa/         study-performance-engineering/
+  study-system-design/         study-performance-engineering/
   study-software-design/           study-ai-engineering/
   study-data-modeling/             study-prompt-engineering/
                                   study-agent-architecture/

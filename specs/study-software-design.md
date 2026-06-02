@@ -30,10 +30,10 @@ architecture, and it is not the book reader.
                            abstract). The framework itself.
   study-software-design.md APPLY the primitives to THIS repo.   ← here
                            Findings, grounded in real files.
-  study-system-design-dsa.md  SYSTEM architecture + DSA.
-                              A different altitude (services,
-                              scaling, data structures), not
-                              module/interface-level design.
+  study-system-design.md     SYSTEM architecture. A different altitude
+                             (services, boundaries, scaling), not module/
+                             interface-level design.
+  study-dsa-foundations.md    reusable algorithm and data-structure curriculum.
 ```
 
   → A concept here teaches the primitive briefly, then spends its
@@ -41,10 +41,10 @@ architecture, and it is not the book reader.
     treatment of a primitive, it cross-references the matching
     `read-aposd` chapter rather than re-teaching it. Inherit,
     don't restate.
-  → If both `study-software-design/` and `study-system-design-dsa/`
+  → If both `study-software-design/` and `study-system-design/`
     seem to want the same finding, the rule is altitude: module/
-    interface/complexity → here; service/architecture/algorithm →
-    system-design-dsa.
+    interface/complexity → here; service/architecture → system-design;
+    reusable algorithm teaching → dsa-foundations.
 
 ═════════════════════════════════════════════════
 WHAT THIS SPEC DOES NOT REDEFINE
@@ -292,7 +292,7 @@ SCOPE AND CONSTRAINTS
     invoked repo only.
   → Code-level only. Module/interface/complexity/readability.
     System architecture and algorithms belong to
-    study-system-design-dsa; do not duplicate them here.
+    study-system-design; do not duplicate them here.
   → Findings are grounded. No claim about the code without a real
     file reference. No invented code.
   → Teach briefly, audit heavily. The conceptual depth lives in
@@ -306,18 +306,4 @@ SCOPE AND CONSTRAINTS
 RUNNING IT INSIDE `/aipe:study` (optional)
 ═════════════════════════════════════════════════
 
-This is a standalone generator today. To fold it into the study
-orchestrator so `/aipe:study` runs it alongside the other four:
-
-```
-  → add a row to study.md's generator table:
-      study-software-design.md → study-software-design/
-  → add it to the run order (after study-system-design-dsa, since
-    it's the same teacher posture and a natural design pairing)
-  → it inherits the orchestrator's create/update detection,
-    single confirmation gate, and summary table unchanged
-  → persona routing: teacher posture — same bucket as
-    system-design-dsa, ai-engineering, agent-architecture
-```
-
-Until then, run it on its own with `/aipe:study-software-design`.
+This generator is wired into `/aipe:study` after `study-system-design` under the shared create/update detection, single confirmation gate, and consolidated summary. It also remains runnable standalone with `/aipe:study-software-design` when only code-level design changed.

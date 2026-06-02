@@ -8,10 +8,10 @@ The shape of every concept file in the study family.
   me.md       → who reads the file (calibration)
   format.md   → how the file is structured (this file)
 
-The topic specs (`study-system-design-dsa.md`,
-`study-ai-engineering.md`, `study-prompt-engineering.md`,
-`study-agent-architecture.md`,
-`rehearse-interview-defense.md`) provide the WHAT — which
+The topic specs (for example `study-system-design.md`,
+`study-dsa-foundations.md`, `study-ai-engineering.md`,
+`study-prompt-engineering.md`, and `study-agent-architecture.md`)
+provide the WHAT — which
 concepts, anchored to which codebase. This file
 provides the structure they all fill.
 

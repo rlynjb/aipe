@@ -9,7 +9,7 @@ This orchestrator defines no topic content. It reads `format.md`, `teacher.md`, 
 ```
 foundations   runtime-systems · networking · database-systems · dsa-foundations
       ↓
-core          system-design-dsa · software-design · data-modeling
+core          system-design · software-design · data-modeling
       ↓
 adjacent      security · testing · distributed-systems
               debugging-observability · performance-engineering
@@ -23,7 +23,7 @@ intelligence  ai-engineering · prompt-engineering · agent-architecture
    2. `study-networking` — networking and protocol foundations
    3. `study-database-systems` — database-engine foundations
    4. `study-dsa-foundations` — reusable DSA curriculum grounded in repo examples
-   5. `study-system-design-dsa` — architecture and applied DSA
+   5. `study-system-design` — architecture, boundaries, flows, and scale
    6. `study-software-design` — module, interface, and complexity quality
    7. `study-data-modeling` — schema, query-shape, integrity, and migrations
    8. `study-security` — trust boundaries and security
@@ -43,7 +43,7 @@ intelligence  ai-engineering · prompt-engineering · agent-architecture
     study-networking.md  →  .aipe/study-networking/
     study-database-systems.md  →  .aipe/study-database-systems/
     study-dsa-foundations.md  →  .aipe/study-dsa-foundations/
-    study-system-design-dsa.md  →  .aipe/study-system-design-dsa/
+    study-system-design.md  →  .aipe/study-system-design/
     study-software-design.md  →  .aipe/study-software-design/
     study-data-modeling.md  →  .aipe/study-data-modeling/
     study-security.md  →  .aipe/study-security/
@@ -76,6 +76,8 @@ otherwise                                           → CREATE
 ```
 
 Before editing any generated artifact, print one consolidated table with generator, mode, and planned changes. Wait for one confirmation for the whole run. In non-interactive execution, print the plan and continue.
+
+During detection, also check for the legacy `.aipe/study-system-design-dsa/` folder. If present, include a migration note in the consolidated plan: architecture now belongs in `.aipe/study-system-design/`, DSA learning belongs in `.aipe/study-dsa-foundations/`, and the old folder must not be silently deleted or overwritten.
 
 ## Execution contract
 

@@ -15,7 +15,7 @@ Topic generator. Reads `format.md`, `teacher.md` in teacher posture, `me.md`, an
 ```
 study-performance-engineering MEASURES and improves observed bottlenecks.
 study-runtime-systems         explains execution mechanisms.
-study-system-design-dsa       explains architecture-scale tradeoffs.
+study-system-design       explains architecture-scale tradeoffs.
 ```
 
 A finding belongs to the generator that owns the mechanism. Cross-link neighboring guides rather than re-teaching their material.
