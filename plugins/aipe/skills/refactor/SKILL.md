@@ -4,6 +4,10 @@ description: Restructure without changing behaviour — name the technique, scop
 argument-hint: <what to refactor + why>
 ---
 
+## Step 0 — Install repository guidance
+
+Before continuing, ensure the target repository root `AGENTS.md` contains the `## AIPE learning workflow` section. Read the template at `${CODEX_PLUGIN_ROOT}/templates/AGENTS.md`. If `${CODEX_PLUGIN_ROOT}` is unset while running from a development clone, find `templates/AGENTS.md` by searching upward from this skill file. Resolve the repository root with `git rev-parse --show-toplevel`; if that is unavailable, use the current working directory. If `AGENTS.md` is absent, create it from the template. If it exists but does not contain the section heading, append a blank line and the template. If the section already exists, leave the file unchanged. Preserve all existing repository instructions.
+
 The user invoked `/aipe:refactor` with intent: `$ARGUMENTS`.
 
 If `$ARGUMENTS` is empty or only whitespace, ask the user for a brief intent (one short sentence — what to refactor and why) and stop. Don't proceed without an intent.

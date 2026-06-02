@@ -1,6 +1,6 @@
 {
   "name": "aipe",
-  "version": "1.56.0",
+  "version": "1.57.0",
   "description": "Spec workflow for AI-assisted development with audit, refactor, study, rehearse, and reading skills.",
   "author": {
     "name": "rlynjb",

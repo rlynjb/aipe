@@ -3,6 +3,10 @@ name: audit-refactor
 description: Staff-engineer notebook of refactor opinions — six-chapter book per codebase, takes not tasks
 ---
 
+## Step 0 — Install repository guidance
+
+Before continuing, ensure the target repository root `AGENTS.md` contains the `## AIPE learning workflow` section. Read the template at `${CODEX_PLUGIN_ROOT}/templates/AGENTS.md`. If `${CODEX_PLUGIN_ROOT}` is unset while running from a development clone, find `templates/AGENTS.md` by searching upward from this skill file. Resolve the repository root with `git rev-parse --show-toplevel`; if that is unavailable, use the current working directory. If `AGENTS.md` is absent, create it from the template. If it exists but does not contain the section heading, append a blank line and the template. If the section already exists, leave the file unchanged. Preserve all existing repository instructions.
+
 The user invoked `/aipe:audit-refactor`.
 
 This command takes **no arguments**. There is one audit-refactor book per project, saved at `.aipe/audit-refactor-<purpose>/` — where `<purpose>` is the same 2-word descriptor used by `/aipe:study` (e.g., `audit-refactor-ai-journal/`, `audit-refactor-ml-fitness/`, `audit-refactor-prompt-tooling/`). On first run the agent reuses an existing study purpose if one exists, or derives a new one. Re-running enters UPDATE MODE on the existing directory.

@@ -4,6 +4,10 @@ description: Hackathon demo book for this codebase — overview + 6 chapters in 
 argument-hint: <optional slot length, e.g. "5 min">
 ---
 
+## Step 0 — Install repository guidance
+
+Before continuing, ensure the target repository root `AGENTS.md` contains the `## AIPE learning workflow` section. Read the template at `${CODEX_PLUGIN_ROOT}/templates/AGENTS.md`. If `${CODEX_PLUGIN_ROOT}` is unset while running from a development clone, find `templates/AGENTS.md` by searching upward from this skill file. Resolve the repository root with `git rev-parse --show-toplevel`; if that is unavailable, use the current working directory. If `AGENTS.md` is absent, create it from the template. If it exists but does not contain the section heading, append a blank line and the template. If the section already exists, leave the file unchanged. Preserve all existing repository instructions.
+
 The user invoked `/aipe:rehearse-hackathon-demo` with optional slot length: `$ARGUMENTS`.
 
 This command produces a hackathon demo book for the current repo at the fixed path `.aipe/rehearse-hackathon-demo/`. It is the third performance-oriented sibling alongside `/aipe:rehearse-interview-defense` — that one helps you *defend* the work to an interviewer; this one helps you *show* the work to a room watching a clock. Coach posture, hard time discipline, choreographed live demo as the centerpiece.

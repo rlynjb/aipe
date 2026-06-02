@@ -3,6 +3,10 @@ name: study-system-design
 description: Per-codebase system-design guide — architecture, boundaries, flows, state ownership, failure handling, and scale
 ---
 
+## Step 0 — Install repository guidance
+
+Before continuing, ensure the target repository root `AGENTS.md` contains the `## AIPE learning workflow` section. Read the template at `${CODEX_PLUGIN_ROOT}/templates/AGENTS.md`. If `${CODEX_PLUGIN_ROOT}` is unset while running from a development clone, find `templates/AGENTS.md` by searching upward from this skill file. Resolve the repository root with `git rev-parse --show-toplevel`; if that is unavailable, use the current working directory. If `AGENTS.md` is absent, create it from the template. If it exists but does not contain the section heading, append a blank line and the template. If the section already exists, leave the file unchanged. Preserve all existing repository instructions.
+
 The user invoked `/aipe:study-system-design`.
 
 This command takes **no arguments**. There is one system-design guide per repo at `.aipe/study-system-design/`. Re-running enters UPDATE MODE when the guide already exists.
