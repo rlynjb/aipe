@@ -83,23 +83,40 @@ COPYRIGHT — HARD RULE
     reading it.
 
 ═════════════════════════════════════════════════
-THE TOPIC — primitives as codebase-evaluated concepts
+THE TOPIC — audit-style two-pass output
 ═════════════════════════════════════════════════
 
-Each concept below becomes one concept file, built on the full
-`format.md` template. The "How it works" block teaches the
-principle in general (briefly); the **"Implementation in codebase"
-block is the heavy one** — it is the audit: real files, real
-line ranges, deep vs shallow examples, the red flag firing or not,
-and the fix.
+**This is an audit-style generator.** It produces output in the
+two-pass shape defined in `me.md` → AUDIT-STYLE GENERATORS:
+
+  → Pass 1 — one `audit.md` walking the lens inventory below.
+  → Pass 2 — discovered-pattern files, one per significant
+    design pattern the repo actually exercises (a single deep
+    module worth a deep walk, a leakage seam worth its own file,
+    a layering decision that earns a named pattern).
+
+The pattern-discovery rules, file-layout rules, and worked
+examples live in `me.md`. Do not restate them here. This spec
+defines only the **lens inventory specific to software design**
+and the topic-specific calibration for Pass 2 pattern files.
+
+  → THE LENS INVENTORY (for `audit.md`)
+
+  Walk the codebase against this ordered 8-lens inventory. Each
+  lens becomes one `##` section in `audit.md`. For each lens:
+  name what the codebase actually does (with `file:line`
+  grounding) or emit `not yet exercised` honestly. Each lens
+  carries the AOSD red flag(s) that fire it. When a finding is
+  significant enough to have a dedicated pattern file in Pass 2,
+  cross-link to it rather than restating the deep walk.
 
 ```
   1. complexity-in-this-codebase
        the diagnostic overview. Locate the three symptoms in real
        files: where a single change amplifies across many files,
        where cognitive load spikes (the module nobody wants to
-       touch), where the unknown-unknowns hide. This is the
-       zoom-out for the whole guide.
+       touch), where the unknown-unknowns hide. The zoom-out for
+       the whole audit.
        findings: name the 2–3 highest-complexity hotspots by path.
 
   2. deep-vs-shallow-modules
@@ -140,7 +157,7 @@ and the fix.
        aggregated.
 
   7. readability (names · comments · consistency · obviousness)
-       the readability audit, four facets in one concept:
+       the readability audit, four facets in one lens:
          names        — vague names (data, obj, tmp, manager) where
                         precision would prevent bugs.
          comments     — comments that restate the code; missing
@@ -153,12 +170,30 @@ and the fix.
        findings: a short ranked list per facet with file refs.
 
   8. red-flags-audit
-       the capstone. Ousterhout's red flags as a review checklist,
-       each marked against this repo: fires / doesn't / N/A, with
-       the location and the one-line fix when it fires. This is the
-       actionable index the rest of the guide feeds.
+       the capstone lens. Ousterhout's red flags as a review
+       checklist, each marked against this repo: fires / doesn't /
+       N/A, with the location and the one-line fix when it fires.
+       This is the actionable index the rest of `audit.md` feeds.
        findings: the checklist, sorted by severity for this repo.
 ```
+
+  → WHAT EARNS A PASS 2 PATTERN FILE IN THIS TOPIC
+
+  The general rules in `me.md` apply: the pattern has a name,
+  passes the load-bearing test, passes the recognition test. For
+  software design specifically, the load-bearing test asks: *"if
+  I stripped this design move out, what specifically would the
+  module/interface lose?"* Real answers name a concrete property
+  (a deep interface that hides N decisions; an abstraction that
+  collapses M call sites into one; an error definition that
+  removes a class of special cases). A red flag firing in a
+  single file is a lens finding; a recurring design *move* the
+  repo makes deliberately is a pattern.
+
+  Vague answers ("the code would be uglier") do not earn a file.
+  When in doubt, push down to the audit — a pattern file you
+  can't fill the Interview defense block for with confidence is
+  a signal the pattern isn't load-bearing.
 
 ═════════════════════════════════════════════════
 ANCHORING FINDINGS TO THE CODEBASE
@@ -206,18 +241,16 @@ CHECK FOR EXISTING GUIDE — create vs update
 
 ```
   does .aipe/study-software-design/ exist?
-     NO  → CREATE: full audit, every concept file + README index.
-     YES → UPDATE: reconcile against the current codebase.
-              the findings drift when the code drifts:
-                Outdated:  a finding whose file/line moved or whose
-                           smell was fixed (mark it resolved)
-                Missing:   a new module / leak / pass-through the
-                           code grew since last run
-                Stale ref: paths / line ranges that moved
-                Action:    the specific edit
-              edit only the sections that moved; refresh the
-              red-flags-audit checklist; append
-              "Updated: [date] — …".
+     NO  → CREATE: produce audit.md (all 8 lenses) +
+              discovered-pattern files + README index.
+     YES → UPDATE: follow the rules in `me.md` →
+              AUDIT-STYLE GENERATORS → On UPDATE.
+              regenerate audit.md against current evidence;
+              add pattern files when the codebase grows a new
+              design move; update existing pattern files when
+              the implementation changes; remove pattern files
+              only when the design move is genuinely gone.
+              Append "Updated: [date] — …" to changed files.
 ```
 
 A repo whose design didn't change since the last run is a no-op —
@@ -230,21 +263,28 @@ that needs a regenerate.)
 OUTPUT STRUCTURE
 ═════════════════════════════════════════════════
 
-```
-  .aipe/study-software-design/
-    README.md                          map + the through-line
-                                       (complexity is the enemy;
-                                       deep modules are the weapon)
-                                       + book/source note
-    01-complexity-in-this-codebase.md
-    02-deep-vs-shallow-modules.md
-    03-information-hiding-and-leakage.md
-    04-layers-and-abstractions.md
-    05-pull-complexity-downward.md
-    06-errors-and-special-cases.md
-    07-readability.md
-    08-red-flags-audit.md
-```
+The two-pass file layout is defined in `me.md` →
+AUDIT-STYLE GENERATORS → File layout. For software-design
+specifically, the output folder is `.aipe/study-software-design/`.
+All files flat at the root, no nested sub-directories.
+
+Files produced:
+
+  → `README.md` — map + the through-line (complexity is the
+    enemy; deep modules are the weapon) + book/source note +
+    reading order + cross-links (`read-aposd`, `study-system-design`).
+  → `audit.md` — Pass 1, the 8-lens audit defined above. Eight
+    `##` sections, one per lens. The capstone lens
+    (`red-flags-audit`) consolidates the AOSD red-flag checklist.
+  → `01-` through `0N-` — Pass 2, the discovered-pattern files.
+    Each named after a design move actually exercised by the
+    repo (kebab-case), each using the full `format.md` template.
+    Typical count: 3-8 files (the `me.md` calibration).
+
+Worked examples (which repos produce which file lists) live
+in `me.md` — adapt the system-design worked example to the
+software-design altitude (module/interface moves, not service
+boundaries).
 
 ═════════════════════════════════════════════════
 HOW THE RUN EXECUTES — step by step
@@ -253,34 +293,46 @@ HOW THE RUN EXECUTES — step by step
 ```
   1. Resolve inputs
        read format.md (template + rules), teacher.md (teacher
-       posture), me.md (reader), the current repo's codebase.
+       posture), me.md (reader + AUDIT-STYLE GENERATORS), the
+       current repo's codebase.
 
   2. Detection
        .aipe/study-software-design/ exists? → CREATE or UPDATE.
 
   3. Audit pass (read-only)
-       walk the repo; for each primitive, gather evidence:
-       module depths, leaks, pass-throughs, exposed knobs, error
-       handling, readability smells. Record path + line range per
-       finding. Rank per primitive.
+       walk the repo; for each lens, gather evidence: module
+       depths, leaks, pass-throughs, exposed knobs, error
+       handling, readability smells. Record path + line range
+       per finding. Rank per lens. Separately, discover the
+       design moves the repo makes deliberately enough to earn
+       Pass 2 pattern files.
 
   4. Plan
-       CREATE → "will generate README + 8 concept files".
-       UPDATE → per-file change list (resolved / new / moved).
+       CREATE → "will generate audit.md + N discovered-pattern
+                files (named: …) + README".
+       UPDATE → per-file change list (audit.md regenerated;
+                pattern files added/updated/removed).
 
   5. Confirm (single gate; skip if non-interactive).
 
-  6. Execute, in concept order
-       each concept file on the full format.md template; the
-       "Implementation in codebase" block carries the findings;
-       Project exercises become refactor tasks ("make this shallow
-       module deep"); Interview defense becomes "defend or critique
-       this design decision". Then build red-flags-audit from the
-       per-concept findings.
+  6. Execute
+       Pass 1: write audit.md — one `##` section per lens, each
+       as long as the finding warrants, `not yet exercised`
+       named honestly, cross-linking Pass 2 files where the
+       deep walk lives. The capstone red-flags-audit lens
+       consolidates the AOSD checklist.
+
+       Pass 2: write each discovered-pattern file on the full
+       format.md template. The "Implementation in codebase"
+       block carries the deep walk; Project exercises become
+       refactor tasks ("make this shallow module deep");
+       Interview defense becomes "defend or critique this
+       design decision".
 
   7. Report
-       STUDY RUN SUMMARY line + the red-flags-audit location +
-       the top 3 fixes ranked across the whole repo.
+       STUDY RUN SUMMARY line + the audit.md location + the
+       Pass 2 file list + the top 3 fixes ranked across the
+       whole repo.
 ```
 
 ═════════════════════════════════════════════════

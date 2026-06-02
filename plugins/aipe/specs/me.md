@@ -471,6 +471,230 @@ hold across every spec in the family.
      the slow part is the mechanism walkthrough.
 
 ═════════════════════════════════════════════════
+AUDIT-STYLE GENERATORS — the two-pass shape
+═════════════════════════════════════════════════
+
+This section applies to **audit-style generators**
+specifically — the ones that read a real codebase
+and produce a per-repo study guide describing what's
+there. In the current family that's
+`study-system-design`, `study-software-design`,
+`study-security`, `study-testing`,
+`study-debugging-observability`, and
+`study-performance-engineering`. Curriculum-style
+generators (`study-runtime-systems`, `study-networking`,
+`study-database-systems`, `study-dsa-foundations`) do
+not use this shape — they teach concepts that apply
+broadly, not patterns specific to one repo.
+
+The discipline below replaces any "fixed file list"
+behavior an older audit-style spec might define. When
+a spec contradicts this section, **this section
+wins.**
+
+  ## Why this exists
+
+  Earlier versions of the audit-style generators
+  produced a *fixed* file list — same 8 files in every
+  repo, named after the audit lens ("system-map-and-
+  boundaries.md", "caching-and-invalidation.md"). The
+  output read as generic because it was: every repo
+  got the same files with different content.
+
+  The fix is a two-pass shape. Pass 1 is the audit:
+  one file, one shape, every repo. Pass 2 is the
+  discovered-pattern files: variable list, named after
+  the patterns the repo actually exercises, different
+  for every codebase. **The file list itself becomes a
+  learning artifact** — a reader scanning the directory
+  sees what's interesting about the repo before opening
+  anything.
+
+  ## The two passes
+
+```
+  AUDIT-STYLE OUTPUT — two passes, two artifacts
+
+  Pass 1: THE AUDIT (fixed, every repo)
+  ─────────────────────────────────────
+  one file: audit.md
+  N sections — one per topic lens
+  "was every lens checked?"
+  emits `not yet exercised` honestly
+  same shape across repos
+
+
+  Pass 2: DISCOVERED PATTERNS (variable)
+  ──────────────────────────────────────
+  one file per significant pattern
+  named after the pattern, not the lens
+  "what's interesting in this repo?"
+  3-8 files for a typical repo
+  different repos → different file lists
+```
+
+  ## Pass 1 — the audit (every repo gets this)
+
+  Walk the codebase against the topic's lens
+  inventory (each audit-style spec defines its own
+  lenses — system-design has 8, security has its
+  own, etc.). For each lens: name what the codebase
+  actually does (with `file:line` grounding) or emit
+  `not yet exercised` honestly. The audit lives in
+  one file: `audit.md`. One `##` section per lens,
+  each as long as the finding warrants — lenses
+  that find nothing get one line.
+
+  When a finding is significant enough to have a
+  dedicated pattern file, the audit cross-links to
+  it (e.g. `→ see 03-provider-abstraction.md for the
+  deep walk`) rather than restating the pattern.
+
+  ## Pass 2 — discovered patterns (repo-specific)
+
+  Discover the architectural patterns the repo
+  actually exercises and write one concept file per
+  pattern. File names match the patterns. Each file
+  uses the full `format.md` template.
+
+  ### What earns its own pattern file
+
+    → **Has a name.** 1-3 kebab-case words. "the
+       API layer" is not a pattern; "streaming-
+       ndjson" is. "the caching" is not a pattern;
+       "caching-and-rate-limiting" is.
+
+    → **Passes the load-bearing test.** Ask: *"if I
+       stripped this pattern out, what specifically
+       would the system lose?"* If you can name a
+       real capability lost (sub-second response,
+       OAuth identity propagation, fan-out
+       parallelism), it's a pattern. If you can
+       only say "it would be harder to maintain,"
+       it isn't.
+
+    → **Passes the recognition test.** A senior
+       engineer skimming the file list should
+       recognize each file name as a real
+       architectural pattern. File names should
+       *carry signal*: a reader who has never opened
+       the repo should learn what the repo does from
+       the file list alone.
+
+  ### What does NOT earn its own file
+
+    → Generic discussions of "the API layer" or
+       "the storage layer" — those are lens findings;
+       they live in the audit.
+
+    → Audit observations with no named pattern
+       behind them.
+
+    → Patterns from a foundation topic (specific data
+       structures, protocols, database engine choices)
+       — those belong to the foundation generators.
+
+  ### Calibration
+
+  **3-8 pattern files for a typical repo.** Fewer
+  than 3 means discovery was too conservative; more
+  than 8 means the bar was too low. When in doubt,
+  push down to the audit. A pattern file you can't
+  fill the Interview defense block for with
+  confidence is a signal the pattern isn't load-
+  bearing — drop it back into the audit.
+
+  ## File layout
+
+```
+  .aipe/study-<topic>/
+    README.md                              ← reading order + cross-links
+    00-overview.md                         ← one-page orientation
+    audit.md                               ← Pass 1: the lens audit
+    01-<discovered-pattern>.md             ← Pass 2: pattern files,
+    02-<discovered-pattern>.md                       one per significant
+    03-<discovered-pattern>.md                       pattern in this repo
+    ...
+```
+
+  All files flat at the root of the topic folder.
+  No nested sub-directories.
+
+  ## Worked example — what good looks like
+
+  For a repo that is a Next.js + OAuth + streaming
+  LLM app with a multi-agent backend (the
+  blooming_insights shape) under `study-system-design`:
+
+```
+  .aipe/study-system-design/
+    README.md
+    00-overview.md
+    audit.md
+    01-request-flow.md
+    02-oauth-boundary.md
+    03-provider-abstraction.md
+    04-caching-and-rate-limiting.md
+    05-streaming-ndjson.md
+    06-multi-agent-orchestration.md
+    07-client-stream-handoff.md
+    08-schema-gated-coverage.md
+```
+
+  For a repo that is a local-first mobile app with
+  no LLM features (the contrl shape) under
+  `study-system-design`:
+
+```
+  .aipe/study-system-design/
+    README.md
+    00-overview.md
+    audit.md
+    01-local-first-sync.md
+    02-on-device-ml-pipeline.md
+    03-real-time-frame-budget.md
+    04-canonical-local-with-cloud-mirror.md
+```
+
+  **Different repos, different file lists.** The
+  `audit.md` exists in both and walks the same lenses
+  (with `not yet exercised` honestly named for the
+  lenses that don't apply to a given repo). The
+  pattern files name what's actually worth learning.
+  The file list itself is a teaching artifact.
+
+  ## On UPDATE
+
+  - Add new pattern files when the codebase grows a
+    new pattern.
+  - Update existing pattern files when the
+    implementation changes.
+  - Remove pattern files only when the pattern is
+    genuinely gone from the codebase (not just
+    refactored).
+  - Regenerate `audit.md` against current evidence —
+    all lenses re-walked, cross-links to pattern
+    files refreshed.
+
+  ## How audit-style specs reference this section
+
+  An audit-style topic spec defines its own lens
+  inventory (the topics specific to its domain) and
+  references this section for the two-pass shape:
+
+    "This generator is audit-style. See
+     `me.md` → AUDIT-STYLE GENERATORS for the two-pass
+     output discipline (audit.md + discovered pattern
+     files). The lens inventory below is specific to
+     this topic; the discovery rules and file-layout
+     rules come from me.md."
+
+  Topic specs do not restate the two-pass discipline.
+  They cite this section and add only what's specific
+  to their topic — their own lens inventory and
+  worked examples in their domain.
+
+═════════════════════════════════════════════════
 HOW OTHER SPECS REFERENCE THIS FILE
 ═════════════════════════════════════════════════
 
@@ -526,6 +750,20 @@ Three common reference patterns:
   portfolio should be honest about the gap rather
   than overclaim.
 
+  ## When an audit-style spec needs the two-pass shape
+
+  Reference: the "AUDIT-STYLE GENERATORS — the
+  two-pass shape" section. Audit-style topic specs
+  (`study-system-design`, `study-software-design`,
+  `study-security`, `study-testing`,
+  `study-debugging-observability`,
+  `study-performance-engineering`) define their own
+  lens inventory in their own spec, but the two-pass
+  discipline (audit.md + discovered pattern files,
+  pattern-discovery rules, file layout, worked
+  examples) lives here. Topic specs cite this section
+  rather than restating it.
+
 ═════════════════════════════════════════════════
 WHAT THIS FILE DOES NOT DO
 ═════════════════════════════════════════════════
@@ -540,6 +778,18 @@ WHAT THIS FILE DOES NOT DO
     that. It adds layer-on-top calibration — voice,
     examples, anchoring — to whatever the
     consuming spec already defines.
+
+  → **One exception: the two-pass shape for audit-
+    style generators.** That discipline is defined
+    in this file (AUDIT-STYLE GENERATORS section)
+    and DOES override any conflicting "fixed file
+    list" behavior in an older audit-style spec.
+    When a topic spec contradicts the two-pass
+    shape, this file wins. The shape is a
+    cross-cutting rule about how audit artifacts
+    are produced, and it lives here so updates
+    propagate to every audit-style generator
+    automatically.
 
   → Does not lock the reader profile. As Rein
     builds new projects or shifts focus, this

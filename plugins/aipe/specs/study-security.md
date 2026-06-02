@@ -8,11 +8,14 @@ per-concept guide grounded in real files — where the code is safe, where
 it isn't, and the specific fix.
 
 Topic generator like the rest of the family. Reads `format.md` (structure),
-`teacher.md` (teacher posture), `me.md` (reader), the codebase. Inherits
-the per-concept-file template, the create/update detection, the single
-confirmation gate, and the run/report mechanics from the family — see
-`study-software-design.md` for those; they are identical here. This file
-defines only the topic, the concepts, the partition, and the anchoring.
+`teacher.md` (teacher posture), `me.md` (reader + AUDIT-STYLE GENERATORS),
+the codebase. **This is an audit-style generator** — it produces the
+two-pass output (`audit.md` + discovered-pattern files) defined in
+`me.md` → AUDIT-STYLE GENERATORS. Inherits the per-concept-file template,
+the create/update detection, the single confirmation gate, and the run/
+report mechanics from the family — see `study-software-design.md` for
+those; they are identical here. This file defines only the topic, the
+lens inventory, the partition, and the anchoring.
 
 ```
   /aipe:study-security      → create or update
@@ -66,17 +69,32 @@ Every finding ties to this: which boundary, which trust assumption, what
 breaks if it's wrong.
 
 ═════════════════════════════════════════════════
-THE TOPIC — concepts (one file each, full format.md template)
+THE TOPIC — audit-style two-pass output
 ═════════════════════════════════════════════════
 
-The "Implementation in codebase" block carries the audit: real files,
-the trust assumption, whether it holds, the fix.
+Per `me.md` → AUDIT-STYLE GENERATORS:
+
+  → Pass 1 — `audit.md` walks the lens inventory below.
+  → Pass 2 — discovered-pattern files name the security-shaped
+    mechanisms the repo actually exercises (e.g. a specific
+    auth boundary, a specific sanitization seam, an agent
+    tool-scope decision worth a deep walk).
+
+  → THE LENS INVENTORY (for `audit.md`)
+
+  Walk the codebase against this ordered 8-lens inventory. Each lens
+  becomes one `##` section in `audit.md`. For each lens: name what the
+  codebase actually does (with `file:line` grounding) or emit `not yet
+  exercised` honestly. The lens's "Implementation in codebase" content
+  — real files, the trust assumption, whether it holds, the fix —
+  belongs in `audit.md`. When a finding is significant enough to have
+  a dedicated pattern file in Pass 2, cross-link to it.
 
 ```
   1. trust-boundaries-and-attack-surface
        map every place untrusted input crosses into trusted code
        (request bodies, query params, headers, uploaded files, LLM
-       output, third-party responses). The zoom-out for the guide.
+       output, third-party responses). The zoom-out for the audit.
        red flag: an input treated as trusted because it "comes from
        our own frontend."
 
@@ -118,8 +136,24 @@ the trust assumption, whether it holds, the fix.
 
   8. security-red-flags-audit
        consolidated checklist, marked against this repo: fires /
-       doesn't / N/A, location, severity, one-line fix. The capstone.
+       doesn't / N/A, location, severity, one-line fix. The capstone
+       lens.
 ```
+
+  → WHAT EARNS A PASS 2 PATTERN FILE IN THIS TOPIC
+
+  The general rules in `me.md` apply: the pattern has a name, passes
+  the load-bearing test, passes the recognition test. For security
+  specifically, the load-bearing test asks: *"if I stripped this
+  control out, which trust assumption would now be unenforced — and
+  what specifically could an attacker reach?"* Real answers name a
+  concrete capability defended (cross-tenant row isolation, token
+  exchange that binds identity across a service hop, output gating
+  that prevents model-emitted SQL). A single CVE or single missing
+  validation is a lens finding; a recurring control the repo
+  implements deliberately is a pattern.
+
+  Vague answers ("things would be less secure") do not earn a file.
 
 ═════════════════════════════════════════════════
 ANCHORING + HONEST ASSESSMENT
@@ -139,22 +173,26 @@ attack. Defensive findings, not a how-to.
 OUTPUT + MECHANICS
 ═════════════════════════════════════════════════
 
-```
-  .aipe/study-security/
-    README.md   through-line (trace the trust axis) + map
-    01-trust-boundaries-and-attack-surface.md
-    02-authentication-and-authorization.md
-    03-input-validation-and-injection.md
-    04-secrets-and-configuration.md
-    05-data-exposure-and-privacy.md
-    06-dependencies-and-supply-chain.md
-    07-llm-and-agent-security.md
-    08-security-red-flags-audit.md
-```
+The two-pass file layout is defined in `me.md` → AUDIT-STYLE
+GENERATORS → File layout. For this topic the output folder is
+`.aipe/study-security/`. All files flat at the root, no nested
+sub-directories.
 
-Create/update detection, the single confirmation gate, the audit pass, the
-run order, and the summary report are the family pattern — identical to
-`study-software-design.md`. Per-repo. Code-level findings only. Original
+Files produced:
+
+  → `README.md` — through-line (trace the trust axis) + map + reading
+    order + cross-links.
+  → `audit.md` — Pass 1, the 8-lens audit defined above. The capstone
+    lens (`security-red-flags-audit`) consolidates the checklist.
+  → `01-` through `0N-` — Pass 2, discovered-pattern files, each named
+    after a security control or boundary the repo actually exercises.
+
+Create/update detection, the single confirmation gate, the audit pass,
+the run order, and the summary report are the family pattern — identical
+to `study-software-design.md` (which now follows the two-pass shape).
+On UPDATE, follow `me.md` → AUDIT-STYLE GENERATORS → On UPDATE: regenerate
+`audit.md` against current evidence, add/update/remove pattern files
+against current controls. Per-repo. Code-level findings only. Original
 expression. Inherit structure from `format.md`, voice from `teacher.md`.
 
 To run inside `/aipe:study`: add the table row + run-order entry in

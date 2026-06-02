@@ -34,9 +34,18 @@ A system-design finding belongs here when it changes the architectural map or a 
 
 System design is not a stack shopping list. Start with constraints, draw the whole system, trace the important flows, name ownership at each boundary, and defend tradeoffs. If the repo does not exercise a topic, say `not yet exercised`; never invent services, scale, or infrastructure.
 
-## Topic concepts
+## Topic concepts — audit-style two-pass output
 
-Every concept file uses the full `format.md` template. Cover the significant architectural patterns actually present in the repo, using this ordered inventory as the audit lens:
+**This is an audit-style generator.** It produces output in the two-pass shape defined in `me.md` → AUDIT-STYLE GENERATORS:
+
+  → Pass 1 — one `audit.md` walking the lens inventory below
+  → Pass 2 — discovered-pattern files, one per significant pattern the repo actually exercises
+
+The pattern-discovery rules, file-layout rules, and worked examples live in `me.md`. Do not restate them here. This spec defines only the **lens inventory specific to system-design**.
+
+### The lens inventory (for `audit.md`)
+
+Walk the codebase against this ordered 8-lens inventory. Each lens becomes one `##` section in `audit.md`. For each lens: name what the codebase actually does (with `file:line` grounding) or emit `not yet exercised`. When a finding is significant enough to have a dedicated pattern file in Pass 2, cross-link to it.
 
 1. **system-map-and-boundaries** — every major component, responsibility, connection, trust boundary, and external dependency.
 2. **request-response-and-data-flow** — the important end-to-end flows, waterfalls, parallel work, and handoffs.
@@ -47,36 +56,32 @@ Every concept file uses the full `format.md` template. Cover the significant arc
 7. **scale-bottlenecks-and-evolution** — what breaks first at 10x and 100x, what stays stable, and which future change would force rearchitecture.
 8. **system-design-red-flags-audit** — ranked architectural risks, each grounded in real evidence.
 
-Add a repo-specific concept file only when the architecture contains another significant pattern, such as an event pipeline, plugin boundary, sync engine, edge layer, or multi-tenant split.
+### What earns a Pass 2 pattern file in this topic
+
+The general rules in `me.md` apply: the pattern has a name, passes the load-bearing test, passes the recognition test. For system-design specifically, the load-bearing test asks: *"if I stripped this pattern out, what architectural capability would the system lose?"* Real answers name specific capabilities — sub-second response time, OAuth identity propagation, fan-out parallelism, eventual consistency, local-first offline behavior. Vague answers ("harder to maintain") do not earn a file.
+
+Typical system-design pattern names (kebab-case): `request-flow`, `oauth-boundary`, `provider-abstraction`, `caching-and-rate-limiting`, `streaming-ndjson`, `multi-agent-orchestration`, `client-stream-handoff`, `schema-gated-coverage`, `local-first-sync`, `on-device-ml-pipeline`, `canonical-local-with-cloud-mirror`. The pattern name comes from the repo, not from this list — this is a calibration guide for the kind of names that pass the recognition test, not an enumeration.
 
 ## Output
 
-```
-  .aipe/study-system-design/
-    README.md
-    00-overview.md
-    01-system-map-and-boundaries.md
-    02-request-response-and-data-flow.md
-    03-state-ownership-and-source-of-truth.md
-    04-caching-and-invalidation.md
-    05-storage-choice-and-durability-boundaries.md
-    06-failure-handling-and-reliability.md
-    07-scale-bottlenecks-and-evolution.md
-    08-system-design-red-flags-audit.md
-    09-<repo-specific-pattern>.md       optional; only when exercised
-```
+The two-pass file layout is defined in `me.md` → AUDIT-STYLE GENERATORS → File layout. For system-design specifically, the output folder is `.aipe/study-system-design/`. All files flat at the root, no nested sub-directories.
 
-All concept files live **flat** at the root of `.aipe/study-system-design/` — no `01-system-design/` (or any other) nested sub-directory. The folder name already names the topic; another wrapping directory adds nothing.
+Files produced:
 
-`00-overview.md` is a one-page orientation artifact: one full-system ASCII diagram plus a concise legend naming what each component is, what it owns, and what it talks to. `README.md` (at the same root) gives the reading order and explicitly cross-links relevant foundation guides.
+- `README.md` — reading order plus cross-links to neighboring foundation guides (`study-database-systems`, `study-data-modeling`, `study-distributed-systems`, `study-runtime-systems`)
+- `00-overview.md` — one-page orientation artifact: one full-system ASCII diagram plus a concise legend naming what each component is, what it owns, and what it talks to. The reader who skims only this file gets the whole map.
+- `audit.md` — Pass 1, the 8-lens audit defined above. Eight `##` sections, one per lens.
+- `01-` through `0N-` — Pass 2, the discovered-pattern files. Each named after a pattern in kebab-case, each using the full `format.md` template.
+
+Worked examples (which repos produce which file lists) live in `me.md` — see the "Worked example" sub-section there.
 
 ## Anchoring rules
 
-- Ground every applied claim in a real `file:line` range, configuration value, schema object, or executable path.
+- Ground every applied claim in a real `file:line` range, configuration value, schema object, or executable path. Both `audit.md` and the pattern files anchor to real evidence.
 - Distinguish observed behavior from inference. Label inferred production or scale behavior plainly.
-- Do not manufacture architecture to fill the inventory. Use `not yet exercised` when the repo lacks a mechanism.
-- Keep the partition seam sharp: runtime, protocol, database-engine, DSA, distributed-correctness, schema-shape, security, and performance details belong to their owning generators.
-- On UPDATE, reconcile surgically against the codebase: add new boundaries and patterns, update changed evidence, retain correct teaching, and remove stale claims.
+- Do not manufacture architecture to fill the inventory. Use `not yet exercised` in the audit when a lens finds nothing. Do not invent pattern files for patterns the repo doesn't actually exercise.
+- Keep the partition seam sharp: runtime, protocol, database-engine, DSA, distributed-correctness, schema-shape, security, and performance details belong to their owning generators. System-design owns architectural boundaries and tradeoffs only.
+- On UPDATE, follow the rules in `me.md` → AUDIT-STYLE GENERATORS → On UPDATE: add new pattern files when the codebase grows new patterns, update existing pattern files when implementations change, remove pattern files only when patterns are genuinely gone, regenerate `audit.md` against current evidence.
 
 ## Migration from the former combined generator
 

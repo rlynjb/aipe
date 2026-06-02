@@ -84,10 +84,12 @@ Precedence when they conflict: format.md wins on **structure**; teacher.md wins 
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
-Check whether `.aipe/study-security/` already contains the guide. The signal is the presence of `00-overview.md` at the root OR any concept file matching `0[1-8]-*.md`.
+Check whether `.aipe/study-security/` already contains the guide. The signal is the presence of `00-overview.md`, `audit.md`, or any concept file matching `0[1-9]-*.md`.
 
 - **Existing guide found** → go to UPDATE MODE (Step 5U onward). **Do NOT regenerate from scratch.**
 - **No existing guide** → go to CREATE MODE (Step 5C onward).
+
+Also check for the **legacy fixed-file-list layout** — files named after the 8 audit lenses: `01-trust-boundaries-and-attack-surface.md`, `02-authentication-and-authorization.md`, `03-input-validation-and-injection.md`, `04-secrets-and-configuration.md`, `05-data-exposure-and-privacy.md`, `06-dependencies-and-supply-chain.md`, `07-llm-and-agent-security.md`, `08-security-red-flags-audit.md`. Older runs produced one file per lens; the current shape consolidates the lens walk into a single `audit.md` and reserves numbered files for discovered patterns (`me.md` → AUDIT-STYLE GENERATORS). If any of these lens-named files exist, flag them in the plan and ask whether to (a) fold their content into a regenerated `audit.md` and break out true Pass-2 pattern files, or (b) leave them in place as an archive. Do not silently rewrite or delete them.
 
 ---
 
@@ -112,52 +114,48 @@ The non-negotiables from `format.md` (structure), `teacher.md` (voice), `me.md` 
 
 ## Step 7C — Create the directory and generate the guide
 
+Follow the two-pass shape defined in `specs/me.md` → AUDIT-STYLE GENERATORS and the lens inventory in `specs/study-security.md`.
+
 Create:
 
 ```bash
 mkdir -p .aipe/study-security
 ```
 
-Generate 9 files (flat — no subdirectories) in concept order:
+Generate the following (flat — no subdirectories):
 
 ```
-00-overview.md                            master summary + the 3 highest-risk findings
-01-trust-boundaries-and-attack-surface.md who's outside; what crosses in; what's exposed externally
-02-authentication-and-authorization.md    who you are vs what you can do — and where each is enforced
-03-input-validation-and-injection.md      where untrusted input flows; sanitization vs trust
-04-secrets-and-configuration.md           where secrets live; .env hygiene; key rotation; runtime vs build-time
-05-data-exposure-and-privacy.md           what leaves the boundary (logs, errors, responses, telemetry)
-06-dependencies-and-supply-chain.md       what the dep tree drags in; lockfile discipline; CVE surface
-07-llm-and-agent-security.md              prompt injection, tool-call boundary, output validation [AI repos]
-08-security-red-flags-audit.md            the consolidated red-flags checklist applied to this repo
+README.md                          map + through-line (trace the trust axis) + reading order
+00-overview.md                     master summary + the three highest-risk findings
+audit.md                           Pass 1 — the 8-lens audit walking each trust-axis lens
+01-<discovered-pattern>.md         Pass 2 — discovered security controls the repo actually exercises,
+02-<discovered-pattern>.md                   named after the control (kebab-case), one per control,
+0N-<discovered-pattern>.md                   3-8 files for a typical repo
 ```
 
-**Note:** `07-llm-and-agent-security.md` is generated only when the repo has LLM/agent surface. If absent, omit and renumber `08` → `07`.
+**Pass 1 (`audit.md`)** walks all 8 lenses from the spec, each as one `##` section. Each lens names what the codebase actually does with `file:line` grounding, or `not yet exercised` honestly. The `07-llm-and-agent-security` lens emits `not yet exercised` for repos without LLM/agent surface. The capstone lens (`security-red-flags-audit`) consolidates the red-flag checklist. When a finding is significant enough to have its own pattern file, the lens cross-links to it rather than restating the deep walk.
 
-Each file uses the full `format.md` per-concept template. The auditing emphasis lands in Block 6 (Implementation in codebase).
+**Pass 2 (discovered-pattern files)** uses the full `format.md` per-concept template. The auditing emphasis lands in Block 6 (Implementation in codebase) — real `file:line` references, the trust assumption named, whether it holds, and the specific fix. Pattern file names come from the repo, not from the lens inventory — see `me.md` → AUDIT-STYLE GENERATORS → "What earns its own pattern file" for the discovery rules.
 
 ## Step 8C — Generate `00-overview.md`
 
-The audit at a glance: the codebase's trust map (a layers-and-hops diagram of boundaries), the three highest-risk findings (with file paths), and a one-line verdict per primitive ("auth is JWT-with-refresh / boundaries enforced server-side" / "secrets live in env vars; no rotation policy"). The reader who reads only the overview gets the punch list.
+The audit at a glance: the codebase's trust map (a layers-and-hops diagram of boundaries), the three highest-risk findings (with file paths), and a one-line verdict per primitive ("auth is JWT-with-refresh / boundaries enforced server-side" / "secrets live in env vars; no rotation policy"). The reader who reads only the overview gets the punch list. Cross-link to `audit.md` for the full lens walk and to each Pass 2 file for the deep walks.
 
 ## Step 9C — Report + stop
 
-Print exactly:
+Print:
 
 ```
 ✓ Security audit created at .aipe/study-security/
-  00-overview.md                            (3 highest-risk findings named)
-  01-trust-boundaries-and-attack-surface.md (<N> findings)
-  02-authentication-and-authorization.md    (<N> findings)
-  03-input-validation-and-injection.md      (<N> findings)
-  04-secrets-and-configuration.md           (<N> findings)
-  05-data-exposure-and-privacy.md           (<N> findings)
-  06-dependencies-and-supply-chain.md       (<N> findings)
-  07-llm-and-agent-security.md              (<N> findings)   [omit if no LLM/agent surface]
-  08-security-red-flags-audit.md            (<N> red flags fired)
+  README.md
+  00-overview.md             (3 highest-risk findings named)
+  audit.md                   (8 lenses; <N> red flags firing)
+  01-<pattern>.md            (Pass 2 — discovered security control)
+  ...
+  0N-<pattern>.md
 ```
 
-Then a 3–5 sentence summary: the trust map's most exposed boundary, the single highest-leverage fix, any primitive that's mostly N/A for this repo.
+Then a 3–5 sentence summary: the trust map's most exposed boundary, the single highest-leverage fix, any primitive that's mostly `not yet exercised` for this repo. Name the Pass 2 file list explicitly so the user sees what controls the repo earned dedicated files for.
 
 **Stop. Wait for the user's next instruction.**
 
@@ -167,16 +165,19 @@ Then a 3–5 sentence summary: the trust map's most exposed boundary, the single
 
 ## Step 5U — Read the existing guide
 
-Walk `.aipe/study-security/` and read all concept files.
+Walk `.aipe/study-security/` and read every file (`README.md`, `00-overview.md`, `audit.md`, and each Pass 2 pattern file). If the legacy fixed-file-list layout is present (per Step 4 check), include those files in the walk as the source material to be folded into the regenerated `audit.md`.
 
 ## Step 6U — Re-audit and diff
 
-Three diff sources:
-- **Codebase drift** — findings that no longer hold (the leak was sealed; the auth check was added), file paths that moved, new findings the original audit missed.
+Follow the rules in `me.md` → AUDIT-STYLE GENERATORS → On UPDATE.
+
+Diff sources:
+- **Codebase drift** — findings that no longer hold (the leak was sealed; the auth check was added), file paths that moved, new findings the original audit missed, and new security controls that now earn their own Pass 2 pattern file.
 - **Template drift** — `format.md` has added blocks since the file was written; check that older files have them.
 - **Cross-reference drift** — pointers to sibling guides (study-software-design, study-data-modeling) that moved or renamed.
+- **Pattern drift** — Pass 2 pattern files for controls the repo no longer enforces; missing files for controls the repo added.
 
-Output a structured change plan per file.
+Output a structured change plan: `audit.md` regenerated (full diff against current evidence), pattern files added / updated / removed, with reasons per change.
 
 ## Step 7U — Output the plan and STOP for confirmation
 
@@ -184,7 +185,7 @@ Print the change plan. **Wait for user confirmation.** Do NOT auto-apply.
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only the sections identified. Preserve findings that still hold; surgically edit ones whose code moved or whose verdict flipped. Append:
+Regenerate `audit.md` against current evidence. Add new Pass 2 pattern files for newly-load-bearing security controls. Update existing pattern files where the implementation changed. Remove pattern files only when the control is genuinely gone from the codebase (not just refactored). Append:
 
 ```
 ---

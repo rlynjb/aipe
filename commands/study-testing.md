@@ -74,7 +74,9 @@ What each file supplies:
 
 ## Step 4 — Detect existing guide → CREATE or UPDATE
 
-Check `.aipe/study-testing/` for `00-overview.md` at the root OR any concept file matching `0[1-7]-*.md`. Existing → UPDATE; missing → CREATE.
+Check `.aipe/study-testing/` for `00-overview.md`, `audit.md`, or any concept file matching `0[1-9]-*.md`. Existing → UPDATE; missing → CREATE.
+
+Also check for the **legacy fixed-file-list layout** — files named after the 7 audit lenses: `01-what-is-tested-and-what-isnt.md`, `02-test-design-and-levels.md`, `03-tests-as-design-pressure.md`, `04-determinism-isolation-and-flakiness.md`, `05-edge-cases-and-error-paths.md`, `06-testing-ai-features.md`, `07-testing-red-flags-audit.md`. Older runs produced one file per lens; the current shape consolidates the lens walk into a single `audit.md` and reserves numbered files for discovered patterns (`me.md` → AUDIT-STYLE GENERATORS). If any of these lens-named files exist, flag them in the plan and ask whether to (a) fold their content into a regenerated `audit.md` and break out true Pass-2 pattern files, or (b) leave them in place as an archive. Do not silently rewrite or delete them.
 
 ---
 
@@ -97,30 +99,32 @@ Non-negotiables:
 
 ## Step 7C — Create the directory and generate the guide
 
+Follow the two-pass shape defined in `specs/me.md` → AUDIT-STYLE GENERATORS and the lens inventory in `specs/study-testing.md`.
+
 Create:
 
 ```bash
 mkdir -p .aipe/study-testing
 ```
 
-Generate 8 files in concept order:
+Generate the following (flat — no subdirectories):
 
 ```
-00-overview.md                            master summary + the 3 highest-leverage gaps
-01-what-is-tested-and-what-isnt.md        coverage map: critical paths vs cosmetic tests
-02-test-design-and-levels.md              unit vs integration vs property vs e2e — what each is for
-03-tests-as-design-pressure.md            "hard to test" findings as design smells (cross-link)
-04-determinism-isolation-and-flakiness.md timing, randomness, shared fixtures, the flaky-test ledger
-05-edge-cases-and-error-paths.md          where the test suite's failure-mode coverage thins
-06-testing-ai-features.md                 the determinism seam: deterministic harness, probabilistic core [AI repos]
-07-testing-red-flags-audit.md             the consolidated red-flags checklist applied to this repo
+README.md                          map + through-line + deterministic-vs-eval seam + reading order
+00-overview.md                     master summary + the three highest-leverage gaps
+audit.md                           Pass 1 — the 7-lens audit walking each testing lens
+01-<discovered-pattern>.md         Pass 2 — discovered testing techniques the repo applies deliberately,
+02-<discovered-pattern>.md                   named after the technique (kebab-case), one per technique,
+0N-<discovered-pattern>.md                   3-8 files for a typical repo
 ```
 
-**Note:** `06-testing-ai-features.md` is generated only when the repo has AI/LLM features. If absent, omit and renumber `07` → `06`.
+**Pass 1 (`audit.md`)** walks all 7 lenses from the spec, each as one `##` section. Each lens names what the codebase actually does with `file:line` grounding, or `not yet exercised` honestly. The `06-testing-ai-features` lens emits `not yet exercised` for repos without AI/LLM surface. The capstone lens (`07-testing-red-flags-audit`) consolidates the red-flag checklist. When a finding is significant enough to have its own pattern file, the lens cross-links to it rather than restating the deep walk.
+
+**Pass 2 (discovered-pattern files)** uses the full `format.md` per-concept template. State which side of the determinism seam each pattern lives on. Pattern file names come from the repo, not from the lens inventory — see `me.md` → AUDIT-STYLE GENERATORS → "What earns its own pattern file" for the discovery rules.
 
 ## Step 8C — Generate `00-overview.md`
 
-The audit at a glance: a coverage map (which areas of the repo have tests, which don't), the three highest-leverage gaps (the tests that would catch the most production regressions), and a one-line verdict per concept.
+The audit at a glance: a coverage map (which areas of the repo have tests, which don't), the three highest-leverage gaps (the tests that would catch the most production regressions), and a one-line verdict per lens. Cross-link to `audit.md` for the full lens walk and to each Pass 2 file for the deep walks.
 
 ## Step 9C — Report + stop
 
@@ -128,17 +132,15 @@ Print:
 
 ```
 ✓ Testing audit created at .aipe/study-testing/
-  00-overview.md                            (3 highest-leverage gaps named)
-  01-what-is-tested-and-what-isnt.md        (<N> coverage gaps)
-  02-test-design-and-levels.md              (<N> wrong-level findings)
-  03-tests-as-design-pressure.md            (<N> design-smell cross-links)
-  04-determinism-isolation-and-flakiness.md (<N> flakiness sources)
-  05-edge-cases-and-error-paths.md          (<N> findings)
-  06-testing-ai-features.md                 (<N> findings)   [omit if no AI surface]
-  07-testing-red-flags-audit.md             (<N> red flags fired)
+  README.md
+  00-overview.md             (3 highest-leverage gaps named)
+  audit.md                   (7 lenses; <N> red flags firing)
+  01-<pattern>.md            (Pass 2 — discovered testing technique)
+  ...
+  0N-<pattern>.md
 ```
 
-Then a 3–5 sentence summary: the codebase's strongest test-design pattern, the single highest-leverage gap, and any concept that's mostly N/A.
+Then a 3–5 sentence summary: the codebase's strongest test-design pattern, the single highest-leverage gap, and any lens that's mostly `not yet exercised`. Name the Pass 2 file list explicitly so the user sees what techniques the repo earned dedicated files for.
 
 **Stop. Wait for the user's next instruction.**
 
@@ -148,15 +150,18 @@ Then a 3–5 sentence summary: the codebase's strongest test-design pattern, the
 
 ## Step 5U — Read the existing guide
 
-Walk `.aipe/study-testing/` and read all concept files.
+Walk `.aipe/study-testing/` and read every file (`README.md`, `00-overview.md`, `audit.md`, and each Pass 2 pattern file). If the legacy fixed-file-list layout is present (per Step 4 check), include those files in the walk as the source material to be folded into the regenerated `audit.md`.
 
 ## Step 6U — Re-audit and diff
 
-- **Codebase drift** — tests added/removed, fixtures changed, new flaky tests, new uncovered paths.
+Follow the rules in `me.md` → AUDIT-STYLE GENERATORS → On UPDATE.
+
+- **Codebase drift** — tests added/removed, fixtures changed, new flaky tests, new uncovered paths, and new testing techniques that now earn their own Pass 2 pattern file.
 - **Template drift** — `format.md` blocks added.
 - **Cross-reference drift** — pointers to `study-ai-engineering` evals or `study-software-design` design-smell findings.
+- **Pattern drift** — Pass 2 pattern files for techniques the repo no longer uses; missing files for techniques the repo added.
 
-Output the change plan.
+Output a structured change plan: `audit.md` regenerated (full diff against current evidence), pattern files added / updated / removed, with reasons per change.
 
 ## Step 7U — Output the plan and STOP for confirmation
 
@@ -164,7 +169,7 @@ Print the change plan. **Wait for user confirmation.** Do NOT auto-apply.
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only identified sections. Append:
+Regenerate `audit.md` against current evidence. Add new Pass 2 pattern files for newly-load-bearing testing techniques. Update existing pattern files where the implementation changed. Remove pattern files only when the technique is genuinely gone from the codebase (not just refactored). Append:
 
 ```
 ---

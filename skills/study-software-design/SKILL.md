@@ -85,10 +85,12 @@ Precedence when the files overlap: format.md wins on **structure**; teacher.md w
 
 ## Step 4 — Detect existing guide → branch CREATE or UPDATE
 
-Check whether `.aipe/study-software-design/` already contains the guide. The signal is the presence of `00-overview.md` at the root OR any concept file matching `0[1-8]-*.md`.
+Check whether `.aipe/study-software-design/` already contains the guide. The signal is the presence of `00-overview.md`, `audit.md`, or any concept file matching `0[1-9]-*.md`.
 
 - **Existing guide found** → go to UPDATE MODE (Step 5U onward). **Do NOT regenerate from scratch.**
 - **No existing guide** → go to CREATE MODE (Step 5C onward).
+
+Also check for the **legacy fixed-file-list layout** — files named after the 8 audit lenses: `01-complexity-in-this-codebase.md`, `02-deep-vs-shallow-modules.md`, `03-information-hiding-and-leakage.md`, `04-layers-and-abstractions.md`, `05-pull-complexity-downward.md`, `06-errors-and-special-cases.md`, `07-readability.md`, `08-red-flags-audit.md`. Older runs produced one file per lens; the current shape consolidates the lens walk into a single `audit.md` and reserves numbered files for discovered patterns (`me.md` → AUDIT-STYLE GENERATORS). If any of these lens-named files exist, flag them in the plan and ask whether to (a) fold their content into a regenerated `audit.md` and break out true Pass-2 pattern files, or (b) leave them in place as an archive. Do not silently rewrite or delete them.
 
 ---
 
@@ -115,50 +117,48 @@ The non-negotiables from `format.md` (structure), `teacher.md` (voice), `me.md` 
 
 ## Step 7C — Create the directory and generate the guide
 
+Follow the two-pass shape defined in `specs/me.md` → AUDIT-STYLE GENERATORS and the lens inventory in `specs/study-software-design.md`.
+
 Create:
 
 ```bash
 mkdir -p .aipe/study-software-design
 ```
 
-Generate 9 files (flat — no subdirectories) in concept order:
+Generate the following (flat — no subdirectories):
 
 ```
+README.md                          map + through-line + book/source note + reading order
 00-overview.md                     master summary + the three highest-cost hotspots
-01-complexity-in-this-codebase.md  the diagnostic overview — where each symptom shows up
-02-deep-vs-shallow-modules.md      inventory by depth; the deepest and the shallowest
-03-information-hiding-and-leakage.md  decisions that leak across modules
-04-layers-and-abstractions.md      where layers mix abstraction levels; layer integrity
-05-pull-complexity-downward.md     where complexity is exposed instead of contained
-06-errors-and-special-cases.md     where the error model proliferates; "design it out" candidates
-07-readability.md                  names, comments, consistency, obviousness — the readability audit
-08-red-flags-audit.md              the consolidated red-flags checklist applied to this repo
+audit.md                           Pass 1 — the 8-lens audit walking each AOSD primitive
+01-<discovered-pattern>.md         Pass 2 — discovered design moves the repo makes deliberately,
+02-<discovered-pattern>.md                   named after the pattern (kebab-case), one per pattern,
+0N-<discovered-pattern>.md                   3-8 files for a typical repo
 ```
 
-Each file uses the full `format.md` per-concept template. The auditing emphasis lands in Block 6 (Implementation in codebase) — real `file:line` references, the red flag's name when it fires, and the specific fix (what to fold in / hide / rename / re-layer).
+**Pass 1 (`audit.md`)** walks all 8 lenses from the spec, each as one `##` section. Each lens names what the codebase actually does with `file:line` grounding, or `not yet exercised` honestly. The capstone lens (`red-flags-audit`) consolidates the AOSD red-flag checklist. When a finding is significant enough to have its own pattern file, the lens cross-links to it rather than restating the deep walk.
+
+**Pass 2 (discovered-pattern files)** uses the full `format.md` per-concept template. The auditing emphasis lands in Block 6 (Implementation in codebase) — real `file:line` references, the red flag's name when it fires, and the specific fix (what to fold in / hide / rename / re-layer). Pattern file names come from the repo, not from the lens inventory — see `me.md` → AUDIT-STYLE GENERATORS → "What earns its own pattern file" for the discovery rules.
 
 ## Step 8C — Generate `00-overview.md`
 
-The audit at a glance: the codebase's complexity profile (where the symptoms cluster), the three highest-cost hotspots (with file paths), and a one-line verdict per primitive ("modules are mostly deep / the one shallow class is X" / "layers are clean / the X / Y boundary leaks"). The reader who reads only the overview gets the punch list.
+The audit at a glance: the codebase's complexity profile (where the symptoms cluster), the three highest-cost hotspots (with file paths), and a one-line verdict per primitive ("modules are mostly deep / the one shallow class is X" / "layers are clean / the X / Y boundary leaks"). The reader who reads only the overview gets the punch list. Cross-link to `audit.md` for the full lens walk and to each Pass 2 file for the deep walks.
 
 ## Step 9C — Report + stop
 
-Print exactly:
+Print:
 
 ```
 ✓ Software design audit created at .aipe/study-software-design/
-  00-overview.md                     (3 hotspots named)
-  01-complexity-in-this-codebase.md  (<N> findings)
-  02-deep-vs-shallow-modules.md      (deepest: <file>; shallowest: <file>)
-  03-information-hiding-and-leakage.md  (<N> leaks)
-  04-layers-and-abstractions.md      (<N> findings)
-  05-pull-complexity-downward.md     (<N> findings)
-  06-errors-and-special-cases.md     (<N> findings)
-  07-readability.md                  (<N> findings)
-  08-red-flags-audit.md              (<N> red flags fired)
+  README.md
+  00-overview.md             (3 hotspots named)
+  audit.md                   (8 lenses; <N> red flags firing)
+  01-<pattern>.md            (Pass 2 — discovered design move)
+  ...
+  0N-<pattern>.md
 ```
 
-Then a 3–5 sentence summary: the codebase's dominant complexity pattern, the single highest-leverage fix (the change that reduces the most complexity for the least work), and any primitive that's mostly N/A for this repo (so the reader knows the audit said so honestly).
+Then a 3–5 sentence summary: the codebase's dominant complexity pattern, the single highest-leverage fix (the change that reduces the most complexity for the least work), and any primitive that's mostly `not yet exercised` (so the reader knows the audit said so honestly). Name the Pass 2 file list explicitly so the user sees what patterns the repo earned dedicated files for.
 
 **Stop. Wait for the user's next instruction.**
 
@@ -170,17 +170,20 @@ Runs when Step 4 found an existing guide. Goal: re-audit against the current cod
 
 ## Step 5U — Read the existing guide
 
-Walk `.aipe/study-software-design/` and read all 9 files.
+Walk `.aipe/study-software-design/` and read every file (`README.md`, `00-overview.md`, `audit.md`, and each Pass 2 pattern file). If the legacy fixed-file-list layout is present (per Step 4 check), include those files in the walk as the source material to be folded into the regenerated `audit.md`.
 
 ## Step 6U — Re-audit and diff against the current codebase AND the loaded templates
 
-Three diff sources:
+Follow the rules in `me.md` → AUDIT-STYLE GENERATORS → On UPDATE.
 
-- **Codebase drift** — findings that no longer hold (the shallow module got folded in; the leak was sealed), file paths that moved, new findings the original audit missed because the code has grown.
+Diff sources:
+
+- **Codebase drift** — findings that no longer hold (the shallow module got folded in; the leak was sealed), file paths that moved, new findings the original audit missed because the code has grown, and new design moves that now earn their own Pass 2 pattern file.
 - **Template drift** — `format.md` has added blocks (Structure pass was added in v1.50.0; check that older files have it).
 - **Cross-reference drift** — pointers to `read-aposd` chapters that moved or renamed.
+- **Pattern drift** — Pass 2 pattern files for moves the repo no longer makes; missing files for moves the repo grew.
 
-Output a structured change plan per file.
+Output a structured change plan: `audit.md` regenerated (full diff against current evidence), pattern files added / updated / removed, with reasons per change.
 
 ## Step 7U — Output the plan and STOP for confirmation
 
@@ -188,7 +191,7 @@ Print the change plan. **Wait for user confirmation** before editing any files. 
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only the sections identified. Preserve findings that still hold; surgically edit the ones whose code moved or whose verdict flipped. Append to each updated file:
+Regenerate `audit.md` against current evidence. Add new Pass 2 pattern files for newly-load-bearing design moves. Update existing pattern files where the implementation changed. Remove pattern files only when the design move is genuinely gone from the codebase (not just refactored). Append to each updated file:
 
 ```
 ---
