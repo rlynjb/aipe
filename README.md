@@ -52,6 +52,33 @@ Every study generator is also directly runnable as `/aipe:<generator>` when only
 
 The former `.aipe/study-system-design-dsa/` output is a legacy archive. New runs split it into `.aipe/study-system-design/` for architecture and `.aipe/study-dsa-foundations/` for algorithms and data structures; migration is explicit and never silently deletes the old folder.
 
+## Audit-style vs curriculum-style output
+
+Six study generators are **audit-style** — they describe what THIS repo actually does:
+
+```text
+  study-system-design           study-security
+  study-software-design         study-testing
+  study-debugging-observability study-performance-engineering
+```
+
+Their output is **two-pass**:
+
+```text
+  audit.md                       Pass 1 — fixed lens inventory; same shape every repo;
+                                          one ## section per lens; `not yet exercised`
+                                          emitted honestly when a lens finds nothing
+  01-<discovered-pattern>.md     Pass 2 — variable; 3-8 files named after the patterns
+  02-<discovered-pattern>.md              the repo actually exercises (e.g. `oauth-boundary`,
+  ...                                     `streaming-ndjson`, `local-first-sync`)
+```
+
+Different repos produce different Pass 2 file lists. The directory listing itself becomes a learning artifact: a reader scanning the folder sees what's interesting about the repo before opening anything.
+
+When a previous run left the older fixed-file-list layout (one file per lens), the generator flags it on UPDATE and asks whether to fold those files into a regenerated `audit.md` or keep them as an archive — never silently rewritten.
+
+The other nine generators are **curriculum-style** — they teach concepts that apply broadly, so their output is a fixed set of concept files. (Foundations, intelligence, plus `study-data-modeling` and `study-distributed-systems`.)
+
 ## `/aipe:rehearse` — the human-layer orchestrator
 
 One command creates or updates **all four** rehearsal books. All four use `teacher.md` in coach posture.
