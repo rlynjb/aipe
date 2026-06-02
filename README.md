@@ -100,6 +100,12 @@ problem selection → written alignment → demonstration → defense under scru
 
 `/aipe:read-aposd` remains standalone. It generates a book-style guide to the primitives in *A Philosophy of Software Design*. Unlike `study-software-design`, it teaches the framework itself rather than auditing a codebase.
 
+## Per-branch code review
+
+`specs/code-review.md` is a reference spec for reviewing the **current branch's diff against base** — not a study guide, not a long-lived per-repo artifact. It inherits the lens inventory (Intent → Shape → Architecture → Correctness → Craft) from `prompts/pr-review-protocol-v2.md` and owns the framing: a required **Branch context** block up front, `file:line` anchoring inside the diff, verdict-first ranked findings, severity discipline on Pass 4, and a single-report output that mirrors to `.aipe/reviews/<branch>-<date>.md` when that directory exists.
+
+Reference the file directly when prompting an agent — there is no `/aipe:code-review` slash command yet.
+
 ## How the specs partition — one owner per concern
 
 ```text
@@ -113,6 +119,8 @@ core           system-design · software-design · data-modeling
 foundations    runtime-systems · networking · database-systems · dsa-foundations
 
 human layer    problem-selection · design-doc · hackathon-demo · interview-defense
+
+per-branch     code-review
 ```
 
 Key seams:
@@ -124,6 +132,7 @@ Key seams:
 - **testing vs ai-engineering evals** — deterministic expected results here; probabilistic quality and regression thresholds there.
 - **debugging-observability vs performance-engineering** — explain failures with evidence here; measure and optimize bottlenecks there.
 - **problem-selection vs design-doc** — justify investment here; communicate the selected technical design there.
+- **code-review vs study-\* / audit-\*** — per-branch diff evaluation here; per-codebase findings there. A codebase-wide observation that surfaces during review cross-links to the relevant study/audit guide rather than being restated.
 
 ## How a run works
 
@@ -159,4 +168,5 @@ Key seams:
   rehearse-interview-defense/
 
   read-aposd/                      (standalone framework guide)
+  reviews/<branch>-<date>.md       (per-branch code-review output, optional)
 ```
