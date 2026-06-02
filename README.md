@@ -96,6 +96,37 @@ Together they cover the complete human layer:
 problem selection → written alignment → demonstration → defense under scrutiny
 ```
 
+## `/aipe:ready` — the readiness orchestrator
+
+One command runs the **readiness loop** on the current repo: place it on the AI-engineering hiring ladder, then turn the load-bearing gap into a hands-on failure-rep.
+
+```text
+  1  recon    score the repo on the L0–L3 ladder; produce a dated audit with
+              the LENS scorecard + the TRACK queue.
+              output: .aipe/audits/recon-<date>.md
+  2  drill    take the NEXT move from recon's queue; generate the six-step
+              induced-failure writeup the user fills out in their editor.
+              output: .aipe/drills/<competency>-<slug>.md
+```
+
+Pipeline, not fan-out: recon's queue feeds drill's input. `/aipe:ready --n 3` runs the top 3 queue items. Where `/aipe:study` builds comprehension and `/aipe:rehearse` prepares performance, `/aipe:ready` **measures hireability** and closes the highest-leverage gap.
+
+Both generators use `teacher.md` in **coach posture** — same staff engineer as the study/rehearse families, shifted to the hiring-bar stance. The recon voice does not give credit for scaffolding; the drill voice believes the only proof of understanding is breaking the system on purpose and explaining why.
+
+The L0–L3 ladder:
+
+```text
+L0  SCAFFOLDED   tutorial / AI-generated; author can't say why
+L1  BUILT        author assembled it; understands the shape
+L2  DEBUGGED     real failure hit, diagnosed, fix shipped
+L3  DEFENSIBLE   failure + alternatives + eval evidence + tradeoff
+                 (= format.md's Validate level 4)
+```
+
+No eval and no handled failure caps the ceiling at L1, regardless of code volume. A drill closes the gap from L1 to L2 or L3; the war story is the deliverable.
+
+Each generator also runs standalone: `/aipe:recon` to reassess; `/aipe:drill` to rep a specific gap directly.
+
 ## Standalone framework guide
 
 `/aipe:read-aposd` remains standalone. It generates a book-style guide to the primitives in *A Philosophy of Software Design*. Unlike `study-software-design`, it teaches the framework itself rather than auditing a codebase.
@@ -125,6 +156,8 @@ foundations    runtime-systems · networking · database-systems · dsa-foundati
 
 human layer    problem-selection · design-doc · hackathon-demo · interview-defense
 
+readiness      recon · drill   (orchestrated by /aipe:ready)
+
 per-branch     code-review
 ```
 
@@ -138,6 +171,9 @@ Key seams:
 - **debugging-observability vs performance-engineering** — explain failures with evidence here; measure and optimize bottlenecks there.
 - **problem-selection vs design-doc** — justify investment here; communicate the selected technical design there.
 - **code-review vs study-\* / audit-\*** — per-branch diff evaluation here; per-codebase findings there. A codebase-wide observation that surfaces during review cross-links to the relevant study/audit guide rather than being restated.
+- **recon vs study-\*** — recon scores the repo on the AI-engineering hiring ladder and names the load-bearing gap; study-\* teaches the underlying topic. recon points at gaps; study-\* closes the comprehension ones.
+- **drill vs study-ai-engineering Project exercises** — both produce buildable exercises. The seam is the induced failure: drill is "break on purpose, diagnose, prove with an eval, earn the war story"; Project exercises is "build it to learn the concept." Drill cross-references the same `Bx.y` and concept file; it adds steps 2, 5, and 6 (induce, eval, war story) that Project exercises doesn't carry.
+- **ready vs /aipe:study / /aipe:rehearse** — study builds comprehension; rehearse prepares performance; ready measures hireability. ready sits above and routes into the other two: comprehension gaps → `/aipe:study-*`; can-build-but-can't-say-it gaps → `/aipe:rehearse-interview-defense`.
 
 ## How a run works
 
@@ -173,5 +209,8 @@ Key seams:
   rehearse-interview-defense/
 
   read-aposd/                      (standalone framework guide)
+
+  audits/recon-<date>.md           (dated readiness audits; trail of progression)
+  drills/<competency>-<slug>.md    (war-story portfolio; accumulates per drill)
   reviews/<branch>-<date>.md       (per-branch code-review output, optional)
 ```
