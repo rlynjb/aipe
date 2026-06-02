@@ -63,7 +63,7 @@ Apply the procedure in the loaded template. Run the codebase through **four dist
 
 The non-negotiables from the template:
 
-1. **Cleanup audits are backward-looking and health-driven**, not phase boundaries. Don't conflate this with `/aipe:audit` — that's describe-only; this one diagnoses and triages.
+1. **Cleanup audits are backward-looking and health-driven**, not phase boundaries. Don't conflate this with `/aipe:audit-status` — that one is describe-only; this one diagnoses and triages. (The umbrella orchestrator `/aipe:audit` runs both together along with the a11y and refactor variants.)
 2. **Every finding gets four fields**: `**Lens:**` (structural / architectural / dsa / test), `**Severity:**` (low / medium / high), `**Effort:**` (S / M / L), `**Decision:**` (fix-now / fix-later / accept / cannot-clean), plus `**Refactor-shape:**` — one sentence describing the behaviour-preserving change. **Without these fields the list is just complaining.**
 3. **Lens 2 (architectural) is expensive to evaluate and expensive to fix.** Apply sparingly — over-architecting a small app is its own debt. Don't blanket-recommend Extract Module for everything.
 4. **Lens 3 (DSA hot-paths) is narrow.** Only flag perf issues for code that actually runs often or on data that's grown. Cold code with "the wrong" data structure is a non-issue, not a finding.

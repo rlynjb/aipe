@@ -127,6 +127,30 @@ No eval and no handled failure caps the ceiling at L1, regardless of code volume
 
 Each generator also runs standalone: `/aipe:recon` to reassess; `/aipe:drill` to rep a specific gap directly.
 
+## `/aipe:audit` — the take-stock orchestrator
+
+One command runs **all four** audit-family generators on the current repo in sequence under one confirmation gate. Where `/aipe:study` builds comprehension and `/aipe:rehearse` prepares performance, `/aipe:audit` **takes stock** — what's there, what's wrong, what's inaccessible, and what a staff engineer would say about it.
+
+```text
+  1  audit-status         WHAT IS — 8-section descriptive snapshot
+                          output: .aipe/audits/snapshot-<date>.md
+  2  audit-cleanup        WHAT'S WRONG — four-lens debt triage with
+                          fix-now / fix-later / accept / cannot-clean
+                          output: .aipe/audits/cleanup-<date>.md
+  3  audit-frontend-a11y  WHAT'S INACCESSIBLE — frontend a11y read
+                          ("no frontend surface" honestly if N/A)
+                          output: .aipe/audits/a11y-<date>.md
+  4  audit-refactor       WHAT A STAFF ENGINEER WOULD SAY — six-chapter
+                          opinion notebook (book, not single file)
+                          output: .aipe/audit-refactor-<purpose>/
+```
+
+The four artifacts stay independent at the file system level — the orchestrator does not merge them; it summarizes. The final report ranks top concerns across all four into a single list.
+
+Each generator runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`.
+
+**Note (v1.61.0 rename):** the prior `/aipe:audit` command (the standalone 8-section snapshot) is now `/aipe:audit-status`. The `/aipe:audit` name belongs to the orchestrator.
+
 ## Standalone framework guide
 
 `/aipe:read-aposd` remains standalone. It generates a book-style guide to the primitives in *A Philosophy of Software Design*. Unlike `study-software-design`, it teaches the framework itself rather than auditing a codebase.
@@ -158,6 +182,9 @@ human layer    problem-selection · design-doc · hackathon-demo · interview-de
 
 readiness      recon · drill   (orchestrated by /aipe:ready)
 
+take stock     audit-status · audit-cleanup · audit-frontend-a11y · audit-refactor
+               (orchestrated by /aipe:audit)
+
 per-branch     code-review
 ```
 
@@ -174,6 +201,8 @@ Key seams:
 - **recon vs study-\*** — recon scores the repo on the AI-engineering hiring ladder and names the load-bearing gap; study-\* teaches the underlying topic. recon points at gaps; study-\* closes the comprehension ones.
 - **drill vs study-ai-engineering Project exercises** — both produce buildable exercises. The seam is the induced failure: drill is "break on purpose, diagnose, prove with an eval, earn the war story"; Project exercises is "build it to learn the concept." Drill cross-references the same `Bx.y` and concept file; it adds steps 2, 5, and 6 (induce, eval, war story) that Project exercises doesn't carry.
 - **ready vs /aipe:study / /aipe:rehearse** — study builds comprehension; rehearse prepares performance; ready measures hireability. ready sits above and routes into the other two: comprehension gaps → `/aipe:study-*`; can-build-but-can't-say-it gaps → `/aipe:rehearse-interview-defense`.
+- **audit vs study-\* / refactor-\*** — audit takes stock of the whole project across four heterogeneous dimensions in one pass (status snapshot, debt triage, a11y, refactor opinions); study-\* teaches the underlying topics; refactor-\* applies a named technique. audit names what's there and what's wrong; refactor changes it.
+- **audit-status vs audit-cleanup vs audit-refactor** — three different stances on the same code. status describes only (no recommendations). cleanup diagnoses and triages (fix-now / fix-later / accept). refactor is a staff-engineer opinion book (six chapters; takes not tasks). The orchestrator runs all three together; the standalone commands run them individually.
 
 ## How a run works
 
@@ -209,6 +238,11 @@ Key seams:
   rehearse-interview-defense/
 
   read-aposd/                      (standalone framework guide)
+
+  audits/snapshot-<date>.md        (audit-status: 8-section descriptive snapshot)
+  audits/cleanup-<date>.md         (audit-cleanup: triaged debt list with verdicts)
+  audits/a11y-<date>.md            (audit-frontend-a11y: a11y read; frontend repos)
+  audit-refactor-<purpose>/        (audit-refactor: six-chapter notebook)
 
   audits/recon-<date>.md           (dated readiness audits; trail of progression)
   drills/<competency>-<slug>.md    (war-story portfolio; accumulates per drill)
