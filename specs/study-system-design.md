@@ -53,21 +53,22 @@ Add a repo-specific concept file only when the architecture contains another sig
 
 ```
   .aipe/study-system-design/
+    README.md
     00-overview.md
-    01-system-design/
-      README.md
-      01-system-map-and-boundaries.md
-      02-request-response-and-data-flow.md
-      03-state-ownership-and-source-of-truth.md
-      04-caching-and-invalidation.md
-      05-storage-choice-and-durability-boundaries.md
-      06-failure-handling-and-reliability.md
-      07-scale-bottlenecks-and-evolution.md
-      08-system-design-red-flags-audit.md
-      09-<repo-specific-pattern>.md       optional; only when exercised
+    01-system-map-and-boundaries.md
+    02-request-response-and-data-flow.md
+    03-state-ownership-and-source-of-truth.md
+    04-caching-and-invalidation.md
+    05-storage-choice-and-durability-boundaries.md
+    06-failure-handling-and-reliability.md
+    07-scale-bottlenecks-and-evolution.md
+    08-system-design-red-flags-audit.md
+    09-<repo-specific-pattern>.md       optional; only when exercised
 ```
 
-`00-overview.md` is a one-page orientation artifact: one full-system ASCII diagram plus a concise legend naming what each component is, what it owns, and what it talks to. The section README gives the reading order and explicitly cross-links relevant foundation guides.
+All concept files live **flat** at the root of `.aipe/study-system-design/` — no `01-system-design/` (or any other) nested sub-directory. The folder name already names the topic; another wrapping directory adds nothing.
+
+`00-overview.md` is a one-page orientation artifact: one full-system ASCII diagram plus a concise legend naming what each component is, what it owns, and what it talks to. `README.md` (at the same root) gives the reading order and explicitly cross-links relevant foundation guides.
 
 ## Anchoring rules
 

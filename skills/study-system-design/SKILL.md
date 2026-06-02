@@ -31,6 +31,8 @@ Check `.aipe/study-system-design/` for `00-overview.md` or numbered markdown art
 
 Also check for the former combined folder `.aipe/study-system-design-dsa/`. If it exists, report it as a legacy archive. Explain that architecture now moves to `.aipe/study-system-design/` and DSA learning moves to `.aipe/study-dsa-foundations/`. Do not silently delete or overwrite the legacy folder.
 
+Also check for the **legacy nested layout** `.aipe/study-system-design/01-system-design/`. Older runs of this generator placed concept files inside that sub-directory; the current layout is flat at the root of `.aipe/study-system-design/`. If the nested folder is present, flag it in the plan and ask the user whether to move its files up one level (and remove the empty sub-dir) or leave it as archive. Do not silently relocate files.
+
 ## Step 5 — Audit and plan
 
 Read the repo before writing. Inventory real architectural evidence with `file:line` anchors, distinguish observations from inferences, and emit `not yet exercised` rather than inventing infrastructure or scale. Print one plan and wait for one confirmation before editing.

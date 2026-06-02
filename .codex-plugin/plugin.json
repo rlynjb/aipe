@@ -1,7 +1,7 @@
 {
   "name": "aipe",
   "description": "Spec workflow for AI-assisted development. 29 disciplined skills across two flows — action (Describe → Diagnose → Act) and reflective (Evaluate, Teach + Rehearse + Read) — plus two orchestrators that run their families in one pass. Study family (1 orchestrator + 15 generators): system-design, software-design, data-modeling, security, testing, runtime-systems, networking, database-systems, dsa-foundations, distributed-systems, debugging-observability, performance-engineering, ai-engineering, prompt-engineering, agent-architecture. Rehearse family (1 orchestrator + 4 generators): problem-selection, design-doc, hackathon-demo, interview-defense. Plus audit family (4), refactor family (3), and read-aposd. Generated from your project context using your agent's own model, no external CLI.",
-  "version": "1.55.0",
+  "version": "1.56.0",
   "developerName": "rlynjb",
   "websiteURL": "https://github.com/rlynjb/aipe",
   "category": "productivity",
