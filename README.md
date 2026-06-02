@@ -100,11 +100,16 @@ problem selection → written alignment → demonstration → defense under scru
 
 `/aipe:read-aposd` remains standalone. It generates a book-style guide to the primitives in *A Philosophy of Software Design*. Unlike `study-software-design`, it teaches the framework itself rather than auditing a codebase.
 
-## Per-branch code review
+## `/aipe:code-review` — per-branch PR review
 
-`specs/code-review.md` is a reference spec for reviewing the **current branch's diff against base** — not a study guide, not a long-lived per-repo artifact. It inherits the lens inventory (Intent → Shape → Architecture → Correctness → Craft) from `prompts/pr-review-protocol-v2.md` and owns the framing: a required **Branch context** block up front, `file:line` anchoring inside the diff, verdict-first ranked findings, severity discipline on Pass 4, and a single-report output that mirrors to `.aipe/reviews/<branch>-<date>.md` when that directory exists.
+Reviews the **current branch's diff against base** and emits a single report. Not a study guide, not a long-lived per-repo artifact — every run is fresh.
 
-Reference the file directly when prompting an agent — there is no `/aipe:code-review` slash command yet.
+```
+/aipe:code-review           → review current branch vs main
+/aipe:code-review develop   → review current branch vs develop
+```
+
+Inherits the lens inventory (Intent → Shape → Architecture → Correctness → Craft) from `prompts/pr-review-protocol-v2.md` and owns the framing: a required **Branch context** block up front, `file:line` anchoring inside the diff, verdict-first ranked findings, severity discipline on Pass 4, and a single-report output that mirrors to `.aipe/reviews/<branch>-<date>.md` when that directory exists.
 
 ## How the specs partition — one owner per concern
 
