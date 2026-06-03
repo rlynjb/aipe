@@ -1,8 +1,10 @@
 ---
-description: Study orchestrator — run all fifteen study generators with one confirmation gate and one summary
+description: Study orchestrator — run all sixteen study generators with one confirmation gate and one summary
 ---
 
-The user invoked `/aipe:study`. Run all fifteen comprehension generators in one pass.
+The user invoked `/aipe:study`. Run all sixteen comprehension generators in one pass.
+
+The orchestrator loads sixteen generator specs (run order below). The new study-frontend-engineering generator emits "no frontend surface" honestly when the repo has no UI code, so non-frontend repos stay silent on that lens rather than gain an empty artifact.
 
 ## Step 1 — Initialize if needed
 
@@ -23,6 +25,7 @@ ${CLAUDE_PLUGIN_ROOT}/specs/study-database-systems.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-dsa-foundations.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-system-design.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-software-design.md
+${CLAUDE_PLUGIN_ROOT}/specs/study-frontend-engineering.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-data-modeling.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-security.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-testing.md
@@ -34,7 +37,7 @@ ${CLAUDE_PLUGIN_ROOT}/specs/study-prompt-engineering.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-agent-architecture.md
 ```
 
-If `${CLAUDE_PLUGIN_ROOT}` is unset, search upward from this file. `format.md` is the shared structural source. Fourteen generators use `teacher.md` in teacher posture; `study-prompt-engineering` uses its inline persona.
+If `${CLAUDE_PLUGIN_ROOT}` is unset, search upward from this file. `format.md` is the shared structural source. Fifteen generators use `teacher.md` in teacher posture; `study-prompt-engineering` uses its inline persona. `study-frontend-engineering` notes its reader-home-turf calibration explicitly — the teacher can lean on existing frontend knowledge.
 
 ## Step 3 — Detect modes without writing
 
@@ -44,6 +47,7 @@ If `${CLAUDE_PLUGIN_ROOT}` is unset, search upward from this file. `format.md` i
 - `study-dsa-foundations` → `.aipe/study-dsa-foundations/`
 - `study-system-design` → `.aipe/study-system-design/`
 - `study-software-design` → `.aipe/study-software-design/`
+- `study-frontend-engineering` → `.aipe/study-frontend-engineering/` (skipped if no frontend surface)
 - `study-data-modeling` → `.aipe/study-data-modeling/`
 - `study-security` → `.aipe/study-security/`
 - `study-testing` → `.aipe/study-testing/`
@@ -60,7 +64,7 @@ Also check for legacy `.aipe/study-system-design-dsa/`. If present, include a mi
 
 ## Step 4 — Plan once and confirm once
 
-Print one consolidated table with all fifteen generators, modes, and planned changes. Wait for one confirmation before editing. Continue after printing the plan in non-interactive execution.
+Print one consolidated table with all sixteen generators, modes, and planned changes. Wait for one confirmation before editing. Continue after printing the plan in non-interactive execution.
 
 ## Step 5 — Execute in spec order
 

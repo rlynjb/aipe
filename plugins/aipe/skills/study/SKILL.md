@@ -1,13 +1,15 @@
 ---
 name: study
-description: Study orchestrator — run all fifteen study generators with one confirmation gate and one summary
+description: Study orchestrator — run all sixteen study generators with one confirmation gate and one summary
 ---
 
 ## Step 0 — Install repository guidance
 
 Before continuing, ensure the target repository root `AGENTS.md` contains the `## AIPE learning workflow` section. Read the template at `${CODEX_PLUGIN_ROOT}/templates/AGENTS.md`. If `${CODEX_PLUGIN_ROOT}` is unset while running from a development clone, find `templates/AGENTS.md` by searching upward from this skill file. Resolve the repository root with `git rev-parse --show-toplevel`; if that is unavailable, use the current working directory. If `AGENTS.md` is absent, create it from the template. If it exists but does not contain the section heading, append a blank line and the template. If the section already exists, leave the file unchanged. Preserve all existing repository instructions.
 
-The user invoked `/aipe:study`. Run all fifteen comprehension generators in one pass.
+The user invoked `/aipe:study`. Run all sixteen comprehension generators in one pass.
+
+The orchestrator loads sixteen generator specs (run order below). The new study-frontend-engineering generator emits "no frontend surface" honestly when the repo has no UI code, so non-frontend repos stay silent on that lens rather than gain an empty artifact.
 
 ## Step 1 — Initialize if needed
 
@@ -28,6 +30,7 @@ ${CODEX_PLUGIN_ROOT}/specs/study-database-systems.md
 ${CODEX_PLUGIN_ROOT}/specs/study-dsa-foundations.md
 ${CODEX_PLUGIN_ROOT}/specs/study-system-design.md
 ${CODEX_PLUGIN_ROOT}/specs/study-software-design.md
+${CODEX_PLUGIN_ROOT}/specs/study-frontend-engineering.md
 ${CODEX_PLUGIN_ROOT}/specs/study-data-modeling.md
 ${CODEX_PLUGIN_ROOT}/specs/study-security.md
 ${CODEX_PLUGIN_ROOT}/specs/study-testing.md
@@ -39,7 +42,7 @@ ${CODEX_PLUGIN_ROOT}/specs/study-prompt-engineering.md
 ${CODEX_PLUGIN_ROOT}/specs/study-agent-architecture.md
 ```
 
-If `${CODEX_PLUGIN_ROOT}` is unset, search upward from this file. `format.md` is the shared structural source. Fourteen generators use `teacher.md` in teacher posture; `study-prompt-engineering` uses its inline persona.
+If `${CODEX_PLUGIN_ROOT}` is unset, search upward from this file. `format.md` is the shared structural source. Fifteen generators use `teacher.md` in teacher posture; `study-prompt-engineering` uses its inline persona. `study-frontend-engineering` notes its reader-home-turf calibration explicitly — the teacher can lean on existing frontend knowledge.
 
 ## Step 3 — Detect modes without writing
 
@@ -49,6 +52,7 @@ If `${CODEX_PLUGIN_ROOT}` is unset, search upward from this file. `format.md` is
 - `study-dsa-foundations` → `.aipe/study-dsa-foundations/`
 - `study-system-design` → `.aipe/study-system-design/`
 - `study-software-design` → `.aipe/study-software-design/`
+- `study-frontend-engineering` → `.aipe/study-frontend-engineering/` (skipped if no frontend surface)
 - `study-data-modeling` → `.aipe/study-data-modeling/`
 - `study-security` → `.aipe/study-security/`
 - `study-testing` → `.aipe/study-testing/`
@@ -65,7 +69,7 @@ Also check for legacy `.aipe/study-system-design-dsa/`. If present, include a mi
 
 ## Step 4 — Plan once and confirm once
 
-Print one consolidated table with all fifteen generators, modes, and planned changes. Wait for one confirmation before editing. Continue after printing the plan in non-interactive execution.
+Print one consolidated table with all sixteen generators, modes, and planned changes. Wait for one confirmation before editing. Continue after printing the plan in non-interactive execution.
 
 ## Step 5 — Execute in spec order
 

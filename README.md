@@ -42,7 +42,7 @@ Precedence when they conflict: the consuming spec wins on **structure**, `teache
 
 ## `/aipe:study` — the comprehension orchestrator
 
-One command creates or updates **all fifteen** study guides for the current repo. Run it after a meaningful codebase change.
+One command creates or updates **all sixteen** study guides for the current repo. Run it after a meaningful codebase change.
 
 ```text
 FOUNDATIONS
@@ -54,19 +54,20 @@ FOUNDATIONS
 CORE SOFTWARE ENGINEERING
   5  study-system-design               architecture · boundaries · flows · scale
   6  study-software-design             modules · interfaces · complexity (Ousterhout)
-  7  study-data-modeling               schema · normalization · queries · migrations
+  7  study-frontend-engineering        rendering · state · components · data-fetch · routing · styling · platform · build
+  8  study-data-modeling               schema · normalization · queries · migrations
 
 ADJACENT DISCIPLINES
-  8  study-security                    trust boundaries · authn/authz · injection · secrets
-  9  study-testing                     deterministic correctness · coverage · test design
- 10  study-distributed-systems         partial failure · consistency · queues · coordination
- 11  study-debugging-observability     evidence · logs · metrics · traces · incidents
- 12  study-performance-engineering     profiling · latency · throughput · memory · cost
+  9  study-security                    trust boundaries · authn/authz · injection · secrets
+ 10  study-testing                     deterministic correctness · coverage · test design
+ 11  study-distributed-systems         partial failure · consistency · queues · coordination
+ 12  study-debugging-observability     evidence · logs · metrics · traces · incidents
+ 13  study-performance-engineering     profiling · latency · throughput · memory · cost
 
 INTELLIGENCE
- 13  study-ai-engineering              LLM foundations · RAG · agents · evals · serving · ML
- 14  study-prompt-engineering          prompt-engineering concepts (inline persona*)
- 15  study-agent-architecture          reasoning patterns · multi-agent orchestration
+ 14  study-ai-engineering              LLM foundations · RAG · agents · evals · serving · ML
+ 15  study-prompt-engineering          prompt-engineering concepts (inline persona*)
+ 16  study-agent-architecture          reasoning patterns · multi-agent orchestration
 ```
 
 `study-prompt-engineering` uses its own inline working-AI-engineer persona. The other fourteen study generators use `teacher.md` in teacher posture.
@@ -77,12 +78,13 @@ The former `.aipe/study-system-design-dsa/` output is a legacy archive. New runs
 
 ## Audit-style vs curriculum-style output
 
-Six study generators are **audit-style** — they describe what THIS repo actually does:
+Seven study generators are **audit-style** — they describe what THIS repo actually does:
 
 ```text
   study-system-design           study-security
   study-software-design         study-testing
-  study-debugging-observability study-performance-engineering
+  study-frontend-engineering    study-debugging-observability
+                                study-performance-engineering
 ```
 
 Their output is **two-pass**:
@@ -101,6 +103,8 @@ Different repos produce different Pass 2 file lists. The directory listing itsel
 When a previous run left the older fixed-file-list layout (one file per lens), the generator flags it on UPDATE and asks whether to fold those files into a regenerated `audit.md` or keep them as an archive — never silently rewritten.
 
 The other nine generators are **curriculum-style** — they teach concepts that apply broadly, so their output is a fixed set of concept files. (Foundations, intelligence, plus `study-data-modeling` and `study-distributed-systems`.)
+
+`study-frontend-engineering` is also audit-style and emits `no frontend surface` honestly when a non-frontend repo has no UI code, so the orchestrator's output stays clean across mixed-stack portfolios.
 
 ## `/aipe:rehearse` — the human-layer orchestrator
 
@@ -197,7 +201,7 @@ intelligence   ai-engineering · prompt-engineering · agent-architecture
 adjacent       security · testing · distributed-systems
                debugging-observability · performance-engineering
      ▲
-core           system-design · software-design · data-modeling
+core           system-design · software-design · frontend-engineering · data-modeling
      ▲
 foundations    runtime-systems · networking · database-systems · dsa-foundations
 
@@ -250,10 +254,10 @@ Key seams:
   study-networking/                study-testing/
   study-database-systems/          study-distributed-systems/
   study-dsa-foundations/           study-debugging-observability/
-  study-system-design/         study-performance-engineering/
+  study-system-design/             study-performance-engineering/
   study-software-design/           study-ai-engineering/
-  study-data-modeling/             study-prompt-engineering/
-                                  study-agent-architecture/
+  study-frontend-engineering/      study-prompt-engineering/
+  study-data-modeling/             study-agent-architecture/
 
   rehearse-problem-selection/
   rehearse-design-doc/

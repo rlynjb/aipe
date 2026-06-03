@@ -1,15 +1,15 @@
 # Study Orchestrator — the `/aipe:study` command
 
-One command that creates or updates **all fifteen** per-repo study guides. Run it after a meaningful codebase change when every comprehension artifact should catch up without invoking each `/aipe:study-*` command by hand.
+One command that creates or updates **all sixteen** per-repo study guides. Run it after a meaningful codebase change when every comprehension artifact should catch up without invoking each `/aipe:study-*` command by hand.
 
-This orchestrator defines no topic content. It reads `format.md`, `teacher.md`, `me.md`, the current repo, and the fifteen generator specs; performs a detection-only pass; prints one consolidated plan; waits for one confirmation; then creates or updates each guide and prints one summary.
+This orchestrator defines no topic content. It reads `format.md`, `teacher.md`, `me.md`, the current repo, and the sixteen generator specs; performs a detection-only pass; prints one consolidated plan; waits for one confirmation; then creates or updates each guide and prints one summary.
 
 ## The complete study map
 
 ```
 foundations   runtime-systems · networking · database-systems · dsa-foundations
       ↓
-core          system-design · software-design · data-modeling
+core          system-design · software-design · frontend-engineering · data-modeling
       ↓
 adjacent      security · testing · distributed-systems
               debugging-observability · performance-engineering
@@ -25,15 +25,16 @@ intelligence  ai-engineering · prompt-engineering · agent-architecture
    4. `study-dsa-foundations` — reusable DSA curriculum grounded in repo examples
    5. `study-system-design` — architecture, boundaries, flows, and scale
    6. `study-software-design` — module, interface, and complexity quality
-   7. `study-data-modeling` — schema, query-shape, integrity, and migrations
-   8. `study-security` — trust boundaries and security
-   9. `study-testing` — deterministic correctness and test design
-  10. `study-distributed-systems` — coordination under partial failure
-  11. `study-debugging-observability` — evidence, logs, metrics, traces, and incidents
-  12. `study-performance-engineering` — measurement, profiling, latency, throughput, and cost
-  13. `study-ai-engineering` — LLM foundations, RAG, agents, evals, serving, and ML
-  14. `study-prompt-engineering` — prompt-engineering discipline
-  15. `study-agent-architecture` — reasoning patterns and multi-agent orchestration
+   7. `study-frontend-engineering` — rendering, state, components, data-fetch, routing, styling, platform APIs, build
+   8. `study-data-modeling` — schema, query-shape, integrity, and migrations
+   9. `study-security` — trust boundaries and security
+  10. `study-testing` — deterministic correctness and test design
+  11. `study-distributed-systems` — coordination under partial failure
+  12. `study-debugging-observability` — evidence, logs, metrics, traces, and incidents
+  13. `study-performance-engineering` — measurement, profiling, latency, throughput, and cost
+  14. `study-ai-engineering` — LLM foundations, RAG, agents, evals, serving, and ML
+  15. `study-prompt-engineering` — prompt-engineering discipline
+  16. `study-agent-architecture` — reasoning patterns and multi-agent orchestration
 
 ```
 /aipe:study
@@ -45,6 +46,7 @@ intelligence  ai-engineering · prompt-engineering · agent-architecture
     study-dsa-foundations.md  →  .aipe/study-dsa-foundations/
     study-system-design.md  →  .aipe/study-system-design/
     study-software-design.md  →  .aipe/study-software-design/
+    study-frontend-engineering.md  →  .aipe/study-frontend-engineering/
     study-data-modeling.md  →  .aipe/study-data-modeling/
     study-security.md  →  .aipe/study-security/
     study-testing.md  →  .aipe/study-testing/
@@ -58,7 +60,7 @@ intelligence  ai-engineering · prompt-engineering · agent-architecture
 
 ## Inputs and persona routing
 
-`format.md` is the single structural foundation. Read it once and pass it to every generator. `teacher.md` supplies teacher posture and `me.md` supplies reader calibration. Fourteen generators use `teacher.md` in teacher posture. `study-prompt-engineering` uses its own inline working-AI-engineer persona and reads `teacher.md` only to honor that exclusion.
+`format.md` is the single structural foundation. Read it once and pass it to every generator. `teacher.md` supplies teacher posture and `me.md` supplies reader calibration. Fifteen generators use `teacher.md` in teacher posture. `study-prompt-engineering` uses its own inline working-AI-engineer persona and reads `teacher.md` only to honor that exclusion. `study-frontend-engineering` notes explicitly that this is the reader's home turf — the teacher can lean on existing knowledge without an on-ramp.
 
 Read optional `.aipe/project/aieng-curriculum.md` or `.aipe/project/curriculum.md` when present and pass it to the AI-oriented generators. Never block a run because curriculum files are absent.
 
