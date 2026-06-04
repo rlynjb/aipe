@@ -8,6 +8,7 @@ rehearse   → performance     (align / present / defend, for a room)
 ready      → readiness       (score on the AI-eng hiring ladder + drill the gap)
 audit      → take stock      (status / cleanup / a11y / refactor opinions)
 code-review → per-branch     (Intent → Shape → Architecture → Correctness → Craft)
+behavioral-stories → per-person  (STAR story bank for FAANG behavioral loops)
 ```
 
 ## Install & update
@@ -123,6 +124,26 @@ Together they cover the complete human layer:
 problem selection → written alignment → demonstration → defense under scrutiny
 ```
 
+## `/aipe:rehearse-behavioral-stories` — per-person STAR story bank
+
+A standalone rehearsal companion to `/aipe:rehearse`. Diverges from its sibling rehearse-* commands in one important way: **it is per-person, not per-repo.** The bank covers the reader's entire career — 8-12 quantified STAR stories tagged by competency — for FAANG-style behavioral interview loops at Anthropic, Meta, Google, and similar.
+
+Ten competencies probed at senior+ behavioral rounds:
+
+```text
+  1  scope-expansion              6  technical-judgment
+  2  ambiguity-navigation         7  prioritization-and-saying-no
+  3  peer-conflict-resolution     8  failure-recovery   (non-negotiable)
+  4  stakeholder-pushback         9  impact-at-scale
+  5  influence-without-authority 10  mission-alignment  (Anthropic-weighted)
+```
+
+Reads a career-history file at `.aipe/project/career-history.md` or `~/.config/aipe/global/career-history.md`. If absent, scaffolds the per-user version with a template (roles + notable projects + free-form "moments worth a story") and stops — **the spec refuses to fabricate stories from thin material.**
+
+Output: `README.md` + `00-overview.md` (competency × company coverage matrix, with gaps named honestly) + one story file per candidate. The `failure-recovery` story is a senior-bar non-negotiable; if absent from the raw material, the bank flags it as the highest-leverage prep target rather than inventing one.
+
+Stories cross-link to per-repo `rehearse-interview-defense` books when applicable, so the project-defense layer and the person-level story bank compose. Runs standalone — not part of `/aipe:rehearse`'s fan-out, which stays per-repo.
+
 ## `/aipe:ready` — the readiness orchestrator
 
 One command runs the **readiness loop** on the current repo: place it on the AI-engineering hiring ladder, then turn the load-bearing gap into a hands-on failure-rep.
@@ -207,6 +228,8 @@ foundations    runtime-systems · networking · database-systems · dsa-foundati
 
 human layer    problem-selection · design-doc · hackathon-demo · interview-defense
 
+per-person     behavioral-stories   (FAANG-style STAR story bank)
+
 readiness      recon · drill   (orchestrated by /aipe:ready)
 
 take stock     audit-status · audit-cleanup · audit-frontend-a11y · audit-refactor
@@ -274,4 +297,5 @@ Key seams:
   audits/recon-<date>.md           (dated readiness audits; trail of progression)
   drills/<competency>-<slug>.md    (war-story portfolio; accumulates per drill)
   reviews/<branch>-<date>.md       (per-branch code-review output, optional)
+  rehearse-behavioral-stories/     (per-person STAR story bank; reused across loops)
 ```
