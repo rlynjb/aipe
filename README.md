@@ -1,6 +1,6 @@
 # AIPE — study & rehearse specs
 
-A spec system for generating per-repo learning and performance artifacts. Point a command at a codebase and it produces structured guides in a consistent voice: **study** guides to understand the code and **rehearse** books to justify, communicate, present, and defend it. Every artifact is grounded in the real repo and refreshed in place as code changes.
+A Claude Code plugin that turns a codebase into per-repo learning, prep, and review artifacts. Grounded in real `file:line` evidence; refreshed in place as the code changes.
 
 ```text
 study      → comprehension   (understand the codebase, for you)
@@ -25,9 +25,9 @@ AIPE ships as a Claude Code plugin via the `rlynjb-aipe` marketplace (sourced fr
 /plugin install aipe@rlynjb-aipe
 ```
 
-`/plugin marketplace update` refreshes the catalog from GitHub (output: `✔ Updated 1 marketplace (1 plugin bumped)` when a new version is available, or `✔ Updated 1 marketplace` when already current). Re-running `/plugin install` upgrades the installed copy. Auto-update can be toggled per marketplace in `/plugin` → **Marketplaces**; pair it with `/reload-plugins` to pick up changes mid-session.
+Re-running `/plugin install` upgrades the installed copy. Toggle auto-update per marketplace in `/plugin` → **Marketplaces** and pair with `/reload-plugins` to pick up changes mid-session.
 
-Publisher (this repo): pushing to `main` is enough — the marketplace catalog is read live from GitHub. The version that consumers see is set in `.claude-plugin/plugin.json`.
+Publisher (this repo): pushing to `main` is enough — the marketplace catalog reads live from GitHub. Consumer version comes from `.claude-plugin/plugin.json`.
 
 ## Repo source layout
 
@@ -45,9 +45,7 @@ notebook/         personal study / prep / drafts / prompts —
 README.md         this file
 ```
 
-Plus `.gitignore`, `.git/`, `.claude/settings.local.json` (local permissions), and an empty `.worktrees/` scaffold. Nothing else at the root.
-
-Claude-Code-only as of v1.65.0; Codex support and the public-facing website are both gone. The `notebook/` consolidation in v1.66.0+ collapsed `books/`, `guides/`, `pending_specs/`, and `prompts/` under a single parent so the root only carries plugin material + personal notebook + the README.
+Plus `.gitignore`, `.git/`, `.claude/settings.local.json` (local permissions), and an empty `.worktrees/` scaffold. Nothing else.
 
 ## The foundation — three files everything reads
 
@@ -89,11 +87,7 @@ INTELLIGENCE
  16  study-agent-architecture          reasoning patterns · multi-agent orchestration
 ```
 
-`study-prompt-engineering` uses its own inline working-AI-engineer persona. The other fourteen study generators use `teacher.md` in teacher posture.
-
-Every study generator is also directly runnable as `/aipe:<generator>` when only one concern changed.
-
-The former `.aipe/study-system-design-dsa/` output is a legacy archive. New runs split it into `.aipe/study-system-design/` for architecture and `.aipe/study-dsa-foundations/` for algorithms and data structures; migration is explicit and never silently deletes the old folder.
+All but `study-prompt-engineering` use `teacher.md` in teacher posture (it uses its own inline working-AI-engineer persona). Every generator is also directly runnable as `/aipe:<generator>` for when only one concern changed.
 
 ## Audit-style vs curriculum-style output
 
@@ -117,13 +111,9 @@ Their output is **two-pass**:
   ...                                     `streaming-ndjson`, `local-first-sync`)
 ```
 
-Different repos produce different Pass 2 file lists. The directory listing itself becomes a learning artifact: a reader scanning the folder sees what's interesting about the repo before opening anything.
+Different repos produce different Pass 2 file lists — the directory listing itself is a learning artifact. `study-frontend-engineering` emits `no frontend surface` honestly for non-frontend repos.
 
-When a previous run left the older fixed-file-list layout (one file per lens), the generator flags it on UPDATE and asks whether to fold those files into a regenerated `audit.md` or keep them as an archive — never silently rewritten.
-
-The other nine generators are **curriculum-style** — they teach concepts that apply broadly, so their output is a fixed set of concept files. (Foundations, intelligence, plus `study-data-modeling` and `study-distributed-systems`.)
-
-`study-frontend-engineering` is also audit-style and emits `no frontend surface` honestly when a non-frontend repo has no UI code, so the orchestrator's output stays clean across mixed-stack portfolios.
+The other nine generators are **curriculum-style** — they teach concepts that apply broadly, so their output is a fixed set of concept files (foundations, intelligence, plus `study-data-modeling` and `study-distributed-systems`).
 
 ## `/aipe:rehearse` — the human-layer orchestrator
 
@@ -144,9 +134,9 @@ problem selection → written alignment → demonstration → defense under scru
 
 ## `/aipe:rehearse-behavioral-stories` — per-person STAR story bank
 
-A standalone rehearsal companion to `/aipe:rehearse`. Diverges from its sibling rehearse-* commands in one important way: **it is per-person, not per-repo.** The bank covers the reader's entire career — 8-12 quantified STAR stories tagged by competency — for FAANG-style behavioral interview loops at Anthropic, Meta, Google, and similar.
+Standalone companion to `/aipe:rehearse`. **Per-person, not per-repo** — the bank covers the reader's entire career as 8-12 quantified STAR stories tagged by competency for FAANG-style behavioral loops (Anthropic, Meta, Google).
 
-Ten competencies probed at senior+ behavioral rounds:
+Ten senior+ competencies:
 
 ```text
   1  scope-expansion              6  technical-judgment
@@ -156,24 +146,16 @@ Ten competencies probed at senior+ behavioral rounds:
   5  influence-without-authority 10  mission-alignment  (Anthropic-weighted)
 ```
 
-Runs in one of two modes depending on what's available:
+Two modes:
 
 ```text
-  BANK mode      career-history.md is present  → generate REAL stories
-                                                 from the reader's material
-  SCAFFOLD mode  career-history.md is absent   → detect the current
-                                                 project's archetype
-                                                 (hackathon / personal /
-                                                 work) and produce
-                                                 archetype-shaped TEMPLATES
-                                                 the reader fills in
+  BANK      career-history.md present  → real stories from your material
+  SCAFFOLD  career-history.md absent   → archetype-shaped templates
+                                         (hackathon / personal / work)
+                                         the reader fills in
 ```
 
-BANK mode reads career-history at `.aipe/project/career-history.md` or `~/.config/aipe/global/career-history.md`. SCAFFOLD mode scaffolds the per-user career-history file anyway (so reflection has a home) and produces 5-7 template stories tagged by competency. Templates open with `**STATUS:** scaffold template — not interview-ready` and contain prompts in each STAR field — **numbers, names, quotes, and timestamps are never invented to fill a template**. Re-running after the reader replaces prompts with real material graduates templates into real bank entries.
-
-Output: `README.md` + `00-overview.md` (competency × company coverage matrix, with gaps named honestly) + one story file per candidate. The `failure-recovery` story is a senior-bar non-negotiable; if absent from the raw material, the bank flags it as the highest-leverage prep target rather than inventing one.
-
-Stories cross-link to per-repo `rehearse-interview-defense` books when applicable, so the project-defense layer and the person-level story bank compose. Runs standalone — not part of `/aipe:rehearse`'s fan-out, which stays per-repo.
+Reads career-history at `.aipe/project/career-history.md` or `~/.config/aipe/global/career-history.md`. SCAFFOLD templates open with a `STATUS: scaffold template` banner and contain prompts where real entries hold numbers — **never invented**. Re-running graduates filled-in templates into real entries. The `failure-recovery` story is the senior-bar non-negotiable; absent, it's flagged as the highest-leverage prep target. Cross-links to per-repo `rehearse-interview-defense` books when applicable.
 
 ## `/aipe:ready` — the readiness orchestrator
 
@@ -188,9 +170,7 @@ One command runs the **readiness loop** on the current repo: place it on the AI-
               output: .aipe/drills/<competency>-<slug>.md
 ```
 
-Pipeline, not fan-out: recon's queue feeds drill's input. `/aipe:ready --n 3` runs the top 3 queue items. Where `/aipe:study` builds comprehension and `/aipe:rehearse` prepares performance, `/aipe:ready` **measures hireability** and closes the highest-leverage gap.
-
-Both generators use `teacher.md` in **coach posture** — same staff engineer as the study/rehearse families, shifted to the hiring-bar stance. The recon voice does not give credit for scaffolding; the drill voice believes the only proof of understanding is breaking the system on purpose and explaining why.
+Pipeline, not fan-out — recon's queue feeds drill's input. `/aipe:ready --n 3` runs the top 3 gaps. Both generators use `teacher.md` in **coach posture** — hiring-bar stance, no credit for scaffolding, no tutorial substitutes for the rep.
 
 The L0–L3 ladder:
 
@@ -208,7 +188,7 @@ Each generator also runs standalone: `/aipe:recon` to reassess; `/aipe:drill` to
 
 ## `/aipe:audit` — the take-stock orchestrator
 
-One command runs **all four** audit-family generators on the current repo in sequence under one confirmation gate. Where `/aipe:study` builds comprehension and `/aipe:rehearse` prepares performance, `/aipe:audit` **takes stock** — what's there, what's wrong, what's inaccessible, and what a staff engineer would say about it.
+Runs **all four** audit-family generators sequentially under one gate. `/aipe:audit` answers: what's there, what's wrong, what's inaccessible, what a staff engineer would say.
 
 ```text
   1  audit-status         WHAT IS — 8-section descriptive snapshot
@@ -224,11 +204,7 @@ One command runs **all four** audit-family generators on the current repo in seq
                           output: .aipe/audit-refactor-<purpose>/
 ```
 
-The four artifacts stay independent at the file system level — the orchestrator does not merge them; it summarizes. The final report ranks top concerns across all four into a single list.
-
-Each generator runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`.
-
-**Note (v1.61.0 rename):** the prior `/aipe:audit` command (the standalone 8-section snapshot) is now `/aipe:audit-status`. The `/aipe:audit` name belongs to the orchestrator.
+The four artifacts stay independent on disk — the orchestrator summarizes, doesn't merge. The final report ranks top concerns across all four. Each generator also runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`.
 
 ## Standalone framework guide
 
@@ -236,14 +212,14 @@ Each generator runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/a
 
 ## `/aipe:code-review` — per-branch PR review
 
-Reviews the **current branch's diff against base** and emits a single report. Not a study guide, not a long-lived per-repo artifact — every run is fresh.
+Reviews the current branch's diff against base; emits a single report. Every run is fresh.
 
 ```
 /aipe:code-review           → review current branch vs main
 /aipe:code-review develop   → review current branch vs develop
 ```
 
-Five lenses walked in order (Intent → Shape → Architecture → Correctness → Craft), each with its own checklist and blocking conditions. Self-contained: the spec carries the full lens inventory plus the framing rules — a required **Branch context** block up front, `file:line` anchoring inside the diff, verdict-first ranked findings, severity discipline on Pass 4, and a single-report output that mirrors to `.aipe/reviews/<branch>-<date>.md` when that directory exists.
+Five lenses walked in order (Intent → Shape → Architecture → Correctness → Craft), each with checklist + blocking conditions. Required **Branch context** block up front, `file:line` anchoring inside the diff, verdict-first ranked findings, severity tags on Pass 4. Mirrors to `.aipe/reviews/<branch>-<date>.md` when that directory exists.
 
 ## How the specs partition — one owner per concern
 
@@ -271,19 +247,14 @@ per-branch     code-review
 
 Key seams:
 
-- **runtime-systems vs system-design** — execution inside a runtime here; architecture boundaries there.
-- **networking vs security vs system-design** — protocol mechanics here; trust there; boundary placement there.
-- **database-systems vs data-modeling vs system-design** — engine mechanisms here; schema shape here; datastore selection and scaling there.
-- **dsa-foundations vs system-design** — reusable algorithms and data structures here; architectural boundaries and scale tradeoffs there.
-- **testing vs ai-engineering evals** — deterministic expected results here; probabilistic quality and regression thresholds there.
-- **debugging-observability vs performance-engineering** — explain failures with evidence here; measure and optimize bottlenecks there.
-- **problem-selection vs design-doc** — justify investment here; communicate the selected technical design there.
-- **code-review vs study-\* / audit-\*** — per-branch diff evaluation here; per-codebase findings there. A codebase-wide observation that surfaces during review cross-links to the relevant study/audit guide rather than being restated.
-- **recon vs study-\*** — recon scores the repo on the AI-engineering hiring ladder and names the load-bearing gap; study-\* teaches the underlying topic. recon points at gaps; study-\* closes the comprehension ones.
-- **drill vs study-ai-engineering Project exercises** — both produce buildable exercises. The seam is the induced failure: drill is "break on purpose, diagnose, prove with an eval, earn the war story"; Project exercises is "build it to learn the concept." Drill cross-references the same `Bx.y` and concept file; it adds steps 2, 5, and 6 (induce, eval, war story) that Project exercises doesn't carry.
-- **ready vs /aipe:study / /aipe:rehearse** — study builds comprehension; rehearse prepares performance; ready measures hireability. ready sits above and routes into the other two: comprehension gaps → `/aipe:study-*`; can-build-but-can't-say-it gaps → `/aipe:rehearse-interview-defense`.
-- **audit vs study-\* / refactor-\*** — audit takes stock of the whole project across four heterogeneous dimensions in one pass (status snapshot, debt triage, a11y, refactor opinions); study-\* teaches the underlying topics; refactor-\* applies a named technique. audit names what's there and what's wrong; refactor changes it.
-- **audit-status vs audit-cleanup vs audit-refactor** — three different stances on the same code. status describes only (no recommendations). cleanup diagnoses and triages (fix-now / fix-later / accept). refactor is a staff-engineer opinion book (six chapters; takes not tasks). The orchestrator runs all three together; the standalone commands run them individually.
+- **runtime-systems vs system-design** — execution inside a runtime vs architecture boundaries.
+- **networking vs security vs system-design** — protocol mechanics vs trust vs boundary placement.
+- **database-systems vs data-modeling vs system-design** — engine mechanisms vs schema shape vs datastore choice + scaling.
+- **testing vs ai-engineering evals** — deterministic expected results vs probabilistic quality + regression thresholds.
+- **code-review vs study-\* / audit-\*** — per-branch diff evaluation vs per-codebase findings; review cross-links rather than restates.
+- **ready vs study / rehearse** — study builds comprehension, rehearse prepares performance, ready measures hireability and routes gaps into the other two.
+- **audit-status vs audit-cleanup vs audit-refactor** — three stances on the same code: describe-only / triage / opinion book. Orchestrator runs all three; standalones run individually.
+- **drill vs study-ai-engineering Project exercises** — both produce buildable exercises; drill adds the induced failure + eval + war story that earns the L3 rung.
 
 ## How a run works
 
@@ -302,22 +273,16 @@ Key seams:
 
 ## Notebook (not part of the plugin)
 
-`notebook/` holds reference documentation, personal study notes, drafts, and working prompts — not generator specs, not commands, not shipped with the marketplace package. Four sections:
+`notebook/` holds reference docs, personal study notes, drafts, and working prompts — not shipped with the marketplace package.
 
 ```text
-notebook/guides/          personal study + interview-prep write-ups
-                          (spec-aipe.md, how-to-study.md,
-                          interview-prep-reads.md,
-                          time-tested-pressure.md,
-                          time-pressure-schedule.{md,ics})
+notebook/guides/          study + interview-prep write-ups, schedules
 notebook/books/           book-club notes + interview-masterclass material
-notebook/pending_specs/   work-in-progress spec drafts not yet
-                          promoted to specs/
-notebook/prompts/         personal working prompts not (yet) generator
-                          specs (aieng-curriculum.md, etc.)
+notebook/pending_specs/   WIP spec drafts not yet promoted to specs/
+notebook/prompts/         working prompts not (yet) generator specs
 ```
 
-These read top-to-bottom; they don't generate anything. Update them as the project (or your prep) evolves.
+Read top-to-bottom; don't generate anything.
 
 ## Output layout
 
