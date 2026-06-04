@@ -29,6 +29,26 @@ AIPE ships as a Claude Code plugin via the `rlynjb-aipe` marketplace (sourced fr
 
 Publisher (this repo): pushing to `main` is enough — the marketplace catalog is read live from GitHub. The version that consumers see is set in `.claude-plugin/plugin.json`.
 
+## Repo source layout
+
+What's in this repo, top-level:
+
+```text
+.claude-plugin/   Claude plugin manifest + marketplace.json
+commands/         36 Claude slash commands (one .md per command)
+specs/            source-of-truth specs that commands load
+                  (format.md, teacher.md, me.md, study-*.md,
+                   rehearse-*.md, audit-*.md, code-review.md,
+                   recon.md, drill.md, ready.md, etc.)
+notebook/         personal study / prep / drafts / prompts —
+                  not shipped with the plugin (see Notebook below)
+README.md         this file
+```
+
+Plus `.gitignore`, `.git/`, `.claude/settings.local.json` (local permissions), and an empty `.worktrees/` scaffold. Nothing else at the root.
+
+Claude-Code-only as of v1.65.0; Codex support and the public-facing website are both gone. The `notebook/` consolidation in v1.66.0+ collapsed `books/`, `guides/`, `pending_specs/`, and `prompts/` under a single parent so the root only carries plugin material + personal notebook + the README.
+
 ## The foundation — three files everything reads
 
 ```text
