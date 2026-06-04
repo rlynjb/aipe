@@ -25,8 +25,6 @@ AIPE ships as a Claude Code plugin via the `rlynjb-aipe` marketplace (sourced fr
 /plugin install aipe@rlynjb-aipe
 ```
 
-Re-running `/plugin install` upgrades the installed copy. Toggle auto-update per marketplace in `/plugin` → **Marketplaces** and pair with `/reload-plugins` to pick up changes mid-session.
-
 Publisher (this repo): pushing to `main` is enough — the marketplace catalog reads live from GitHub. Consumer version comes from `.claude-plugin/plugin.json`.
 
 ## Repo source layout
