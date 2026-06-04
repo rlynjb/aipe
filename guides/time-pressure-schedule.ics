@@ -1,0 +1,83 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AIPE//Time-Pressure Prep v1//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:AIPE Time-Pressure Prep (6-week)
+X-WR-CALDESC:6-week interview prep schedule from guides/time-tested-pressure.md
+X-WR-TIMEZONE:America/Los_Angeles
+BEGIN:VEVENT
+UID:aipe-leetcode-daily-2026-06@aipe
+SUMMARY:[AIPE] LeetCode (45 min, narrated)
+DTSTART;TZID=America/Los_Angeles:20260608T070000
+DTEND;TZID=America/Los_Angeles:20260608T074500
+RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;COUNT=30
+DESCRIPTION:Narrate aloud as you solve. The verbal track is what fails in real interviews\, not the code. Daily rep from guides/time-tested-pressure.md.
+END:VEVENT
+BEGIN:VEVENT
+UID:aipe-star-daily-2026-06@aipe
+SUMMARY:[AIPE] STAR delivery (90 sec\, recorded)
+DTSTART;TZID=America/Los_Angeles:20260608T074500
+DTEND;TZID=America/Los_Angeles:20260608T075000
+RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;COUNT=30
+DESCRIPTION:Pick a story from your rehearse-behavioral-stories bank. Record audio. Listen back the same day. Different story each day.
+END:VEVENT
+BEGIN:VEVENT
+UID:aipe-bounded-uncertainty-2026-06@aipe
+SUMMARY:[AIPE] Bounded uncertainty drill (10 min)
+DTSTART;TZID=America/Los_Angeles:20260611T075000
+DTEND;TZID=America/Los_Angeles:20260611T080000
+RRULE:FREQ=WEEKLY;BYDAY=TH;COUNT=6
+DESCRIPTION:Peer asks intentionally vague or out-of-depth Qs. Practice "I don't know specifically\, but the shape would be..." THE senior-bar discriminator. 10 min/week beats most other reps.
+END:VEVENT
+BEGIN:VEVENT
+UID:aipe-cross-cutting-2026-06@aipe
+SUMMARY:[AIPE] Cross-cutting exercise (20 min)
+DTSTART;TZID=America/Los_Angeles:20260608T123000
+DTEND;TZID=America/Los_Angeles:20260608T125000
+RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=18
+DESCRIPTION:Rotate by day:\n  Mon -> project walkthrough + Q&A (source: rehearse-interview-defense)\n  Wed -> "why not X?" reps (source: rehearse-problem-selection)\n  Fri -> onboarding pitch 90 sec recorded x3 (the FE -> AI pivot story)
+END:VEVENT
+BEGIN:VEVENT
+UID:aipe-sat-week1-2026-06-13@aipe
+SUMMARY:[AIPE] Week 1 — Peer mock (60 min) + recording review (30 min)
+DTSTART;TZID=America/Los_Angeles:20260613T090000
+DTEND;TZID=America/Los_Angeles:20260613T103000
+DESCRIPTION:60-min mock with a peer; verbal narration throughout; peer asks questions while you work\, not after. Then 30 min watching the recording. Brutal but cuts iteration time in half. Track which question type tripped you up.
+END:VEVENT
+BEGIN:VEVENT
+UID:aipe-sat-week2-2026-06-20@aipe
+SUMMARY:[AIPE] Week 2 — FULL MOCK LOOP (4 hrs\, 3-4 rounds back-to-back)
+DTSTART;TZID=America/Los_Angeles:20260620T090000
+DTEND;TZID=America/Los_Angeles:20260620T130000
+DESCRIPTION:Simulate a real onsite loop. Suggested shape:\n  9:00-10:00  coding round\n 10:00-11:00  system design round\n 11:00-12:00  behavioral round\n 12:00-13:00  domain-specific (AI eng / Anthropic-shaped)\nThe endurance is the rep — focus tanks at round 3 in real interviews. Practice the fade.
+END:VEVENT
+BEGIN:VEVENT
+UID:aipe-sat-week3-2026-06-27@aipe
+SUMMARY:[AIPE] Week 3 — Peer mock (60 min) + recording review (30 min)
+DTSTART;TZID=America/Los_Angeles:20260627T090000
+DTEND;TZID=America/Los_Angeles:20260627T103000
+DESCRIPTION:Same shape as week 1. By now you should hear the difference on playback vs week 1's recording — less filler\, sharper verdicts\, faster recovery on follow-ups. If not\, recording review is your gap.
+END:VEVENT
+BEGIN:VEVENT
+UID:aipe-sat-week4-2026-07-04@aipe
+SUMMARY:[AIPE] Week 4 — TAKE-HOME TIME-BOX (4 hrs)
+DTSTART;TZID=America/Los_Angeles:20260704T090000
+DTEND;TZID=America/Los_Angeles:20260704T130000
+DESCRIPTION:Anthropic-shaped. Pick a real decision (use rehearse-design-doc material). Ship a design doc in 4 hours. HOLD THE CLOCK — no extensions. Tomorrow\, get a peer to red-team the doc. Note: US Independence Day; move to Jul 5 or Jul 11 if needed.
+END:VEVENT
+BEGIN:VEVENT
+UID:aipe-sat-week5-2026-07-11@aipe
+SUMMARY:[AIPE] Week 5 — Peer mock (60 min) + recording review (30 min)
+DTSTART;TZID=America/Los_Angeles:20260711T090000
+DTEND;TZID=America/Los_Angeles:20260711T103000
+DESCRIPTION:Last regular mock before the final dress rehearsal in week 6. By now: bring up a real weakness you've been avoiding (the "I don't know how Postgres handles..." question you flinch from) and have your peer push you on it specifically.
+END:VEVENT
+BEGIN:VEVENT
+UID:aipe-sat-week6-2026-07-18@aipe
+SUMMARY:[AIPE] Week 6 — FULL MOCK LOOP (4 hrs) — FINAL DRESS REHEARSAL
+DTSTART;TZID=America/Los_Angeles:20260718T090000
+DTEND;TZID=America/Los_Angeles:20260718T130000
+DESCRIPTION:Final 4-hour mock loop before applying / interviewing. Same shape as week 2 but with peer pushing harder and following up longer on every answer. The muscle should hold by now. If it folds in round 3-4\, that's the gap; close it before scheduling real loops.
+END:VEVENT
+END:VCALENDAR
