@@ -25,39 +25,197 @@ WHERE THIS SITS — partition
 A finding belongs here when it is about **the reader as an engineer across their career** — scope expansion, ambiguity navigation, conflict, mentorship, failure recovery, prioritization. Project-defense material (why this architecture, why this tradeoff) belongs to `rehearse-interview-defense`. Single-decision narrative (why we built X over Y on this repo) belongs to `rehearse-problem-selection`. This spec is the **person-level** layer the other rehearse books rest on top of.
 
 ═════════════════════════════════════════════════
-INPUT — the career-history file
+INPUT — the career-history file (or project archetype fallback)
 ═════════════════════════════════════════════════
 
-The spec reads a career-history file in this order of preference:
+The spec runs in one of two modes depending on what's available:
+
+```
+  BANK mode      career-history.md is present
+                 → generate REAL stories from the reader's material
+
+  SCAFFOLD mode  career-history.md is absent
+                 → detect the current project's archetype and produce
+                   archetype-shaped TEMPLATES the reader fills in
+```
+
+  → BANK MODE INPUT
+
+  Career-history file, in this order of preference:
 
   1. `.aipe/project/career-history.md` (per-repo location)
   2. `~/.config/aipe/global/career-history.md` (global / per-user)
 
-If neither exists, **stop and scaffold the per-user version** with a placeholder template:
+  When the file is present, generate real stories grounded in it.
+  The career-history template (used when the user creates it manually):
 
-```markdown
-# Career history
+  ```markdown
+  # Career history
 
-Raw material for the behavioral story bank. Be specific.
-Names, dates, numbers, the actual decisions. Reps will not save
-a vague memory.
+  Raw material for the behavioral story bank. Be specific.
+  Names, dates, numbers, the actual decisions. Reps will not save
+  a vague memory.
 
-## Roles, in reverse chronological order
-- <company> <role> <date range> — <one-line scope of what you owned>
+  ## Roles, in reverse chronological order
+  - <company> <role> <date range> — <one-line scope of what you owned>
 
-## Notable projects (per role)
-- <project name> — <one-line outcome, with a number when possible>
-  - what was at stake when you started
-  - the decision you owned
-  - the result, quantified
-  - one thing you'd do differently now
+  ## Notable projects (per role)
+  - <project name> — <one-line outcome, with a number when possible>
+    - what was at stake when you started
+    - the decision you owned
+    - the result, quantified
+    - one thing you'd do differently now
 
-## Moments worth a story
-Free-form. Anything you've thought "I should remember to tell that
-story" about. Bullet points, no structure required.
+  ## Moments worth a story
+  Free-form. Anything you've thought "I should remember to tell that
+  story" about. Bullet points, no structure required.
+  ```
+
+  → SCAFFOLD MODE INPUT
+
+  When no career-history file exists, the spec does NOT stop. Instead
+  it scaffolds the per-user career-history.md (so the reader has a
+  place to capture real material when they reflect) AND it produces
+  archetype-shaped template stories from the current project. The
+  scaffold bank is a starting point — the reader's job is to replace
+  each template's STAR fields with their real story.
+
+═════════════════════════════════════════════════
+SCAFFOLD MODE — archetype-shaped templates
+═════════════════════════════════════════════════
+
+When career-history is absent, infer the current project's archetype
+and produce 5-7 template stories shaped to the moments that archetype
+typically generates. Templates are explicitly NOT interview-ready;
+they are prompts that point the reader at the kinds of moments worth
+turning into stories.
+
+  → THREE ARCHETYPES
+
+```
+  1. HACKATHON       short, time-pressured, demo-driven
+                     stories cluster around scope-cutting under time
+                     pressure, last-2-hours decisions, broken-demo
+                     recovery, pitching to judges
+
+  2. PERSONAL        solo-authored, self-directed, no external pressure
+                     stories cluster around inspiration, decision-to-
+                     start, why-this-over-alternatives, the
+                     almost-gave-up moment, feedback that changed
+                     direction
+
+  3. WORK            team-shipped, stakeholder-accountable
+                     stories cluster around scope expansion / saying
+                     no, peer/stakeholder conflict, influence without
+                     authority, technical judgment, failure recovery,
+                     mentorship, quantified impact
 ```
 
-Print `✓ Scaffolded ~/.config/aipe/global/career-history.md. Fill it in, then re-run /aipe:rehearse-behavioral-stories.` and stop. **A behavioral story bank without raw material is a fabrication risk.** Force the user to supply it.
+  → ARCHETYPE DETECTION (first match wins; fall back to asking)
+
+  1. Presence of `.aipe/rehearse-hackathon-demo/` → **hackathon**
+  2. README / `.aipe/project/context.md` keywords:
+       "hackathon" / "48 hours" / "prize" / "demo day" → **hackathon**
+       "personal" / "side project" / "for fun" / "portfolio" → **personal**
+  3. `.github/PULL_REQUEST_TEMPLATE.md` OR `CODEOWNERS` OR
+     multiple distinct git committers → **work**
+  4. Single-committer git history with a public-looking remote →
+     **personal**
+  5. None of the above match → **ask the user which archetype applies**
+
+  → ARCHETYPE TEMPLATE LIBRARIES
+
+  Each scaffold story is one file `01-<slug>.md` through `0N-<slug>.md`
+  named after the moment the template points at, not the project.
+
+  **Hackathon library** (typical templates):
+    - `scope-cutting-under-time-pressure` — "we wanted X, shipped Y;
+       the cut that held the demo"
+    - `decision-in-the-last-two-hours` — "the call I made at hour 46"
+    - `team-stack-or-scope-conflict` — "we disagreed about X; how we
+       landed"
+    - `broken-demo-recovery` — "the moment it broke; what I did in
+       the next 90 seconds"
+    - `the-money-shot-decision` — "what to lead the demo with, and
+       why I cut the other thing"
+    - `pitching-to-a-skeptical-judge` — "the question that landed
+       hardest; my answer"
+    - `mission-alignment-48h` — "why this idea was worth coding
+       through the night"
+
+  **Personal library** (typical templates):
+    - `the-inspiration-moment` — "where the idea came from; what the
+       spark was"
+    - `decision-to-start` — "what made me open the editor instead
+       of just thinking about it"
+    - `why-this-over-alternatives` — "the other things I considered
+       building; why this one won"
+    - `self-imposed-scope-discipline` — "what I cut from my own
+       vision; what stayed"
+    - `the-almost-gave-up-moment` — "when I nearly stopped; what
+       got me back to it"
+    - `feedback-that-changed-direction` — "a user / friend /
+       reviewer said X; I changed Y"
+    - `mission-alignment-personal` — "why this matters to me; what
+       it would have cost not to build it"
+
+  **Work library** (typical templates):
+    - `scope-expansion-or-saying-no` — "the ask was X; I owned
+       (or declined) Y; here's why"
+    - `peer-or-stakeholder-conflict` — "we disagreed; the decision
+       the team owned"
+    - `influence-without-authority` — "the cross-team change I drove;
+       how I got buy-in"
+    - `technical-judgment-under-uncertainty` — "the call I made with
+       incomplete information"
+    - `failure-recovery-and-post-mortem` — "the wrong call I owned;
+       what I changed about my process"
+    - `mentorship` — "the teammate I leveled up; the specific thing
+       I taught"
+    - `impact-at-scale` — "the quantified outcome; the number that
+       holds without footnotes"
+
+  → SCAFFOLD-FILE DISCIPLINE
+
+  Each scaffold file opens with a banner:
+
+  ```
+  **STATUS:** scaffold template — not interview-ready
+
+  This is a prompt, not a story. Replace each section below with your
+  real material before rehearsing with this story.
+  ```
+
+  Followed by the standard STAR template (Situation / Task / Action /
+  Result / Reflection / Defense) with each field containing a *prompt*
+  rather than fabricated content, plus **3-5 archetype-specific
+  reflection questions** to help surface the real moment.
+
+  Example (hackathon, `scope-cutting-under-time-pressure`):
+
+  ```
+  ## Reflection prompts
+  - At what hour did you realize the original scope wouldn't ship?
+  - What did you actually cut, in concrete terms?
+  - Who pushed back, and how did you handle it?
+  - When the demo ran, what did the cut cost you (or save)?
+  - The judge / teammate who would have wanted the cut feature back —
+    what would you say to them now?
+  ```
+
+  Numbers, quotes, names, and timestamps are NEVER invented in scaffold
+  mode. If a field would otherwise hold fabricated content, it holds a
+  prompt instead. The reader replaces the prompts with real material as
+  they reflect — at which point the file graduates from scaffold to
+  real bank entry.
+
+  → RE-RUNNING WITH PARTIAL CAREER HISTORY
+
+  When the reader fills in career-history.md AFTER generating a scaffold
+  bank, re-running the spec graduates each filled-in template into BANK
+  mode and adds any new real stories the career-history surfaces. Files
+  still showing the `STATUS: scaffold template` banner remain templates;
+  files with replaced STAR content are treated as real entries.
 
 ═════════════════════════════════════════════════
 PERSONA + READER
@@ -154,21 +312,27 @@ OUTPUT
 
 ```
   .aipe/rehearse-behavioral-stories/
-    README.md                             reading order + competency-to-company map
+    README.md                             reading order + mode (BANK or SCAFFOLD)
+                                          + competency-to-company map
     00-overview.md                        the ten competencies, the coverage matrix
                                           (competencies × companies), and explicit
-                                          gaps named honestly
-    01-<story-slug>.md                    one story per file, 8-12 files total
+                                          gaps named honestly. In SCAFFOLD mode,
+                                          also names the detected archetype.
+    01-<story-slug>.md                    one story per file, 5-12 files total
     02-<story-slug>.md
     ...
     0N-<story-slug>.md
 ```
 
-`00-overview.md` is the navigation layer: a competency × company matrix showing which stories cover which gaps, the gaps explicitly named, and the recommended rehearsal order for each company's loop. The reader who only opens this file knows which stories to lead with at each interview.
+`00-overview.md` is the navigation layer: a competency × company matrix showing which stories cover which gaps, the gaps explicitly named, and the recommended rehearsal order for each company's loop. In BANK mode the reader who only opens this file knows which stories to lead with at each interview. In SCAFFOLD mode the overview also names the archetype (`hackathon` / `personal` / `work`), states the bank is template-only, and points the reader at the highest-leverage templates to fill in first.
+
+In BANK mode, each story is a real entry the reader has lived. In SCAFFOLD mode, each story file opens with the `**STATUS:** scaffold template — not interview-ready` banner and contains prompts in place of fabricated content. Re-running after the reader fills in templates graduates them to real entries (banner removed, STAR fields populated with real material).
 
 ═════════════════════════════════════════════════
 ANCHORING + HONEST ASSESSMENT
 ═════════════════════════════════════════════════
+
+  → BANK MODE rules (career-history present):
 
 ```
   → Numbers must be real. If the result is "I think we improved
@@ -203,11 +367,41 @@ ANCHORING + HONEST ASSESSMENT
     or current scope.
 ```
 
+  → SCAFFOLD MODE rules (career-history absent — archetype templates):
+
+```
+  → Templates carry the STATUS banner explicitly. Every scaffold
+    file opens with `**STATUS:** scaffold template — not
+    interview-ready`. Removing the banner is the reader's signal
+    that they have replaced the prompts with real material.
+
+  → Numbers, names, quotes, and timestamps are NEVER invented to
+    fill a template field. If a field would otherwise hold
+    fabricated content, it holds a prompt instead. "Insert the
+    actual deploy time here" beats "Saturday 3:47 AM" as filler.
+
+  → The archetype is named in `00-overview.md`. The reader who
+    opens only the overview should know whether the bank is real
+    or scaffolded, and which archetype the scaffolds were drawn
+    from (`hackathon` / `personal` / `work`).
+
+  → Templates are tagged by competency too. Even scaffolded files
+    carry the same `Competency:` tag the BANK-mode template uses,
+    so when the reader fills in real material the coverage matrix
+    keeps working without re-tagging.
+
+  → Re-running with partial career-history graduates filled-in
+    templates into real entries. Files still showing the banner
+    remain scaffolds; files with replaced STAR content are
+    treated as real bank entries and counted in the coverage
+    matrix as fulfilled rather than gap.
+```
+
 ═════════════════════════════════════════════════
 WHAT THIS SPEC DOES NOT DO
 ═════════════════════════════════════════════════
 
-  → **Does not fabricate stories.** If the career-history file is thin, the bank is thin. The honest gap is the prep target, not an invented narrative.
+  → **Does not fabricate stories.** In BANK mode, if the career-history file is thin, the bank is thin. The honest gap is the prep target, not an invented narrative. In SCAFFOLD mode, templates contain *prompts*, never fabricated numbers / quotes / timestamps — the banner makes their non-interview-ready status explicit so they can never be mistaken for real entries.
   → **Does not run inside `/aipe:rehearse`.** That orchestrator is per-repo. This spec is per-person. The two layers compose; the orchestrator does not own this.
   → **Does not replace mock interviews.** Stories read well silently and fold at minute 4 under a real interviewer. The bank is raw material for reps, not a substitute for them.
 

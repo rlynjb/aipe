@@ -138,7 +138,20 @@ Ten competencies probed at senior+ behavioral rounds:
   5  influence-without-authority 10  mission-alignment  (Anthropic-weighted)
 ```
 
-Reads a career-history file at `.aipe/project/career-history.md` or `~/.config/aipe/global/career-history.md`. If absent, scaffolds the per-user version with a template (roles + notable projects + free-form "moments worth a story") and stops — **the spec refuses to fabricate stories from thin material.**
+Runs in one of two modes depending on what's available:
+
+```text
+  BANK mode      career-history.md is present  → generate REAL stories
+                                                 from the reader's material
+  SCAFFOLD mode  career-history.md is absent   → detect the current
+                                                 project's archetype
+                                                 (hackathon / personal /
+                                                 work) and produce
+                                                 archetype-shaped TEMPLATES
+                                                 the reader fills in
+```
+
+BANK mode reads career-history at `.aipe/project/career-history.md` or `~/.config/aipe/global/career-history.md`. SCAFFOLD mode scaffolds the per-user career-history file anyway (so reflection has a home) and produces 5-7 template stories tagged by competency. Templates open with `**STATUS:** scaffold template — not interview-ready` and contain prompts in each STAR field — **numbers, names, quotes, and timestamps are never invented to fill a template**. Re-running after the reader replaces prompts with real material graduates templates into real bank entries.
 
 Output: `README.md` + `00-overview.md` (competency × company coverage matrix, with gaps named honestly) + one story file per candidate. The `failure-recovery` story is a senior-bar non-negotiable; if absent from the raw material, the bank flags it as the highest-leverage prep target rather than inventing one.
 
