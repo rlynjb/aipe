@@ -280,18 +280,21 @@ Key seams:
 - **Honest output.** A generator emits `not yet exercised` rather than inventing infrastructure, scale, or behavior.
 - **Sharp seams.** A finding belongs to exactly one generator; adjacent generators cross-link rather than duplicate it.
 
-## Personal guides (not part of the plugin)
+## Notebook (not part of the plugin)
 
-`guides/` holds reference documentation and personal study/interview-prep artifacts — not generator specs, not commands, not shipped with the marketplace package. Plain markdown at the repo level, used as reference alongside the AIPE outputs:
+`notebook/` holds reference documentation, personal study notes, drafts, and working prompts — not generator specs, not commands, not shipped with the marketplace package. Four sections:
 
 ```text
-guides/spec-aipe.md              the original AIPE project spec — what the
-                                 plugin is, why it exists, design principles
-guides/how-to-study.md           how to use the AIPE study family effectively
-guides/interview-prep-reads.md   curated book list + AIPE-generated reading
-                                 mapped to FAANG interview prep
-guides/time-tested-pressure.md   paired technical+soft exercises for
-                                 time-pressure interview practice
+notebook/guides/          personal study + interview-prep write-ups
+                          (spec-aipe.md, how-to-study.md,
+                          interview-prep-reads.md,
+                          time-tested-pressure.md,
+                          time-pressure-schedule.{md,ics})
+notebook/books/           book-club notes + interview-masterclass material
+notebook/pending_specs/   work-in-progress spec drafts not yet
+                          promoted to specs/
+notebook/prompts/         personal working prompts not (yet) generator
+                          specs (aieng-curriculum.md, etc.)
 ```
 
 These read top-to-bottom; they don't generate anything. Update them as the project (or your prep) evolves.
