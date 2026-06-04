@@ -11,6 +11,24 @@ code-review → per-branch     (Intent → Shape → Architecture → Correctnes
 behavioral-stories → per-person  (STAR story bank for FAANG behavioral loops)
 ```
 
+## Contents
+
+- [Install & update](#install--update)
+- [Foundation](#the-foundation--three-files-everything-reads)
+- **Orchestrators**
+  - [`/aipe:study`](#aipestudy--the-comprehension-orchestrator) — comprehension
+  - [`/aipe:rehearse`](#aiperehearse--the-human-layer-orchestrator) — performance
+  - [`/aipe:ready`](#aipeready--the-readiness-orchestrator) — readiness
+  - [`/aipe:audit`](#aipeaudit--the-take-stock-orchestrator) — take stock
+- **Standalone**
+  - [`/aipe:read-aposd`](#standalone-framework-guide) — APOSD framework guide
+  - [`/aipe:code-review`](#aipecode-review--per-branch-pr-review) — per-branch PR review
+  - [`/aipe:rehearse-behavioral-stories`](#aiperehearse-behavioral-stories--per-person-star-story-bank) — STAR story bank
+- **Concepts**
+  - [Audit-style vs curriculum-style output](#audit-style-vs-curriculum-style-output)
+  - [How the specs partition](#how-the-specs-partition--one-owner-per-concern)
+- [Output layout](#output-layout)
+
 ## Install & update
 
 AIPE ships as a Claude Code plugin via the `rlynjb-aipe` marketplace (sourced from this repo). All commands are run inside Claude Code, not in a shell.
@@ -26,24 +44,6 @@ AIPE ships as a Claude Code plugin via the `rlynjb-aipe` marketplace (sourced fr
 ```
 
 Publisher (this repo): pushing to `main` is enough — the marketplace catalog reads live from GitHub. Consumer version comes from `.claude-plugin/plugin.json`.
-
-## Repo source layout
-
-What's in this repo, top-level:
-
-```text
-.claude-plugin/   Claude plugin manifest + marketplace.json
-commands/         36 Claude slash commands (one .md per command)
-specs/            source-of-truth specs that commands load
-                  (format.md, teacher.md, me.md, study-*.md,
-                   rehearse-*.md, audit-*.md, code-review.md,
-                   recon.md, drill.md, ready.md, etc.)
-notebook/         personal study / prep / drafts / prompts —
-                  not shipped with the plugin (see Notebook below)
-README.md         this file
-```
-
-Plus `.gitignore`, `.git/`, `.claude/settings.local.json` (local permissions), and an empty `.worktrees/` scaffold. Nothing else.
 
 ## The foundation — three files everything reads
 
@@ -253,34 +253,6 @@ Key seams:
 - **ready vs study / rehearse** — study builds comprehension, rehearse prepares performance, ready measures hireability and routes gaps into the other two.
 - **audit-status vs audit-cleanup vs audit-refactor** — three stances on the same code: describe-only / triage / opinion book. Orchestrator runs all three; standalones run individually.
 - **drill vs study-ai-engineering Project exercises** — both produce buildable exercises; drill adds the induced failure + eval + war story that earns the L3 rung.
-
-## How a run works
-
-```text
-1. detect    each fixed .aipe/<generator>/ folder → CREATE or UPDATE
-2. plan      one consolidated change list across the orchestrator
-3. confirm   one gate for the whole run (continue after plan in non-interactive use)
-4. execute   run each generator in dependency-aware order
-5. report    one summary table plus per-guide detail
-```
-
-- **Per-repo.** Every reference, path, and citation is about the invoked repo only.
-- **Surgical updates.** UPDATE reconciles claims against the codebase and retains still-correct teaching.
-- **Honest output.** A generator emits `not yet exercised` rather than inventing infrastructure, scale, or behavior.
-- **Sharp seams.** A finding belongs to exactly one generator; adjacent generators cross-link rather than duplicate it.
-
-## Notebook (not part of the plugin)
-
-`notebook/` holds reference docs, personal study notes, drafts, and working prompts — not shipped with the marketplace package.
-
-```text
-notebook/guides/          study + interview-prep write-ups, schedules
-notebook/books/           book-club notes + interview-masterclass material
-notebook/pending_specs/   WIP spec drafts not yet promoted to specs/
-notebook/prompts/         working prompts not (yet) generator specs
-```
-
-Read top-to-bottom; don't generate anything.
 
 ## Output layout
 
