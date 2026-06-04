@@ -29,8 +29,6 @@ AIPE ships as a Claude Code plugin via the `rlynjb-aipe` marketplace (sourced fr
 
 Publisher (this repo): pushing to `main` is enough — the marketplace catalog is read live from GitHub. The version that consumers see is set in `.claude-plugin/plugin.json`.
 
-For Codex CLI users, the plugin manifest ships in `.codex-plugin/` and `plugins/aipe/.codex-plugin/`. Codex install path differs by version; see Codex docs for the current `codex plugin` commands.
-
 ## The foundation — three files everything reads
 
 ```text
