@@ -1,5 +1,5 @@
 ---
-description: Audit orchestrator — runs audit-status, audit-cleanup, audit-frontend-a11y, and audit-refactor under one confirmation gate
+description: [orchestrator] Audit orchestrator — runs audit-status, audit-cleanup, audit-frontend-a11y, and audit-refactor under one confirmation gate
 ---
 
 The user invoked `/aipe:audit`.

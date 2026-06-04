@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "Per-branch code review — Intent → Shape → Architecture → Correctness → Craft on the current branch's diff vs base"
+description: "[standalone] Per-branch code review — Intent → Shape → Architecture → Correctness → Craft on the current branch's diff vs base"
 ---
 
 ## Step 0 — Install repository guidance

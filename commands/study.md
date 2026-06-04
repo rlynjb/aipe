@@ -1,5 +1,5 @@
 ---
-description: Study orchestrator — run all sixteen study generators with one confirmation gate and one summary
+description: [orchestrator] Study orchestrator — run all sixteen study generators with one confirmation gate and one summary
 ---
 
 The user invoked `/aipe:study`. Run all sixteen comprehension generators in one pass.

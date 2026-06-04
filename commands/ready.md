@@ -1,5 +1,5 @@
 ---
-description: Readiness orchestrator — runs recon then drill as a pipeline. Measures hireability and closes the highest-leverage gap.
+description: [orchestrator] Readiness orchestrator — runs recon then drill as a pipeline. Measures hireability and closes the highest-leverage gap.
 ---
 
 The user invoked `/aipe:ready`.

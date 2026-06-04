@@ -1,5 +1,5 @@
 ---
-description: Per-branch code review — Intent → Shape → Architecture → Correctness → Craft on the current branch's diff vs base
+description: [standalone] Per-branch code review — Intent → Shape → Architecture → Correctness → Craft on the current branch's diff vs base
 ---
 
 The user invoked `/aipe:code-review`.

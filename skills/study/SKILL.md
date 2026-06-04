@@ -1,6 +1,6 @@
 ---
 name: study
-description: Study orchestrator — run all sixteen study generators with one confirmation gate and one summary
+description: [orchestrator] Study orchestrator — run all sixteen study generators with one confirmation gate and one summary
 ---
 
 ## Step 0 — Install repository guidance

@@ -1,6 +1,6 @@
 ---
 name: read-aposd
-description: Book-style guide to A Philosophy of Software Design — original chaptered teaching of the design primitives, with your-code anchors
+description: [standalone] Book-style guide to A Philosophy of Software Design — original chaptered teaching of the design primitives, with your-code anchors
 argument-hint: <optional flags, e.g. "--part II" or "--anchor ./path">
 ---
 

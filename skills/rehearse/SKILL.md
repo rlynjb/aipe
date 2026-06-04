@@ -1,6 +1,6 @@
 ---
 name: rehearse
-description: Rehearse orchestrator — run all four human-layer rehearsal generators with one confirmation gate and one summary
+description: [orchestrator] Rehearse orchestrator — run all four human-layer rehearsal generators with one confirmation gate and one summary
 ---
 
 ## Step 0 — Install repository guidance

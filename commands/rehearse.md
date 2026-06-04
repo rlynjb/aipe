@@ -1,5 +1,5 @@
 ---
-description: Rehearse orchestrator — run all four human-layer rehearsal generators with one confirmation gate and one summary
+description: [orchestrator] Rehearse orchestrator — run all four human-layer rehearsal generators with one confirmation gate and one summary
 ---
 
 The user invoked `/aipe:rehearse`. Run all four human-layer rehearsal generators in one pass.

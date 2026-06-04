@@ -1,5 +1,5 @@
 ---
-description: Per-person STAR story bank for FAANG-style behavioral interview loops — 10 competencies, quantified, rehearsed for follow-up
+description: [standalone] Per-person STAR story bank for FAANG-style behavioral interview loops — 10 competencies, quantified, rehearsed for follow-up
 ---
 
 The user invoked `/aipe:rehearse-behavioral-stories`.
