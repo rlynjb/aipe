@@ -7,6 +7,8 @@
 **Estimated time:** 1 hour
 **Files you'll create:** `notebook/guides/plugin-primitives.md`
 
+**Important context (unified file format):** The current Claude Code docs unified custom commands and skills into a single file format (`skills/<name>/SKILL.md`). A "command" is now just a skill with `disable-model-invocation: true`; a "skill" is a skill with a `description` that auto-triggers. The legacy `commands/<name>.md` path still works as a shorthand. The four-primitive vocabulary used across this tutorial refers to **invocation behaviors**, not separate file formats.
+
 **Note on official syntax:** the exact frontmatter fields and directory paths Claude Code expects can evolve. When in doubt, check the official Claude Code plugin docs (or use the `claude-code-guide` agent) for the current spec. The structures used across this tutorial are accurate as of writing but verify before shipping.
 
 ═════════════════════════════════════════════════
@@ -72,3 +74,4 @@ WHAT YOU SHOULD NOW UNDERSTAND
 
 - The four primitives differ on **who invokes them**: user (command), model (skill), spawn (subagent), harness (hook).
 - The wrong-primitive failure mode is specific per primitive — that's the seam.
+- Under Claude Code's unified file format, the first three (command / skill / subagent) are now configurations of one file (`SKILL.md`): set `disable-model-invocation: true` for command behavior; write a `description` for skill behavior; set `context: fork` for subagent behavior. Hooks live in `.claude/settings.json` instead. **The conceptual distinctions still hold; the file paths are just less spread out.**

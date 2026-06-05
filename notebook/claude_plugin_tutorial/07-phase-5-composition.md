@@ -7,10 +7,12 @@
 **Estimated time:** 2-3 hours
 **Files you'll create:**
 - `skills/audit-branch-end-to-end/SKILL.md`
-- `agents/security-auditor.md`
-- `agents/a11y-auditor.md`
+- `agents/security-auditor.md` *(or `skills/security-auditor/SKILL.md` with `context: fork`)*
+- `agents/a11y-auditor.md` *(or `skills/a11y-auditor/SKILL.md` with `context: fork`)*
 
-(`agents/cleanup-auditor.md` from Phase 3 is also used.)
+(The cleanup-auditor from Phase 3 is also used; use whichever path you chose there for consistency.)
+
+> **Unified-format note:** Under current Claude Code docs, "subagents" are skills with `context: fork`. The `agents/` path may be legacy; the modern unified path is `skills/<name>/SKILL.md`. Whichever you used in Phase 3, stay consistent here so the orchestrating skill can spawn them via the same convention.
 
 ═════════════════════════════════════════════════
 STEP 5.1 — Plan the composition

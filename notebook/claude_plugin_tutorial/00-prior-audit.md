@@ -22,6 +22,28 @@ METHOD (what to take with a grain of salt)
 This audit was done by Claude after ~15 minutes of thinking about the 36 commands' general shape — not by reading every spec end-to-end. Your audit, done over 1-2 hours with each spec actually open, will be sharper and more grounded in your own judgment. The value of comparing is in the *disagreements*: where my read differs from yours, one of us is wrong, and the why-disagreement conversation is where the muscle gets built.
 
 ═════════════════════════════════════════════════
+COLUMN MEANINGS (unified file format)
+═════════════════════════════════════════════════
+
+Under current Claude Code, custom commands + skills + subagent-style fork-context skills all share one file format (`skills/<name>/SKILL.md`). The columns below are **invocation behaviors** you'd pick via frontmatter flags, not separate file formats:
+
+```
+  command (YES)    skill with disable-model-invocation: true
+                   — user must type /name; never auto-fires
+
+  skill (YES)      skill with a description field
+                   — auto-fires from natural-language prompts
+
+  subagent (YES)   skill with context: fork
+                   — runs in isolated context with curated tools
+
+  hook (YES)       configured in .claude/settings.json
+                   — fires on harness events, not in skill format
+```
+
+The four columns aren't mutually exclusive. A single skill can be both user-invocable (`/name`) AND auto-triggered (description), and a subagent is just a skill with `context: fork` plus a description. Hooks remain a separate config layer.
+
+═════════════════════════════════════════════════
 THE CLASSIFICATION TABLE
 ═════════════════════════════════════════════════
 

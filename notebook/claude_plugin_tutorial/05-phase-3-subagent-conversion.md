@@ -5,7 +5,9 @@
 
 **Maps to:** Roadmap Phase 3
 **Estimated time:** 1-2 hours
-**Files you'll create:** `agents/cleanup-auditor.md`
+**Files you'll create:** `agents/cleanup-auditor.md` *(or, under the unified file format, `skills/cleanup-auditor/SKILL.md` with `context: fork` in frontmatter — confirm with the current docs which path is canonical for your Claude Code version)*
+
+> **Unified-format note:** Under current Claude Code docs, "subagents" are realized as skills with `context: fork` set in frontmatter — they share the same file format as commands and skills. Older `agents/<name>.md` paths may still work as a separate top-level directory; the cleanest modern form is a skill at `skills/<name>/SKILL.md` with `context: fork`. The Claude prompt below works for either — ask the model to use the canonical path for your version.
 
 ═════════════════════════════════════════════════
 STEP 3.1 — Re-read the source
@@ -23,6 +25,8 @@ STEP 3.2 — Create the directory
 
 ```bash
 mkdir -p agents
+# OR, if the modern unified path is preferred:
+# mkdir -p skills/cleanup-auditor
 ```
 
 ═════════════════════════════════════════════════
@@ -30,17 +34,25 @@ STEP 3.3 — Use this prompt verbatim in a fresh Claude session
 ═════════════════════════════════════════════════
 
 ```
-Read specs/audit-cleanup.md. Author it as a Claude Code subagent at
-agents/cleanup-auditor.md.
+Read specs/audit-cleanup.md. Author it as a Claude Code subagent.
+
+Use the canonical path for the current Claude Code version. Under
+the unified file format, this is likely:
+  skills/cleanup-auditor/SKILL.md   (modern: skill with context: fork)
+The legacy path is:
+  agents/cleanup-auditor.md         (older Claude Code versions)
+Check the current docs and pick the right one — note which you chose.
 
 Requirements:
-- Frontmatter: name: cleanup-auditor, a description that captures
-  when the main agent should spawn this subagent ("when the user
-  asks for a triaged debt list" / "before merging a large refactor"
-  / etc).
-- Tool palette (restricted): Read, Glob, Grep, Bash (read-only
-  commands). NO Write, NO Edit, NO Bash with destructive flags.
-  The subagent walks; it does not change the repo.
+- Frontmatter:
+    name: cleanup-auditor
+    description: <when the main agent should spawn this subagent —
+                  "when the user asks for a triaged debt list" /
+                  "before merging a large refactor" / etc>
+    context: fork                       (if using skills/ path)
+    allowed-tools: [Read, Glob, Grep, Bash]   (tool restriction)
+- NO Write, NO Edit, NO Bash with destructive flags. The subagent
+  walks; it does not change the repo.
 - The body instructs the subagent to follow the four-lens method
   from specs/audit-cleanup.md and return its final report as the
   spawning agent's summary (not as a written file).

@@ -16,6 +16,22 @@ A learning-first plan to evolve AIPE from a 36-slash-command plugin into a fully
 THE FOUR PRIMITIVES — what you're learning to choose between
 ═════════════════════════════════════════════════
 
+> **Important context:** Claude Code's current docs unified custom commands and skills into a single file format (`skills/<name>/SKILL.md`). The four "primitives" below are now better understood as four **invocation behaviors**, not four separate file formats:
+>
+> ```
+>   "command" behavior   skill with disable-model-invocation: true
+>                        (user types /name; never auto-fires)
+>   "skill" behavior     skill with a description field
+>                        (model auto-fires when description matches
+>                        the conversation)
+>   "subagent" behavior  skill with context: fork
+>                        (runs in isolated context with curated tools)
+>   "hook" behavior      configured in .claude/settings.json
+>                        (harness-fired on events, not in skill format)
+> ```
+>
+> The conceptual distinction (who invokes, when, with what context) still matters for design. The implementation is just less spread out than it used to be. The tutorial still uses the four-primitive vocabulary because the **decisions** are the same — only the file paths are unified.
+
 ```
   slash command    user-invoked verb. "do this thing now."
                    always synchronous; user is steering.
@@ -66,16 +82,18 @@ Most of your 36 are correctly slash commands. A handful might be skill-shaped or
 **Output:** add a "primitive fit" column to a table in `notebook/guides/plugin-primitives.md`.
 
 ═════════════════════════════════════════════════
-PHASE 2 — Convert one command → skill  (1 hr, with Claude help)
+PHASE 2 — Turn a user-only command into an auto-triggered skill  (1 hr, with Claude help)
 ═════════════════════════════════════════════════
 
-**Goal:** see firsthand how a skill differs from a command in invocation.
+**Goal:** see firsthand how auto-trigger behavior differs from explicit user invocation.
 
-Pick the smallest command that scored "could be a skill" in Phase 1. Strong candidate from your set: `/aipe:read-aposd` — it teaches a framework when relevant; the user doesn't always invoke it explicitly.
+Under the unified file format, this is the rep of converting a legacy `commands/<name>.md` into a modern `skills/<name>/SKILL.md` and **adding a description field that makes the model auto-fire** on natural-language prompts — instead of the user having to type `/aipe:<name>`.
 
-**What you'll learn:** the description field is the entire trigger mechanism for skills. Write it like an SEO match rule. Skills compete on description quality.
+Pick the smallest command that scored "could auto-trigger" in Phase 1. Strong candidate from your set: `/aipe:read-aposd` — it teaches a framework when relevant; the user doesn't always invoke it explicitly.
 
-**Output:** `skills/<name>/SKILL.md` (the Claude Code skill format, distinct from the Codex skill format we removed). Verify in a fresh session that typing "explain deep modules" triggers the skill without typing `/aipe:read-aposd`.
+**What you'll learn:** the description field is the entire trigger mechanism. Write it like an SEO match rule. Skills compete on description quality.
+
+**Output:** `skills/read-aposd/SKILL.md` (modern directory + frontmatter form). Verify in a fresh session that typing "explain deep modules" auto-triggers the skill without typing `/aipe:read-aposd`. Legacy `commands/read-aposd.md` can be removed or kept as a redirect during the migration.
 
 ═════════════════════════════════════════════════
 PHASE 3 — Convert one command → subagent  (1-2 hrs, with Claude help)
