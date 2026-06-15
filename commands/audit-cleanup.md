@@ -11,7 +11,7 @@ The user invoked `/aipe:audit-cleanup` with optional scope: `$ARGUMENTS`.
 
 If `.aipe/project/context.md` does NOT exist in the current working directory:
 
-1. Create `.aipe/project/` and `.aipe/audits/` directories.
+1. Create `.aipe/project/`, `.aipe/audits/`, and `.aipe/audits/refactors/` directories.
 2. Write `.aipe/project/context.md` with this placeholder body:
 
    ```
@@ -94,7 +94,7 @@ Body: every finding with the five labelled fields. Group by lens. Order each len
 For each finding with `Decision: fix-now`, write a stub at:
 
 ```
-.aipe/specs/refactors/cleanup-<slug>.md
+.aipe/audits/refactors/cleanup-<slug>.md
 ```
 
 Where `<slug>` is derived from the finding name (lowercase, kebab-case, ≤60 chars). The stub contains the `## What to refactor`, `## Why`, and `## Target structure` fields from the matching refactor spec format — leave `## Must not change` and `## Must not introduce` blank for the user to complete via `/aipe:refactor` in a separate session.
@@ -107,7 +107,7 @@ Print exactly:
 
 ```
 ✓ Cleanup audit saved to .aipe/audits/cleanup-<YYYY-MM-DD>.md
-  fix-now stubs:  <count> at .aipe/specs/refactors/cleanup-*.md
+  fix-now stubs:  <count> at .aipe/audits/refactors/cleanup-*.md
   fix-later:      <count> tracked in the audit
   accept:         <count> documented in the audit
   cannot-clean:   <count> handed off to feature work

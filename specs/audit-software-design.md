@@ -2,7 +2,7 @@
 
 Use this when you want an actionable refactor queue from AOSD principles applied to your code — not when you want to read and understand the design shape. Output is a triaged list of design violations + one refactor spec per firing red flag, ready to hand to an executor session.
 
-> **Companion to `study-software-design.md`.** Same 8 lenses, same evidence base, different deliverable. `study-software-design` produces a comprehension artifact (audit.md + Pass-2 pattern files; named primitive being violated + the fix as prose). `audit-software-design` produces refactor specs at `.aipe/specs/refactors/design-*.md` you can execute one at a time. Run study to understand; run this to act. `/aipe:audit` invokes this one so taking stock produces action material.
+> **Companion to `study-software-design.md`.** Same 8 lenses, same evidence base, different deliverable. `study-software-design` produces a comprehension artifact (audit.md + Pass-2 pattern files; named primitive being violated + the fix as prose). `audit-software-design` produces refactor specs at `.aipe/audits/refactors/design-*.md` you can execute one at a time. Run study to understand; run this to act. `/aipe:audit` invokes this one so taking stock produces action material.
 
 `/aipe:audit` invokes this as the 5th generator. Also runnable standalone via `/aipe:audit-software-design`.
 
@@ -109,7 +109,7 @@ Two artifacts per run:
                                           (or "no spec — see note" for
                                           findings that don't earn one).
 
-  .aipe/specs/refactors/design-*.md       one refactor spec per firing
+  .aipe/audits/refactors/design-*.md       one refactor spec per firing
                                           red flag that earned one.
                                           Template chosen by finding shape:
 
@@ -124,7 +124,7 @@ Two artifacts per run:
                                    (uses refactor-frontend-visual.md)
 ```
 
-The `design-` prefix distinguishes specs from this generator from `cleanup-` specs (from audit-cleanup) and user-invoked `refactor` specs in the same folder. The reader can `ls .aipe/specs/refactors/design-*` to see only the AOSD-driven work.
+The `design-` prefix distinguishes specs from this generator from `cleanup-` specs (from audit-cleanup) — both groups live in `.aipe/audits/refactors/`. User-invoked `/aipe:refactor` specs live separately at `.aipe/specs/refactors/`. The reader can `ls .aipe/audits/refactors/design-*` to see only the AOSD-driven work, or `ls .aipe/audits/refactors/` to see the full audit-generated backlog.
 
 ═════════════════════════════════════════════════
 HOW THE RUN EXECUTES
@@ -156,7 +156,7 @@ HOW THE RUN EXECUTES
 
   5. Generate per-finding refactor specs
        For every finding that earns a spec (Step 2 criteria), write
-       .aipe/specs/refactors/design-<name>.md using the right
+       .aipe/audits/refactors/design-<name>.md using the right
        template:
          logic        → refactor.md           → design-<name>.md
          UI behavior  → refactor-frontend-    → design-frontend-<name>.md
@@ -203,7 +203,7 @@ ANCHORING + HONEST ASSESSMENT
   → On UPDATE (re-running this generator): regenerate the dated
     audit summary; add new refactor specs for newly firing flags;
     skip flags already covered by an existing design-*.md spec
-    in .aipe/specs/refactors/; remove specs only when the
+    in .aipe/audits/refactors/; remove specs only when the
     underlying flag is no longer firing.
 ```
 

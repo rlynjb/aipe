@@ -18,7 +18,7 @@ This orchestrator defines no content of its own. It reads `format.md`, `teacher.
   audit-software-design   WHAT DESIGN PRINCIPLES ARE VIOLATED — AOSD
                            audit, action-shaped. 8 lenses; produces a
                            dated audit summary + per-finding refactor
-                           specs at .aipe/specs/refactors/design-*.md
+                           specs at .aipe/audits/refactors/design-*.md
                            routed by finding shape. Companion to
                            study-software-design (which is teaching-
                            shaped over the same lenses).
@@ -30,7 +30,7 @@ This orchestrator defines no content of its own. It reads `format.md`, `teacher.
   2. `audit-cleanup` — four-lens debt triage with `fix-now / fix-later / accept / cannot-clean` verdicts
   3. `audit-frontend-a11y` — accessibility audit (describe what's there; emit `no frontend surface` when the repo has no frontend code)
   4. `audit-refactor` — six-chapter staff-engineer refactor notebook (opinions, not tasks)
-  5. `audit-software-design` — AOSD audit (action-shaped, 8 lenses). Produces a dated audit summary at `.aipe/audits/design-<date>.md` + per-finding refactor specs at `.aipe/specs/refactors/design-*.md` (one per firing red flag, template chosen by finding shape).
+  5. `audit-software-design` — AOSD audit (action-shaped, 8 lenses). Produces a dated audit summary at `.aipe/audits/design-<date>.md` + per-finding refactor specs at `.aipe/audits/refactors/design-*.md` (one per firing red flag, template chosen by finding shape).
 
 ```
 /aipe:audit
@@ -41,7 +41,7 @@ This orchestrator defines no content of its own. It reads `format.md`, `teacher.
     audit-frontend-a11y   →  .aipe/audits/a11y-<date>.md
     audit-refactor        →  .aipe/audit-refactor-<purpose>/  (book, not single file)
     audit-software-design →  .aipe/audits/design-<date>.md
-                             + .aipe/specs/refactors/design-*.md
+                             + .aipe/audits/refactors/design-*.md
 ```
 
 ## Inputs and persona routing
@@ -53,16 +53,16 @@ Read `format.md` once for shared formatting and hard rules, `teacher.md` in teac
 Sequential, in the numbered order above:
 
   1. **`audit-status` first.** The descriptive snapshot is cheap and grounds everything else — debt findings, a11y findings, refactor opinions, and software-design findings all reference what `audit-status` named.
-  2. **`audit-cleanup` second.** Once the snapshot exists, the debt triage cites it. Steps 4-5 of `audit-cleanup` also generate refactor specs for every fix-now item at `.aipe/specs/refactors/cleanup-*.md`, routed to the right template (general / frontend-behaviour / frontend-visual) based on finding shape. The orchestrator surfaces the spec count in its final report.
+  2. **`audit-cleanup` second.** Once the snapshot exists, the debt triage cites it. Steps 4-5 of `audit-cleanup` also generate refactor specs for every fix-now item at `.aipe/audits/refactors/cleanup-*.md`, routed to the right template (general / frontend-behaviour / frontend-visual) based on finding shape. The orchestrator surfaces the spec count in its final report.
   3. **`audit-frontend-a11y` third.** Independent of the first two; runs only if the repo has a frontend surface (emits `no frontend surface` and stops early otherwise).
   4. **`audit-refactor` fourth.** Heavier artifact; benefits from the prior three being in place so it can cross-reference rather than re-discover.
-  5. **`audit-software-design` last.** Walks the 8 AOSD lenses, dedupes against the just-written `cleanup-<date>.md` (cross-links overlaps rather than duplicating refactor specs), and produces `design-<date>.md` + per-finding refactor specs at `.aipe/specs/refactors/design-*.md`.
+  5. **`audit-software-design` last.** Walks the 8 AOSD lenses, dedupes against the just-written `cleanup-<date>.md` (cross-links overlaps rather than duplicating refactor specs), and produces `design-<date>.md` + per-finding refactor specs at `.aipe/audits/refactors/design-*.md`.
 
 The five artifacts are independent at the file system level and must not rewrite one another's output.
 
 ## Detection pass and single confirmation gate
 
-`audit-status`, `audit-cleanup`, `audit-frontend-a11y`, and `audit-software-design` are **dated** — each run writes a NEW timestamped file at `.aipe/audits/<kind>-<date>.md` (never overwrites). `audit-refactor` writes a per-purpose book folder; reusing a purpose updates that folder in place. `audit-cleanup` and `audit-software-design` also write refactor specs to `.aipe/specs/refactors/` (prefixed `cleanup-*` and `design-*` respectively); new specs are added per run, existing specs are not overwritten unless the underlying finding has changed.
+`audit-status`, `audit-cleanup`, `audit-frontend-a11y`, and `audit-software-design` are **dated** — each run writes a NEW timestamped file at `.aipe/audits/<kind>-<date>.md` (never overwrites). `audit-refactor` writes a per-purpose book folder; reusing a purpose updates that folder in place. `audit-cleanup` and `audit-software-design` also write refactor specs to `.aipe/audits/refactors/` (prefixed `cleanup-*` and `design-*` respectively); new specs are added per run, existing specs are not overwritten unless the underlying finding has changed. **Note:** user-invoked `/aipe:refactor` (and frontend variants) save to `.aipe/specs/refactors/` — distinct from audit-generated specs so the audit-driven backlog stays grouped with its source.
 
 Print one consolidated plan covering all five (with the planned filenames / folder paths) and wait for one confirmation before executing. In non-interactive execution, print the plan and continue.
 
@@ -89,7 +89,7 @@ Print one row per generator with the output path and a one-line headline. Then a
   audit-refactor:         .aipe/audit-refactor-<purpose>/
                           (six chapters; load-bearing finding: <one line>)
   audit-software-design:  .aipe/audits/design-<date>.md
-                          + .aipe/specs/refactors/design-*.md
+                          + .aipe/audits/refactors/design-*.md
                           (<N> firing flags; <N> refactor specs:
                            <N> general, <N> frontend, <N> visual)
 
@@ -114,6 +114,6 @@ Next: <single command>
                                  principles are violated)        ← this
 ```
 
-Note: `audit-software-design` and `study-software-design` are **companion generators** — same 8 AOSD lenses, different output shapes. `study-software-design` is the comprehension half (teaching artifact at `.aipe/study-software-design/`); `audit-software-design` is the action half (`design-<date>.md` audit summary + refactor specs at `.aipe/specs/refactors/design-*.md`). The study orchestrator runs the comprehension half; the audit orchestrator runs the action half. Run both when you want to both understand AND act on the design dimension.
+Note: `audit-software-design` and `study-software-design` are **companion generators** — same 8 AOSD lenses, different output shapes. `study-software-design` is the comprehension half (teaching artifact at `.aipe/study-software-design/`); `audit-software-design` is the action half (`design-<date>.md` audit summary + refactor specs at `.aipe/audits/refactors/design-*.md`). The study orchestrator runs the comprehension half; the audit orchestrator runs the action half. Run both when you want to both understand AND act on the design dimension.
 
 Each generator also runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`, `/aipe:audit-software-design` — for when only one dimension changed.

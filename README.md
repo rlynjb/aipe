@@ -208,7 +208,7 @@ Runs **all five** generators sequentially under one gate. `/aipe:audit` answers:
                              (one per firing red flag, template chosen
                              by finding shape).
                              output: .aipe/audits/design-<date>.md
-                                     + .aipe/specs/refactors/design-*.md
+                                     + .aipe/audits/refactors/design-*.md
 ```
 
 The five artifacts stay independent on disk — the orchestrator summarizes, doesn't merge. The final report ranks top concerns across all five. Each generator also runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`, `/aipe:audit-software-design`.
@@ -288,7 +288,7 @@ Key seams:
 - **code-review vs study-\* / audit-\*** — per-branch diff evaluation vs per-codebase findings; review cross-links rather than restates.
 - **ready vs study / rehearse** — study builds comprehension, rehearse prepares performance, ready measures hireability and routes gaps into the other two.
 - **audit-status vs audit-cleanup vs audit-refactor vs audit-software-design** — four stances on the same code: describe-only (status) / triage with verdicts + refactor specs (cleanup) / opinion book (refactor) / AOSD-principle audit with refactor specs (software-design). `/aipe:audit` runs all four together; standalones run individually.
-- **audit-software-design vs study-software-design** — same 8 AOSD lenses, different output. `audit-software-design` is action-shaped (refactor specs at `.aipe/specs/refactors/design-*.md`); `study-software-design` is comprehension-shaped (teaching artifact at `.aipe/study-software-design/`). Run audit to act, study to understand. The dedup is handled by audit-software-design checking cleanup's just-written refactor specs.
+- **audit-software-design vs study-software-design** — same 8 AOSD lenses, different output. `audit-software-design` is action-shaped (refactor specs at `.aipe/audits/refactors/design-*.md`); `study-software-design` is comprehension-shaped (teaching artifact at `.aipe/study-software-design/`). Run audit to act, study to understand. The dedup is handled by audit-software-design checking cleanup's just-written refactor specs.
 - **drill vs study-ai-engineering Project exercises** — both produce buildable exercises; drill adds the induced failure + eval + war story that earns the L3 rung.
 - **refactor-\* vs audit-refactor** — `audit-refactor` is the staff-engineer opinion book (six chapters, takes-not-tasks). `refactor-*` produces tight execution specs (one technique, named invariants, do-not-touch list) you hand to a separate session to act on. One says "here's what I think"; the other says "here's exactly what to change, with what constraints."
 

@@ -14,9 +14,9 @@ The orchestrator does not redefine output shape — each generator's own spec is
 
 ## Step 1 — Initialize if needed
 
-If `.aipe/project/context.md` does not exist, create `.aipe/project/` and `.aipe/audits/`, write a short project-context placeholder (stack, data model, file structure, must-not-change constraints), print `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:audit.`, and stop.
+If `.aipe/project/context.md` does not exist, create `.aipe/project/`, `.aipe/audits/`, and `.aipe/audits/refactors/`, write a short project-context placeholder (stack, data model, file structure, must-not-change constraints), print `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:audit.`, and stop.
 
-If `.aipe/project/context.md` exists, ensure `.aipe/audits/` exists (mkdir if needed).
+If `.aipe/project/context.md` exists, ensure `.aipe/audits/` and `.aipe/audits/refactors/` exist (mkdir if needed).
 
 ## Step 2 — Load context
 
@@ -47,7 +47,7 @@ Print one consolidated plan covering all five generators with the planned output
   ────
   audit-status           → .aipe/audits/snapshot-<YYYY-MM-DD>.md
   audit-cleanup          → .aipe/audits/cleanup-<YYYY-MM-DD>.md
-                           + .aipe/specs/refactors/cleanup-*.md
+                           + .aipe/audits/refactors/cleanup-*.md
                               (one per fix-now finding; template
                               chosen by finding shape:
                                 logic       → cleanup-<name>.md
@@ -58,7 +58,7 @@ Print one consolidated plan covering all five generators with the planned output
   audit-refactor         → .aipe/audit-refactor-<purpose>/
                            (six-chapter book; reuses folder if purpose matches)
   audit-software-design  → .aipe/audits/design-<YYYY-MM-DD>.md
-                           + .aipe/specs/refactors/design-*.md
+                           + .aipe/audits/refactors/design-*.md
                               (one per firing AOSD red flag; template
                               chosen by finding shape:
                                 logic       → design-<name>.md
@@ -76,7 +76,7 @@ Run per `specs/audit-status.md`: produce the 8-section descriptive snapshot at `
 
 Run per `specs/audit-cleanup.md` (all 7 steps including the refactor-spec generation): four-lens debt triage (structural / architectural / DSA hot-paths / test debt). Every finding gets the four fields (Lens / Severity / Effort / Decision) plus the Refactor-shape line. Write the triaged list to `.aipe/audits/cleanup-<YYYY-MM-DD>.md`.
 
-For each **fix-now** finding (Step 4-5 of audit-cleanup), also write a complete refactor spec to `.aipe/specs/refactors/cleanup-*.md`. Pick the template based on finding shape:
+For each **fix-now** finding (Step 4-5 of audit-cleanup), also write a complete refactor spec to `.aipe/audits/refactors/cleanup-*.md`. Pick the template based on finding shape:
 
 ```
   logic only (no UI surface)               → refactor.md template
@@ -99,7 +99,7 @@ Run per `specs/audit-refactor.md`: the six-chapter staff-engineer refactor noteb
 
 ## Step 9 — Execute audit-software-design
 
-Run per `specs/audit-software-design.md`: walk the 8 AOSD lenses (same vocabulary as `study-software-design`), dedupe findings against the just-written `cleanup-<date>.md` (cross-link overlaps rather than producing duplicate specs), produce the dated audit summary at `.aipe/audits/design-<YYYY-MM-DD>.md`, and write per-finding refactor specs to `.aipe/specs/refactors/design-*.md`.
+Run per `specs/audit-software-design.md`: walk the 8 AOSD lenses (same vocabulary as `study-software-design`), dedupe findings against the just-written `cleanup-<date>.md` (cross-link overlaps rather than producing duplicate specs), produce the dated audit summary at `.aipe/audits/design-<YYYY-MM-DD>.md`, and write per-finding refactor specs to `.aipe/audits/refactors/design-*.md`.
 
 Template routing for the refactor specs (same logic as audit-cleanup Step 6):
 
@@ -123,14 +123,14 @@ Print one row per generator with the output path and a one-line headline, then a
                           (8-section snapshot; <N> features, <N> deferred items)
   audit-cleanup:          .aipe/audits/cleanup-<date>.md
                           (<N> findings; <N> fix-now)
-                          + .aipe/specs/refactors/cleanup-*.md
+                          + .aipe/audits/refactors/cleanup-*.md
                           (<N> total: <N> general, <N> frontend, <N> visual)
   audit-frontend-a11y:    .aipe/audits/a11y-<date>.md
                           (or "no frontend surface")
   audit-refactor:         .aipe/audit-refactor-<purpose>/
                           (six chapters; load-bearing finding: <one line>)
   audit-software-design:  .aipe/audits/design-<date>.md
-                          + .aipe/specs/refactors/design-*.md
+                          + .aipe/audits/refactors/design-*.md
                           (<N> firing flags; <N> refactor specs:
                            <N> general, <N> frontend, <N> visual)
 

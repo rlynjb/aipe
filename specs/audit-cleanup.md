@@ -49,7 +49,7 @@ More expensive to evaluate, more expensive to fix. Apply sparingly — over-arch
 
 > **See also:**
 > - `study-software-design.md` — APOSD primitives applied to your files (comprehension artifact). Use to **understand** the named primitive being violated and the conceptual fix.
-> - `audit-software-design.md` — same 8 AOSD lenses as study-software-design, action-shaped. Produces per-finding refactor specs at `.aipe/specs/refactors/design-*.md`. Use to **act** on AOSD-flagged findings.
+> - `audit-software-design.md` — same 8 AOSD lenses as study-software-design, action-shaped. Produces per-finding refactor specs at `.aipe/audits/refactors/design-*.md`. Use to **act** on AOSD-flagged findings.
 >
 > This Lens 2 overlaps with `audit-software-design`'s lenses on architectural findings. `/aipe:audit` runs them in order (cleanup before software-design); audit-software-design dedupes against the just-written cleanup file to avoid duplicating refactor specs for the same finding.
 
@@ -125,7 +125,7 @@ Stop there — don't fill in must-not-change yet."
 ```
 
 
-> 💾 Save each stub → .aipe/specs/refactors/cleanup-[name].md
+> 💾 Save each stub → .aipe/audits/refactors/cleanup-[name].md
 > (Step 5 will rewrite the path with a prefix based on the chosen
 >  template: `cleanup-[name].md` for general, `cleanup-frontend-[name].md`
 >  for frontend-behaviour, `cleanup-visual-[name].md` for frontend-visual.)
@@ -173,7 +173,7 @@ Same pattern as feature work. One refactor spec per Claude Code session. Run the
 
 ```
 "Read .aipe/project/context.md and
-.aipe/specs/refactors/cleanup-[name].md.
+.aipe/audits/refactors/cleanup-[name].md.
 Refactor as specified. Do not change behaviour.
 Do not touch anything outside the listed scope."
 ```

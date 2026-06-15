@@ -1,5 +1,5 @@
 ---
-description: Action-shaped AOSD audit — walks 8 design lenses and generates refactor specs at .aipe/specs/refactors/design-*.md, routed by finding shape
+description: Action-shaped AOSD audit — walks 8 design lenses; produces a dated audit summary + per-finding refactor specs at .aipe/audits/refactors/design-*.md
 ---
 
 The user invoked `/aipe:audit-software-design`.
@@ -14,9 +14,9 @@ Also invoked by `/aipe:audit` as the 5th generator. The two flows are interchang
 
 ## Step 1 — Initialize if needed
 
-If `.aipe/project/context.md` does not exist, create `.aipe/project/`, `.aipe/audits/`, and `.aipe/specs/refactors/`, write a short project-context placeholder, print `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:audit-software-design.`, and stop.
+If `.aipe/project/context.md` does not exist, create `.aipe/project/`, `.aipe/audits/`, and `.aipe/audits/refactors/`, write a short project-context placeholder, print `✓ Scaffolded .aipe/. Edit .aipe/project/context.md, then re-run /aipe:audit-software-design.`, and stop.
 
-If `.aipe/project/context.md` exists, ensure `.aipe/audits/` and `.aipe/specs/refactors/` exist (mkdir if needed).
+If `.aipe/project/context.md` exists, ensure `.aipe/audits/` and `.aipe/audits/refactors/` exist (mkdir if needed).
 
 ## Step 2 — Load context
 
@@ -95,7 +95,7 @@ Print:
 ✓ audit-software-design complete
   audit summary:        .aipe/audits/design-<date>.md
                         (8 lenses; <N> firing red flags total)
-  refactor specs:       .aipe/specs/refactors/design-*.md
+  refactor specs:       .aipe/audits/refactors/design-*.md
                         (<N> total: <N> general, <N> frontend, <N> visual)
   highest-leverage:     design-<slug>.md (start here)
 

@@ -24,7 +24,7 @@ WHERE THIS SITS — partition (no overlap)
 
 > **See also:**
 > - `audit-cleanup.md` (Lens 2: Architectural) — overlapping evidence (shallow modules, leaky abstractions, layers that don't earn their place) triaged with fix-now / fix-later / accept verdicts.
-> - `audit-software-design.md` — the **action-shaped companion to this spec** (same 8 AOSD lenses; produces per-finding refactor specs at `.aipe/specs/refactors/design-*.md` instead of a teaching artifact). Run this spec to **understand** the design shape; run `audit-software-design` to **act** on the same findings. `/aipe:audit` invokes `audit-software-design` (action); `/aipe:study` invokes this spec (comprehension). Run both when you want both halves.
+> - `audit-software-design.md` — the **action-shaped companion to this spec** (same 8 AOSD lenses; produces per-finding refactor specs at `.aipe/audits/refactors/design-*.md` instead of a teaching artifact). Run this spec to **understand** the design shape; run `audit-software-design` to **act** on the same findings. `/aipe:audit` invokes `audit-software-design` (action); `/aipe:study` invokes this spec (comprehension). Run both when you want both halves.
 
 This spec is code-level design quality. It does not touch system
 architecture, and it is not the book reader.
