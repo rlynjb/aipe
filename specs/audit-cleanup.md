@@ -47,6 +47,8 @@ More expensive to evaluate, more expensive to fix. Apply sparingly — over-arch
   - **State placement** — state that lives in the wrong layer (component state that should be in a store, global state that should be local)
   - **Side effect placement** — effects scattered through pure logic, or pure logic tangled with effects
 
+> **See also:** `study-software-design.md` (APOSD primitives applied to your files). This lens overlaps with software-design's `deep-vs-shallow-modules`, `information-hiding-and-leakage`, `layers-and-abstractions`, and `errors-and-special-cases` lenses. Use `study-software-design` to **understand** the design shape and the named primitive being violated; use this cleanup lens to **act** on the same findings with fix-now / fix-later / accept verdicts. Same evidence, different deliverable. `/aipe:audit` invokes both.
+
 
 ### Lens 3: DSA hot-paths
 

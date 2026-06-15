@@ -1,16 +1,16 @@
 ---
-description: [orchestrator] Audit orchestrator — runs audit-status, audit-cleanup, audit-frontend-a11y, and audit-refactor under one confirmation gate
+description: [orchestrator] Audit orchestrator — runs audit-status, audit-cleanup, audit-frontend-a11y, audit-refactor, and study-software-design under one confirmation gate
 ---
 
 The user invoked `/aipe:audit`.
 
-One command runs **all four** audit-family generators on the current repo in sequence under one confirmation gate, producing a complete read on what's there, what's wrong, what's inaccessible, and what a staff engineer would say about it.
+One command runs **all five** audit-family generators on the current repo in sequence under one confirmation gate, producing a complete read on what's there, what's wrong, what's inaccessible, what a staff engineer would say about it, and what design principles are violated.
 
 ```
-/aipe:audit           → run all four generators in sequence
+/aipe:audit           → run all five generators in sequence
 ```
 
-The orchestrator does not redefine output shape — each generator's own spec is the contract.
+The orchestrator does not redefine output shape — each generator's own spec is the contract. `study-software-design` is borrowed from the study family; running it here produces the comprehension half of the architectural picture that `audit-cleanup` Lens 2 triages.
 
 ## Step 1 — Initialize if needed
 
@@ -33,26 +33,31 @@ ${CLAUDE_PLUGIN_ROOT}/specs/audit-status.md
 ${CLAUDE_PLUGIN_ROOT}/specs/audit-cleanup.md
 ${CLAUDE_PLUGIN_ROOT}/specs/audit-frontend-a11y.md
 ${CLAUDE_PLUGIN_ROOT}/specs/audit-refactor.md
+${CLAUDE_PLUGIN_ROOT}/specs/study-software-design.md
 ```
 
 If `${CLAUDE_PLUGIN_ROOT}` is unset, search upward from this file's location.
 
 ## Step 4 — Plan the run (single confirmation gate)
 
-Print one consolidated plan covering all four generators with the planned output paths:
+Print one consolidated plan covering all five generators with the planned output paths:
 
 ```
   Plan
   ────
-  audit-status         → .aipe/audits/snapshot-<YYYY-MM-DD>.md
-  audit-cleanup        → .aipe/audits/cleanup-<YYYY-MM-DD>.md
-  audit-frontend-a11y  → .aipe/audits/a11y-<YYYY-MM-DD>.md
-                         (or skipped if no frontend surface)
-  audit-refactor       → .aipe/audit-refactor-<purpose>/
-                         (six-chapter book; reuses folder if purpose matches)
+  audit-status           → .aipe/audits/snapshot-<YYYY-MM-DD>.md
+  audit-cleanup          → .aipe/audits/cleanup-<YYYY-MM-DD>.md
+  audit-frontend-a11y    → .aipe/audits/a11y-<YYYY-MM-DD>.md
+                           (or skipped if no frontend surface)
+  audit-refactor         → .aipe/audit-refactor-<purpose>/
+                           (six-chapter book; reuses folder if purpose matches)
+  study-software-design  → .aipe/study-software-design/
+                           (CREATE if absent, UPDATE if present;
+                            audit.md + Pass-2 pattern files per
+                            me.md → AUDIT-STYLE GENERATORS)
 ```
 
-Wait for one confirmation. In non-interactive execution, print the plan and continue. **One gate for all four** — no per-stage prompts.
+Wait for one confirmation. In non-interactive execution, print the plan and continue. **One gate for all five** — no per-stage prompts.
 
 ## Step 5 — Execute audit-status
 
@@ -70,22 +75,29 @@ Run per `specs/audit-frontend-a11y.md`. If the repo has no frontend surface, emi
 
 Run per `specs/audit-refactor.md`: the six-chapter staff-engineer refactor notebook. Heavier artifact; writes to `.aipe/audit-refactor-<purpose>/` (a folder, not a single dated file).
 
-## Step 9 — Consolidated summary
+## Step 9 — Execute study-software-design
 
-Print one row per generator with the output path and a one-line headline, then a `Top concerns across the four audits` block ranking the worst items from cleanup's `fix-now`, a11y's blocking issues, and refactor's chapter 1 into a single ranked list. End with the single next action.
+Run per `specs/study-software-design.md`: AOSD primitives applied to the repo via the audit-style two-pass shape (audit.md walks the 8 lenses; Pass-2 files name the discovered patterns). CREATE if `.aipe/study-software-design/` is absent; UPDATE if present. Reads the just-written `.aipe/audits/cleanup-<date>.md` for cross-link material so the comprehension audit and the action audit reinforce each other.
+
+## Step 10 — Consolidated summary
+
+Print one row per generator with the output path and a one-line headline, then a `Top concerns across the five audits` block ranking the worst items from cleanup's `fix-now`, a11y's blocking issues, refactor's chapter 1, and software-design's red-flags-audit lens into a single ranked list. End with the single next action.
 
 ```
 ✓ Audit run complete
-  audit-status:        .aipe/audits/snapshot-<date>.md
-                       (8-section snapshot; <N> features, <N> deferred items)
-  audit-cleanup:       .aipe/audits/cleanup-<date>.md
-                       (<N> findings; <N> fix-now)
-  audit-frontend-a11y: .aipe/audits/a11y-<date>.md
-                       (or "no frontend surface")
-  audit-refactor:      .aipe/audit-refactor-<purpose>/
-                       (six chapters; load-bearing finding: <one line>)
+  audit-status:           .aipe/audits/snapshot-<date>.md
+                          (8-section snapshot; <N> features, <N> deferred items)
+  audit-cleanup:          .aipe/audits/cleanup-<date>.md
+                          (<N> findings; <N> fix-now)
+  audit-frontend-a11y:    .aipe/audits/a11y-<date>.md
+                          (or "no frontend surface")
+  audit-refactor:         .aipe/audit-refactor-<purpose>/
+                          (six chapters; load-bearing finding: <one line>)
+  study-software-design:  .aipe/study-software-design/
+                          (8-lens audit + <N> Pass-2 pattern files;
+                           red-flags-audit: <N> firing)
 
-Top concerns across the four audits (ranked):
+Top concerns across the five audits (ranked):
   1. <one line>
   2. <one line>
   3. <one line>
@@ -95,11 +107,12 @@ Next: <single command>
 
 ## What `/aipe:audit` does NOT do
 
-  → Does not merge the four artifacts into one file. Each generator writes to its own path; the orchestrator only summarizes.
+  → Does not merge the five artifacts into one file. Each generator writes to its own path; the orchestrator only summarizes.
   → Does not act on findings. Audit is read-only.
   → Does not stop short on the frontend-a11y "no frontend surface" case — that's an honest emit, not an error.
   → Does not retry on hard error. If any generator fails (missing context, unreadable repo), report and stop — partial results are misleading.
+  → Does not re-run study-software-design if you also ran `/aipe:study` recently — the orchestrator runs in UPDATE mode against the existing artifact, which is a no-op when nothing changed.
 
-Each generator also runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`.
+Each generator also runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`, `/aipe:study-software-design`.
 
 **Stop. Wait for the user's next instruction.**

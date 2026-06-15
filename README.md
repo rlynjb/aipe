@@ -187,23 +187,30 @@ Each generator also runs standalone: `/aipe:recon` to reassess; `/aipe:drill` to
 
 ## `/aipe:audit` — the take-stock orchestrator
 
-Runs **all four** audit-family generators sequentially under one gate. `/aipe:audit` answers: what's there, what's wrong, what's inaccessible, what a staff engineer would say.
+Runs **all five** generators sequentially under one gate. `/aipe:audit` answers: what's there, what's wrong, what's inaccessible, what a staff engineer would say, and what design principles are violated.
 
 ```text
-  1  audit-status         WHAT IS — 8-section descriptive snapshot
-                          output: .aipe/audits/snapshot-<date>.md
-  2  audit-cleanup        WHAT'S WRONG — four-lens debt triage with
-                          fix-now / fix-later / accept / cannot-clean
-                          output: .aipe/audits/cleanup-<date>.md
-  3  audit-frontend-a11y  WHAT'S INACCESSIBLE — frontend a11y read
-                          ("no frontend surface" honestly if N/A)
-                          output: .aipe/audits/a11y-<date>.md
-  4  audit-refactor       WHAT A STAFF ENGINEER WOULD SAY — six-chapter
-                          opinion notebook (book, not single file)
-                          output: .aipe/audit-refactor-<purpose>/
+  1  audit-status            WHAT IS — 8-section descriptive snapshot
+                             output: .aipe/audits/snapshot-<date>.md
+  2  audit-cleanup           WHAT'S WRONG — four-lens debt triage with
+                             fix-now / fix-later / accept / cannot-clean
+                             output: .aipe/audits/cleanup-<date>.md
+  3  audit-frontend-a11y     WHAT'S INACCESSIBLE — frontend a11y read
+                             ("no frontend surface" honestly if N/A)
+                             output: .aipe/audits/a11y-<date>.md
+  4  audit-refactor          WHAT A STAFF ENGINEER WOULD SAY — six-chapter
+                             opinion notebook (book, not single file)
+                             output: .aipe/audit-refactor-<purpose>/
+  5  study-software-design   WHAT DESIGN PRINCIPLES ARE VIOLATED — AOSD
+                             primitives applied to your files (audit.md +
+                             Pass-2 pattern files). Borrowed from the
+                             study family; produces the comprehension
+                             half of the architectural picture that
+                             audit-cleanup Lens 2 triages.
+                             output: .aipe/study-software-design/
 ```
 
-The four artifacts stay independent on disk — the orchestrator summarizes, doesn't merge. The final report ranks top concerns across all four. Each generator also runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`.
+The five artifacts stay independent on disk — the orchestrator summarizes, doesn't merge. The final report ranks top concerns across all five. Each generator also runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`, `/aipe:study-software-design`.
 
 ## Standalone framework guide
 
@@ -263,6 +270,7 @@ per-person     behavioral-stories   (FAANG-style STAR story bank)
 readiness      recon · drill   (orchestrated by /aipe:ready)
 
 take stock     audit-status · audit-cleanup · audit-frontend-a11y · audit-refactor
+               · study-software-design (borrowed)
                (orchestrated by /aipe:audit)
 
 per-branch     code-review
@@ -279,7 +287,7 @@ Key seams:
 - **testing vs ai-engineering evals** — deterministic expected results vs probabilistic quality + regression thresholds.
 - **code-review vs study-\* / audit-\*** — per-branch diff evaluation vs per-codebase findings; review cross-links rather than restates.
 - **ready vs study / rehearse** — study builds comprehension, rehearse prepares performance, ready measures hireability and routes gaps into the other two.
-- **audit-status vs audit-cleanup vs audit-refactor** — three stances on the same code: describe-only / triage / opinion book. Orchestrator runs all three; standalones run individually.
+- **audit-status vs audit-cleanup vs audit-refactor vs study-software-design** — four stances on the same code: describe-only (status) / triage with verdicts (cleanup) / opinion book (refactor) / named-principle comprehension audit (software-design). `/aipe:audit` runs all four together; standalones run individually. study-software-design is borrowed from the study family so the design-shape dimension shows up at take-stock time too.
 - **drill vs study-ai-engineering Project exercises** — both produce buildable exercises; drill adds the induced failure + eval + war story that earns the L3 rung.
 - **refactor-\* vs audit-refactor** — `audit-refactor` is the staff-engineer opinion book (six chapters, takes-not-tasks). `refactor-*` produces tight execution specs (one technique, named invariants, do-not-touch list) you hand to a separate session to act on. One says "here's what I think"; the other says "here's exactly what to change, with what constraints."
 

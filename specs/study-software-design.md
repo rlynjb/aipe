@@ -22,6 +22,8 @@ not restate the concept-file template or the persona — it inherits them.
 WHERE THIS SITS — partition (no overlap)
 ═════════════════════════════════════════════════
 
+> **See also:** `audit-cleanup.md` (Lens 2: Architectural). The same evidence (shallow modules, leaky abstractions, layers that don't earn their place) shows up in both, with different deliverables. This spec **teaches** the named AOSD principle being violated and cites the fix per primitive — comprehension artifact. `audit-cleanup` **triages** the same findings with fix-now / fix-later / accept verdicts + effort estimates — action artifact. Run this one to understand the design; run `audit-cleanup` to act on the debt. `/aipe:audit` invokes both so a take-stock pass produces both deliverables in one run.
+
 This spec is code-level design quality. It does not touch system
 architecture, and it is not the book reader.
 
