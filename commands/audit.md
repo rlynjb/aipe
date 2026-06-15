@@ -1,5 +1,5 @@
 ---
-description: [orchestrator] Audit orchestrator — runs audit-status, audit-cleanup, audit-frontend-a11y, audit-refactor, and study-software-design under one confirmation gate
+description: [orchestrator] Audit orchestrator — runs audit-status, audit-cleanup, audit-frontend-a11y, audit-refactor, and audit-software-design under one confirmation gate
 ---
 
 The user invoked `/aipe:audit`.
@@ -10,7 +10,7 @@ One command runs **all five** audit-family generators on the current repo in seq
 /aipe:audit           → run all five generators in sequence
 ```
 
-The orchestrator does not redefine output shape — each generator's own spec is the contract. `study-software-design` is borrowed from the study family; running it here produces the comprehension half of the architectural picture that `audit-cleanup` Lens 2 triages.
+The orchestrator does not redefine output shape — each generator's own spec is the contract. `audit-software-design` is the action-shaped companion to `study-software-design` (same 8 AOSD lenses; produces refactor specs instead of teaching artifacts).
 
 ## Step 1 — Initialize if needed
 
@@ -33,7 +33,7 @@ ${CLAUDE_PLUGIN_ROOT}/specs/audit-status.md
 ${CLAUDE_PLUGIN_ROOT}/specs/audit-cleanup.md
 ${CLAUDE_PLUGIN_ROOT}/specs/audit-frontend-a11y.md
 ${CLAUDE_PLUGIN_ROOT}/specs/audit-refactor.md
-${CLAUDE_PLUGIN_ROOT}/specs/study-software-design.md
+${CLAUDE_PLUGIN_ROOT}/specs/audit-software-design.md
 ```
 
 If `${CLAUDE_PLUGIN_ROOT}` is unset, search upward from this file's location.
@@ -57,10 +57,13 @@ Print one consolidated plan covering all five generators with the planned output
                            (or skipped if no frontend surface)
   audit-refactor         → .aipe/audit-refactor-<purpose>/
                            (six-chapter book; reuses folder if purpose matches)
-  study-software-design  → .aipe/study-software-design/
-                           (CREATE if absent, UPDATE if present;
-                            audit.md + Pass-2 pattern files per
-                            me.md → AUDIT-STYLE GENERATORS)
+  audit-software-design  → .aipe/audits/design-<YYYY-MM-DD>.md
+                           + .aipe/specs/refactors/design-*.md
+                              (one per firing AOSD red flag; template
+                              chosen by finding shape:
+                                logic       → design-<name>.md
+                                UI behavior → design-frontend-<name>.md
+                                CSS / HTML  → design-visual-<name>.md)
 ```
 
 Wait for one confirmation. In non-interactive execution, print the plan and continue. **One gate for all five** — no per-stage prompts.
@@ -94,9 +97,21 @@ Run per `specs/audit-frontend-a11y.md`. If the repo has no frontend surface, emi
 
 Run per `specs/audit-refactor.md`: the six-chapter staff-engineer refactor notebook. Heavier artifact; writes to `.aipe/audit-refactor-<purpose>/` (a folder, not a single dated file).
 
-## Step 9 — Execute study-software-design
+## Step 9 — Execute audit-software-design
 
-Run per `specs/study-software-design.md`: AOSD primitives applied to the repo via the audit-style two-pass shape (audit.md walks the 8 lenses; Pass-2 files name the discovered patterns). CREATE if `.aipe/study-software-design/` is absent; UPDATE if present. Reads the just-written `.aipe/audits/cleanup-<date>.md` for cross-link material so the comprehension audit and the action audit reinforce each other.
+Run per `specs/audit-software-design.md`: walk the 8 AOSD lenses (same vocabulary as `study-software-design`), dedupe findings against the just-written `cleanup-<date>.md` (cross-link overlaps rather than producing duplicate specs), produce the dated audit summary at `.aipe/audits/design-<YYYY-MM-DD>.md`, and write per-finding refactor specs to `.aipe/specs/refactors/design-*.md`.
+
+Template routing for the refactor specs (same logic as audit-cleanup Step 6):
+
+```
+  finding shape           template                             path
+  ─────────────────────────────────────────────────────────────────────────────
+  logic / module          refactor.md                          design-<name>.md
+  UI behavior             refactor-frontend-behaviour.md       design-frontend-<name>.md
+  CSS / tokens / HTML     refactor-frontend-visual.md          design-visual-<name>.md
+```
+
+Pick the **tightest applicable template**. A finding earns a spec only if the fix is behaviour-preserving + specific + localized; otherwise document it in the audit summary without a spec.
 
 ## Step 10 — Consolidated summary
 
@@ -114,9 +129,10 @@ Print one row per generator with the output path and a one-line headline, then a
                           (or "no frontend surface")
   audit-refactor:         .aipe/audit-refactor-<purpose>/
                           (six chapters; load-bearing finding: <one line>)
-  study-software-design:  .aipe/study-software-design/
-                          (8-lens audit + <N> Pass-2 pattern files;
-                           red-flags-audit: <N> firing)
+  audit-software-design:  .aipe/audits/design-<date>.md
+                          + .aipe/specs/refactors/design-*.md
+                          (<N> firing flags; <N> refactor specs:
+                           <N> general, <N> frontend, <N> visual)
 
 Top concerns across the five audits (ranked):
   1. <one line>
@@ -132,8 +148,8 @@ Next: <single command>
   → Does not act on findings. Audit is read-only.
   → Does not stop short on the frontend-a11y "no frontend surface" case — that's an honest emit, not an error.
   → Does not retry on hard error. If any generator fails (missing context, unreadable repo), report and stop — partial results are misleading.
-  → Does not re-run study-software-design if you also ran `/aipe:study` recently — the orchestrator runs in UPDATE mode against the existing artifact, which is a no-op when nothing changed.
+  → Does not duplicate audit-cleanup's refactor specs. audit-software-design dedupes against the just-written `cleanup-<date>.md` and cross-links overlapping findings rather than producing a second `design-*.md` spec for the same fix.
 
-Each generator also runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`, `/aipe:study-software-design`.
+Each generator also runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`, `/aipe:audit-software-design`.
 
 **Stop. Wait for the user's next instruction.**

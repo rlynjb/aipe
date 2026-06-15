@@ -22,7 +22,9 @@ not restate the concept-file template or the persona — it inherits them.
 WHERE THIS SITS — partition (no overlap)
 ═════════════════════════════════════════════════
 
-> **See also:** `audit-cleanup.md` (Lens 2: Architectural). The same evidence (shallow modules, leaky abstractions, layers that don't earn their place) shows up in both, with different deliverables. This spec **teaches** the named AOSD principle being violated and cites the fix per primitive — comprehension artifact. `audit-cleanup` **triages** the same findings with fix-now / fix-later / accept verdicts + effort estimates — action artifact. Run this one to understand the design; run `audit-cleanup` to act on the debt. `/aipe:audit` invokes both so a take-stock pass produces both deliverables in one run.
+> **See also:**
+> - `audit-cleanup.md` (Lens 2: Architectural) — overlapping evidence (shallow modules, leaky abstractions, layers that don't earn their place) triaged with fix-now / fix-later / accept verdicts.
+> - `audit-software-design.md` — the **action-shaped companion to this spec** (same 8 AOSD lenses; produces per-finding refactor specs at `.aipe/specs/refactors/design-*.md` instead of a teaching artifact). Run this spec to **understand** the design shape; run `audit-software-design` to **act** on the same findings. `/aipe:audit` invokes `audit-software-design` (action); `/aipe:study` invokes this spec (comprehension). Run both when you want both halves.
 
 This spec is code-level design quality. It does not touch system
 architecture, and it is not the book reader.

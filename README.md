@@ -201,16 +201,17 @@ Runs **all five** generators sequentially under one gate. `/aipe:audit` answers:
   4  audit-refactor          WHAT A STAFF ENGINEER WOULD SAY — six-chapter
                              opinion notebook (book, not single file)
                              output: .aipe/audit-refactor-<purpose>/
-  5  study-software-design   WHAT DESIGN PRINCIPLES ARE VIOLATED — AOSD
-                             primitives applied to your files (audit.md +
-                             Pass-2 pattern files). Borrowed from the
-                             study family; produces the comprehension
-                             half of the architectural picture that
-                             audit-cleanup Lens 2 triages.
-                             output: .aipe/study-software-design/
+  5  audit-software-design   WHAT DESIGN PRINCIPLES ARE VIOLATED — AOSD
+                             audit, action-shaped. Same 8 lenses as
+                             study-software-design but produces a dated
+                             audit summary + per-finding refactor specs
+                             (one per firing red flag, template chosen
+                             by finding shape).
+                             output: .aipe/audits/design-<date>.md
+                                     + .aipe/specs/refactors/design-*.md
 ```
 
-The five artifacts stay independent on disk — the orchestrator summarizes, doesn't merge. The final report ranks top concerns across all five. Each generator also runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`, `/aipe:study-software-design`.
+The five artifacts stay independent on disk — the orchestrator summarizes, doesn't merge. The final report ranks top concerns across all five. Each generator also runs standalone: `/aipe:audit-status`, `/aipe:audit-cleanup`, `/aipe:audit-frontend-a11y`, `/aipe:audit-refactor`, `/aipe:audit-software-design`.
 
 ## Standalone framework guide
 
@@ -270,8 +271,7 @@ per-person     behavioral-stories   (FAANG-style STAR story bank)
 readiness      recon · drill   (orchestrated by /aipe:ready)
 
 take stock     audit-status · audit-cleanup · audit-frontend-a11y · audit-refactor
-               · study-software-design (borrowed)
-               (orchestrated by /aipe:audit)
+               · audit-software-design   (orchestrated by /aipe:audit)
 
 per-branch     code-review
 
@@ -287,7 +287,8 @@ Key seams:
 - **testing vs ai-engineering evals** — deterministic expected results vs probabilistic quality + regression thresholds.
 - **code-review vs study-\* / audit-\*** — per-branch diff evaluation vs per-codebase findings; review cross-links rather than restates.
 - **ready vs study / rehearse** — study builds comprehension, rehearse prepares performance, ready measures hireability and routes gaps into the other two.
-- **audit-status vs audit-cleanup vs audit-refactor vs study-software-design** — four stances on the same code: describe-only (status) / triage with verdicts (cleanup) / opinion book (refactor) / named-principle comprehension audit (software-design). `/aipe:audit` runs all four together; standalones run individually. study-software-design is borrowed from the study family so the design-shape dimension shows up at take-stock time too.
+- **audit-status vs audit-cleanup vs audit-refactor vs audit-software-design** — four stances on the same code: describe-only (status) / triage with verdicts + refactor specs (cleanup) / opinion book (refactor) / AOSD-principle audit with refactor specs (software-design). `/aipe:audit` runs all four together; standalones run individually.
+- **audit-software-design vs study-software-design** — same 8 AOSD lenses, different output. `audit-software-design` is action-shaped (refactor specs at `.aipe/specs/refactors/design-*.md`); `study-software-design` is comprehension-shaped (teaching artifact at `.aipe/study-software-design/`). Run audit to act, study to understand. The dedup is handled by audit-software-design checking cleanup's just-written refactor specs.
 - **drill vs study-ai-engineering Project exercises** — both produce buildable exercises; drill adds the induced failure + eval + war story that earns the L3 rung.
 - **refactor-\* vs audit-refactor** — `audit-refactor` is the staff-engineer opinion book (six chapters, takes-not-tasks). `refactor-*` produces tight execution specs (one technique, named invariants, do-not-touch list) you hand to a separate session to act on. One says "here's what I think"; the other says "here's exactly what to change, with what constraints."
 
