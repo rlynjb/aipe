@@ -24,6 +24,7 @@ behavioral-stories → per-person  (STAR story bank for FAANG behavioral loops)
   - [`/aipe:read-aposd`](#standalone-framework-guide) — APOSD framework guide
   - [`/aipe:code-review`](#aipecode-review--per-branch-pr-review) — per-branch PR review
   - [`/aipe:rehearse-behavioral-stories`](#aiperehearse-behavioral-stories--per-person-star-story-bank) — STAR story bank
+  - [`/aipe:refactor`](#aiperefactor--the-refactor-family-spec-generators) — refactor family (spec generators)
 - **Concepts**
   - [Audit-style vs curriculum-style output](#audit-style-vs-curriculum-style-output)
   - [How the specs partition](#how-the-specs-partition--one-owner-per-concern)
@@ -219,6 +220,30 @@ Reviews the current branch's diff against base; emits a single report. Every run
 
 Five lenses walked in order (Intent → Shape → Architecture → Correctness → Craft), each with checklist + blocking conditions. Required **Branch context** block up front, `file:line` anchoring inside the diff, verdict-first ranked findings, severity tags on Pass 4. Mirrors to `.aipe/reviews/<branch>-<date>.md` when that directory exists.
 
+## `/aipe:refactor` — the refactor family (spec generators)
+
+Three commands that **generate refactor specs**; they do NOT execute the refactor. The split is deliberate — refactors are the highest-risk AI prompts; the spec is the constraint contract that prevents over-optimization. Workflow: `/aipe:refactor` to produce the spec → separate Claude session to execute the change, bound by the spec.
+
+```text
+  /aipe:refactor                       any code; floor invariants
+                                       (API stays, no behaviour change)
+  /aipe:refactor-frontend-behaviour    + frontend invariants (visible UI,
+                                       event order, network/storage, a11y)
+  /aipe:refactor-frontend-visual       tightest: pixels identical AND no
+                                       new user capability — CSS, design
+                                       tokens, semantic HTML only
+```
+
+The three are a ladder — each variant inherits the previous one's invariants and tightens. Each produces a constraint spec naming the technique (Extract Function, Move, Replace Conditional with Polymorphism, etc.), the target structure, and what must not change:
+
+```text
+  .aipe/specs/refactors/[name].md             general
+  .aipe/specs/refactors/frontend-[name].md    behaviour variant
+  .aipe/specs/refactors/visual-[name].md      visual variant
+```
+
+The execution session uses the spec as a contract; it doesn't get to invent additional scope. **One refactor type per spec** — combining "extract function" with "replace conditional" is two specs, two sessions.
+
 ## How the specs partition — one owner per concern
 
 ```text
@@ -241,6 +266,9 @@ take stock     audit-status · audit-cleanup · audit-frontend-a11y · audit-ref
                (orchestrated by /aipe:audit)
 
 per-branch     code-review
+
+restructure    refactor · refactor-frontend-behaviour · refactor-frontend-visual
+               (spec generators — execution happens in a separate session)
 ```
 
 Key seams:
@@ -253,6 +281,7 @@ Key seams:
 - **ready vs study / rehearse** — study builds comprehension, rehearse prepares performance, ready measures hireability and routes gaps into the other two.
 - **audit-status vs audit-cleanup vs audit-refactor** — three stances on the same code: describe-only / triage / opinion book. Orchestrator runs all three; standalones run individually.
 - **drill vs study-ai-engineering Project exercises** — both produce buildable exercises; drill adds the induced failure + eval + war story that earns the L3 rung.
+- **refactor-\* vs audit-refactor** — `audit-refactor` is the staff-engineer opinion book (six chapters, takes-not-tasks). `refactor-*` produces tight execution specs (one technique, named invariants, do-not-touch list) you hand to a separate session to act on. One says "here's what I think"; the other says "here's exactly what to change, with what constraints."
 
 ## Output layout
 
