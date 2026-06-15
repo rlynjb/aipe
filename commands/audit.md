@@ -47,6 +47,12 @@ Print one consolidated plan covering all five generators with the planned output
   ────
   audit-status           → .aipe/audits/snapshot-<YYYY-MM-DD>.md
   audit-cleanup          → .aipe/audits/cleanup-<YYYY-MM-DD>.md
+                           + .aipe/specs/refactors/cleanup-*.md
+                              (one per fix-now finding; template
+                              chosen by finding shape:
+                                logic       → cleanup-<name>.md
+                                UI behavior → cleanup-frontend-<name>.md
+                                CSS / HTML  → cleanup-visual-<name>.md)
   audit-frontend-a11y    → .aipe/audits/a11y-<YYYY-MM-DD>.md
                            (or skipped if no frontend surface)
   audit-refactor         → .aipe/audit-refactor-<purpose>/
@@ -65,7 +71,20 @@ Run per `specs/audit-status.md`: produce the 8-section descriptive snapshot at `
 
 ## Step 6 — Execute audit-cleanup
 
-Run per `specs/audit-cleanup.md`: four-lens debt triage (structural / architectural / DSA hot-paths / test debt). Every finding gets the four fields (Lens / Severity / Effort / Decision) plus the Refactor-shape line. Write to `.aipe/audits/cleanup-<YYYY-MM-DD>.md`.
+Run per `specs/audit-cleanup.md` (all 7 steps including the refactor-spec generation): four-lens debt triage (structural / architectural / DSA hot-paths / test debt). Every finding gets the four fields (Lens / Severity / Effort / Decision) plus the Refactor-shape line. Write the triaged list to `.aipe/audits/cleanup-<YYYY-MM-DD>.md`.
+
+For each **fix-now** finding (Step 4-5 of audit-cleanup), also write a complete refactor spec to `.aipe/specs/refactors/cleanup-*.md`. Pick the template based on finding shape:
+
+```
+  logic only (no UI surface)               → refactor.md template
+                                              path: cleanup-<name>.md
+  UI behavior (state / effects / events)   → refactor-frontend-behaviour.md
+                                              path: cleanup-frontend-<name>.md
+  CSS / tokens / semantic HTML only        → refactor-frontend-visual.md
+                                              path: cleanup-visual-<name>.md
+```
+
+Pick the **tightest applicable template**. Track the count by template type for the consolidated summary.
 
 ## Step 7 — Execute audit-frontend-a11y
 
@@ -89,6 +108,8 @@ Print one row per generator with the output path and a one-line headline, then a
                           (8-section snapshot; <N> features, <N> deferred items)
   audit-cleanup:          .aipe/audits/cleanup-<date>.md
                           (<N> findings; <N> fix-now)
+                          + .aipe/specs/refactors/cleanup-*.md
+                          (<N> total: <N> general, <N> frontend, <N> visual)
   audit-frontend-a11y:    .aipe/audits/a11y-<date>.md
                           (or "no frontend surface")
   audit-refactor:         .aipe/audit-refactor-<purpose>/

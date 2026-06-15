@@ -50,7 +50,7 @@ Read `format.md` once for shared formatting and hard rules, `teacher.md` in teac
 Sequential, in the numbered order above:
 
   1. **`audit-status` first.** The descriptive snapshot is cheap and grounds everything else — debt findings, a11y findings, refactor opinions, and software-design findings all reference what `audit-status` named.
-  2. **`audit-cleanup` second.** Once the snapshot exists, the debt triage cites it.
+  2. **`audit-cleanup` second.** Once the snapshot exists, the debt triage cites it. Steps 4-5 of `audit-cleanup` also generate refactor specs for every fix-now item at `.aipe/specs/refactors/cleanup-*.md`, routed to the right template (general / frontend-behaviour / frontend-visual) based on finding shape. The orchestrator surfaces the spec count in its final report.
   3. **`audit-frontend-a11y` third.** Independent of the first two; runs only if the repo has a frontend surface (emits `no frontend surface` and stops early otherwise).
   4. **`audit-refactor` fourth.** Heavier artifact; benefits from the prior three being in place so it can cross-reference rather than re-discover.
   5. **`study-software-design` last.** Produces the comprehension half of the architectural picture (named AOSD primitives) that `audit-cleanup` Lens 2 triages. Reads cleanup-`<date>.md` for cross-link material if present.

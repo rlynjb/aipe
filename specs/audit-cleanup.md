@@ -122,11 +122,40 @@ Stop there — don't fill in must-not-change yet."
 
 
 > 💾 Save each stub → .aipe/specs/refactors/cleanup-[name].md
+> (Step 5 will rewrite the path with a prefix based on the chosen
+>  template: `cleanup-[name].md` for general, `cleanup-frontend-[name].md`
+>  for frontend-behaviour, `cleanup-visual-[name].md` for frontend-visual.)
 
 
 ## Step 5 — Complete each refactor spec
 
-For each stub, fill in the rest using refactor.md's format. The "must not change" and "must not introduce" sections are where the cleanup audit's strict-handoff promise gets enforced — if you find yourself wanting to change behaviour to make the refactor cleaner, stop and re-file the item as feature work.
+For each stub, fill in the rest using the **right template** for the finding shape. Three templates, three sets of invariants:
+
+```
+  finding shape                              → template
+  ──────────────────────────────────────────────────────────────────
+  logic only (no UI surface touched)         refactor.md
+                                              floor invariants: API
+                                              stays identical, no
+                                              behaviour change
+
+  UI surface — state / effects / components /  refactor-frontend-behaviour.md
+  data flow / event semantics / a11y          extends refactor.md +
+                                              pixels stay identical,
+                                              event order identical,
+                                              a11y identical, framework
+                                              context named
+
+  visual surface only — CSS / design tokens / refactor-frontend-visual.md
+  semantic HTML (no behaviour change)         extends behaviour variant
+                                              + tightest rule: pixels
+                                              identical AND no new user
+                                              capability
+```
+
+Pick the **tightest applicable template** — visual is the floor of last resort for pure styling refactors; behaviour wraps anything with state/effects/events; general handles everything else. If a finding spans multiple shapes (e.g., extracting a hook AND restyling its consumer), split into two specs and pick one template per spec.
+
+The "must not change" and "must not introduce" sections are where the cleanup audit's strict-handoff promise gets enforced — if you find yourself wanting to change behaviour to make the refactor cleaner, stop and re-file the item as feature work.
 
 > The single highest-leverage discipline in cleanup: if the refactor wants to grow past behaviour-preserving, abandon it. Half a cleanup that changed behaviour is worse than no cleanup, because you've now made the code different without a feature reason and lost the ability to bisect.
 
