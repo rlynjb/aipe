@@ -207,12 +207,7 @@ Print the change plan. **Wait for user confirmation** before editing any files. 
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only the sections identified. Preserve chapters that still hold; surgically edit the ones whose anchors moved or whose voice drifted. Append to each updated file:
-
-```
----
-Updated: <today's ISO date> — <one-line summary of what changed and why>
-```
+Edit only the sections identified. Preserve chapters that still hold; surgically edit the ones whose anchors moved or whose voice drifted.
 
 Do NOT add, collapse, or reorder chapters — the 19-chapter contract is fixed. Do NOT introduce quotes from the book.
 

@@ -530,9 +530,7 @@ per-folder check the other generators use.
     shot, and the build story from the code as it is now;
     edit only the beats whose underlying feature changed;
     leave timing and choreography intact where the feature
-    still works; append an `Updated: [date] — [summary]`
-    line to each changed file. Do not regenerate unchanged
-    chapters.
+    still works. Do not regenerate unchanged chapters.
 
 ═════════════════════════════════════════════════
 WHAT THIS SPEC DOES NOT REDEFINE

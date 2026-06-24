@@ -244,12 +244,7 @@ Print the change plan. **Wait for user confirmation** before editing any files. 
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only the sections identified in Step 6U. Maintain the staff-engineer voice. If the older `*-in-portfolio.md` files exist, rename to `*-in-this-codebase.md` and update content to be about this codebase specifically (not the portfolio). Append a changelog entry at the bottom of each updated file:
-
-```
----
-Updated: <today's ISO date> — <one-line summary of what changed and why>
-```
+Edit only the sections identified in Step 6U. Maintain the staff-engineer voice. If the older `*-in-portfolio.md` files exist, rename to `*-in-this-codebase.md` and update content to be about this codebase specifically (not the portfolio).
 
 Do NOT rewrite accurate sections. Do NOT add new concepts that aren't in the inventory or the curriculum.
 

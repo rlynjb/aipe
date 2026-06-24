@@ -212,12 +212,7 @@ Print the change plan. **Wait for user confirmation** before editing any files. 
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only the sections identified in Step 6U. Leave timing and choreography intact where the underlying feature still works. Maintain coach voice and the reader's-voice convention for script lines. Append a changelog entry at the bottom of each updated chapter:
-
-```
----
-Updated: <today's ISO date> — <one-line summary of what changed and why>
-```
+Edit only the sections identified in Step 6U. Leave timing and choreography intact where the underlying feature still works. Maintain coach voice and the reader's-voice convention for script lines.
 
 Do NOT regenerate unchanged chapters. Do NOT add or collapse chapters — the 6-chapter list is the contract. Do NOT fabricate demos for unbuilt features — drop the beat instead.
 

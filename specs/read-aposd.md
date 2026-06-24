@@ -418,7 +418,7 @@ CREATE VS UPDATE — per-folder, like the study family
                 → In-your-code anchors vs the current repo
                 → voice/calibration vs teacher.md / me.md
                 → chapter template vs format.md
-              edit only what moved; append "Updated: [date] — …".
+              edit only what moved.
 ```
 
 A book whose source ideas haven't changed and whose anchors still

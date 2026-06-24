@@ -186,12 +186,7 @@ Print the change plan. **Wait for user confirmation** before editing any files. 
 
 ## Step 8U — Apply changes (after user confirms)
 
-Regenerate `audit.md` against current evidence. Add new Pass 2 pattern files for newly-load-bearing design moves. Update existing pattern files where the implementation changed. Remove pattern files only when the design move is genuinely gone from the codebase (not just refactored). Append to each updated file:
-
-```
----
-Updated: <today's ISO date> — <one-line summary of what changed>
-```
+Regenerate `audit.md` against current evidence. Add new Pass 2 pattern files for newly-load-bearing design moves. Update existing pattern files where the implementation changed. Remove pattern files only when the design move is genuinely gone from the codebase (not just refactored).
 
 ## Step 9U — Report + stop
 

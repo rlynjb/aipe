@@ -234,12 +234,7 @@ Print the change plan. **Wait for user confirmation** before editing any files. 
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only the sections identified in Step 6U. Maintain the working-AI-engineer voice throughout. Append a changelog entry at the bottom of each updated file:
-
-```
----
-Updated: <today's ISO date, e.g. 2026-05-23> — <one-line summary of what changed and why>
-```
+Edit only the sections identified in Step 6U. Maintain the working-AI-engineer voice throughout.
 
 Do NOT rewrite accurate sections. Do NOT add new concepts — the 13 concepts are the complete list per the spec. If a genuinely new prompt engineering concept emerges that should be added, propose it in the Step 6U change plan rather than adding it silently.
 

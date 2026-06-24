@@ -254,7 +254,6 @@ CHECK FOR EXISTING GUIDE — create vs update
               design move; update existing pattern files when
               the implementation changes; remove pattern files
               only when the design move is genuinely gone.
-              Append "Updated: [date] — …" to changed files.
 ```
 
 A repo whose design didn't change since the last run is a no-op —

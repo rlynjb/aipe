@@ -169,12 +169,7 @@ Print the change plan. **Wait for user confirmation.** Do NOT auto-apply.
 
 ## Step 8U — Apply changes (after user confirms)
 
-Regenerate `audit.md` against current evidence. Add new Pass 2 pattern files for newly-load-bearing testing techniques. Update existing pattern files where the implementation changed. Remove pattern files only when the technique is genuinely gone from the codebase (not just refactored). Append:
-
-```
----
-Updated: <today's ISO date> — <one-line summary>
-```
+Regenerate `audit.md` against current evidence. Add new Pass 2 pattern files for newly-load-bearing testing techniques. Update existing pattern files where the implementation changed. Remove pattern files only when the technique is genuinely gone from the codebase (not just refactored).
 
 ## Step 9U — Report + stop
 

@@ -164,12 +164,7 @@ Print the change plan. **Wait for user confirmation.** Do NOT auto-apply.
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only identified sections. Append:
-
-```
----
-Updated: <today's ISO date> — <one-line summary>
-```
+Edit only identified sections.
 
 ## Step 9U — Report + stop
 

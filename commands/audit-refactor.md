@@ -224,12 +224,7 @@ Print the change plan. **Wait for user confirmation** before editing any files. 
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only the sections identified in Step 6U. Maintain the two-voice convention. Append a changelog entry at the bottom of each updated chapter:
-
-```
----
-Updated: <today's ISO date, e.g. 2026-05-23> — <one-line summary of what changed and why>
-```
+Edit only the sections identified in Step 6U. Maintain the two-voice convention.
 
 Do NOT rewrite accurate sections. Do NOT change verdicts unless the underlying take has shifted.
 

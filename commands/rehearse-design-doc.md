@@ -178,12 +178,7 @@ Print the change plan. **Wait for user confirmation.** Do NOT auto-apply.
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only identified sections. Preserve sections that still hold; surgically edit the ones whose underlying decision shifted. Append:
-
-```
----
-Updated: <today's ISO date> — <one-line summary of what changed>
-```
+Edit only identified sections. Preserve sections that still hold; surgically edit the ones whose underlying decision shifted.
 
 Do NOT regenerate unchanged docs. Do NOT manufacture new docs to "fill out" the bundle — only add when a new decision genuinely warrants one.
 

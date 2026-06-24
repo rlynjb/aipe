@@ -348,9 +348,6 @@ If found:
                   add new BRIEF section for State Machine
   → Wait for confirmation before editing
   → Edit only the specific sections identified
-  → Append to each updated file:
-      ---
-      Updated: [date] — [one-line summary of what changed]
 
 If not found:
   → Generate the full six-chapter book.

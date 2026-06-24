@@ -195,12 +195,7 @@ Print the change plan. **Wait for user confirmation** before editing any files. 
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only the sections identified in Step 6U. Maintain the coach voice and the reader's-voice convention for strong answers. Append a changelog entry at the bottom of each updated chapter:
-
-```
----
-Updated: <today's ISO date> — <one-line summary of what changed and why>
-```
+Edit only the sections identified in Step 6U. Maintain the coach voice and the reader's-voice convention for strong answers.
 
 Do NOT rewrite accurate sections. Do NOT add or collapse chapters — the 8-chapter list is the contract. Do NOT fabricate defenses whose claims can't be grounded in the actual code — drop the question instead.
 

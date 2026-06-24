@@ -203,12 +203,7 @@ Print the change plan. **Wait for user confirmation** before editing any files. 
 
 ## Step 8U — Apply changes (after user confirms)
 
-Edit only the sections identified in Step 6U. Maintain the teacher voice and the cross-reference discipline (never duplicate `study-ai-engineering` mechanics). Append a changelog entry at the bottom of each updated file:
-
-```
----
-Updated: <today's ISO date> — <one-line summary of what changed and why>
-```
+Edit only the sections identified in Step 6U. Maintain the teacher voice and the cross-reference discipline (never duplicate `study-ai-engineering` mechanics).
 
 Do NOT rewrite accurate sections.
 
