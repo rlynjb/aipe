@@ -142,8 +142,7 @@ to verified understanding, in this order:
   7.  Elaborate                   deeper context
   8.  Project exercises           (AI / ML sections only)
   9.  Interview defense           pressure-test it
-  10. Validate                    prove you got it
-  11. See also                    related files
+  10. See also                    related files
 
 ```
   orient ───────────────►   understand          implement         defend
@@ -663,15 +662,7 @@ part here when the concept has a kernel — naming the
 part people forget is the strongest signal.
 
 ═════════════════════════════════════════════════
-BLOCK 10 — VALIDATE
-═════════════════════════════════════════════════
-
-Four levels: reconstruct → explain → apply to a
-scenario → defend the decision. Every level references
-real file paths and line numbers from the codebase.
-
-═════════════════════════════════════════════════
-BLOCK 11 — SEE ALSO
+BLOCK 10 — SEE ALSO
 ═════════════════════════════════════════════════
 
 Links to related files in this guide.

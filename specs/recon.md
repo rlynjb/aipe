@@ -63,8 +63,8 @@ THE MATURITY LADDER — the lens
 
 Every competency is scored on this ladder. The question is never "does the
 code exist" — it is "does it exist at the depth that survives the bar." The
-top rung is `format.md`'s Validate level 4 (*defend*) and the Interview
-defense block, applied as an assessment scale — not a new vocabulary.
+top rung is `format.md`'s Interview defense block, applied as an assessment
+scale — not a new vocabulary.
 
 ```
   L0  SCAFFOLDED   code present, tutorial-shaped or AI-generated, never
@@ -81,7 +81,7 @@ defense block, applied as an assessment scale — not a new vocabulary.
   L3  DEFENSIBLE   author can state the failure, the alternatives tried,
                    the eval evidence that settled it, and the tradeoff
                    accepted — and hold it against push-back.
-                   → this is what reads as L5. (= Validate: defend.)
+                   → this is what reads as L5.
 ```
 
 Scoring rule: a competency is only as high as the *evidence in the repo*

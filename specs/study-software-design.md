@@ -59,7 +59,7 @@ Read these from their source files; do not restate them here.
   → The per-concept-file template (Subtitle, Zoom out → zoom in,
     Structure pass, How it works, primary diagram, Implementation
     in codebase, Elaborate, Project exercises, Interview defense,
-    Validate, See also). Lives in `format.md`.
+    See also). Lives in `format.md`.
   → The Zoom-out block, the Structure-pass block (layers · axes ·
     seams), How-it-works's moves, the diagram rules, the hard
     rules. All `format.md`.

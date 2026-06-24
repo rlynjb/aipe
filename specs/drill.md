@@ -60,7 +60,7 @@ ANATOMY OF A DRILL — the ladder mechanism
 
 A drill is not a tutorial. It is a failure engineered on purpose. The six
 steps walk one competency up recon's maturity ladder, ending at
-`format.md`'s Validate level 4 (*defend*):
+L3 (*DEFENSIBLE*):
 
 ```
   1. BUILD THE NAIVE VERSION   the obvious happy-path implementation.    → L1

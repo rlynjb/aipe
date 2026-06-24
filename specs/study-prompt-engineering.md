@@ -21,7 +21,7 @@ a topic of study:
 This spec is run alongside `study-system-design.md`
 (its sibling topic spec), not instead of it. The agent
 reads `format.md` for *how* to write each concept file
-(block structure, diagrams, validate levels, etc.), and
+(block structure, diagrams, etc.), and
 this spec for *what* to write about and *in whose voice*.
 
 ═════════════════════════════════════════════════
@@ -737,10 +737,10 @@ definition:
   → The per-concept-file template (Subtitle, Zoom
     out → zoom in, How it works, primary diagram,
     Implementation in codebase, Elaborate, Project
-    exercises, Interview defense, Validate, See
-    also). Note: Why care is replaced by Zoom out →
-    zoom in, and Tradeoffs, Tech reference, and
-    Summary have been removed.
+    exercises, Interview defense, See also). Note:
+    Why care is replaced by Zoom out → zoom in, and
+    Tradeoffs, Tech reference, and Summary have been
+    removed.
   → The Zoom-out block (bigger-picture layers
     diagram, conversational opener, orient before
     detail)
@@ -757,8 +757,6 @@ definition:
   → The "Use real software, not analogies" rule
     (and its priority order: frontend primitives
     first, whole products last)
-  → The Validate block's levels (reconstruct,
-    explain, apply, defend)
   → The hard rules at the bottom of `format.md`
 
 **Not inherited from `teacher.md`.** This spec

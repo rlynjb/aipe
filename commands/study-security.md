@@ -70,7 +70,7 @@ ${CLAUDE_PLUGIN_ROOT}/specs/study-security.md
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
 What each file supplies:
-- **`format.md`** — the concept-file template, house-style traits, diagram rules, pseudocode rules, hard rules. The 11-block per-concept structure (Subtitle → Zoom out → Structure pass → How it works → Primary diagram → Implementation in codebase → Elaborate → Interview defense → Validate → See also; AI/ML adds Project exercises).
+- **`format.md`** — the concept-file template, house-style traits, diagram rules, pseudocode rules, hard rules. The 10-block per-concept structure (Subtitle → Zoom out → Structure pass → How it works → Primary diagram → Implementation in codebase → Elaborate → Interview defense → See also; AI/ML adds Project exercises).
 - **`teacher.md`** — writer persona in **teacher posture** — same staff engineer, security-literate. Inherit the banned list and the verdict-first / rank-what-matters trait.
 - **`me.md`** — reader calibration: voice register, example anchoring, what the reader already knows.
 - **`study-security.md`** — the topic (which security primitives are concepts), the anchoring rules (every finding cites file + line range), the honest-assessment rules.

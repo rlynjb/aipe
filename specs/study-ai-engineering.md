@@ -25,7 +25,7 @@ This spec is run alongside `study-system-design.md`
 (its sibling topic spec), not instead of it. The agent
 reads `format.md` for *how* to write each concept file
 (block structure,
-diagrams, validate levels, etc.), and this spec for
+diagrams, etc.), and this spec for
 *what* to write about.
 
 **Scope: per-codebase, per-repo.** This spec runs
@@ -365,10 +365,10 @@ Refer to `format.md` for the canonical definition:
   → The per-concept-file template (Subtitle, Zoom
     out → zoom in, How it works, primary diagram,
     Implementation in codebase, Elaborate, Project
-    exercises, Interview defense, Validate, See also).
-    Note: Why care is replaced by Zoom out → zoom in,
-    and Tradeoffs, Tech reference, and Summary have
-    been removed.
+    exercises, Interview defense, See also). Note:
+    Why care is replaced by Zoom out → zoom in, and
+    Tradeoffs, Tech reference, and Summary have been
+    removed.
   → The Zoom-out block (bigger-picture layers
     diagram, conversational opener, orient before
     detail)
@@ -385,8 +385,6 @@ Refer to `format.md` for the canonical definition:
   → The "Use real software, not analogies" rule
     (and its priority order: frontend primitives
     first, whole products last)
-  → The Validate block's levels (reconstruct,
-    explain, apply, defend)
   → The hard rules at the bottom of `format.md`
 
 Inherited from `teacher.md` without restatement.
@@ -858,7 +856,7 @@ Prompt engineering as a discipline
   Structurally, the prompt engineering spec inherits
   everything from `format.md`: the per-concept-file
   template, all formatting rules, the diagram
-  requirements, the hard rules, the Validate block.
+  requirements, the hard rules.
   Run the prompt engineering generator by giving the
   agent the relevant files (`format.md` for structure,
   `study-prompt-engineering.md` for topic and voice)

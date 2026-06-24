@@ -66,7 +66,7 @@ ${CLAUDE_PLUGIN_ROOT}/specs/study-prompt-engineering.md
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
 What each file supplies:
-- **`format.md`** — the concept-file template, house-style traits, diagram rules, pseudocode rules, hard rules. **Per format.md, the concept-file blocks are:** Subtitle → Zoom out, then zoom in → How it works → Primary diagram → Implementation in codebase → Elaborate → Project exercises (AI/ML only) → Interview defense → Validate → See also. **Removed from older templates: Why care (replaced by Zoom out), Tradeoffs, Tech reference, Summary.** Where legacy template sections in `study-prompt-engineering.md`'s body conflict with format.md, format.md wins.
+- **`format.md`** — the concept-file template, house-style traits, diagram rules, pseudocode rules, hard rules. **Per format.md, the concept-file blocks are:** Subtitle → Zoom out, then zoom in → How it works → Primary diagram → Implementation in codebase → Elaborate → Project exercises (AI/ML only) → Interview defense → See also. **Removed from older templates: Why care (replaced by Zoom out), Tradeoffs, Tech reference, Summary.** Where legacy template sections in `study-prompt-engineering.md`'s body conflict with format.md, format.md wins.
 - **`teacher.md`** — the *default* writer persona across the study family. **This spec does NOT use it** — prompt engineering has its own inline working-AI-engineer persona (defined in `study-prompt-engineering.md`). Read teacher.md only to honor its "WHEN NOT TO USE THIS PERSONA" section, which names this spec's divergence explicitly. The persona that actually governs this guide is the one inline in the prompt-engineering spec.
 - **`me.md`** — reader-side calibration: voice and format register, what the reader already knows, what examples land. `me.md` is read by *every* spec in the family regardless of which writer persona the spec uses — the persona shifts; the reader does not. It does NOT override format.md's structural rules or this spec's inline persona.
 - **`study-prompt-engineering.md`** — topic, the inline working-AI-engineer persona, the 13 concepts to cover, the anchoring rules.
@@ -95,7 +95,7 @@ Apply the structure from `format.md` (the per-concept-file template loaded in St
 The non-negotiables — inherited from both specs:
 
 1. **Voice: working AI engineer, not staff engineer.** The persona has 6–8 years in software, 3–4 of them heads-down on production LLM systems. Has shipped RAG, multi-step chains, meta-tooling, safety systems, code-aware features. Has iterated thousands of prompts. Reads Hamel Husain on evals, follows Simon Willison, has opinions about Latent Space episodes. **Not** authoritative-systems-architect; instead practitioner-skeptical, concrete-over-abstract, distinguishes "advice that works in demos" from "advice that survives production." When `teacher.md`'s staff-engineer voice would land differently on the same topic, the working-AI-engineer voice wins for this guide.
-2. **All structural rules from `format.md` apply** — the per-concept-file blocks (Subtitle, Zoom out / then zoom in with the LAYERS diagram, How it works's three moves, Primary diagram, Implementation in codebase with code side-by-side + annotation, Elaborate, Project exercises, Interview defense, Validate, See also). All formatting rules (kebab-case file names, no Mermaid/no images, box-drawing diagram characters), the frontend-primitive-first anchor priority order, the Validate block's 4 levels.
+2. **All structural rules from `format.md` apply** — the per-concept-file blocks (Subtitle, Zoom out / then zoom in with the LAYERS diagram, How it works's three moves, Primary diagram, Implementation in codebase with code side-by-side + annotation, Elaborate, Project exercises, Interview defense, See also). All formatting rules (kebab-case file names, no Mermaid/no images, box-drawing diagram characters), the frontend-primitive-first anchor priority order.
 3. **Hedging is banned in both voices** — "might," "could potentially," "tends to" are out everywhere. Production engineers don't talk that way.
 4. **Concrete over abstract.** Specific bugs the persona debugged, specific dates the underlying model changed, specific phrasings that drifted in production. Generic "best practices" prose is banned.
 5. **Practitioner skepticism.** When folklore from blog posts contradicts what actually happens in production, name the contradiction. "Internet advice says X. In a production system I shipped, X did Y, and here's why."
@@ -139,7 +139,7 @@ Write the files in this order so each builds on prior context where useful:
 13-forbidden-patterns.md            Forbidden patterns and rotating formulas
 ```
 
-Each file uses the full per-concept structure from `format.md` — Subtitle, Zoom out / then zoom in (with LAYERS diagram), How it works (3 moves with diagrams at every move and every sub-section), Primary diagram, Implementation in codebase (code side-by-side + line-by-line annotation, with real file + function + line range references), Elaborate, Project exercises (curriculum-driven if curriculum loaded), Interview defense (with diagrams per Q&A), Validate, See also.
+Each file uses the full per-concept structure from `format.md` — Subtitle, Zoom out / then zoom in (with LAYERS diagram), How it works (3 moves with diagrams at every move and every sub-section), Primary diagram, Implementation in codebase (code side-by-side + line-by-line annotation, with real file + function + line range references), Elaborate, Project exercises (curriculum-driven if curriculum loaded), Interview defense (with diagrams per Q&A), See also.
 
 Anchor each concept to *this* codebase. The example anchors below (from `study-prompt-engineering.md`) describe what each concept *typically* looks like in well-shaped codebases — use them to recognize the pattern, then describe how this specific codebase implements it (Case A) or hasn't yet (Case B):
 
@@ -205,7 +205,7 @@ Walk `.aipe/study-prompt-engineering/` and read every `.md` file: `00-overview.m
 For each concept file, check three diff sources:
 
 - **Codebase drift** — file paths that have moved, function names that have changed, line ranges that no longer match the implementation, model versions named in Tech reference that have been upgraded.
-- **Template drift** — `format.md` has added new blocks (e.g., a new sub-section to How it works, a new field to Tech reference, a new Validate level) since the file was last written. Identify missing blocks.
+- **Template drift** — `format.md` has added new blocks (e.g., a new sub-section to How it works, a new field to Tech reference) since the file was last written. Identify missing blocks.
 - **Voice drift** — sections that read like blog-post advice instead of working-AI-engineer practitioner takes. Hedging language ("tends to," "might," "could potentially") that crept in. Concept claims that aren't anchored to specific codebase references.
 
 Output a structured change plan in this shape:
