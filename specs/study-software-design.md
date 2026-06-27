@@ -326,11 +326,11 @@ HOW THE RUN EXECUTES — step by step
        consolidates the AOSD checklist.
 
        Pass 2: write each discovered-pattern file on the full
-       format.md template. The "Implementation in codebase"
-       block carries the deep walk; Project exercises become
-       refactor tasks ("make this shallow module deep");
-       Interview defense becomes "defend or critique this
-       design decision".
+       format.md template. How it works (Move 2) carries the deep
+       walk — pattern + real repo code side-by-side, annotated;
+       Project exercises become refactor tasks ("make this shallow
+       module deep"); Interview defense becomes "defend or critique
+       this design decision".
 
   7. Report
        STUDY RUN SUMMARY line + the audit.md location + the

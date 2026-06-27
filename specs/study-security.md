@@ -85,8 +85,8 @@ Per `me.md` → AUDIT-STYLE GENERATORS:
   Walk the codebase against this ordered 8-lens inventory. Each lens
   becomes one `##` section in `audit.md`. For each lens: name what the
   codebase actually does (with `file:line` grounding) or emit `not yet
-  exercised` honestly. The lens's "Implementation in codebase" content
-  — real files, the trust assumption, whether it holds, the fix —
+  exercised` honestly. The lens's "How it works" content (the codebase
+  walk: real files, the trust assumption, whether it holds, the fix)
   belongs in `audit.md`. When a finding is significant enough to have
   a dedicated pattern file in Pass 2, cross-link to it.
 

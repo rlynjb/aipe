@@ -77,9 +77,9 @@ WHO WRITES / WHO READS
     DSA, the agent/pipeline work) into each primitive.
   → Structure primitives: `format.md`. Reuse zoom-out, the
     structure pass (layers · axes · seams), diagrams-as-primary,
-    claim → consequence. Do NOT reuse the codebase-anchored blocks
-    (no "Implementation in codebase"); this spec replaces them
-    with "In your code" below.
+    claim → consequence. Do NOT reuse format.md's How-it-works
+    code-side-by-side treatment; this spec replaces the codebase
+    anchoring with "In your code" below.
 
 ═════════════════════════════════════════════════
 THE THROUGH-LINE — the one idea the whole book serves

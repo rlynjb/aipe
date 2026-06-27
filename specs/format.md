@@ -90,10 +90,10 @@ Code:
      → How it works (Move 2); PSEUDOCODE RULES.
 
   7. **Code side by side, with a line-by-line read.**
-     In the codebase block, show the actual repo code
+     Inside How it works, show the actual repo code
      beside an explanation of what each part does —
      annotate the specific lines, never drop a block
-     raw. → Block 6 (Implementation in codebase).
+     raw. → How it works (Move 2).
 
 Diagrams (ASCII, box-drawing, always):
 
@@ -119,8 +119,8 @@ Diagrams (ASCII, box-drawing, always):
 
  11. **Use cases.** Every concept shows where it is
      actually reached for in this codebase — concrete
-     scenarios, not abstract definitions. → Block 6
-     (Implementation in codebase).
+     scenarios, not abstract definitions.
+     → How it works (Move 2 opening).
 
 This list is the guide's identity and is meant to
 grow. Adding a trait is a one-line addition here plus
@@ -136,23 +136,22 @@ to verified understanding, in this order:
   1.  Subtitle                    industry name(s) + type label
   2.  Zoom out, then zoom in      orient   (replaces Why care)
   3.  Structure pass              orient   layers · axes · seams
-  4.  How it works                understand
+  4.  How it works                understand   pattern + your code
   5.  Primary diagram             recap visual
-  6.  Implementation in codebase  see it in the real code
-  7.  Elaborate                   deeper context
-  8.  Project exercises           (AI / ML sections only)
-  9.  Interview defense           pressure-test it
-  10. See also                    related files
+  6.  Elaborate                   deeper context
+  7.  Project exercises           (AI / ML sections only)
+  8.  Interview defense           pressure-test it
+  9.  See also                    related files
 
 ```
-  orient ───────────────►   understand          implement         defend
-  ┌──────────┐ ┌─────────┐  ┌──────────┐      ┌──────────────┐  ┌──────────┐
-  │ zoom out │→│structure│→ │ how it   │  →   │ in this      │  │ interview│
-  │ → zoom in│ │ pass    │  │ works    │      │ codebase     │  │ defense  │
-  └──────────┘ └─────────┘  └──────────┘      └──────────────┘  └──────────┘
-   layers dia   layers ·     skeleton +         use cases +       Q + diagram
-   conversational axes ·     pattern/pseudo     code side by      per answer
-                  seams      step by step       side
+  orient ───────────────►   understand                       defend
+  ┌──────────┐ ┌─────────┐  ┌───────────────────────┐      ┌──────────┐
+  │ zoom out │→│structure│→ │ how it works          │  →   │ interview│
+  │ → zoom in│ │ pass    │  │ pattern + your code   │      │ defense  │
+  └──────────┘ └─────────┘  └───────────────────────┘      └──────────┘
+   layers dia   layers ·     skeleton + pattern/pseudo      Q + diagram
+   conversational axes ·     + step by step + code          per answer
+                  seams      side by side annotated
 ```
 
 **Changes from the older template:**
@@ -160,6 +159,9 @@ to verified understanding, in this order:
   → Tradeoffs is REMOVED.
   → Tech reference is REMOVED.
   → Summary is REMOVED.
+  → Implementation in codebase is REMOVED as its own
+    block — code side-by-side + annotation now lives
+    inside How it works (Move 2).
   → The remaining blocks are carried forward unchanged.
 
 ═════════════════════════════════════════════════
@@ -438,7 +440,7 @@ register is a person talking; the content stays dense
 and precise. No lecturing, no definition-dumps, no slow
 on-ramps.
 
-**Describe the mechanics with these five tools — and
+**Describe the mechanics with these six tools — and
 lean on them, not prose paragraphs:**
 
   → **skeleton parts** — isolate the kernel, name each
@@ -454,17 +456,21 @@ lean on them, not prose paragraphs:**
   → **layers-and-hops ascii diagrams** — for anything
     that crosses layers or services, the bands plus
     every hop between them labelled
+  → **code from this codebase** — real repo code shown
+    side-by-side with inline annotation; name the exact
+    file path, function name, and line range; the
+    canonical place the pattern lives in your repo
 
-**No code line references in this block.** How it works
-teaches the *pattern*, not your repo — so don't paste
-real code or cite file paths, function names, or line
-numbers here. Describe the mechanism with pseudocode
-and diagrams. The actual code from the codebase, with
-its file paths and line ranges, lives in the
-Implementation in codebase block (Block 6). Keep the
-two cleanly separated: How it works is the general
-mechanism; Implementation is where it lives in your
-code.
+**How it works carries BOTH the pattern AND the code
+from your repo.** Teach the mechanism with the
+pseudocode/diagram tools — and within Move 2, anchor
+each load-bearing part to the matching code in this
+codebase: real file paths, real function names, real
+line ranges, shown side-by-side with inline annotation
+(see the "code from this codebase" tool above). The
+goal is one block that walks the reader from "what
+the pattern is" to "where in your repo it lives" —
+without a second block to re-stitch the connection.
 
 By now the structure pass (Block 3) has mapped the
 skeleton — the layers, the axis, the seams. How it works
@@ -507,11 +513,13 @@ walks the mechanics that hang on it. It runs in three moves.
     → an EXECUTION TRACE for an algorithm — variable
       state at each step (the values, not code lines)
 
-  Use **PSEUDOCODE** for the logic — plain-English
-  control flow, concrete variable names, one operation
-  per line, annotated. Pseudocode, not real code: the
-  repo's actual code (and any line references) belongs
-  in Block 6, not here.
+  Use **PSEUDOCODE** for language-agnostic logic —
+  plain-English control flow, concrete variable names,
+  one operation per line, annotated. Reach for the
+  actual repo code (side-by-side, annotated, with file
+  + function + line range) when the specific syntax
+  matters, when the load-bearing part is named, or when
+  the reader needs an anchor to open and read.
 
 ```
   Layers-and-hops — label every hop between bands
@@ -598,42 +606,7 @@ box, every arrow, and every architectural layer
 labelled. The visual the reader returns to.
 
 ═════════════════════════════════════════════════
-BLOCK 6 — IMPLEMENTATION IN CODEBASE
-═════════════════════════════════════════════════
-
-Where the pattern lives in the actual repo. Two parts:
-
-  **Use cases.** The concrete scenarios in THIS codebase
-  where the pattern is reached for — what triggers it,
-  what it solves here, when it runs. Real, specific to
-  the repo, not abstract restatement of the concept.
-
-  **Code side by side, with a line-by-line read.** Show
-  the actual repo code beside an explanation of what
-  each part is doing — annotate the specific lines: what
-  this line does, why it's there, what would break
-  without it. Never drop a code block raw and move on;
-  the explanation rides alongside the code. Always name
-  the exact file path, function name, and line range.
-
-```
-  app/api/limit.ts  (lines 12–24)
-
-  const key = `rl:${userId}`;        ← one bucket per user
-  const n = await redis.incr(key);   ← atomic count this window
-  if (n === 1)                       ← first hit in the window…
-    await redis.expire(key, 60);     ← …starts the 60s reset timer
-  if (n > LIMIT)                     ← over budget?
-    return deny();                   ← reject without touching work
-  return allow();
-       │
-       └─ the expire on first-hit IS the window reset; without
-          it the counter never resets and the user is locked out
-          permanently after the first burst (load-bearing)
-```
-
-═════════════════════════════════════════════════
-BLOCK 7 — ELABORATE
+BLOCK 6 — ELABORATE
 ═════════════════════════════════════════════════
 
 Deeper context: where this pattern comes from, what
@@ -641,7 +614,7 @@ problem it was invented to solve, how it connects to
 adjacent concepts, what to read next.
 
 ═════════════════════════════════════════════════
-BLOCK 8 — PROJECT EXERCISES   (AI / ML sections only)
+BLOCK 7 — PROJECT EXERCISES   (AI / ML sections only)
 ═════════════════════════════════════════════════
 
 Curriculum Build items mapped to this file's concept
@@ -652,7 +625,7 @@ Generated only for sections with a curriculum
 dependency; omitted elsewhere.
 
 ═════════════════════════════════════════════════
-BLOCK 9 — INTERVIEW DEFENSE
+BLOCK 8 — INTERVIEW DEFENSE
 ═════════════════════════════════════════════════
 
 Questions, model answers with a diagram per answer (the
@@ -662,7 +635,7 @@ part here when the concept has a kernel — naming the
 part people forget is the strongest signal.
 
 ═════════════════════════════════════════════════
-BLOCK 10 — SEE ALSO
+BLOCK 9 — SEE ALSO
 ═════════════════════════════════════════════════
 
 Links to related files in this guide.
@@ -709,7 +682,7 @@ Types of diagram, by situation:
   Tree              hierarchies — component/nesting trees
   State             transitions — UI states, job statuses
   Inline annotation pointing at parts of a code snippet,
-                    naming what each piece does (Block 6)
+                    naming what each piece does (How it works Move 2)
 
 ═════════════════════════════════════════════════
 PSEUDOCODE RULES
@@ -730,7 +703,8 @@ Style:
 Real code is the last tool reached for — used only when
 the actual syntax matters (a specific hook, an
 async/await error path). When real code appears, it is
-always annotated (Block 6), never dropped raw.
+always annotated (in How it works Move 2), never dropped
+raw.
 
 ═════════════════════════════════════════════════
 HARD RULES
@@ -751,13 +725,14 @@ HARD RULES
     every Move 2 sub-section gets at least one mechanism
     diagram. A prose-only mechanism walkthrough is
     incomplete.
-  → How it works carries no code line references. It
-    teaches the pattern with skeleton parts, pattern
-    diagrams, pseudocode, step-by-step, and
-    layers-and-hops diagrams — never real code, file
-    paths, or line numbers. Real code and its line
-    references live only in Implementation in codebase
-    (Block 6).
+  → How it works carries both the pattern AND the code
+    references. Teach the mechanism with skeleton parts,
+    pattern diagrams, pseudocode, step-by-step, and
+    layers-and-hops diagrams; anchor each load-bearing
+    part to real repo code (file paths + function names
+    + line ranges) shown side-by-side with annotation
+    inside Move 2. Pseudocode without showing the actual
+    repo code at the load-bearing parts is incomplete.
   → Bridge from what the reader knows in every Move 2
     sub-section. No bridge = the work isn't done.
   → Every abstract claim is followed by a concrete
@@ -765,8 +740,8 @@ HARD RULES
     client sends X, the database returns Y" is required.
   → Name the real terms; don't dance around them.
   → Length scales with complexity, not a paragraph cap.
-  → Code is shown side by side with a line-by-line read,
-    never dropped raw.
+  → Code is shown side by side with a line-by-line read
+    (inside How it works Move 2), never dropped raw.
   → Conversational register throughout; no hedging,
     marketing language, apologetic tradeoff naming, or
     slow on-ramps (see teacher.md).

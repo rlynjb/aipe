@@ -92,7 +92,7 @@ Walk the schema/migration/query files as a data-modeling auditor: locate entitie
 Non-negotiables:
 
 1. **All structural rules from `format.md` apply** — the 11-block per-concept template.
-2. **Implementation in codebase is the heavy block** — real schema files, real migrations, real query call sites, the specific fix per finding. Every finding cites `**File:**` + `**Function / class:**` + `**Line range:**`.
+2. **How it works (Move 2) is the heavy block** — real schema files, real migrations, real query call sites, the specific fix per finding, shown side-by-side with annotation inside the pattern walkthrough. Every finding cites `**File:**` + `**Function / class:**` + `**Line range:**`.
 3. **Stay in the data-modeling lane.** Architecture findings (sharding, replicas, datastore choice) go to `study-system-design`. In-memory DSA goes to `study-dsa-foundations`. Information hiding *in code* goes to `study-software-design` — but normalization (its data analog) lives here.
 4. **Honest assessment.** A repo with no persistent data (a client-only app) means most concepts are N/A — name that plainly, don't invent.
 5. **No project names in generated output except the studied repo.**

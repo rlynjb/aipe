@@ -70,7 +70,7 @@ ${CLAUDE_PLUGIN_ROOT}/specs/study-security.md
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
 What each file supplies:
-- **`format.md`** — the concept-file template, house-style traits, diagram rules, pseudocode rules, hard rules. The 10-block per-concept structure (Subtitle → Zoom out → Structure pass → How it works → Primary diagram → Implementation in codebase → Elaborate → Interview defense → See also; AI/ML adds Project exercises).
+- **`format.md`** — the concept-file template, house-style traits, diagram rules, pseudocode rules, hard rules. The 9-block per-concept structure (Subtitle → Zoom out → Structure pass → How it works (carries pattern teaching AND code side-by-side + annotation) → Primary diagram → Elaborate → Interview defense → See also; AI/ML adds Project exercises).
 - **`teacher.md`** — writer persona in **teacher posture** — same staff engineer, security-literate. Inherit the banned list and the verdict-first / rank-what-matters trait.
 - **`me.md`** — reader calibration: voice register, example anchoring, what the reader already knows.
 - **`study-security.md`** — the topic (which security primitives are concepts), the anchoring rules (every finding cites file + line range), the honest-assessment rules.
@@ -100,8 +100,8 @@ This is the heavy work — the conceptual teaching is brief; the findings are th
 
 The non-negotiables from `format.md` (structure), `teacher.md` (voice), `me.md` (calibration), and this spec (topic):
 
-1. **All structural rules from `format.md` apply** — the 11-block per-concept template, formatting rules, box-drawing diagram chars.
-2. **Implementation in codebase is the heavy block** — this is the audit. Real files, real line ranges, where each trust decision lives, where each boundary is enforced or leaks, the specific fix. Every finding cites `**File:**` + `**Function / class:**` + `**Line range:**`.
+1. **All structural rules from `format.md` apply** — the 9-block per-concept template, formatting rules, box-drawing diagram chars.
+2. **How it works (Move 2) is the heavy block** — this is the audit. Real files, real line ranges, where each trust decision lives, where each boundary is enforced or leaks, the specific fix, shown side-by-side with annotation inside the pattern walkthrough. Every finding cites `**File:**` + `**Function / class:**` + `**Line range:**`.
 3. **Teach the primitive briefly; spend weight on findings.** In How it works, give the principle in 1–2 sentences (verdict-first), draw the shape (trust boundary, the data flow across it). Don't re-teach what general security texts cover.
 4. **Honest assessment.** Name what the principle would look like in this codebase. If a primitive doesn't apply (e.g., a static site has no auth surface), say so plainly — don't fabricate a finding.
 5. **Trust axis as the through-line.** Every concept ties back to "what can each side see, reach, or tamper with?" — a finding that doesn't shift a trust answer probably belongs in a sibling spec.
@@ -130,7 +130,7 @@ audit.md                           Pass 1 — the 8-lens audit walking each trus
 
 **Pass 1 (`audit.md`)** walks all 8 lenses from the spec, each as one `##` section. Each lens names what the codebase actually does with `file:line` grounding, or `not yet exercised` honestly. The `07-llm-and-agent-security` lens emits `not yet exercised` for repos without LLM/agent surface. The capstone lens (`security-red-flags-audit`) consolidates the red-flag checklist. When a finding is significant enough to have its own pattern file, the lens cross-links to it rather than restating the deep walk.
 
-**Pass 2 (discovered-pattern files)** uses the full `format.md` per-concept template. The auditing emphasis lands in Block 6 (Implementation in codebase) — real `file:line` references, the trust assumption named, whether it holds, and the specific fix. Pattern file names come from the repo, not from the lens inventory — see `me.md` → AUDIT-STYLE GENERATORS → "What earns its own pattern file" for the discovery rules.
+**Pass 2 (discovered-pattern files)** uses the full `format.md` per-concept template. The auditing emphasis lands in How it works Move 2 — real `file:line` references shown side-by-side with annotation, the trust assumption named, whether it holds, and the specific fix. Pattern file names come from the repo, not from the lens inventory — see `me.md` → AUDIT-STYLE GENERATORS → "What earns its own pattern file" for the discovery rules.
 
 ## Step 8C — Generate `00-overview.md`
 

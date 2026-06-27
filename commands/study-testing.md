@@ -90,8 +90,8 @@ Walk the codebase as a test auditor: locate untested critical paths, identify wr
 
 Non-negotiables:
 
-1. **All structural rules from `format.md` apply** — the 11-block per-concept template.
-2. **Implementation in codebase is the heavy block** — real files, real tests (or their absence), the specific fix per finding. Every finding cites `**File:**` + `**Function / class:**` + `**Line range:**`.
+1. **All structural rules from `format.md` apply** — the 9-block per-concept template.
+2. **How it works (Move 2) is the heavy block** — real files, real tests (or their absence), the specific fix per finding, shown side-by-side with annotation inside the pattern walkthrough. Every finding cites `**File:**` + `**Function / class:**` + `**Line range:**`.
 3. **State which side of the determinism seam every finding is on.** If a test asserts an exact value → testing (here). If it asserts a "good enough" threshold on a probabilistic output → eval (cross-link to `study-ai-engineering`).
 4. **Honest assessment.** If a project has no tests, say so plainly — don't fabricate a coverage report. Name what the first three tests should be and why.
 5. **"Hard to test" is a design signal, not a testing finding.** Note it briefly and cross-link to `study-software-design`'s deep-vs-shallow modules; don't re-audit it.

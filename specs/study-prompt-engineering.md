@@ -735,12 +735,13 @@ here. Refer to `format.md` for the canonical
 definition:
 
   → The per-concept-file template (Subtitle, Zoom
-    out → zoom in, How it works, primary diagram,
-    Implementation in codebase, Elaborate, Project
-    exercises, Interview defense, See also). Note:
-    Why care is replaced by Zoom out → zoom in, and
-    Tradeoffs, Tech reference, and Summary have been
-    removed.
+    out → zoom in, How it works (which now carries
+    code side-by-side + annotation inline), primary
+    diagram, Elaborate, Project exercises, Interview
+    defense, See also). Note: Why care is replaced
+    by Zoom out → zoom in, and Tradeoffs, Tech
+    reference, Summary, and Implementation in
+    codebase (as a separate block) have been removed.
   → The Zoom-out block (bigger-picture layers
     diagram, conversational opener, orient before
     detail)

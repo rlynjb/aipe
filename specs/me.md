@@ -205,7 +205,8 @@ direct consequence for how to write *for* you:
   code anchors the abstract to something you can
   open and read. This is the spine of how the
   concept files in `format.md` are structured (Zoom
-  out → How it works → Implementation in codebase).
+  out → How it works, which now carries the code from
+  your codebase inline alongside the pattern teaching).
   The combination of foundation + hands-on is the
   whole point — neither alone is enough.
 
