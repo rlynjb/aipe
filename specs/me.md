@@ -439,15 +439,18 @@ hold across every spec in the family.
      that..." Open with a picture or a scenario.
      The definition can come after.
 
-  → **Physical-world analogies as the primary
-     anchor.** Locked doors, coat checks,
-     librarians, post offices, kitchens,
-     factories. Banned as the lead. The reader
-     has built apps; reach for app-building
-     knowledge before metaphor. (This rule is
-     already in `format.md`; restating here so
-     other specs that don't inherit `format.md`
-     still get it.)
+  → **Analogy doing the load-bearing work or
+     replacing the engineering explanation.**
+     Locked doors, coat checks, librarians, post
+     offices, kitchens, factories — banned when
+     they stand in *for* the engineering walkthrough
+     or arrive *before* it. The reader has built
+     apps; reach for app-building knowledge first,
+     and an analogy may land or clinch the move
+     after the mechanism is on the table. (This
+     rule is already in `teacher.md` / `format.md`;
+     restating here so other specs that don't
+     inherit either still get it.)
 
   → **Whole-product anchors when a primitive
      works.** "Linear does X," "Gmail does Y."

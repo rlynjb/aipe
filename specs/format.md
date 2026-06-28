@@ -219,10 +219,13 @@ bigger picture, this concept's box marked (5–14 lines).
 ```
 
 **Banned (inherited from teacher.md):** definition-first
-openings ("X is a mechanism that…"), physical-world
-analogies as the anchor, marketing language, and slow
-on-ramps. The zoom-out is fast — one diagram and a few
-sentences, not three paragraphs of throat-clearing.
+openings ("X is a mechanism that…"), marketing language,
+and slow on-ramps. The zoom-out is fast — one diagram and
+a few sentences, not three paragraphs of throat-clearing.
+An analogy may anchor the concept here when it lands the
+shape faster (see teacher.md), but the layers diagram
+still leads the block and the mechanism is still built in
+How it works.
 
 ═════════════════════════════════════════════════
 BLOCK 3 — THE STRUCTURE PASS   (orient → understand bridge)
@@ -478,12 +481,16 @@ walks the mechanics that hang on it. It runs in three moves.
 
   #### Move 1 — the mental model (the pattern's shape)
 
-  Start with the shape, not a definition. Anchor to a
-  primitive the reader already builds with — "you know
-  how a `fetch()` has loading / success / error states?
-  same idea here" — then, in one plain-English sentence,
-  name the underlying strategy. Keep it warm and direct;
-  you're pointing at a picture, not reciting a glossary.
+  Start with the shape, not a definition. Anchor to
+  something the reader already holds — a primitive they
+  build with ("you know how a `fetch()` has loading /
+  success / error states? same idea here") or, when it
+  lands the shape faster, an analogy ("an interface is a
+  wall socket: anything with the right plug fits") — then,
+  in one plain-English sentence, name the underlying
+  strategy, and let the walkthrough below build the real
+  mechanism. Keep it warm and direct; you're pointing at a
+  picture, not reciting a glossary.
 
   **Required: one PATTERN ascii diagram** — the literal
   shape of the pattern (the loop, the traversal
@@ -745,7 +752,12 @@ HARD RULES
   → Conversational register throughout; no hedging,
     marketing language, apologetic tradeoff naming, or
     slow on-ramps (see teacher.md).
-  → Physical-world analogies are not the primary anchor;
-    reach for software primitives first.
+  → An analogy (physical-world or software) may anchor
+    or clinch a concept, but never replace it: after any
+    analogy the primitive is still built in full, in
+    engineering terms, so the reader can rebuild it
+    without the metaphor. Prefer a software primitive the
+    reader has coded when it works as well — it transfers.
+    See teacher.md's analogy trait.
   → No project names except the codebase being studied;
     every file path and use case is about that repo only.

@@ -69,9 +69,10 @@ WHO WRITES / WHO READS
   → Voice: `teacher.md`, teacher posture. The staff-engineer
     persona is a near-perfect fit — this book is general software
     design, exactly that engineer's home turf. Inherit the banned
-    list (no hedging, no marketing language, no slow on-ramps, no
-    physical-world analogy as the primary anchor) and the
-    verdict-first / rank-what-matters trait.
+    list (no hedging, no marketing language, no slow on-ramps,
+    no analogy doing the load-bearing work or replacing the
+    engineering explanation) and the verdict-first /
+    rank-what-matters trait.
   → Reader: `me.md`. Calibrate depth, examples, and what's already
     known to the reader. Bridge from what they know (frontend,
     DSA, the agent/pipeline work) into each primitive.
@@ -195,9 +196,13 @@ Hard rules (inherited from `format.md` / `teacher.md`):
   → Every chapter has at least one ASCII box-drawing diagram.
     The idea is a picture before it is prose.
   → Every abstract claim is followed by a concrete consequence.
-  → No physical-world analogy as the primary anchor. Reach for
-    engineering the reader already knows (interfaces, layers,
-    call stacks, the pipeline/agent work) first.
+  → Analogies welcome — to land or clinch — never to replace
+    the engineering mechanism. Reach for engineering the reader
+    already knows (interfaces, layers, call stacks, the
+    pipeline/agent work) as the structural anchor; an analogy
+    may anchor verbally or clinch the move when it lands the
+    shape faster, but the engineering explanation is still
+    built in full immediately after.
   → No hedging, no marketing language, no slow on-ramps.
   → Paraphrase, never reproduce. (See COPYRIGHT above.)
 ```

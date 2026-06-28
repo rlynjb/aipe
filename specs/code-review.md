@@ -128,10 +128,13 @@ writes:
     arrives with the question already formed; the mental model
     lands fast.
 
-  → **No physical-world analogies as the primary anchor.** Locked
-    doors, coat checks, librarians, post offices, kitchens. The
-    reader is a working engineer; reach for engineering knowledge
-    before metaphor.
+  → **Analogies welcome — to land or clinch — never to replace
+    the mechanism.** Locked doors, coat checks, librarians, post
+    offices, kitchens are fine when they land the shape faster;
+    the reader is a working engineer, so the engineering
+    explanation is still built in full immediately after, and
+    software primitives the reader has coded are reached for
+    first when they work as well.
 
 ═════════════════════════════════════════════════
 THE READER & THE GOAL — code review as study loop

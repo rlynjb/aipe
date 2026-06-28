@@ -5,9 +5,12 @@ REHEARSE — INTERVIEW DEFENSE SPEC
 A per-codebase study spec for **defending a project
 as a whole** in a senior-engineering interview.
 Inherits formatting rules, diagram requirements,
-the no-analogy rule, the no-hedging rule, and hard
-rules from `format.md`. What this spec defines is
-what's *unique* to project defense as a topic of
+the analogy rule (analogies welcome — to land or
+clinch — but the engineering mechanism is always
+built in full, never replaced by metaphor), the
+no-hedging rule, and hard rules from `format.md`.
+What this spec defines is what's *unique* to project
+defense as a topic of
 study:
 
   → A book-style sequential structure (8 chapters,
@@ -26,10 +29,10 @@ study:
 This spec is run alongside `study-system-design.md`
 (its sibling topic spec), not instead of it. The agent
 reads `format.md` for *how* to write (block-quality
-standards, diagrams, the "use real software, not
-analogies" rule, the no-hedging rule), and this spec
-for *what* to
-write, in what order, in what shape.
+standards, diagrams, the analogy rule per `teacher.md` —
+analogies welcome to land or clinch, never to replace the
+engineering mechanism — the no-hedging rule), and this
+spec for *what* to write, in what order, in what shape.
 
 **Scope: per-codebase, per-repo.** This spec runs
 against one codebase at a time, exactly like the
@@ -800,9 +803,10 @@ like this:
 
   1. Agent reads `format.md` to learn the
      formatting rules, diagram quality
-     standards, the "use real software, not
-     analogies" rule, the no-hedging rule, and
-     the hard rules.
+     standards, the analogy rule (analogies
+     welcome to land or clinch; engineering
+     mechanism always built in full), the
+     no-hedging rule, and the hard rules.
 
   2. Agent reads `teacher.md` to learn the
      base writer persona — the staff engineer
@@ -891,8 +895,11 @@ Inherited from `format.md` without restatement:
   → All formatting rules (kebab-case
     file names, no Mermaid / no images,
     box-drawing diagram chars)
-  → The "Use real software, not analogies"
-    rule (frontend primitives first, whole
+  → The analogy rule (analogies welcome to
+    land or clinch; engineering mechanism always
+    built in full; reach for software primitives
+    the reader has coded before any physical-world
+    analogy — frontend primitives first, whole
     products last)
   → The hard rules at the bottom of `format.md`
 
@@ -909,7 +916,8 @@ same engineer, different stance):
     real code only when syntax matters)
   → What's banned: hedging, marketing language,
     apologetic tradeoff naming, slow on-ramps,
-    physical-world analogies as primary anchor
+    analogy doing the load-bearing work or
+    replacing the engineering explanation
 
 Inherited from `me.md` without restatement:
 

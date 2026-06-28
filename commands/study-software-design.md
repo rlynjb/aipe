@@ -72,7 +72,7 @@ Also check for an existing `.aipe/read-aposd/` guide in this repo. When present,
 
 What each file supplies:
 - **`format.md`** — the concept-file template, house-style traits, diagram rules, pseudocode rules, hard rules. **Per format.md, the concept-file blocks are:** Subtitle → Zoom out, then zoom in → Structure pass (axes / seams / layered decomposition) → How it works (carries pattern teaching AND code side-by-side + annotation) → Primary diagram → Elaborate → Interview defense → See also. Where legacy template sections in any loaded spec body conflict with format.md, format.md wins.
-- **`teacher.md`** — the writer persona, used in **teacher posture** (the default — no shift). General software design is the staff-engineer's home turf; inherit the banned list (hedging, marketing language, slow on-ramps, physical-world analogies as primary anchor) and the verdict-first / rank-what-matters trait.
+- **`teacher.md`** — the writer persona, used in **teacher posture** (the default — no shift). General software design is the staff-engineer's home turf; inherit the banned list (hedging, marketing language, slow on-ramps, analogy doing the load-bearing work or replacing the engineering explanation) and the verdict-first / rank-what-matters trait.
 - **`me.md`** — reader-side calibration: voice register, example anchoring, what the reader already knows.
 - **`study-software-design.md`** — the topic (which primitives are concepts), the anchoring rules (every finding cites file + line range), the honest-assessment rules (when a principle doesn't apply to this codebase, name that — don't fabricate a finding).
 

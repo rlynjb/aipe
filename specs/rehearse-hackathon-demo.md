@@ -5,9 +5,12 @@ REHEARSE — HACKATHON DEMO SPEC
 A per-codebase study spec for **presenting a project as
 a hackathon demo** in a time-boxed slot of up to ten
 minutes. Inherits formatting rules, diagram
-requirements, the no-analogy rule, the no-hedging rule,
-and hard rules from `format.md`. What this spec defines
-is what's *unique* to a hackathon demo as a thing to
+requirements, the analogy rule (analogies welcome — to
+land or clinch — but the engineering mechanism is
+always built in full, never replaced by metaphor), the
+no-hedging rule, and hard rules from `format.md`. What
+this spec defines is what's *unique* to a hackathon
+demo as a thing to
 prepare:
 
   → A book-style sequential structure (an overview plus
@@ -33,10 +36,11 @@ prepare:
 This spec is run alongside `study-system-design.md`
 and the other study generators (its sibling specs), not
 instead of them. The agent reads `format.md` for *how*
-to write (block-quality standards, diagrams, the "use
-real software, not analogies" rule, the no-hedging
-rule), and this spec for *what* to write, in what order,
-in what shape.
+to write (block-quality standards, diagrams, the analogy
+rule per `teacher.md` — analogies welcome to land or
+clinch, never to replace the engineering mechanism — the
+no-hedging rule), and this spec for *what* to write, in
+what order, in what shape.
 
 **Scope: per-codebase, per-repo.** This spec runs
 against one codebase at a time, exactly like the base
@@ -475,9 +479,9 @@ comprehension guides.
 The agent run for a hackathon demo book works like this:
 
   1. Agent reads `format.md` to learn the formatting rules,
-     diagram quality standards, the "use real software, not
-     analogies" rule, the no-hedging rule, and the hard
-     rules.
+     diagram quality standards, the analogy rule (analogies
+     welcome to land or clinch; engineering mechanism always
+     built in full), the no-hedging rule, and the hard rules.
 
   2. Agent reads `teacher.md` for the base writer persona —
      the staff engineer voice, the format hierarchy, the
@@ -540,8 +544,11 @@ Inherited from `format.md` without restatement:
 
   → All formatting rules (kebab-case file names, no Mermaid /
     no images, box-drawing diagram chars)
-  → The "Use real software, not analogies" rule (frontend
-    primitives first, whole products last)
+  → The analogy rule (analogies welcome to land or clinch;
+    engineering mechanism always built in full; reach for
+    software primitives the reader has coded before any
+    physical-world analogy — frontend primitives first,
+    whole products last)
   → The hard rules at the bottom of `format.md`
 
 Inherited from `teacher.md` without restatement (this spec
@@ -554,8 +561,9 @@ stance):
   → The format hierarchy (diagrams primary, prose fills in,
     pseudocode for logic, real code only when syntax matters)
   → What's banned: hedging, marketing language, apologetic
-    tradeoff naming, slow on-ramps, physical-world analogies
-    as primary anchor
+    tradeoff naming, slow on-ramps, analogy doing the
+    load-bearing work or replacing the engineering
+    explanation
 
 Inherited from `me.md` without restatement:
 

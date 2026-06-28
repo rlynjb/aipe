@@ -15,7 +15,7 @@ placement* at the end.
 Reads, in this order:
 
 ```
-  format.md   structure, diagram rules, the no-analogy rule, the
+  format.md   structure, diagram rules, the analogy rule (analogies welcome to land or clinch; engineering mechanism always built in full), the
               no-hedging rule, hard rules. Structure comes from here.
               Do not restate it.
   teacher.md  coach posture. The staff engineer, shifted to prepare you

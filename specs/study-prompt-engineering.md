@@ -755,9 +755,11 @@ definition:
     by side, zoom out then in, conversational tone)
   → All formatting rules (kebab-case file names, no
     Mermaid / no images, box-drawing diagram chars)
-  → The "Use real software, not analogies" rule
-    (and its priority order: frontend primitives
-    first, whole products last)
+  → The analogy rule (analogies welcome to land or
+    clinch; engineering mechanism always built in full;
+    reach for software primitives the reader has coded
+    before any physical-world analogy — frontend
+    primitives first, whole products last)
   → The hard rules at the bottom of `format.md`
 
 **Not inherited from `teacher.md`.** This spec

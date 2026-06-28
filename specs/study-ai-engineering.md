@@ -383,9 +383,11 @@ Refer to `format.md` for the canonical definition:
     side, zoom out then in, conversational tone)
   → All formatting rules (kebab-case file names, no
     Mermaid / no images, box-drawing diagram chars)
-  → The "Use real software, not analogies" rule
-    (and its priority order: frontend primitives
-    first, whole products last)
+  → The analogy rule (analogies welcome to land or
+    clinch; engineering mechanism always built in full;
+    reach for software primitives the reader has coded
+    before any physical-world analogy — frontend
+    primitives first, whole products last)
   → The hard rules at the bottom of `format.md`
 
 Inherited from `teacher.md` without restatement.
@@ -403,7 +405,8 @@ definition:
     occasionally blunt, always constructive
   → What's banned: hedging, marketing language,
     apologetic tradeoff naming, slow on-ramps,
-    physical-world analogies as primary anchor
+    analogy doing the load-bearing work or
+    replacing the engineering explanation
 
 Inherited from `me.md` without restatement.
 Refer to `me.md` for the canonical definition:

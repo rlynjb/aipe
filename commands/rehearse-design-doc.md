@@ -64,8 +64,8 @@ ${CLAUDE_PLUGIN_ROOT}/specs/rehearse-design-doc.md
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
 What each file supplies:
-- **`format.md`** — the *quality standards*: formatting (kebab-case file names, no Mermaid/no images, box-drawing diagram chars), diagram conventions, pseudocode rules, the "use real software, not analogies" rule, the no-hedging rule, the hard rules. This spec uses its own per-decision doc template (defined inline below) — NOT the concept-file template.
-- **`teacher.md`** — the writer persona in **coach posture** (same staff engineer, shifted to preparing the reader to communicate under scrutiny). Inherits the banned list (hedging, marketing language, slow on-ramps, physical-world analogies as primary anchor) and the verdict-first / rank-what-matters trait.
+- **`format.md`** — the *quality standards*: formatting (kebab-case file names, no Mermaid/no images, box-drawing diagram chars), diagram conventions, pseudocode rules, the analogy rule (analogies welcome — to land or clinch — but the engineering mechanism is always built in full, never replaced by metaphor), the no-hedging rule, the hard rules. This spec uses its own per-decision doc template (defined inline below) — NOT the concept-file template.
+- **`teacher.md`** — the writer persona in **coach posture** (same staff engineer, shifted to preparing the reader to communicate under scrutiny). Inherits the banned list (hedging, marketing language, slow on-ramps, analogy doing the load-bearing work or replacing the engineering explanation) and the verdict-first / rank-what-matters trait.
 - **`me.md`** — reader-side calibration. The reader's own portfolios and writing voice — the docs sound like the reader, not like an abstract template.
 - **`rehearse-design-doc.md`** — the topic (which decisions warrant a doc), the per-doc nine-section structure, the selection rules.
 
