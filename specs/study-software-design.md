@@ -200,6 +200,89 @@ and the topic-specific calibration for Pass 2 pattern files.
   a signal the pattern isn't load-bearing.
 
 ═════════════════════════════════════════════════
+PATTERN VOCABULARY — standard roles lead, repo names follow
+═════════════════════════════════════════════════
+
+Every named pattern carries its own standard role-vocabulary —
+the words the literature and other engineers use for its parts.
+When a Pass 2 file teaches ANY pattern, lead with that pattern's
+standard role-names and keep the repo's local names in parens
+(`format.md` → standard-term-leads). The reader learns the
+transferable word, then binds it to this repo. A few role-
+vocabularies, to show the shape of the rule:
+
+```
+  ports & adapters   port · adapter · client · factory · seam
+  observer           subject · observer · notify · subscription
+  strategy           strategy · context · policy
+  state machine      state · transition · event · guard
+  decorator          component · wrapper · delegate
+  pub / sub          publisher · subscriber · topic · broker
+  visitor            visitor · element · accept · dispatch
+  factory / builder  factory · product · builder · director
+```
+
+  The pattern that fires comes from the repo; the role-words come
+  from that pattern's own standard vocabulary, not this list.
+  Where a pattern has no settled vocabulary, the repo's terms
+  stand alone. The same word may map differently per pattern —
+  name the pattern first, then use its roles.
+
+  → WORKED EXAMPLE — ports & adapters
+
+  The interface-level pattern this book hits most often (provider
+  abstraction / hexagonal port / dependency-inversion seam). It
+  also appears at the architecture altitude in `study-system-design`
+  (`provider-abstraction`) — cross-link, don't re-teach. Lead with
+  these; the mapping is calibration, the repo supplies its names.
+
+```
+  THE THREE ROLES (the core)
+    port      the interface/contract — the swap point the
+              codebase owns. The shape; holds no behavior.
+              (= interface = contract = abstraction)
+    adapter   an implementation of the port; adapts an outside
+              thing (vendor SDK, fixture) to the port's shape.
+    client    code that depends on the port and calls it.
+              Prefer "client" over "caller" — it avoids
+              colliding with a repo type named `Caller`.
+    → a client depends on a port; adapters implement it; the
+      two sides never touch, only the port between them.
+
+  THE SUPPORTING CAST (helpers, not roles)
+    factory   selects + constructs an adapter and returns it AS
+              the port — the only code naming concrete adapters,
+              so clients never do.
+    DI        dependency injection — passing the adapter in as a
+              parameter instead of the client fetching it. The
+              delivery mechanism for the inversion.
+    DIP       dependency inversion — depend on the port, not the
+              adapter. DI is the how; DIP is the why.
+
+  VERBS / PHRASES THAT SIGNAL FLUENCY
+    "the adapter implements the port"
+    "the client depends on the port"
+    "X satisfies the interface"          (esp. structurally)
+    "swap the adapter behind the port"
+    "the dependency points inward / at the port"   (DIP)
+    "seam" — a boundary swapped on one side without the other
+             side changing
+
+  MAPPING — anchor it in a real stack (calibration only)
+    agents                 →  client
+    DataSource             →  port    (upper seam)
+    Transport              →  port    (lower seam)
+    BloomreachDataSource   →  adapter (live)
+    SyntheticDataSource    →  adapter (fixture)
+    fake transport         →  adapter (test)
+    makeDataSource(mode)   →  factory
+    runAgentLoop({client}) →  DI (adapter passed in, not picked)
+    Caller (the type)      →  a port — NOT the client role
+
+    four words and you have it:  port · adapter · client · seam
+```
+
+═════════════════════════════════════════════════
 ANCHORING FINDINGS TO THE CODEBASE
 ═════════════════════════════════════════════════
 

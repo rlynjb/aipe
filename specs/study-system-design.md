@@ -62,6 +62,8 @@ The general rules in `me.md` apply: the pattern has a name, passes the load-bear
 
 Typical system-design pattern names (kebab-case): `request-flow`, `oauth-boundary`, `provider-abstraction`, `caching-and-rate-limiting`, `streaming-ndjson`, `multi-agent-orchestration`, `client-stream-handoff`, `schema-gated-coverage`, `local-first-sync`, `on-device-ml-pipeline`, `canonical-local-with-cloud-mirror`. The pattern name comes from the repo, not from this list — this is a calibration guide for the kind of names that pass the recognition test, not an enumeration.
 
+For the standard role-vocabulary of any pattern (e.g. `provider-abstraction` → port / adapter / client / factory), cross-link `study-software-design` → PATTERN VOCABULARY rather than redefining it here — that convention is owned at the code-level altitude. This spec uses it: lead with the pattern's standard role-names and keep the repo's local names in parens (`format.md` → standard-term-leads).
+
 ## Output
 
 The two-pass file layout is defined in `me.md` → AUDIT-STYLE GENERATORS → File layout. For system-design specifically, the output folder is `.aipe/study-system-design/`. All files flat at the root, no nested sub-directories.

@@ -71,7 +71,7 @@ ${CLAUDE_PLUGIN_ROOT}/specs/read-aposd.md
 If `${CLAUDE_PLUGIN_ROOT}` is unset (running from a dev clone), fall back to searching for each upward from this file's location.
 
 What each file supplies:
-- **`format.md`** — the *teaching primitives* (zoom-out, structure pass with axes/seams/layered decomposition, claim → consequence, diagrams-primary, verdict-first, the analogy rule per teacher.md — analogies welcome to land or clinch, never to replace the engineering mechanism — no hedging, no marketing language). This spec uses these primitives but **does NOT use format.md's per-concept-file template** — it defines its own per-chapter book template inline (see Step 5C). Specifically, format.md's How-it-works code-side-by-side treatment is replaced by "In your code" in this spec.
+- **`format.md`** — the *teaching primitives* (zoom-out, structure pass with axes/seams/layered decomposition, claim → consequence, diagrams-primary, verdict-first, the analogy rule per teacher.md — analogies welcome to land or clinch, never to replace the engineering mechanism — the standard-term-leads rule (industry term as the noun, repo's local name in parens on first use), no hedging, no marketing language). This spec uses these primitives but **does NOT use format.md's per-concept-file template** — it defines its own per-chapter book template inline (see Step 5C). Specifically, format.md's How-it-works code-side-by-side treatment is replaced by "In your code" in this spec.
 - **`teacher.md`** — the writer persona in **teacher posture**. General software design is the staff-engineer's home turf — this book is exactly that engineer's wheelhouse. Inherit the banned list and the verdict-first / rank-what-matters trait.
 - **`me.md`** — reader-side calibration. Bridge from what the reader knows (frontend, DSA, agent/pipeline work) into each design primitive.
 - **`read-aposd.md`** — the through-line, the book map (5 parts, 19 chapters), the per-chapter seven-beat template, the copyright hard rule, the concept-by-concept teaching guide.
@@ -108,9 +108,10 @@ The non-negotiables — inherited from `format.md`, `teacher.md`, `me.md`, and t
 4. **Every chapter has at least one ASCII box-drawing diagram.** The idea is a picture before it is prose.
 5. **Every abstract claim is followed by a concrete consequence.**
 6. **Analogies welcome — to land or clinch — never to replace the mechanism.** Reach for engineering the reader already knows (interfaces, layers, call stacks, the pipeline/agent work) as the structural anchor; an analogy may anchor verbally or clinch the move when it lands the shape faster, but the engineering mechanism is still built in full immediately after (see teacher.md).
-7. **No hedging, no marketing language, no slow on-ramps** (inherited from teacher.md).
-8. **Paraphrase, never reproduce** (see COPYRIGHT above).
-9. **The book has exactly 5 parts and 19 chapters** in the order the spec defines. Do not add chapters, do not collapse chapters, do not reorder Parts. Enumerating the topics/chapter order is fine (that's a fact about the book, not its expression); only the *expression* must be original.
+7. **Standard term leads, local name in parens.** When the "In your code" beat cites the reader's repo, use the established industry term as the noun in prose, with the codebase's local name in parens on first use — "the port (`DataSource`)", "the client (the agents)" — so the transferable word is what's learned (see format.md → HARD RULES → standard-term-leads).
+8. **No hedging, no marketing language, no slow on-ramps** (inherited from teacher.md).
+9. **Paraphrase, never reproduce** (see COPYRIGHT above).
+10. **The book has exactly 5 parts and 19 chapters** in the order the spec defines. Do not add chapters, do not collapse chapters, do not reorder Parts. Enumerating the topics/chapter order is fine (that's a fact about the book, not its expression); only the *expression* must be original.
 
 ## Step 6C — Create the directory structure
 

@@ -171,7 +171,11 @@ BLOCK 1 — SUBTITLE
 Industry name(s) for the pattern plus a one-word type
 label (Industry standard / Language-agnostic /
 Project-specific), so another dev catches on in a
-one-second lookup.
+one-second lookup. The body then leads with these
+industry terms and keeps the repo's local names in
+parens (see the standard-term-leads rule under GLOBAL
+RULES) — the subtitle names the transferable word once;
+the body uses it throughout.
 
 ═════════════════════════════════════════════════
 BLOCK 2 — ZOOM OUT, THEN ZOOM IN   (replaces Why care)
@@ -746,6 +750,26 @@ HARD RULES
     consequence. "This is secure" is banned; "if the
     client sends X, the database returns Y" is required.
   → Name the real terms; don't dance around them.
+  → Standard term leads, local name in parens. Use the
+    established industry term as the noun in prose, with
+    the codebase's local name in parentheses on first
+    use — "the port (`DataSource`)", "the client (the
+    agents)", "the adapter (`BloomreachDataSource`)",
+    "the seam (the `Transport` boundary)" — never the
+    reverse (`DataSource`, the port). After first
+    mention the local name alone is fine. This carries
+    the Subtitle's industry-name rule into the body: the
+    reader learns the transferable word, then binds it to
+    this repo. Prefer the settled vocabulary where it
+    fits — port / interface / contract (the abstraction),
+    adapter (an implementation of it), client (code that
+    depends on the port), seam (a swap boundary), factory
+    (selects an adapter), dependency injection (passing
+    the adapter in), dependency inversion (depending on
+    the port, not the adapter). Each topic supplies its
+    own standard terms the same way (e.g. networking: the
+    connection pool (`pgPool`)); where a concept has no
+    settled industry term, the repo term stands alone.
   → Length scales with complexity, not a paragraph cap.
   → Code is shown side by side with a line-by-line read
     (inside How it works Move 2), never dropped raw.
