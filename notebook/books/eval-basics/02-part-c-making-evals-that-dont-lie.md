@@ -48,6 +48,24 @@ blooming's `scoreDetections` is exactly this table over the golden anomaly set: 
 monitoring agent flag the anomalies that were really there (recall) without inventing ones
 that weren't (precision)?
 
+**the same precision/recall idea, for free-text outputs.** when the output is a sentence (a
+summary, a translation) and you have a *reference* answer, these named metrics are just
+precision/recall over word-overlap. worth recognizing by name — interviewers name-drop them:
+
+```
+metric      what it measures                              really just...
+──────────────────────────────────────────────────────────────────────────
+BLEU        n-grams in OUTPUT that appear in reference    precision, on word overlap
+ROUGE       n-grams in REFERENCE the output covered       recall, on word overlap
+METEOR      both, plus stems/synonyms                     F1-ish, smarter matching
+BERTScore   embedding similarity, not exact words         "semantic similarity" (§4 method 3)
+```
+
+(it's ROUGE — Recall-Oriented Understudy for Gisting Evaluation — not "ROGUE"; the name
+*is* the mnemonic: **R**ecall.) all four need a reference answer, so they're reference-based
+(§2). when you have *no* reference — most open-ended work — none of these apply and you fall
+to rubric + judge (§7).
+
 ---
 
 ## 6 · dataset quality — a good pile beats a big pile
@@ -85,16 +103,68 @@ real production failures. never grow the happy-path past the point it's proven �
 ## 7 · LLM-as-judge — and how to trust it
 
 When there's no single right answer you often let an LLM grade (rubric + judge). It's powerful
-and it's the scorer people trust *too much*. Two things make it usable: knowing its biases,
-and calibrating it.
+and it's the scorer people trust *too much*. Four things to get right: *what* it scores for
+(dimensions), *how* you structure its prompt (anatomy), *how* it fails (biases), and *how* you
+trust it (calibration).
+
+### what a judge scores FOR — the quality dimensions
+
+Before you can grade "good," you have to name *which* good. These six dimensions are the
+standard menu — a rubric is just a subset of them with criteria attached:
+
+```
+dimension        the question it asks
+────────────────────────────────────────────────────────────────────
+faithfulness     grounded in the provided context, or inventing facts?  ← RAG's #1
+relevance        actually answers what was asked, or on-topic but useless?
+completeness     covers all parts of the question, or only some?
+safety           avoids harmful content, PII leakage, policy violations?
+format / style   follows length / tone / structure / output-format rules?
+task-specific    code: does it run? SQL: valid? math: correct answer?
+```
+
+these are **scorer-agnostic** — they're what *any* scorer targets, and the §4 matching rule
+tells you which method grades each: task-specific + format are usually verifiable (code /
+assertion), while faithfulness / relevance / completeness are judgment calls (rubric + judge).
+picking your 3-4 dimensions *is* designing the eval; blooming's diagnostic/recommendation
+rubrics are faithfulness + relevance + completeness.
+
+### anatomy of a judge prompt
+
+A judge prompt has a standard skeleton — miss a part and the scores get noisy:
+
+```
+system role ──── "you are a meticulous evaluator... immune to surface appeal"
+user query ───── the original question (so the judge knows what was asked)
+context ──────── the ground-truth source (for faithfulness)
+response ─────── the answer under evaluation
+CoT instruction  "reason step by step BEFORE scoring"  ← biggest quality lever
+rubric ───────── the explicit 1–5 criteria (what earns each score)
+output format ── "score: N, then one-sentence rationale"  (parseable)
+```
+
+**the technique that makes faithfulness reliable: claim decomposition.** don't ask "is this
+faithful, 1–5?" — that invites vibes. instead force the judge to *decompose then verify*:
+
+```
+step 1  extract every specific claim (fact, number, date, policy) from the response
+step 2  label each: SUPPORTED / INFERRED / UNSUPPORTED / CONTRADICTED  (vs context)
+step 3  map counts → score:  5=all supported/inferred · 3=multiple unsupported ·
+                             2=any contradicted · 1=multiple contradictions
+```
+
+this turns a fuzzy judgment into a countable procedure — far more consistent across runs, and
+it maps directly onto blooming's `RubricJudge`. reasoning-then-score + a decomposed rubric is
+also your main defense against verbosity bias (below).
 
 **the judge's known biases** (all documented, all real):
 
 ```
-position   ─ prefers whichever answer came first (in pairwise)
-verbosity  ─ scores longer answers higher, right or wrong
-self-pref  ─ a model rates its OWN family's outputs higher
-sycophancy ─ agrees with hints in the prompt ("I think A is better, right?")
+position    ─ prefers whichever answer came first (in pairwise)
+verbosity   ─ scores longer answers higher, right or wrong
+self-pref   ─ a model rates its OWN family's outputs higher
+sycophancy  ─ agrees with hints in the prompt ("I think A is better, right?")
+compression ─ avoids the extremes, clusters at 3-4 on a 1–5 → kills your resolution
 ```
 
 **mitigations** (cheap — do them):
@@ -102,6 +172,7 @@ sycophancy ─ agrees with hints in the prompt ("I think A is better, right?")
 - give an explicit-criteria rubric, not "rate 1–10" → kills most verbosity drift
 - judge with a *different model family* than the one generating → blunts self-preference
 - absolute scoring (grade each answer in isolation), and ask for reasoning *then* a score
+- anchor each score with concrete criteria (what a 1 vs 5 *looks* like) → fights compression
 
 **calibration — the part everyone skips.** A judge is a ruler you haven't checked against a
 real ruler. Calibration = have humans label ~30–50 cases, then check the judge agrees:

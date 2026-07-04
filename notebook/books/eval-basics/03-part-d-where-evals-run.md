@@ -40,6 +40,20 @@ online *finds* what to fix next. a mature system runs both continuously.
 blooming's `onCapabilityEvent` + receipts pipeline is the **online** half (watching live
 behavior + cost). the goldens + harness are the **offline** half.
 
+**why online eval isn't optional — shipping is the beginning, not the end.** a system that
+passed offline decays in production for reasons you don't control:
+
+```
+provider swaps the model  → your prompts silently stop working overnight
+knowledge base goes stale → correct-at-launch answers become wrong
+user distribution shifts  → real queries drift away from what you tested
+product team edits prompt  → someone changes the system prompt, no re-eval
+```
+
+each of these passes your frozen offline set (nothing changed *there*) while quality drops for
+real users. online eval is what *detects it fast* — the offline set can't, because the world
+moved and the set didn't.
+
 ---
 
 ## 10 · RAG evals — grade the two halves separately

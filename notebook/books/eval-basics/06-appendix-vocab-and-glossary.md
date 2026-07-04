@@ -34,8 +34,20 @@
   them. you set the dial by consequence, not by formula.
 - **dataset quality** — coverage + diversity + balance + no-leakage. a good pile beats a big
   pile; metadata-per-case is what turns "does it fail" into "*where* it fails."
+- **quality dimensions** — the standard menu of *what* you score for: faithfulness, relevance,
+  completeness, safety, format/style, task-specific. scorer-agnostic; a rubric is a subset of
+  these with criteria. picking your 3-4 dimensions *is* designing the eval.
 - **LLM-as-judge** — flexible scorer with known biases (position, verbosity, self-preference,
-  sycophancy); usable only with mitigations + a human-labeled calibration set (~30–50).
+  sycophancy, score-compression); usable only with mitigations + a human-labeled calibration
+  set (~30–50).
+- **judge-prompt anatomy** — system-role + query + context + response + CoT-instruction +
+  rubric + output-format. reasoning-then-score is the biggest quality lever.
+- **claim decomposition** — the faithfulness technique: extract each claim → label
+  SUPPORTED / INFERRED / UNSUPPORTED / CONTRADICTED → map counts to 1–5. turns a vibe into a
+  countable procedure.
+- **named text metrics** — BLEU (n-gram precision), ROUGE (n-gram recall), METEOR (both +
+  stems), BERTScore (embedding similarity). all reference-based; only apply when you have a
+  reference answer.
 - **calibration set** — human-labeled anchors that measure the *judge*, not the system.
   small n = "not broken"; trustworthy needs ~30–50.
 - **why n matters** — small samples jitter; "85% (n=20)" spans ~68–95%. show the denominator;
@@ -59,6 +71,48 @@
 
 ---
 
+## reference — public benchmarks
+
+The standard eval sets people compare models on. You mostly *build your own* for a real
+product, but recognize these by name and know what shape each tests:
+
+```
+benchmark    task shape                              verifiable?
+──────────────────────────────────────────────────────────────────
+MMLU         multiple-choice knowledge (57 subjects)  yes (exact match)
+HellaSwag    multiple-choice commonsense completion   yes
+HumanEval    Python coding problems                   yes (run the tests)
+AIME         math-olympiad problems                   yes (exact answer)
+ARC-AGI      interactive visual reasoning             yes — but very HARD
+```
+
+the point ARC-AGI makes: **verifiable ≠ easy.** a benchmark can have crisp ground truth and
+still be near-unsolved — frontier models score low on it. "verifiable" is about *how you grade*
+(§2), not about difficulty. (avoid quoting specific scores in notes — they date within weeks.)
+
+---
+
+## reference — tools & frameworks
+
+You built the harness by hand in this doc (the right way to *learn* it). In production people
+reach for:
+
+```
+tool         what it's for
+──────────────────────────────────────────────────────────────────
+Ragas        RAG-specific metrics (faithfulness, answer/context relevance) — §10
+DeepEval     pytest-style LLM eval assertions + judge metrics
+LangSmith    hosted eval + tracing/observability platform
+Bedrock Evals AWS-native model/RAG evaluation
+Azure graders Azure OpenAI's built-in scoring graders
+```
+
+these mostly implement §12's harness + §7's judges for you. knowing *what they'd save you* (and
+what they hide — the concurrency/caching/calibration you now understand) is the interview answer.
+for the RAG-at-two-scales story, **Ragas** is the natural name to drop.
+
+---
+
 ## glossary
 
 ```
@@ -66,8 +120,11 @@ accuracy         (TP+TN)/all. misleads on imbalanced classes.
 adversarial      a case built to expose a failure mode (dataset role).
 aggregation      box 3: squish per-case verdicts into a decision number.
 baseline         last known result; the thing you diff against to say "better/worse".
+BERTScore        text metric: embedding similarity of output vs reference.
+BLEU             text metric: n-gram precision of output vs reference.
 calibration      checking the judge (or any scorer) against human labels.
 case             one eval example: {input, [expected], metadata}.
+claim decomposition  faithfulness technique: label each claim SUPPORTED/…/CONTRADICTED.
 coverage         how much of the real input space the dataset touches.
 dataset          box 1: the pile of cases you test on.
 drift            output/input distribution sliding over time (online signal).
@@ -84,6 +141,8 @@ precision        TP/(TP+FP). "when it fired, was it right?"
 p50/p95/p99      latency/score percentiles; need large n to mean anything.
 recall           TP/(TP+FN). "of the real ones, how many caught?"
 recall@k         retrieval metric: of relevant docs, how many in top-k.
+ROUGE            text metric: n-gram recall of output vs reference (not "ROGUE").
+quality dimension  what you score for: faithfulness/relevance/completeness/safety/…
 reference-based  grading against a known answer (needs a gold label).
 reference-free   grading against criteria/properties (no single answer).
 regression       a real past failure frozen as a permanent test (dataset role).
