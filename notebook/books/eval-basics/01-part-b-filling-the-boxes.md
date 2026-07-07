@@ -129,7 +129,7 @@ reintroduces the old behavior. behavior only moves forward.
 No formula outputs the method. There's a menu and a matching rule.
 
 ```
-GRADER MENU (who assigns the score)          needs a gold answer?
+METHOD MENU (the technique used to score)    needs a gold answer?
 ─────────────────────────────────────────────────────────────────
 1. exact / structural match   (==, schema)   yes
 2. fuzzy / overlap            (F1, edit dist) yes
@@ -142,6 +142,33 @@ GRADER MENU (who assigns the score)          needs a gold answer?
 ```
 
 That's ~the whole toolbox. "rubric / golden / trajectory" are just entries 5, 4, 7.
+
+**grader vs method — don't blur them.** the flat menu above lists *methods* (techniques). each
+method is run by a *grader* — the four things from §2's axis 2 that actually *do* the scoring.
+one grader runs many methods:
+
+```
+grader        what it is                          runs these methods              cost
+──────────────────────────────────────────────────────────────────────────────────────
+CODE          a deterministic program             exact/structural, contains,     ~free
+                                                  numeric, set metrics, retrieval
+                                                  metrics, assertions, unit-test,
+                                                  trajectory checks
+STATISTICAL   math over text                      n-gram overlap (BLEU/ROUGE),     cheap
+                                                  edit distance, SEMANTIC
+                                                  SIMILARITY (BERTScore),
+                                                  classifier-based
+LLM-JUDGE     an LLM scores vs criteria           rubric (pointwise / pairwise),   $$, slow
+                                                  reference-guided, claim
+                                                  decomposition, faithfulness,
+                                                  answer-relevance
+HUMAN         a person scores                     direct rating, pairwise pref,    slowest
+                                                  annotation (creates the gold)
+```
+
+so "semantic similarity" is a *statistical method*, not a grader; "rubric" is a *method the
+LLM-judge grader runs*. saying "code is a method" or "semantic similarity is a grader" is the
+blur to avoid — grader = *who* scores (4, closed), method = *the technique* (the menu above).
 
 **the matching rule** — a decision procedure, not arithmetic:
 
@@ -172,3 +199,9 @@ arithmetic.** The "is this math?" instinct is picking up on the arithmetic insid
 > be graded by semantic-similarity to a golden diagnosis (3) instead of a rubric (5). Some
 > teams do exactly that. "I chose rubric over semantic-similarity because diagnoses have
 > many valid phrasings" is a strong deliberate-choice answer.
+
+> **semantic similarity (method 3), pointer:** the named metric is BERTScore — see §5's
+> reference-text table. In RAG it's doing double duty: it's the *retrieval mechanism itself*
+> (query/chunk embedding cosine) and a fine *retrieval* metric, but a poor *generation*-quality
+> grader — "similar meaning" can't catch an ungrounded claim, which is why §10 grades RAG
+> generation with faithfulness (rubric+judge), not similarity.
