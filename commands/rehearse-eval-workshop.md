@@ -106,12 +106,28 @@ Before generating anything, read the invoked repo's eval surface with the file/g
 - **Agent shape:** presence of tool-call machinery (a tool registry, a trajectory / trace / message log, ReAct-style loops, LangGraph / Autogen / crewAI, `tools=[]` in an LLM call) → **generate Exercise 08 (agent track).**
 - **Plain-LLM shape:** neither of the above → **skip 07 and 08.**
 
+**Extract pattern headers from each eval file.** For each detected eval file, read the leading comment block (top ~100 lines — file-level docstring, header comment, or top-of-file docstring). Look for either of these signals:
+
+- **Divider-labelled pattern:** a line like `─── Pattern: <name> ───` or `─── PATTERN: <name> ───` (any width of divider, any comment prefix — `//`, `#`, `/*`, `--`)
+- **Plain-label pattern:** a line like `Pattern: <name>` inside a comment block near the top of the file
+- **Sub-pattern list:** numbered items (`1. <name>`, `2. <name>`, ...) or bulleted items following the pattern header, or an inline "sub-patterns:" line listing them
+
+When a pattern header is found, extract:
+- The **pattern name** (the text after `Pattern:` up to end of line or the closing divider)
+- The **sub-pattern list** (comma-separated names extracted from numbered/bulleted items or an explicit sub-patterns line)
+- The **file:line-range** of the pattern header block
+
+Files without a pattern header are skipped for pattern extraction — cite the file path only. Do not fabricate pattern names.
+
 **Build the discovery inventory** (used in `00-map.md`):
 
 ```
 Eval surface found:
-  <path>          <what it is: harness / case-set / rubric / judge / runner / gate>
-  <path>          ...
+  <path>                   type: <harness / case-set / rubric / judge / runner / gate / calibration>
+                           pattern: <name from header, or "no pattern header">
+                           sub-patterns: <comma-separated list, or "none">
+                           header at lines <start>-<end>
+  <path>                   ...
   (or: "no eval surface detected — the workshop builds it from zero")
 
 Repo shape (drives skip logic):
@@ -123,6 +139,8 @@ Owners (three-parts model):
   rubric / grader           →  dev owns criteria; AI drafts, dev edits
   cases + LABELS            →  HUMAN owns labels; AI does NOT
 ```
+
+**Why this matters.** When the reader has already documented their eval patterns as self-describing comment headers (a `─── Pattern: golden-set, LLM-as-judge eval harness on a test runner ───` block followed by sub-pattern items), each exercise should cite the matching pattern from the codebase in its ③ "in your repo" block. This turns the workshop from abstract teaching into a per-repo tour of patterns the reader has already committed to — with exercise 05 (calibration) naturally landing on any `judge calibration / inter-rater agreement` pattern the reader already has, exercise 09 (gate) naturally landing on any `regression gate / ratchet` pattern, etc. See Step 7C for the exercise-to-pattern mapping guide.
 
 ## Step 6C — Plan the workbook (with skip logic)
 
@@ -161,6 +179,7 @@ If both detected: 10 exercises as listed.
 8. **Skip what already exists in the repo.** If Exercise 03's harness is already built and mature, the exercise pressures the *quality* (test coverage, pluggability of scorer/SUT) rather than re-teaching harness basics. Discovery from Step 5C drives what to skip vs teach.
 9. **Match repo conventions** when the "do it" step (⑥) proposes files. Naming, language, directory layout — copy the repo's style. Do not impose a foreign layout.
 10. **One ASCII diagram minimum per exercise where it clarifies.** Box-drawing chars per format.md. Skip diagrams that don't earn their space; never draw for the sake of drawing.
+11. **Cite codebase-documented patterns in every exercise's ③ block.** When Step 5C extracted pattern headers from the repo's eval files, each exercise's ③ "in your repo" block includes a `▸ codebase patterns:` sub-bullet naming the file:line where the matching pattern header lives and the pattern's own name (verbatim from the codebase comment) + its sub-patterns. If the reader has documented the pattern the exercise teaches, name it and mark the exercise as *"you're already doing this — the exercise pressures its quality (calibration n, coverage, gate behavior, etc.)"* rather than teaching it from scratch. When no matching pattern was extracted, ③ says "no pattern header found in your eval files for this topic — the exercise builds it from the topic content." See Step 7C for the exercise-to-pattern mapping guide.
 
 ## Step 7C — Create the directory and generate the workbook
 
@@ -188,7 +207,62 @@ Generate the following (flat — no subdirectories), in order:
 
 Where `0N` numbering closes any gap from skipped 07/08 to keep files sequential.
 
-Each exercise file follows the **seven-part template from `specs/rehearse-eval-workshop.md`**:
+**Exercise-to-pattern mapping guide** (used to decide which extracted patterns from Step 5C go in which exercise's ③ block):
+
+```
+  Exercise 01  ownership split                → ALL extracted patterns appear
+                                                 in the ownership table with
+                                                 owner labels (harness / rubric
+                                                 / labels), one row per file.
+
+  Exercise 02  ground-truth case (eval-first) → patterns like: golden-set,
+                                                 golden-dataset LLM eval,
+                                                 blind-labeling setup
+
+  Exercise 03  let AI write the harness       → patterns like: LLM-as-judge on
+                                                 test runner, script-as-test,
+                                                 fixture map-reduce, staged
+                                                 pipeline, receipt/artifact log
+
+  Exercise 04  the rubric                     → patterns like: rubric/scored
+                                                 dimensions, LLM-as-judge,
+                                                 claim decomposition
+
+  Exercise 05  calibrate the judge (SPINE)    → patterns like: judge
+                                                 calibration, inter-rater
+                                                 agreement, blind-labeling
+                                                 setup, anti-anchoring
+
+  Exercise 06  adversarial-first              → patterns like: fault injection,
+                                                 chaos testing, adversarial
+                                                 seeds, controlled isolation
+                                                 experiment
+
+  Exercise 07  RAG track                      → patterns like: retrieval
+                                                 metrics (recall@k / precision
+                                                 @k), faithfulness, retriever
+                                                 vs generator split
+
+  Exercise 08  agent track                    → patterns like: trajectory
+                                                 scoring, tool-call trace,
+                                                 controlled isolation
+                                                 experiment (probe files)
+
+  Exercise 09  wire the gate                  → patterns like: regression gate,
+                                                 snapshot baseline, golden-
+                                                 master, threshold/ratchet,
+                                                 script-as-test
+
+  Exercise 10  capstone                       → cites the WHOLE pattern map
+                                                 from 00-map.md as the trust
+                                                 story ("here are the N patterns
+                                                 I've documented; here's the
+                                                 anchor n; here's the gate")
+```
+
+The pattern name a file uses is the reader's own name (verbatim from the extracted header). Don't rename. If the reader called it `golden-set, LLM-as-judge eval harness on a test runner`, cite it exactly that way — that's the vocabulary the reader has committed to and the exercise should reinforce it.
+
+Each exercise file follows the **seven-part template from `specs/rehearse-eval-workshop.md`**, with the ③ block extended per non-negotiable #11:
 
 ```
 # Exercise N — [title]
@@ -199,6 +273,20 @@ Each exercise file follows the **seven-part template from `specs/rehearse-eval-w
                  engineering explanation is still built in full immediately after)
 ③ in your repo the specific real path(s) this touches, from Step 5C discovery
                 — or "missing, you'll create" for what the reader will build
+
+                ▸ codebase patterns:
+                  - <file:line-range> — <pattern name verbatim from the file's header>
+                    sub-patterns: <comma-separated sub-patterns from the header>
+                  - <another file:line if multiple map to this exercise>
+                  (or: "no pattern header found in your eval files for this topic —
+                   the exercise builds it from the topic content")
+
+                If the pattern IS already documented in the codebase, add one
+                sentence naming what the exercise pressures instead of teaching
+                from scratch: "you're already doing this — this exercise
+                pressures <the specific quality dimension: calibration n,
+                coverage, gate behavior, sub-pattern completeness, etc.>."
+
 ④ human track  what the reader authors by hand, and WHY only a human can
 ⑤ AI track     what Claude may draft, and how it's VERIFIED (authorship ≠ trust)
 ⑥ do it        the concrete task; the exact file/shape to write (repo conventions)
@@ -206,10 +294,10 @@ Each exercise file follows the **seven-part template from `specs/rehearse-eval-w
 ```
 
 `00-map.md` contains:
-- **Discovery inventory** — from Step 5C, listing every eval file found and its type
+- **Discovery inventory** — from Step 5C, listing every eval file found, its type, and (when present) its extracted `Pattern:` name + sub-patterns with file:line-range citations. This is the pattern index the exercises cross-reference.
 - **Repo shape** — RAG / agent / plain-LLM, with the evidence line
-- **Ownership table** — the three-parts model (harness / rubric / cases+labels) with the who-owns-what column
-- **Exercise arc** — the 8/9/10 exercises with skip notes ("Exercise 07 skipped — no retrieval detected in this repo")
+- **Ownership table** — the three-parts model (harness / rubric / cases+labels) with the who-owns-what column, one row per discovered eval file including its documented pattern name
+- **Exercise arc** — the 8/9/10 exercises with skip notes ("Exercise 07 skipped — no retrieval detected in this repo"), each exercise line showing which extracted patterns from the inventory the exercise will cite in its ③ block
 - **Reading order** — first pass in numerical order; each exercise builds on the previous; Exercise 05 (calibration) is the spine — if the reader does only one, that's it
 - **Progress checkboxes** — empty checkboxes next to each exercise; the reader ticks them as they complete. Used by RESUME mode to pick up where left off.
 
