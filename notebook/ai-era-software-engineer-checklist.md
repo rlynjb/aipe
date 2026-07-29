@@ -29,16 +29,16 @@ Before asking AI to implement a feature:
 ```text
 User problem
     ↓
-    Domain model
-        ↓
-        System design
-            ↓
-            Data structures and algorithms
-                ↓
-                AI-assisted implementation
-                    ↓
-                    Testing and verification
-                    ```
+Domain model
+    ↓
+System design
+    ↓
+Data structures and algorithms
+    ↓
+AI-assisted implementation
+    ↓
+Testing and verification
+```
 
 ## 3. Use AI as an engineering tool—not an authority
 
