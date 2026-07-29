@@ -1,10 +1,10 @@
 ---
-description: [orchestrator] Study orchestrator — run all sixteen study generators with one confirmation gate and one summary
+description: [orchestrator] Study orchestrator — run all seventeen study generators with one confirmation gate and one summary
 ---
 
-The user invoked `/aipe:study`. Run all sixteen comprehension generators in one pass.
+The user invoked `/aipe:study`. Run all seventeen comprehension generators in one pass.
 
-The orchestrator loads sixteen generator specs (run order below). The new study-frontend-engineering generator emits "no frontend surface" honestly when the repo has no UI code, so non-frontend repos stay silent on that lens rather than gain an empty artifact.
+The orchestrator loads seventeen generator specs (run order below). The study-frontend-engineering generator emits "no frontend surface" honestly when the repo has no UI code, so non-frontend repos stay silent on that lens rather than gain an empty artifact. The study-nonfunctional-requirements generator runs after the core-tier specs and cross-links into their audits (study-system-design, study-security, study-performance-engineering, study-debugging-observability, study-testing) rather than re-walking their mechanics.
 
 ## Step 1 — Initialize if needed
 
@@ -27,6 +27,7 @@ ${CLAUDE_PLUGIN_ROOT}/specs/study-system-design.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-software-design.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-frontend-engineering.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-data-modeling.md
+${CLAUDE_PLUGIN_ROOT}/specs/study-nonfunctional-requirements.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-security.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-testing.md
 ${CLAUDE_PLUGIN_ROOT}/specs/study-distributed-systems.md
@@ -49,6 +50,7 @@ If `${CLAUDE_PLUGIN_ROOT}` is unset, search upward from this file. `format.md` i
 - `study-software-design` → `.aipe/study-software-design/`
 - `study-frontend-engineering` → `.aipe/study-frontend-engineering/` (skipped if no frontend surface)
 - `study-data-modeling` → `.aipe/study-data-modeling/`
+- `study-nonfunctional-requirements` → `.aipe/study-nonfunctional-requirements/`
 - `study-security` → `.aipe/study-security/`
 - `study-testing` → `.aipe/study-testing/`
 - `study-distributed-systems` → `.aipe/study-distributed-systems/`
@@ -64,7 +66,7 @@ Also check for legacy `.aipe/study-system-design-dsa/`. If present, include a mi
 
 ## Step 4 — Plan once and confirm once
 
-Print one consolidated table with all sixteen generators, modes, and planned changes. Wait for one confirmation before editing. Continue after printing the plan in non-interactive execution.
+Print one consolidated table with all seventeen generators, modes, and planned changes. Wait for one confirmation before editing. Continue after printing the plan in non-interactive execution.
 
 ## Step 5 — Execute in spec order
 

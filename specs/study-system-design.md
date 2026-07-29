@@ -52,9 +52,34 @@ Walk the codebase against this ordered 8-lens inventory. Each lens becomes one `
 3. **state-ownership-and-source-of-truth** — server, client, URL, form, local, cached, and persisted state; who owns each transition.
 4. **caching-and-invalidation** — cache layers, freshness requirements, invalidation strategy, and stale-data behavior.
 5. **storage-choice-and-durability-boundaries** — why each datastore exists, what it owns, and which durability guarantees matter. Cross-link engine internals to `study-database-systems` and schema shape to `study-data-modeling`.
-6. **failure-handling-and-reliability** — slow dependencies, offline behavior, retries, partial failure, graceful degradation, and recovery paths. Cross-link coordination mechanics to `study-distributed-systems`.
-7. **scale-bottlenecks-and-evolution** — what breaks first at 10x and 100x, what stays stable, and which future change would force rearchitecture.
+6. **failure-handling-and-reliability** — slow dependencies, offline behavior, retries, partial failure, graceful degradation, and recovery paths. Cross-link coordination mechanics to `study-distributed-systems`. Cross-link reliability posture as a non-functional requirement to `study-nonfunctional-requirements`.
+7. **scale-bottlenecks-and-evolution** — what breaks first at 10x and 100x, what stays stable, and which future change would force rearchitecture. Cross-link the scalability NFR framing to `study-nonfunctional-requirements`.
 8. **system-design-red-flags-audit** — ranked architectural risks, each grounded in real evidence.
+
+**Functional and non-functional requirements** (features, reliability, scalability, maintainability, latency budgets, security posture, cost, observability) are audited in a dedicated sibling spec: `study-nonfunctional-requirements`. That spec owns the cross-cutting NFR audit; each lens above cross-links to it when architectural findings intersect NFR framing.
+
+### Deep reading — DDIA 2nd edition (optional, per topic)
+
+*Designing Data-Intensive Applications, 2e* (Feb 2026) pairs with this generator the way *A Philosophy of Software Design* pairs with `study-software-design`. Read the specific chapter when the matching lens produces the loudest findings; do NOT read cover-to-cover as a prerequisite.
+
+```
+  DDIA 2e chapter                              lens / sibling spec that owns it
+  ─────────────────────────────────────────────────────────────────────────────
+  Ch 1 — Trade-Offs in Data Systems Arch      the study-system-design through-line
+                                              itself; frames every lens
+  Ch 2 — Nonfunctional Requirements           → study-nonfunctional-requirements
+                                              (dedicated cross-cutting audit)
+  Ch 3 — Data Models                          → study-data-modeling
+  Ch 5 — Encoding and Evolution               → study-data-modeling (migrations
+                                              and schema evolution); some overlap
+                                              with Lens 5 (storage choice) when
+                                              serialization crosses a boundary
+  Ch 8 — Transactions                         → study-database-systems
+  Ch 9 — Distributed-System Problems          → study-distributed-systems;
+                                              inputs to Lens 6 (failure-handling)
+```
+
+Cite the chapter in an audit finding only when the chapter's specific vocabulary sharpens the finding (e.g., "the read path exhibits DDIA Ch 8's *lost update* anomaly at `service/handler.ts:42`"). Do not cite for prose weight alone.
 
 ### What earns a Pass 2 pattern file in this topic
 
