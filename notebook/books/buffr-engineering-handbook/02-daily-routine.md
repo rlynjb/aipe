@@ -6,6 +6,14 @@ The daily loop is short on purpose: **use buffr like a tool, and notice what fee
 
 ---
 
+## Contents
+
+- [Before anything: one-time setup check](#before-anything-one-time-setup-check)
+- [The daily loop (5 min)](#the-daily-loop-5-min)
+- [Reading the footer numbers](#reading-the-footer-numbers)
+
+---
+
 ## Before anything: one-time setup check
 
 ```bash

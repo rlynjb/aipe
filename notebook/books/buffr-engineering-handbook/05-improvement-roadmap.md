@@ -8,6 +8,15 @@ The biggest opportunity now is **not adding more tools**. It's improving what ha
 
 ---
 
+## Contents
+
+- [Highest-leverage improvements](#highest-leverage-improvements)
+- [Bugs & risky behaviors worth reviewing](#bugs--risky-behaviors-worth-reviewing)
+- [Recommended implementation order](#recommended-implementation-order)
+- [Target architecture](#target-architecture)
+
+---
+
 ## Highest-leverage improvements
 
 ### 1. Replace "always search everything" with intent-based routing

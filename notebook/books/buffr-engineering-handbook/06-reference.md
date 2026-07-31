@@ -6,6 +6,17 @@ Everything you reach for mid-flow, in one place.
 
 ---
 
+## Contents
+
+- [Cheat sheet](#cheat-sheet)
+- [Command index](#command-index)
+- [Footer numbers](#footer-numbers)
+- [Metrics glossary](#metrics-glossary)
+- [Source authority tiers](#source-authority-tiers)
+- [Where the knobs live](#where-the-knobs-live)
+
+---
+
 ## Cheat sheet
 
 | Feeling | First thing to check | Likely fix |

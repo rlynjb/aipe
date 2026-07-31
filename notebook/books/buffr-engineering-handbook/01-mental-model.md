@@ -8,6 +8,16 @@ The short answer is that it's moving from "a chatbot that searches" toward "a sy
 
 ---
 
+## Contents
+
+- [The four maturity levels](#the-four-maturity-levels)
+- [What buffr already has](#what-buffr-already-has)
+- [The optimization loop](#the-optimization-loop)
+- [Where buffr becomes unique](#where-buffr-becomes-unique)
+- [The mindset shift](#the-mindset-shift)
+
+---
+
 ## The four maturity levels
 
 ### Level 1 — Prompt engineering

@@ -6,6 +6,16 @@ When an answer feels off, work through the decision tree first, land on a cause,
 
 ---
 
+## Contents
+
+- [The decision tree](#the-decision-tree)
+- [Tweak A — Retrieval misses](#tweak-a--retrieval-misses)
+- [Tweak B — Wrong tool fires first](#tweak-b--wrong-tool-fires-first)
+- [Tweak C — Too slow / too many tool calls](#tweak-c--too-slow--too-many-tool-calls)
+- [Tweak D — Knowledge base is stale](#tweak-d--knowledge-base-is-stale)
+
+---
+
 ## The decision tree
 
 ### Step 1 — Was the answer about something in your notes?

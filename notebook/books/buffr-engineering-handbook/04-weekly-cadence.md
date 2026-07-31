@@ -8,6 +8,14 @@ Budget ~15 minutes, Monday morning.
 
 ---
 
+## Contents
+
+- [Monday morning](#monday-morning)
+- [Add one new eval query every week](#add-one-new-eval-query-every-week)
+- [Why this compounds](#why-this-compounds)
+
+---
+
 ## Monday morning
 
 ```bash
