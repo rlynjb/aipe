@@ -1,29 +1,36 @@
-# Buffr Engineering Handbook
+# The buffr Handbook
 
-A practical routine for improving Buffr through real use, diagnosis, controlled experiments, and evals.
+A working book for **rlynjb/buffr** — your personal RAG/agent assistant. Three things live here: how to *think* about the system, how to *use* it day to day, and how to *improve* it.
 
-## Reading order
+It's split so you can read one chapter at a sitting and jump straight to whatever you need.
 
-| File | Part | What it covers |
-|---|---|---|
-| [00-introduction.md](00-introduction.md) | — | Core principle and the AI system pipeline overview |
-| [01-operating-buffr.md](01-operating-buffr.md) | I | One-time setup, daily use, weekly review |
-| [02-diagnosing-bad-results.md](02-diagnosing-bad-results.md) | II | Capture failures; 9-step failure decision tree |
-| [03-improving-the-system.md](03-improving-the-system.md) | III | Controlled tweaks A–F (threshold, routing, chunking, etc.) |
-| [04-evaluation-and-experiments.md](04-evaluation-and-experiments.md) | IV | Four-layer eval framework; experiment log template |
-| [05-improvement-roadmap.md](05-improvement-roadmap.md) | V | Monthly sprints, prioritized backlog, cheat sheet, implementation order |
-| [06-ai-engineering-workflow.md](06-ai-engineering-workflow.md) | VI | Continuous improvement loop, failure taxonomy, full pipeline diagram |
+---
 
-## Core principle
+## Table of contents
 
-> Do not improve Buffr by intuition alone. Turn every disappointing answer into a reproducible test case.
+| # | Chapter | What it's for |
+|---|---------|---------------|
+| 01 | [Mental model](01-mental-model.md) | The maturity ladder, why buffr is becoming a decision engine, and the beginner's mindset shift |
+| 02 | [Daily routine](02-daily-routine.md) | The 5-minute daily loop + reading the footer numbers |
+| 03 | [Diagnosing & tweaks](03-diagnosing-and-tweaks.md) | When something feels off: decision tree → the four tweaks |
+| 04 | [Weekly cadence](04-weekly-cadence.md) | The 15-minute Monday review + growing the eval set |
+| 05 | [Improvement roadmap](05-improvement-roadmap.md) | The 10 highest-leverage upgrades, known bugs, build order, target architecture |
+| 06 | [Reference](06-reference.md) | Cheat sheet, command index, metrics glossary, source tiers |
 
-## The pipeline at a glance
+---
 
-```text
-Question → conversation understanding → intent routing → query planning
-         → retrieval → ranking → evidence selection
-         → answer generation → grounding and presentation
-```
+## Reading paths
 
-A bad final answer does not mean the model is bad. The failure may have happened at any earlier stage. Diagnose before changing code.
+**Just want to use it well.** → [02](02-daily-routine.md) → [03](03-diagnosing-and-tweaks.md) → [04](04-weekly-cadence.md), with [06](06-reference.md) open on the side.
+
+**Want to make it smarter.** → [01](01-mental-model.md) for the frame, then [05](05-improvement-roadmap.md) for the work.
+
+**Onboarding your future self after a break.** → [01](01-mental-model.md) → [06](06-reference.md), then skim the rest.
+
+---
+
+## The one rule that ties it together
+
+> Change one thing at a time. Prompt, chunk size, reranker, threshold, embedding model — move one, run the eval, keep or revert. Move four at once and you'll never know which one mattered.
+
+Everything in this book is built around that loop.
