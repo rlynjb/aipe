@@ -1,58 +1,35 @@
-# buffr Result Improvement Routine
+# Buffr Engineering Handbook
 
-# Table of Contents
+## Table of Contents
 
-- [Core principle](#core-principle)
-- [Goal](#goal)
-- [Read the footer numbers](#read-the-footer-numbers)
-- [Failure case](#failure-case)
-- [Step 1: Did Buffr understand the conversation?](#step-1-did-buffr-understand-the-conversation)
-  - [Likely exercise](#likely-exercise)
-- [Step 2: Was the correct route chosen?](#step-2-was-the-correct-route-chosen)
-  - [Failure signals](#failure-signals)
-  - [Likely exercise: intent-based routing](#likely-exercise-intent-based-routing)
-- [Step 3: Did retrieval find the needed evidence?](#step-3-did-retrieval-find-the-needed-evidence)
-  - [Reading the metrics](#reading-the-metrics)
-- [Step 4: Was enough context retrieved?](#step-4-was-enough-context-retrieved)
-  - [Likely exercise: query planning](#likely-exercise-query-planning)
-- [Step 5: Was the evidence ranked correctly?](#step-5-was-the-evidence-ranked-correctly)
-  - [Likely exercise: hybrid retrieval](#likely-exercise-hybrid-retrieval)
-- [Step 6: Was the retrieved chunk coherent?](#step-6-was-the-retrieved-chunk-coherent)
-  - [Likely exercise: structure-aware chunking](#likely-exercise-structure-aware-chunking)
-- [Step 7: Was the right source trusted?](#step-7-was-the-right-source-trusted)
-  - [Likely exercise: source authority](#likely-exercise-source-authority)
-- [Step 8: Did the model receive clean evidence?](#step-8-did-the-model-receive-clean-evidence)
-  - [Likely exercise: evidence normalization](#likely-exercise-evidence-normalization)
-- [Step 9: Was the final answer grounded?](#step-9-was-the-final-answer-grounded)
-  - [Likely exercise: claim-aware generation](#likely-exercise-claim-aware-generation)
-- [Tweak A: Similarity threshold](#tweak-a-similarity-threshold)
-- [Tweak B: Metadata filter correctness](#tweak-b-metadata-filter-correctness)
-- [Tweak C: Intent routing](#tweak-c-intent-routing)
-- [Tweak D: Tool-call and turn budgets](#tweak-d-tool-call-and-turn-budgets)
-- [Tweak E: Freshness and re-indexing](#tweak-e-freshness-and-re-indexing)
-- [Tweak F: Search result contract](#tweak-f-search-result-contract)
-- [Add one real question to the eval set](#add-one-real-question-to-the-eval-set)
-- [Sprint options](#sprint-options)
-  - [Sprint 1: Conversation continuity](#sprint-1-conversation-continuity)
-  - [Sprint 2: Intent routing](#sprint-2-intent-routing)
-  - [Sprint 3: Query planning](#sprint-3-query-planning)
-  - [Sprint 4: Hybrid retrieval](#sprint-4-hybrid-retrieval)
-  - [Sprint 5: Structure-aware chunking](#sprint-5-structure-aware-chunking)
-  - [Sprint 6: Authority and freshness](#sprint-6-authority-and-freshness)
-  - [Sprint 7: Evidence packets](#sprint-7-evidence-packets)
-  - [Sprint 8: Claim-aware answers](#sprint-8-claim-aware-answers)
-- [1. Routing](#1-routing)
-- [2. Retrieval](#2-retrieval)
-- [3. Grounding](#3-grounding)
-- [4. Usefulness](#4-usefulness)
-- [Recommended eval categories](#recommended-eval-categories)
-- [Experiment: [name]](#experiment-name)
-- [Experiment: Lower retrieval threshold](#experiment-lower-retrieval-threshold)
-- [Tier 1 — Highest leverage](#tier-1--highest-leverage)
-- [Tier 2 — Retrieval quality](#tier-2--retrieval-quality)
-- [Tier 3 — Generation quality](#tier-3--generation-quality)
+- [Introduction](#introduction)
+  - [Core Principle](#core-principle)
+- [Part I — Operating Buffr](#part-i-operating-buffr)
+  - [1. One-Time Setup and Baseline](#1-one-time-setup-and-baseline)
+  - [2. Daily Natural Use](#2-daily-natural-use)
+  - [3. Weekly Review](#3-weekly-review)
+- [Part II — Diagnosing Bad Results](#part-ii-diagnosing-bad-results)
+  - [4. Capture the Failure](#4-capture-the-failure)
+  - [5. Failure Decision Tree](#5-failure-decision-tree)
+- [Part III — Improving the System](#part-iii-improving-the-system)
+  - [6. Controlled Tweaks](#6-controlled-tweaks)
+- [Part IV — Evaluation and Experiments](#part-iv-evaluation-and-experiments)
+  - [7. Evaluation Framework](#7-evaluation-framework)
+  - [8. Experiment Log](#8-experiment-log)
+- [Part V — Improvement Roadmap](#part-v-improvement-roadmap)
+  - [9. Monthly Improvement Sprint](#9-monthly-improvement-sprint)
+  - [10. Prioritized Backlog](#10-prioritized-backlog)
+  - [11. Symptom-to-Fix Cheat Sheet](#11-symptom-to-fix-cheat-sheet)
+  - [12. Recommended Implementation Order](#12-recommended-implementation-order)
+- [Part VI — AI Engineering Workflow](#part-vi-ai-engineering-workflow)
+  - [The Continuous Improvement Loop](#the-continuous-improvement-loop)
+  - [Failure Classification](#failure-classification)
+  - [AI System Pipeline](#ai-system-pipeline)
+  - [Engineering Principles](#engineering-principles)
 
 ---
+
+## Introduction
 
 A practical routine for improving Buffr through real use, diagnosis, controlled experiments, and evals.
 
@@ -89,7 +66,13 @@ A bad final answer does not automatically mean the model is bad. The failure may
 
 ---
 
-# Before anything: one-time setup check
+### Core Principle
+
+---
+
+## Part I — Operating Buffr
+
+### 1. One-Time Setup and Baseline
 
 Run:
 
@@ -132,9 +115,9 @@ This gives you something to compare against after each experiment.
 
 ---
 
-# Phase 1 — Daily natural use (5 minutes)
+### 2. Daily Natural Use
 
-## Goal
+### Goal
 
 Use Buffr like a real tool and notice where the experience breaks.
 
@@ -154,7 +137,7 @@ After each answer, ask:
 
 If yes, move on. If no, save the exact question and continue to Phase 2.
 
-## Read the footer numbers
+### Read the footer numbers
 
 An answer may show:
 
@@ -182,12 +165,71 @@ Watch for changes such as:
 
 ---
 
-# Phase 2 — Capture the failure
+### 3. Weekly Review
+
+Once a week, run three representative questions:
+
+1. personal fact or habit
+2. project or multi-document synthesis
+3. current external question
+
+Also run one follow-up question that depends on the previous turn.
+
+For each answer, score:
+
+```text
+Route correct?            0 or 1
+Needed evidence found?    0 or 1
+Top evidence relevant?    0 or 1
+Claims supported?         0 or 1
+Answer complete?          0 or 1
+Answer useful?            1–5
+Latency acceptable?       0 or 1
+```
+
+Then run:
+
+```bash
+npm run eval
+```
+
+Compare results with the previous week.
+
+### Add one real question to the eval set
+
+Every week, add at least one real question from your usage:
+
+```json
+{
+  "query": "your real question",
+  "relevant": ["expected-document-id"]
+}
+```
+
+Also label its type:
+
+```json
+{
+  "query": "Based on my recent priorities, what should I build next?",
+  "type": "personal_synthesis",
+  "relevant": ["career-goals", "active-projects", "recent-journal"]
+}
+```
+
+Over time, your eval suite should reflect how you genuinely use Buffr.
+
+---
+
+---
+
+## Part II — Diagnosing Bad Results
+
+### 4. Capture the Failure
 
 When an answer feels wrong, create a small failure record before changing code.
 
 ```markdown
-## Failure case
+### Failure case
 
 - Date:
 - Question:
@@ -212,11 +254,11 @@ The exact real-world question is valuable. Do not rewrite it into an easier benc
 
 ---
 
-# Phase 3 — Diagnose with the failure decision tree
+### 5. Failure Decision Tree
 
 Run through these checks in order.
 
-## Step 1: Did Buffr understand the conversation?
+### Step 1: Did Buffr understand the conversation?
 
 Ask whether the question depends on the immediately preceding turns.
 
@@ -229,7 +271,7 @@ Examples:
 
 If Buffr misunderstands the referent, the problem is likely **conversation state**, not retrieval.
 
-### Likely exercise
+#### Likely exercise
 
 Add recent sequential conversation history directly to the prompt:
 
@@ -245,7 +287,7 @@ Vector memory should support long-term recall, but it should not replace recent 
 
 ---
 
-## Step 2: Was the correct route chosen?
+### Step 2: Was the correct route chosen?
 
 Watch the spinner and trace which tools fired.
 
@@ -268,14 +310,14 @@ Classify the expected route:
 | “Summarize what we just discussed.” | Recent conversation state |
 | “What do reviews dislike about this product?” | Product reviews, possibly web |
 
-### Failure signals
+#### Failure signals
 
 - Personal question never searches personal records.
 - Current-events question uses only old indexed notes.
 - Simple reasoning question triggers every available connector.
 - The model is instructed to synthesize irrelevant results merely because they were fetched.
 
-### Likely exercise: intent-based routing
+#### Likely exercise: intent-based routing
 
 Replace unconditional “always search everything” behavior with an explicit route:
 
@@ -304,7 +346,7 @@ Measure routing separately with a small labeled dataset.
 
 ---
 
-## Step 3: Did retrieval find the needed evidence?
+### Step 3: Did retrieval find the needed evidence?
 
 If the correct tool fired but the answer was wrong, inspect the retrieved chunks.
 
@@ -335,7 +377,7 @@ query: "my workout routine"
   R@3: 0.33
 ```
 
-### Reading the metrics
+#### Reading the metrics
 
 - **P@1:** Was the first result relevant?
 - **R@3:** Did the expected relevant material appear within the first three results?
@@ -360,7 +402,7 @@ Do not automatically lower the similarity threshold when R@3 is already high. Th
 
 ---
 
-## Step 4: Was enough context retrieved?
+### Step 4: Was enough context retrieved?
 
 Some questions cannot be answered by one raw search query.
 
@@ -383,7 +425,7 @@ The system may need several searches:
 }
 ```
 
-### Likely exercise: query planning
+#### Likely exercise: query planning
 
 Add a query-rewrite or retrieval-planning stage that:
 
@@ -397,7 +439,7 @@ Evaluate whether multi-query retrieval improves real failure cases rather than e
 
 ---
 
-## Step 5: Was the evidence ranked correctly?
+### Step 5: Was the evidence ranked correctly?
 
 Vector similarity alone may struggle with:
 
@@ -409,7 +451,7 @@ Vector similarity alone may struggle with:
 - quoted phrases
 - names of medications or products
 
-### Likely exercise: hybrid retrieval
+#### Likely exercise: hybrid retrieval
 
 Combine semantic and lexical retrieval:
 
@@ -440,11 +482,11 @@ Useful ranking metrics:
 
 ---
 
-## Step 6: Was the retrieved chunk coherent?
+### Step 6: Was the retrieved chunk coherent?
 
 Current fixed-size character chunking can split headings, sentences, lists, and related ideas.
 
-### Likely exercise: structure-aware chunking
+#### Likely exercise: structure-aware chunking
 
 Move from character slices toward:
 
@@ -483,7 +525,7 @@ Create a chunking eval containing:
 
 ---
 
-## Step 7: Was the right source trusted?
+### Step 7: Was the right source trusted?
 
 Buffr stores durable records and conversation memory in related retrieval infrastructure. This can create a feedback loop:
 
@@ -495,7 +537,7 @@ user fact
   → generated answer treated as primary evidence
 ```
 
-### Likely exercise: source authority
+#### Likely exercise: source authority
 
 Label sources explicitly:
 
@@ -536,11 +578,11 @@ Test conflicts deliberately:
 
 ---
 
-## Step 8: Did the model receive clean evidence?
+### Step 8: Did the model receive clean evidence?
 
 More chunks can make a small local model worse, especially when several chunks repeat or conflict.
 
-### Likely exercise: evidence normalization
+#### Likely exercise: evidence normalization
 
 Convert raw retrieval into an evidence packet:
 
@@ -567,11 +609,11 @@ Measure:
 
 ---
 
-## Step 9: Was the final answer grounded?
+### Step 9: Was the final answer grounded?
 
 A correct retrieval can still produce an unsupported or overconfident answer.
 
-### Likely exercise: claim-aware generation
+#### Likely exercise: claim-aware generation
 
 Use a structured intermediate result:
 
@@ -604,11 +646,15 @@ Add a grounding check that flags claims without source IDs.
 
 ---
 
-# Phase 4 — Controlled tweaks
+---
+
+## Part III — Improving the System
+
+### 6. Controlled Tweaks
 
 Change one variable at a time. Record the old value, new value, hypothesis, eval result, and decision.
 
-## Tweak A: Similarity threshold
+### Tweak A: Similarity threshold
 
 In `src/session.ts`, locate:
 
@@ -639,7 +685,7 @@ A single global threshold may not work equally well for journal entries, tasks, 
 
 ---
 
-## Tweak B: Metadata filter correctness
+### Tweak B: Metadata filter correctness
 
 Review the filter behavior in the retrieval tool.
 
@@ -661,7 +707,7 @@ Add tests for:
 
 ---
 
-## Tweak C: Intent routing
+### Tweak C: Intent routing
 
 Avoid rules that require every question to search every source.
 
@@ -700,7 +746,7 @@ latency by route
 
 ---
 
-## Tweak D: Tool-call and turn budgets
+### Tweak D: Tool-call and turn budgets
 
 Current limits may resemble:
 
@@ -728,7 +774,7 @@ product_research:    2–4 tool calls
 
 ---
 
-## Tweak E: Freshness and re-indexing
+### Tweak E: Freshness and re-indexing
 
 After editing notes:
 
@@ -756,7 +802,7 @@ Add a freshness test:
 
 ---
 
-## Tweak F: Search result contract
+### Tweak F: Search result contract
 
 Return full synthesis text separately from the short citation label.
 
@@ -781,148 +827,17 @@ Use `text` for synthesis and `citationLabel` only for display.
 
 ---
 
-# Phase 5 — Weekly review (20–30 minutes)
-
-Once a week, run three representative questions:
-
-1. personal fact or habit
-2. project or multi-document synthesis
-3. current external question
-
-Also run one follow-up question that depends on the previous turn.
-
-For each answer, score:
-
-```text
-Route correct?            0 or 1
-Needed evidence found?    0 or 1
-Top evidence relevant?    0 or 1
-Claims supported?         0 or 1
-Answer complete?          0 or 1
-Answer useful?            1–5
-Latency acceptable?       0 or 1
-```
-
-Then run:
-
-```bash
-npm run eval
-```
-
-Compare results with the previous week.
-
-## Add one real question to the eval set
-
-Every week, add at least one real question from your usage:
-
-```json
-{
-  "query": "your real question",
-  "relevant": ["expected-document-id"]
-}
-```
-
-Also label its type:
-
-```json
-{
-  "query": "Based on my recent priorities, what should I build next?",
-  "type": "personal_synthesis",
-  "relevant": ["career-goals", "active-projects", "recent-journal"]
-}
-```
-
-Over time, your eval suite should reflect how you genuinely use Buffr.
-
 ---
 
-# Phase 6 — Monthly improvement sprint
+## Part IV — Evaluation and Experiments
 
-Choose only one system layer per sprint.
-
-## Sprint options
-
-### Sprint 1: Conversation continuity
-
-Build and test:
-
-- recent turn injection
-- rolling conversation summary
-- pronoun and referent resolution
-- follow-up eval cases
-
-### Sprint 2: Intent routing
-
-Build and test:
-
-- route schema
-- labeled routing dataset
-- route-specific tool access
-- unnecessary-tool-call metric
-
-### Sprint 3: Query planning
-
-Build and test:
-
-- multi-query expansion
-- query deduplication
-- trace visibility
-- broad synthesis questions
-
-### Sprint 4: Hybrid retrieval
-
-Build and test:
-
-- vector candidates
-- lexical candidates
-- merged ranking
-- exact-term evals
-
-### Sprint 5: Structure-aware chunking
-
-Build and test:
-
-- Markdown heading parsing
-- sentence-aware packing
-- heading-path metadata
-- re-index comparison
-
-### Sprint 6: Authority and freshness
-
-Build and test:
-
-- source authority metadata
-- recency scoring
-- conflict resolution
-- generated-memory safeguards
-
-### Sprint 7: Evidence packets
-
-Build and test:
-
-- deduplication
-- claim extraction
-- conflict detection
-- token reduction
-
-### Sprint 8: Claim-aware answers
-
-Build and test:
-
-- structured answer intermediate
-- source IDs per claim
-- uncertainty labels
-- grounding validator
-
----
-
-# Evaluation framework
+### 7. Evaluation Framework
 
 Retrieval metrics alone do not measure the complete product experience.
 
 Use four eval layers.
 
-## 1. Routing
+### 1. Routing
 
 Did Buffr choose the appropriate source and tools?
 
@@ -933,7 +848,7 @@ Metrics:
 - missed-tool rate
 - tool-call count
 
-## 2. Retrieval
+### 2. Retrieval
 
 Did Buffr find the necessary evidence?
 
@@ -944,7 +859,7 @@ Metrics:
 - MRR
 - nDCG
 
-## 3. Grounding
+### 3. Grounding
 
 Did the final answer stay supported by the evidence?
 
@@ -955,7 +870,7 @@ Metrics:
 - citation correctness
 - conflict acknowledgment
 
-## 4. Usefulness
+### 4. Usefulness
 
 Did Buffr answer the actual question well?
 
@@ -968,7 +883,7 @@ Metrics:
 - readability
 - actionable next step when appropriate
 
-## Recommended eval categories
+### Recommended eval categories
 
 ```text
 exact personal fact
@@ -986,12 +901,12 @@ assistant-memory versus user-source conflict
 
 ---
 
-# Experiment log template
+### 8. Experiment Log
 
 Use this whenever you change behavior:
 
 ```markdown
-## Experiment: [name]
+### Experiment: [name]
 
 - Date:
 - Commit:
@@ -1010,7 +925,7 @@ Use this whenever you change behavior:
 Example:
 
 ```markdown
-## Experiment: Lower retrieval threshold
+### Experiment: Lower retrieval threshold
 
 - Failure case: workout routine not found
 - Hypothesis: relevant chunks score between 0.60 and 0.65
@@ -1023,9 +938,93 @@ Example:
 
 ---
 
-# Improvement backlog
+---
 
-## Tier 1 — Highest leverage
+## Part V — Improvement Roadmap
+
+### 9. Monthly Improvement Sprint
+
+Choose only one system layer per sprint.
+
+### Sprint options
+
+#### Sprint 1: Conversation continuity
+
+Build and test:
+
+- recent turn injection
+- rolling conversation summary
+- pronoun and referent resolution
+- follow-up eval cases
+
+#### Sprint 2: Intent routing
+
+Build and test:
+
+- route schema
+- labeled routing dataset
+- route-specific tool access
+- unnecessary-tool-call metric
+
+#### Sprint 3: Query planning
+
+Build and test:
+
+- multi-query expansion
+- query deduplication
+- trace visibility
+- broad synthesis questions
+
+#### Sprint 4: Hybrid retrieval
+
+Build and test:
+
+- vector candidates
+- lexical candidates
+- merged ranking
+- exact-term evals
+
+#### Sprint 5: Structure-aware chunking
+
+Build and test:
+
+- Markdown heading parsing
+- sentence-aware packing
+- heading-path metadata
+- re-index comparison
+
+#### Sprint 6: Authority and freshness
+
+Build and test:
+
+- source authority metadata
+- recency scoring
+- conflict resolution
+- generated-memory safeguards
+
+#### Sprint 7: Evidence packets
+
+Build and test:
+
+- deduplication
+- claim extraction
+- conflict detection
+- token reduction
+
+#### Sprint 8: Claim-aware answers
+
+Build and test:
+
+- structured answer intermediate
+- source IDs per claim
+- uncertainty labels
+- grounding validator
+
+---
+
+### 10. Prioritized Backlog
+
+### Tier 1 — Highest leverage
 
 - [ ] Add recent sequential conversation history.
 - [ ] Fix exact metadata filtering.
@@ -1033,7 +1032,7 @@ Example:
 - [ ] Separate or down-rank assistant-generated memory.
 - [ ] Add routing and final-answer evals.
 
-## Tier 2 — Retrieval quality
+### Tier 2 — Retrieval quality
 
 - [ ] Add multi-query rewriting.
 - [ ] Add hybrid lexical and vector retrieval.
@@ -1041,7 +1040,7 @@ Example:
 - [ ] Add recency and source-authority signals.
 - [ ] Replace character chunking with structure-aware token chunking.
 
-## Tier 3 — Generation quality
+### Tier 3 — Generation quality
 
 - [ ] Normalize retrieval into an evidence packet.
 - [ ] Generate a structured claim map.
@@ -1051,7 +1050,7 @@ Example:
 
 ---
 
-# Cheat sheet
+### 11. Symptom-to-Fix Cheat Sheet
 
 | Symptom | First check | Likely cause | Best next exercise |
 |---|---|---|---|
@@ -1070,7 +1069,7 @@ Example:
 
 ---
 
-# Recommended order of implementation
+### 12. Recommended Implementation Order
 
 Do not attempt all improvements simultaneously.
 
@@ -1118,3 +1117,104 @@ User question ────────▶│ Conversation state │
 ```
 
 > Buffr should not merely search and then talk. It should determine what evidence the question requires, retrieve the best evidence, and make clear what is known, inferred, or uncertain.
+
+---
+
+---
+
+## Part VI — AI Engineering Workflow
+
+### The Continuous Improvement Loop
+
+```text
+          Build
+            │
+            ▼
+     Use the system
+            │
+            ▼
+    Find one bad answer
+            │
+            ▼
+ Classify the failure
+            │
+            ├── Routing
+            ├── Retrieval
+            ├── Ranking
+            ├── Memory
+            ├── Tool selection
+            ├── Generation
+            └── Evaluation
+            │
+            ▼
+ Form a hypothesis
+            │
+            ▼
+ Change ONE thing
+            │
+            ▼
+ Run evals
+            │
+            ▼
+ Did it improve?
+      │            │
+     Yes          No
+      │            │
+      └──────┬─────┘
+             ▼
+       Keep learning
+```
+
+### Failure Classification
+
+- Routing
+- Query planning
+- Retrieval
+- Reranking
+- Chunking
+- Conversation memory
+- Source authority
+- Tool selection
+- Evidence selection
+- Generation
+- Grounding
+- Evaluation
+
+### AI System Pipeline
+
+```text
+User Question
+      │
+      ▼
+Intent Classification
+      │
+      ▼
+Query Planning
+      │
+      ▼
+Hybrid Retrieval
+      │
+      ▼
+Reranking
+      │
+      ▼
+Evidence Normalization
+      │
+      ▼
+Generation
+      │
+      ▼
+Grounding Verification
+      │
+      ▼
+Final Answer
+```
+
+### Engineering Principles
+
+- Build first, optimize second.
+- Diagnose before changing code.
+- Change one variable at a time.
+- Measure improvements with evals.
+- Prefer architecture improvements over prompt tweaks.
+- Treat every subsystem as independently testable.
