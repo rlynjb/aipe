@@ -1,4 +1,4 @@
-# Code Orientation Prompt Library
+# Codebase Onboard Prompt Library
 
 Quick-reference for orienting yourself to an unfamiliar app or feature with an AI agent — structured so you get a real engineer's mental model, not a generic architecture summary. Ask in layers, trace one real flow, then make the AI quiz you.
 
