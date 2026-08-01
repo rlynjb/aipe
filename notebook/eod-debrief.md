@@ -3,7 +3,8 @@
 Self-contained debrief reference for the AI-era software engineer. Each section pairs a runnable prompt — paste your feature, diff, or decision and have the agent run the checks against what you actually did — with the full checklist it's built from (explanation + example per item), so nothing lives outside this file.
 
 > AI can generate code, but your value comes from **understanding the problem, directing the implementation, evaluating the result, and defending the final design.**
-> Orient to, design, review, implement, and coordinate applications with AI while keeping ownership of the system's mental model and its complexity.
+> 
+> This is to orient you to design, review, implement, and coordinate applications with AI while keeping ownership of the system's mental model and its complexity.
 
 **How to use:** run at the end of a work block, not as a to-do list. Every day, run the [Final Engineering Standard](#final-engineering-standard-daily-core) against whatever you shipped — that's the core debrief. When today felt shaky in one spot, open the matching prompt. Every week, run the [Weekly practice loop](#weekly-practice-loop). Spread thin? The [Priority order](#priority-order) says what to strengthen first.
 
