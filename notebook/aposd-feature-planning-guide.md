@@ -29,17 +29,17 @@ The goal is not to generate an elaborate architecture before writing code. The g
 
 | # | Prompt | What it does | Reach for it when |
 |---|--------|--------------|-------------------|
-| 1 | **Compact daily** | 14-step condensed plan, all phases in one shot | Default. Most tickets. |
-| 2 | **Master** | Full 15-stage deep analysis | High-risk / ambiguous / cross-cutting feature |
-| 3 | **First pass** | Sorts ticket into confirmed / inferred / ambiguous / contradictory | Before anything — normalize the ticket |
-| 4 | **AC → invariants** | Turns each acceptance criterion into a guarantee + owner + test | AC is vague or behavior-only |
-| 5 | **Codebase investigation** | Question set for locating where the feature belongs | Requirements clear, need to find the fit |
-| 6 | **Closest features** | Finds 3 nearest existing features + reusable decisions | Suspect similar behavior already exists |
-| 7 | **Responsibility map** | Plans by decision / owner instead of frontend/backend/db | Risk of scattering one decision across layers |
-| 8 | **Two designs** | A (extend) vs B (restructure), full trade-off compare | Multiple viable structures |
-| 9 | **Overengineering check** | Flags speculative abstractions in a proposed plan | Plan feels layer-heavy or AI-generated |
-| 10 | **Future-change probes** | Stress-tests boundaries against likely future changes | Validate module boundaries before coding |
-| 11 | **Vertical slices** | Converts chosen design into independently testable slices | Ready to sequence implementation |
+| 1 | [**Compact daily**](#1-compact-daily-prompt) | 14-step condensed plan, all phases in one shot | Default. Most tickets. |
+| 2 | [**Master**](#2-master-feature-planning-prompt) | Full 15-stage deep analysis | High-risk / ambiguous / cross-cutting feature |
+| 3 | [**First pass**](#3-first-pass--understand-the-ticket) | Sorts ticket into confirmed / inferred / ambiguous / contradictory | Before anything — normalize the ticket |
+| 4 | [**AC → invariants**](#4-turn-acceptance-criteria-into-invariants) | Turns each acceptance criterion into a guarantee + owner + test | AC is vague or behavior-only |
+| 5 | [**Codebase investigation**](#5-questions-for-investigating-the-existing-codebase) | Question set for locating where the feature belongs | Requirements clear, need to find the fit |
+| 6 | [**Closest features**](#6-find-the-three-closest-existing-features) | Finds 3 nearest existing features + reusable decisions | Suspect similar behavior already exists |
+| 7 | [**Responsibility map**](#7-design-the-feature-around-responsibilities) | Plans by decision / owner instead of frontend/backend/db | Risk of scattering one decision across layers |
+| 8 | [**Two designs**](#8-ask-for-two-designs) | A (extend) vs B (restructure), full trade-off compare | Multiple viable structures |
+| 9 | [**Overengineering check**](#9-detect-overengineering-before-coding) | Flags speculative abstractions in a proposed plan | Plan feels layer-heavy or AI-generated |
+| 10 | [**Future-change probes**](#10-probe-the-design-with-future-changes) | Stress-tests boundaries against likely future changes | Validate module boundaries before coding |
+| 11 | [**Vertical slices**](#11-convert-the-plan-into-vertical-slices) | Converts chosen design into independently testable slices | Ready to sequence implementation |
 
 Reference (not prompts): [Planning sequence](#recommended-planning-sequence) · [Planning questions](#planning-questions--mental-checklist) · [Workflow](#workflow-summary)
 
