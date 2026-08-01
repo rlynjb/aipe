@@ -1,6 +1,8 @@
-Yes. **APOSD is excellent for code review**, particularly for reviewing whether a change makes the system easier or harder to understand and modify.
+# APOSD Code-Review Prompt Library
 
-A normal code review asks:
+Quick-reference for reviewing a change with an AI coding agent, using *A Philosophy of Software Design* to judge whether the change makes the system easier or harder to understand and modify.
+
+A normal review asks:
 
 ```text
 Does this code work?
@@ -8,7 +10,7 @@ Are there bugs?
 Are there tests?
 ```
 
-An APOSD-oriented review also asks:
+An APOSD review also asks:
 
 ```text
 Where did the complexity go?
@@ -17,9 +19,78 @@ Did this change duplicate design knowledge?
 Will the next change require editing many places?
 ```
 
-APOSD should complement—not replace—reviews for correctness, security, performance, accessibility, and testing.
+APOSD should **complement, not replace** reviews for correctness, security, performance, accessibility, and testing.
 
-## Master APOSD code-review prompt
+---
+
+## Index
+
+| # | Prompt | What it does | Reach for it when |
+|---|--------|--------------|-------------------|
+| ★ | [**Compact daily**](#compact-daily-code-review-prompt) | 11-point pass in one shot, blocking vs optional | Default. Most diffs. |
+| 0 | [**Master**](#0-master-aposd-code-review-prompt) | Full 15-point review → 5 finding buckets | Bigger or higher-stakes change |
+| 1 | [**Understand the change**](#1-understand-the-change-first) | Explains intent before critiquing | First — don't review what you don't understand |
+| 2 | [**Correctness**](#2-review-correctness) | Bugs, branches, races, boundaries + repro | Always, before design (comes first) |
+| 3 | [**Module depth**](#3-review-module-depth) | Deep vs shallow classification per module | New/changed modules |
+| 4 | [**Shallow abstractions**](#4-detect-shallow-abstractions) | Flags forwarders, renamers, one-use wrappers | Diff added lots of hooks/services/files |
+| 5 | [**Information hiding**](#5-review-information-hiding) | What each module owns vs leaks | Boundaries look thin |
+| 6 | [**Duplicated design knowledge**](#6-find-duplicated-design-knowledge) | Same *decision* encoded in many places | High-value check — always worth it |
+| 7 | [**Responsibility ownership**](#7-review-responsibility-ownership) | Who is authoritative for each decision | Logic feels scattered |
+| 8 | [**State ownership**](#8-review-state-ownership) | Source of truth, readers, writers, staleness | React/stores/caches/optimistic updates |
+| 9 | [**Temporal coupling**](#9-review-temporal-coupling) | Required call ordering the interface doesn't enforce | init/configure/load-style APIs |
+| 10 | [**Interface complexity**](#10-review-interface-complexity) | Params, flags, ordering, error surface | Public interface changed |
+| 11 | [**General vs special-purpose**](#11-review-general-purpose-versus-special-purpose-design) | Catches both over-specific and over-generic | Suspect hard-coding or framework-building |
+| 12 | [**Error abstraction**](#12-review-error-abstraction) | Whether errors match each boundary's level | Low-level failures reach UI/callers |
+| 13 | [**Code obviousness**](#13-review-code-obviousness) | Names, side effects, hidden behavior, comments | Change is hard to read quickly |
+| 14 | [**Change amplification**](#14-review-change-amplification) | Probes future changes for change locality | Testing the design, not just cleanliness |
+| 15 | [**Tests as design evidence**](#15-review-tests-as-design-evidence) | Behavior/invariants vs implementation-coupled | Reviewing the test changes |
+| A | [**AI-generated change**](#a-reviewing-an-ai-generated-change) | Skeptical pass for common AI design smells | The diff came from an agent |
+| B | [**Single function**](#b-review-a-single-function) | One function's responsibility + knowledge | Zooming in on one function |
+| C | [**New abstraction**](#c-review-a-new-abstraction) | Whether the abstraction earns its existence | A new layer/interface was introduced |
+| D | [**Refactor**](#d-review-a-refactor) | Behavior-preserved + complexity reduced not moved | PR labeled "refactor / no behavior change" |
+| E | [**Review comments**](#e-producing-useful-review-comments) | Forces concrete, actionable, severity-tagged output | Turning findings into PR comments |
+
+Reference (not prompts): [Review workflow](#recommended-review-workflow) · [Manual-review questions](#questions-to-remember-during-manual-review) · [The four reviews](#the-overall-model)
+
+---
+
+## Compact daily code-review prompt
+
+**What it does:** Runs the whole APOSD review as a single 11-point pass and splits blocking from optional. Your everyday driver for a normal diff.
+
+```text
+Review this diff using APOSD principles.
+
+Focus on:
+
+1. Correctness and violated invariants
+2. Module depth
+3. Information hiding
+4. Duplicated design knowledge
+5. Responsibility and state ownership
+6. Interface complexity
+7. Temporal coupling
+8. Change amplification
+9. Error abstraction
+10. Code obviousness
+11. Test quality
+
+For every finding, provide:
+
+- Evidence
+- Concrete consequence
+- Severity
+- Smallest recommended improvement
+
+Separate blocking issues from optional design improvements.
+Do not recommend additional abstractions unless they hide meaningful complexity.
+```
+
+---
+
+## 0. Master APOSD code-review prompt
+
+**What it does:** The full 15-point review producing five finding buckets, each finding tagged blocking/important/optional with a realistic scenario. Use for bigger or higher-stakes changes.
 
 ```text
 Review this change using principles from A Philosophy of Software Design.
@@ -64,20 +135,11 @@ Do not recommend abstraction merely to reduce line count.
 Do not reward additional layers unless they hide meaningful complexity.
 ```
 
-# Recommended review workflow
-
-Use several passes rather than asking the agent to review everything simultaneously.
-
-```text
-Pass 1: Understand the intended behavior
-Pass 2: Review correctness and failure cases
-Pass 3: Review module boundaries and information hiding
-Pass 4: Review state, dependencies, and errors
-Pass 5: Review tests and change impact
-Pass 6: Summarize only actionable findings
-```
+---
 
 ## 1. Understand the change first
+
+**What it does:** Forces the agent to explain intent, entry points, and invariants before critiquing — separating diff-confirmed facts from inference. Prevents criticism of code it hasn't understood.
 
 ```text
 Explain this change before reviewing it.
@@ -96,9 +158,11 @@ Identify:
 Separate what is directly confirmed by the diff from what you inferred.
 ```
 
-This prevents the agent from criticizing code it has not properly understood.
+---
 
 ## 2. Review correctness
+
+**What it does:** Standard correctness pass — bad assumptions, missing branches, races, boundaries — each issue backed by a concrete input or event sequence. Since APOSD is a design philosophy, this pass should still come first.
 
 ```text
 Review this change for behavioral correctness.
@@ -122,11 +186,11 @@ For each issue, provide a concrete input or event sequence that demonstrates
 the failure.
 ```
 
-APOSD is primarily a design philosophy, so this normal correctness pass should still come first.
+---
 
 ## 3. Review module depth
 
-A deep module offers substantial functionality behind a comparatively simple interface.
+**What it does:** Classifies every new/changed module deep → shallow → pass-through, contrasting hidden vs exposed complexity. The key question: *is the interface considerably simpler than the implementation behind it?*
 
 ```text
 Evaluate the depth of every module introduced or substantially changed.
@@ -152,15 +216,11 @@ Explain whether the module makes the system easier to use or merely moves code
 into another file.
 ```
 
-A useful review question is:
-
-> Is the interface considerably simpler than the implementation behind it?
-
-If not, the abstraction may not be helping.
+---
 
 ## 4. Detect shallow abstractions
 
-AI-generated code often creates unnecessary hooks, services, helpers, factories, interfaces, and wrappers.
+**What it does:** Finds abstractions the change introduced that add navigation cost without hiding complexity — forwarders, renamers, single-use wrappers. Especially useful on AI-generated code.
 
 ```text
 Look for shallow abstractions introduced by this change.
@@ -186,7 +246,11 @@ For each candidate, determine whether it is:
 Do not assume that more modules mean better modularity.
 ```
 
+---
+
 ## 5. Review information hiding
+
+**What it does:** Per changed module, contrasts what callers need to know vs what's exposed through params, returns, config, errors, or ordering — and judges whether the change improves or weakens hiding.
 
 ```text
 For each changed module, identify:
@@ -201,7 +265,7 @@ For each changed module, identify:
 Determine whether the change improves or weakens information hiding.
 ```
 
-Examples of details that may be leaking:
+*Examples of details that may be leaking:*
 
 ```text
 Database column names
@@ -215,9 +279,11 @@ Serialization format
 Internal status values
 ```
 
+---
+
 ## 6. Find duplicated design knowledge
 
-This is one of the most valuable APOSD review checks.
+**What it does:** One of the most valuable APOSD review checks — hunts for the same *decision* encoded in multiple places (not just repeated syntax), showing how the copies could diverge and who should own the rule.
 
 ```text
 Search the change and surrounding code for duplicated design knowledge.
@@ -243,9 +309,11 @@ For each duplicated rule:
 4. Determine whether this change increases or reduces duplication.
 ```
 
-The problem is not merely repeated syntax. The problem is **the same decision being encoded in multiple places**.
+---
 
 ## 7. Review responsibility ownership
+
+**What it does:** Assigns an owner to each responsibility the change introduces and flags scattering, mixed ownership, and callers doing callee work. The test: *who is authoritative for this decision?*
 
 ```text
 For each responsibility introduced by this change, identify its owner.
@@ -272,13 +340,11 @@ Check whether:
 - Multiple modules can independently make the same decision
 ```
 
-A strong review question is:
-
-> Who is authoritative for this decision?
-
-If there is no clear answer, future changes are likely to create inconsistencies.
+---
 
 ## 8. Review state ownership
+
+**What it does:** Maps each added/modified state value — source of truth, readers, writers, staleness — and flags multiple sources of truth or manual synchronization. Especially useful for React, stores, caches, and optimistic updates.
 
 ```text
 Map every state value added or modified by this change.
@@ -306,9 +372,11 @@ Look for:
 - Callers that must manually keep values synchronized
 ```
 
-This is especially useful for React, frontend stores, caches, and optimistic updates.
+---
 
 ## 9. Review temporal coupling
+
+**What it does:** Finds operations that must run in a particular order, and asks whether the interface enforces it or leaves every caller to remember it — and whether the module could absorb the ordering.
 
 ```text
 Find operations that must occur in a particular order.
@@ -331,7 +399,7 @@ For each sequence, determine:
 - Whether the module could absorb or eliminate the ordering requirement
 ```
 
-An API like this is often fragile:
+*Fragile (ordering pushed onto callers):*
 
 ```ts
 const client = createClient();
@@ -340,15 +408,17 @@ client.initialize();
 client.load();
 ```
 
-A deeper interface may be:
+*Deeper (ordering hidden):*
 
 ```ts
 const client = await createReadyClient(config);
 ```
 
-The second version hides the initialization sequence from callers.
+---
 
 ## 10. Review interface complexity
+
+**What it does:** Scores each changed public interface on params, flags, ordering, and error surface, and flags parameters that expose implementation decisions. Watch boolean flags — `loadGraph(true, false, true)` often signals hidden modes.
 
 ```text
 Review each public interface changed by this patch.
@@ -372,17 +442,11 @@ Identify parameters that expose implementation decisions rather than genuine
 caller requirements.
 ```
 
-Pay particular attention to boolean flags:
-
-```ts
-loadGraph(true, false, true)
-```
-
-They often indicate hidden modes and unclear responsibilities.
+---
 
 ## 11. Review general-purpose versus special-purpose design
 
-APOSD generally warns against excessive special cases, but “generic” code can also become difficult.
+**What it does:** Checks for both opposite failures — over-specific hard-coding scattered through shared modules, and over-generic framework-building with no real users — and recommends the simplest design for known requirements.
 
 ```text
 Determine whether this implementation is appropriately general.
@@ -405,7 +469,11 @@ Recommend the simplest design that supports the known requirements without
 creating unnecessary special cases.
 ```
 
+---
+
 ## 12. Review error abstraction
+
+**What it does:** Traces where errors originate, get caught, and get translated, and checks each module exposes errors appropriate to its abstraction level.
 
 ```text
 Review how errors cross module boundaries.
@@ -423,7 +491,7 @@ Identify:
 Check whether each module exposes errors appropriate to its abstraction level.
 ```
 
-For example:
+*Example:*
 
 ```text
 Poor boundary:
@@ -433,9 +501,11 @@ Better boundary:
 Repository translates it into DuplicateProjectNameError.
 ```
 
+---
+
 ## 13. Review code obviousness
 
-APOSD values code that can be understood quickly and accurately.
+**What it does:** Looks for anything that slows correct understanding — misleading names, hidden side effects, behavior buried in generic helpers, comments that repeat code instead of explaining design reasoning.
 
 ```text
 Review this change for code obviousness.
@@ -458,7 +528,7 @@ Identify the smallest changes that would reduce the time needed to understand
 the code correctly.
 ```
 
-Useful distinction:
+*Comment quality:*
 
 ```text
 Bad comment:
@@ -468,9 +538,11 @@ Useful comment:
 Skip the synthetic root node because it is not persisted.
 ```
 
-The second comment explains information that is not obvious from the code itself.
+---
 
 ## 14. Review change amplification
+
+**What it does:** Uses hypothetical future changes as probes to judge change locality — which modules contain a change vs let it spread. Often more informative than asking whether the code "looks clean."
 
 ```text
 Use hypothetical future changes to evaluate this design.
@@ -494,9 +566,11 @@ For each scenario, identify:
 Determine whether this patch improves or worsens change locality.
 ```
 
-This is often more informative than merely asking whether the code “looks clean.”
+---
 
 ## 15. Review tests as design evidence
+
+**What it does:** Judges whether tests verify behavior/invariants/contracts vs coupling to private methods, call order, and mock interactions. Tests that must know every internal call often reveal weak module boundaries.
 
 ```text
 Review the tests for this change.
@@ -523,11 +597,11 @@ Look for tests that are overly coupled to:
 Explain what the tests reveal about the quality of the module interfaces.
 ```
 
-Tests that must know every internal call often indicate that module boundaries are weak.
+---
 
-# Reviewing an AI-generated change
+## A. Reviewing an AI-generated change
 
-This prompt is especially useful when using an AI coding agent:
+**What it does:** A skeptical pass targeting design problems agents commonly produce — unnecessary layers, one-impl interfaces, silent fallbacks, type assertions hiding invalid states, partial migrations leaving two competing patterns.
 
 ```text
 Review this AI-generated implementation skeptically.
@@ -553,7 +627,11 @@ Determine which abstractions hide meaningful complexity and which merely add
 navigation cost.
 ```
 
-## Review a single function
+---
+
+## B. Review a single function
+
+**What it does:** Zooms in on one function's real responsibility, embedded design knowledge, and whether it should stay, merge, or move. Won't recommend extraction just because a function is long — a coherent long function can beat ten tiny ones.
 
 ```text
 Review this function using APOSD principles.
@@ -574,9 +652,11 @@ Determine:
 Do not recommend extraction merely because the function is long.
 ```
 
-Long functions are not automatically bad. A longer function with coherent logic may be easier to understand than ten tiny functions requiring constant navigation.
+---
 
-## Review a new abstraction
+## C. Review a new abstraction
+
+**What it does:** Interrogates whether a newly introduced abstraction earns its keep — what it hides, how many real callers need it, what's lost if removed — and ends with a keep/simplify/merge/move/remove verdict.
 
 ```text
 Evaluate whether this new abstraction earns its existence.
@@ -603,7 +683,11 @@ Conclude with:
 - Remove abstraction
 ```
 
-## Review a refactor
+---
+
+## D. Review a refactor
+
+**What it does:** Verifies a "structural only" change actually preserves behavior and reduces complexity rather than relocating it — and flags any part that quietly changes behavior.
 
 ```text
 Review this refactor separately from behavioral changes.
@@ -624,9 +708,11 @@ Identify any part of the refactor that changes behavior despite being presented
 as structural only.
 ```
 
-## Producing useful review comments
+---
 
-Ask the agent not to produce vague opinions:
+## E. Producing useful review comments
+
+**What it does:** Makes the agent write concrete, actionable, severity-tagged comments instead of vague opinions ("this could be cleaner", "consider refactoring"). Every comment carries a consequence and a scenario.
 
 ```text
 Write code-review comments that are concrete and actionable.
@@ -651,39 +737,26 @@ Only report issues that have a plausible maintenance, correctness, or usability
 consequence.
 ```
 
-A good comment might be:
+*Example of a good comment:*
 
 > **Important:** `ProductCard` now interprets the raw API status values `"active"` and `"archived"`. The same mapping exists in `productMapper.ts`. If the backend adds another status, both locations must change together. Consider returning a domain-level `ProductState` from the mapper so UI components do not depend on the transport representation.
 
-# Compact daily code-review prompt
+---
+
+## Recommended review workflow
+
+Use several passes rather than reviewing everything simultaneously:
 
 ```text
-Review this diff using APOSD principles.
-
-Focus on:
-
-1. Correctness and violated invariants
-2. Module depth
-3. Information hiding
-4. Duplicated design knowledge
-5. Responsibility and state ownership
-6. Interface complexity
-7. Temporal coupling
-8. Change amplification
-9. Error abstraction
-10. Code obviousness
-11. Test quality
-
-For every finding, provide:
-
-- Evidence
-- Concrete consequence
-- Severity
-- Smallest recommended improvement
-
-Separate blocking issues from optional design improvements.
-Do not recommend additional abstractions unless they hide meaningful complexity.
+Pass 1: Understand the intended behavior
+Pass 2: Review correctness and failure cases
+Pass 3: Review module boundaries and information hiding
+Pass 4: Review state, dependencies, and errors
+Pass 5: Review tests and change impact
+Pass 6: Summarize only actionable findings
 ```
+
+---
 
 ## Questions to remember during manual review
 
@@ -713,7 +786,9 @@ Does this code make the system more obvious?
 Does the test verify behavior or merely mirror the implementation?
 ```
 
-The overall model is:
+---
+
+## The overall model
 
 ```text
 Correctness review:
