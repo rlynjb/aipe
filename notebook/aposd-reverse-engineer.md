@@ -1,10 +1,47 @@
-Yes. **APOSD—*A Philosophy of Software Design*** can work very well as a **design lens for reverse-engineering an existing app or feature with an AI coding agent**.
+# APOSD Reverse-Engineering Prompt Library
 
-The book is not a step-by-step reverse-engineering manual. Its value is giving the agent better questions:
+Quick-reference for reverse-engineering an existing app or feature with an AI coding agent, using *A Philosophy of Software Design* as the question framework. The agent is the explorer, tracer, critic, and tutor; APOSD gives it better questions.
 
-> What complexity exists here, where is it located, what hides it, and where does it leak?
+The core question APOSD asks of any code:
 
-APOSD focuses on minimizing complexity by decomposing systems into relatively independent modules. Its major ideas include deep modules, simple interfaces, information hiding, reducing dependencies, and making code more obvious. ([Stanford University][1])
+```text
+What complexity exists here, where is it located, what hides it, and where does it leak?
+```
+
+A normal explanation says: *`GraphView.tsx` calls `useGraphData`, which calls the API.*
+An APOSD explanation asks: *Does `GraphView` know more about graph storage, layout, caching, and API response formats than it should?* — that second question reveals the actual **design**, not just the call sequence.
+
+**Always separate evidence from inference.** Otherwise agents present plausible architectural guesses as established facts.
+
+---
+
+## Index
+
+| # | Prompt | What it does | Reach for it when |
+|---|--------|--------------|-------------------|
+| 0 | [**Master reverse-engineering**](#0-master-reverse-engineering-prompt) | Full 12-point pass → 9-section report | Start here on any unfamiliar feature |
+| 1 | [**Behavioral contract**](#1-establish-the-behavioral-contract) | Feature purely from the user's side, no implementation | Before studying any code |
+| 2 | [**Find entry points**](#2-find-the-real-entry-points) | Every route / handler / job / listener that starts the feature | Don't trust the first function you find |
+| 3 | [**Trace one scenario**](#3-trace-one-concrete-scenario) | Follows a single user action end to end | Need concrete ground truth |
+| 4 | [**Module map**](#4-identify-the-modules-and-their-abstractions) | Documents + classifies each module (deep → shallow) | Building the mental model |
+| 5 | [**Information leakage**](#5-detect-information-leakage) | Finds design knowledge duplicated across places | Suspect change amplification |
+| 6 | [**Shallow / pass-through**](#6-find-shallow-and-pass-through-modules) | Flags layers that don't hide meaningful complexity | Lots of hooks/wrappers/AI-gen code |
+| 7 | [**Cognitive load**](#7-locate-cognitive-load) | What a dev must hold in mind at once to edit safely | Feature feels hard to touch |
+| 8 | [**Change amplification**](#8-measure-change-amplification) | Probes design with hypothetical changes | Testing whether you actually understand it |
+| 9 | [**Temporal decomposition**](#9-find-temporal-decomposition) | Detects load→validate→save splits that scatter one rule | Editing one rule touches many files |
+| 10 | [**Configuration complexity**](#10-examine-configuration-complexity) | Audits config that shifts complexity onto callers | Module looks reusable but leaky |
+| 11 | [**Error handling**](#11-analyze-error-handling) | Maps the error model + where complexity should absorb | Failures leak across boundaries |
+| 12 | [**State ownership**](#12-investigate-state-ownership) | Source of truth, readers, writers, staleness per value | State ownership feels ambiguous |
+| 13 | [**What's intentionally hidden**](#13-ask-what-is-intentionally-hidden) | Per interface: hidden vs accidentally exposed | Testing abstraction quality |
+| 14 | [**Interface complexity**](#14-evaluate-interface-complexity) | Whether interface is simpler than its functionality | Judging a specific module's interface |
+| 15 | [**Unknown unknowns**](#15-find-unknown-unknowns) | Hunts for evidence the current story is incomplete | Before trusting any clean explanation |
+| A | [**Design scorecard**](#a-aposd-design-scorecard) | 1–5 scores across 10 APOSD dimensions | After the RE pass, want a summary |
+| B | [**Architecture-teaching**](#b-architecture-teaching-prompt) | Teaches the feature as if you'll rebuild from scratch | Studying fundamentals via real code |
+| C | [**Current vs ideal**](#c-compare-current-and-ideal-designs) | Descriptive vs prescriptive architecture, side by side | Want to see the gap to a better design |
+
+Reference (not prompts): [RE model chain](#the-aposd-reverse-engineering-model) · [Multi-pass workflow](#recommended-multi-pass-workflow)
+
+---
 
 ## The APOSD reverse-engineering model
 
@@ -30,19 +67,11 @@ Dependencies and information leakage
 Likely change impact
 ```
 
-A normal codebase explanation might say:
+---
 
-> `GraphView.tsx` calls `useGraphData`, which calls the API.
+## 0. Master reverse-engineering prompt
 
-An APOSD-oriented explanation asks:
-
-> Does `GraphView` know more about graph storage, layout, caching, and API response formats than it should?
-
-That second question helps you understand the **actual software design**, not just the call sequence.
-
-## Master reverse-engineering prompt
-
-Use this first:
+**What it does:** The full first pass — 12 investigation points producing a 9-section report. Explicitly forces evidence-vs-inference separation so guesses don't get presented as facts. Use this first.
 
 ```text
 Reverse-engineer this feature using the principles from A Philosophy of
@@ -80,13 +109,11 @@ Present the result as:
 - Unknowns and verification steps
 ```
 
-The instruction to separate **evidence from inference** is especially important. Otherwise, coding agents often present plausible architectural guesses as established facts.
-
-# Useful prompts by investigation stage
+---
 
 ## 1. Establish the behavioral contract
 
-Before studying implementation, determine what the feature actually promises.
+**What it does:** Pins down what the feature *promises* before any implementation study, so the agent doesn't treat the first function it finds as the feature boundary. Output is contract-shaped and could become acceptance tests.
 
 ```text
 Describe this feature entirely from the user's perspective.
@@ -106,9 +133,11 @@ Do not explain implementation yet. Produce a behavioral contract that could
 later be turned into acceptance tests.
 ```
 
-This prevents the agent from treating the first function it finds as the feature boundary.
+---
 
 ## 2. Find the real entry points
+
+**What it does:** Enumerates every way the feature can start — routes, handlers, jobs, listeners, triggers — and separates primary from indirect entry points.
 
 ```text
 Find every entry point into this feature.
@@ -130,9 +159,11 @@ For each entry point, explain who calls it and under what conditions.
 Distinguish primary entry points from indirect or internal entry points.
 ```
 
+---
+
 ## 3. Trace one concrete scenario
 
-Choose one user action and follow it completely.
+**What it does:** Follows a single user action all the way through, naming file/symbol/state/dependency/decision at each step. Concrete ground truth beats a generic overview.
 
 ```text
 Trace the following scenario end to end:
@@ -162,14 +193,18 @@ At each step, identify:
 Do not skip intermediate abstractions.
 ```
 
-Example:
+*Example:*
 
 ```text
 Trace what happens when a user adds a node to the skill-tree graph and connects
 it to an existing node.
 ```
 
+---
+
 ## 4. Identify the modules and their abstractions
+
+**What it does:** Builds a module map documenting responsibility, interface, hidden vs exposed details, then classifies each module deep → shallow → pass-through with evidence. (A deep module gives substantial functionality behind a simple interface.)
 
 ```text
 Construct a module map for this feature.
@@ -197,11 +232,11 @@ Then classify the module as:
 Explain the classification using concrete evidence.
 ```
 
-A **deep module** provides substantial functionality behind a comparatively simple interface; information hiding is one of the main ways to achieve this. ([Daniel Hofstetter's Books][2])
+---
 
 ## 5. Detect information leakage
 
-This is one of the most useful APOSD prompts.
+**What it does:** One of the most useful APOSD prompts — finds design knowledge duplicated across locations, shows why they must change together, and names who should own it. Leakage is what makes changes ripple.
 
 ```text
 Look for information leakage in this feature.
@@ -230,9 +265,11 @@ For every leak, show:
 5. Whether centralizing it would improve or harm the design
 ```
 
-Information hiding reduces external dependencies on a design decision, so changes to that decision can remain localized. ([Daniel Hofstetter's Books][2])
+---
 
 ## 6. Find shallow and pass-through modules
+
+**What it does:** Flags modules whose interface is nearly as complex as their implementation — forwarders, renamers, layers that add navigation cost without hiding complexity. Especially useful on AI-generated code (agents love extra hooks/services/factories).
 
 ```text
 Find modules, wrappers, functions, hooks, services, or components whose
@@ -257,9 +294,11 @@ For each candidate, explain whether it is:
 Do not assume that small modules are automatically well designed.
 ```
 
-This is useful with AI-generated code because agents often create extra hooks, services, factories, interfaces, and wrappers that increase navigation cost without hiding complexity.
+---
 
 ## 7. Locate cognitive load
+
+**What it does:** Identifies the knowledge a developer must hold *simultaneously* to safely change the feature, grouped by kind, then flags paths that demand too many groups at once.
 
 ```text
 Identify the knowledge a developer must hold simultaneously to safely modify
@@ -283,9 +322,11 @@ Then identify which code paths require knowledge from too many groups at once.
 Explain what makes those paths cognitively difficult.
 ```
 
+---
+
 ## 8. Measure change amplification
 
-This tells you whether you really understand the design.
+**What it does:** Probes the design with hypothetical changes to reveal whether you actually understand it. A well-hidden module contains many of these without forcing unrelated callers to change. Don't implement — use as probes.
 
 ```text
 Perform a change-impact analysis for these hypothetical changes:
@@ -307,7 +348,7 @@ For each change, identify:
 Do not implement the changes. Use them as probes for understanding the design.
 ```
 
-For a graph app, useful probes might be:
+*Example probes (graph app):*
 
 ```text
 1. Add a new node type called "checkpoint."
@@ -317,11 +358,11 @@ For a graph app, useful probes might be:
 5. Add undo and redo for graph edits.
 ```
 
-A module that successfully hides its implementation should contain many of these changes without forcing unrelated callers to change.
+---
 
 ## 9. Find temporal decomposition
 
-Temporal decomposition happens when code is divided according to execution order rather than ownership of knowledge.
+**What it does:** Detects code split by execution order (load → validate → transform → save → notify) rather than knowledge ownership, where changing one business rule forces edits across several sequential modules.
 
 ```text
 Check whether this feature is decomposed primarily by execution sequence:
@@ -341,7 +382,11 @@ business rule.
 Suggest alternative responsibility boundaries, but do not refactor yet.
 ```
 
+---
+
 ## 10. Examine configuration complexity
+
+**What it does:** Audits every config option for whether it shifts complexity from the module onto its callers — a strong test of real module depth (a module can look reusable while forcing callers to understand its internals).
 
 ```text
 Audit all configuration required by this feature.
@@ -359,9 +404,11 @@ For each option, determine:
 Identify configuration that shifts complexity from the module onto its callers.
 ```
 
-This is a strong test for module depth: a module may appear reusable while forcing every caller to understand its internals.
+---
 
 ## 11. Analyze error handling
+
+**What it does:** Maps the whole error model — where errors originate, cross boundaries, get translated — and recommends where error complexity should be absorbed vs stay visible.
 
 ```text
 Map the feature's error model.
@@ -381,7 +428,11 @@ Recommend where error complexity should be absorbed and where it should remain
 visible.
 ```
 
+---
+
 ## 12. Investigate state ownership
+
+**What it does:** Maps every important piece of state — source of truth, owner, readers, writers, lifetime, staleness — and flags state whose ownership is ambiguous or whose representation leaks across modules.
 
 ```text
 Map every important piece of state used by this feature.
@@ -403,7 +454,11 @@ Identify state whose ownership is ambiguous or whose representation leaks across
 multiple modules.
 ```
 
+---
+
 ## 13. Ask what is intentionally hidden
+
+**What it does:** Per interface, contrasts what callers *need* to know with what they *currently* know. The revealing test: *could the implementation be replaced without changing callers?* If not, the abstraction hides little.
 
 ```text
 For each major interface, answer:
@@ -418,13 +473,11 @@ For each major interface, answer:
 Use concrete examples from the codebase.
 ```
 
-The last question is particularly revealing:
-
-> Could I replace the implementation without rewriting its consumers?
-
-If not, the abstraction may not be hiding much.
+---
 
 ## 14. Evaluate interface complexity
+
+**What it does:** Scores a specific module's interface on concepts, arguments, ordering, special cases, error surface, and asks the key question: is the interface simpler than the functionality behind it?
 
 ```text
 Analyze the interface of [module or feature].
@@ -445,7 +498,11 @@ Evaluate:
 Explain whether the interface is simpler than the functionality it provides.
 ```
 
-## 15. Find “unknown unknowns”
+---
+
+## 15. Find "unknown unknowns"
+
+**What it does:** Actively hunts for evidence that contradicts the current architecture story — hidden writes, background jobs, feature flags, legacy paths, runtime registration. Reduces the risk of a clean-but-wrong explanation.
 
 ```text
 Challenge the current architectural explanation.
@@ -469,11 +526,11 @@ Search for evidence that contradicts it, including:
 List anything that could make the current explanation incomplete.
 ```
 
-This reduces the chance that the agent gives you a clean but incorrect architecture story.
+---
 
-# APOSD design scorecard prompt
+## A. APOSD design scorecard
 
-After the reverse-engineering pass, ask for a structured assessment:
+**What it does:** After the reverse-engineering pass, produces a structured 1–5 assessment across 10 APOSD dimensions with evidence, consequences, and one improvement each. Won't reward abstraction by default.
 
 ```text
 Score this feature from 1 to 5 on the following dimensions:
@@ -501,9 +558,11 @@ Do not reward additional abstraction by default. Reward abstractions only when
 they hide meaningful complexity or localize design knowledge.
 ```
 
-# Architecture-teaching prompt
+---
 
-Because you are using codebases to study software fundamentals, this version may be especially useful:
+## B. Architecture-teaching prompt
+
+**What it does:** Teaches the feature as if you'll rebuild it from scratch without copying the code — separating essential vs accidental complexity, framework mechanics, and reusable CS concepts. Ends with a small reconstruction exercise. Best for studying fundamentals through real code.
 
 ```text
 Teach me this feature as though I will need to rebuild it from scratch without
@@ -538,7 +597,11 @@ Finish with a small reconstruction exercise that implements the same principles
 without duplicating the original code.
 ```
 
-# Prompt for comparing current and ideal designs
+---
+
+## C. Compare current and ideal designs
+
+**What it does:** Produces two architecture models side by side — descriptive (what the code does today) vs prescriptive (how it could be arranged to minimize complexity) — and keeps observed design clearly separate from proposal.
 
 ```text
 Produce two architecture models for this feature:
@@ -564,9 +627,11 @@ Do not present the prescriptive model as fact. Clearly separate observed design
 from proposed design.
 ```
 
-# Recommended workflow with your coding agent
+---
 
-Use APOSD in multiple passes rather than asking one giant question:
+## Recommended multi-pass workflow
+
+Use APOSD in multiple passes rather than one giant question:
 
 ```text
 Pass 1: What does the feature do?
@@ -578,7 +643,7 @@ Pass 6: Compare actual versus ideal boundaries.
 Pass 7: Reconstruct a simplified version.
 ```
 
-The key idea is:
+The key idea:
 
 ```text
 File exploration tells you where the code is.
@@ -588,7 +653,6 @@ Execution tracing tells you how it works.
 APOSD analysis tells you why it is easy or difficult to change.
 ```
 
-So yes—APOSD can become your **reverse-engineering question framework**, while the AI coding agent serves as the code explorer, tracer, critic, and tutor. The strongest combination is to use APOSD alongside system-design questions, behavioral tracing, data-flow analysis, and change-impact experiments.
+---
 
-[1]: https://web.stanford.edu/~ouster/cgi-bin/book.php?utm_source=chatgpt.com "Software Design Book"
-[2]: https://books.danielhofstetter.com/a-philosophy-of-software-design/?utm_source=chatgpt.com "A Philosophy of Software Design - by John Ousterhout"
+*Sources: A Philosophy of Software Design — John Ousterhout (web.stanford.edu/~ouster/cgi-bin/book.php); summary notes at books.danielhofstetter.com/a-philosophy-of-software-design.*
