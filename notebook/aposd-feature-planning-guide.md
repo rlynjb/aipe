@@ -1,4 +1,6 @@
-Yes. **APOSD is especially useful before coding a feature**, because it helps you convert a Jira ticket from a list of requirements into a design that contains complexity.
+# APOSD Feature-Planning Prompt Library
+
+Quick-reference for planning a Jira feature with *A Philosophy of Software Design* principles. Pick a prompt, paste your ticket, run it. Prompts never write code — they place complexity deliberately before you touch the keyboard.
 
 A Jira ticket usually tells you:
 
@@ -20,6 +22,28 @@ How can the feature remain easy to change later?
 ```
 
 The goal is not to generate an elaborate architecture before writing code. The goal is to **remove ambiguity and deliberately place complexity**.
+
+---
+
+## Index
+
+| # | Prompt | What it does | Reach for it when |
+|---|--------|--------------|-------------------|
+| 1 | **Compact daily** | 14-step condensed plan, all phases in one shot | Default. Most tickets. |
+| 2 | **Master** | Full 15-stage deep analysis | High-risk / ambiguous / cross-cutting feature |
+| 3 | **First pass** | Sorts ticket into confirmed / inferred / ambiguous / contradictory | Before anything — normalize the ticket |
+| 4 | **AC → invariants** | Turns each acceptance criterion into a guarantee + owner + test | AC is vague or behavior-only |
+| 5 | **Codebase investigation** | Question set for locating where the feature belongs | Requirements clear, need to find the fit |
+| 6 | **Closest features** | Finds 3 nearest existing features + reusable decisions | Suspect similar behavior already exists |
+| 7 | **Responsibility map** | Plans by decision / owner instead of frontend/backend/db | Risk of scattering one decision across layers |
+| 8 | **Two designs** | A (extend) vs B (restructure), full trade-off compare | Multiple viable structures |
+| 9 | **Overengineering check** | Flags speculative abstractions in a proposed plan | Plan feels layer-heavy or AI-generated |
+| 10 | **Future-change probes** | Stress-tests boundaries against likely future changes | Validate module boundaries before coding |
+| 11 | **Vertical slices** | Converts chosen design into independently testable slices | Ready to sequence implementation |
+
+Reference (not prompts): [Planning sequence](#recommended-planning-sequence) · [Planning questions](#planning-questions--mental-checklist) · [Workflow](#workflow-summary)
+
+---
 
 ## Recommended planning sequence
 
@@ -47,10 +71,41 @@ Implementation slices
 Testing and rollout plan
 ```
 
-## Master feature-planning prompt
+---
 
-Paste the Jira ticket, acceptance criteria, out-of-scope section, and relevant comments into this prompt.
+## 1. Compact daily prompt
 
+**What it does:** Runs every planning phase in a condensed 14-step pass. Your everyday driver for a normal ticket — output separates evidence, requirements, assumptions, and recommendations.
+
+```text
+Plan this Jira feature using APOSD principles. Do not write code yet.
+
+1. Extract confirmed requirements, assumptions, ambiguities, and exclusions.
+2. Rewrite the acceptance criteria as testable behavior.
+3. Identify domain concepts, state transitions, and invariants.
+4. Find the existing modules and patterns involved.
+5. Trace the likely end-to-end execution and data flow.
+6. Assign each business and technical decision to an owning module.
+7. Identify what each module should hide.
+8. Propose two designs and compare their trade-offs.
+9. Check for shallow modules, duplicated knowledge, temporal coupling, and
+   multiple sources of truth.
+10. Probe the design with likely future changes.
+11. Recommend one design.
+12. Break it into independently testable vertical slices.
+13. Map acceptance criteria and invariants to tests.
+14. List open questions, risks, rollout concerns, and definition of done.
+
+Separate codebase evidence, ticket requirements, assumptions, and recommendations.
+```
+
+---
+
+## 2. Master feature-planning prompt
+
+**What it does:** The full 15-stage analysis — behavioral contract through rollout. Use when a feature is high-risk, cross-cutting, or ambiguous enough to justify the depth. Paste the Jira ticket, acceptance criteria, out-of-scope section, and relevant comments into the top.
+
+```text
 You are helping me plan a software feature using principles from A Philosophy of Software Design.
 
 Do not implement the feature yet.
@@ -361,11 +416,15 @@ Return:
 * Definition of done
 
 Keep observed facts, design recommendations, and assumptions clearly separated.
+```
 
-## First pass: understand the ticket
+---
 
-Before discussing architecture, ask the agent to normalize the Jira information.
+## 3. First pass — understand the ticket
 
+**What it does:** Normalizes raw Jira info into four buckets and rewrites the ticket as a behavioral contract. Prevents Jira comments from quietly changing the scope without being recognized. Run this *before* any architecture discussion.
+
+```text
 Analyze this Jira ticket before proposing an implementation.
 
 Create four sections:
@@ -393,12 +452,55 @@ Statements in the ticket or comments that conflict with one another.
 Identify which statement came later and whether it appears to supersede the earlier one.
 
 Then rewrite the ticket as a concise behavioral contract without adding unsupported requirements.
+```
 
-This prevents Jira comments from quietly changing the scope without being recognized.
+---
 
-## Questions for investigating the existing codebase
+## 4. Turn acceptance criteria into invariants
 
-Once the requirements are clear, ask the coding agent:
+**What it does:** Converts visible-behavior AC into continuous guarantees, each with an owning module and a test. Surfaces criteria too thin to derive an invariant from.
+
+*Example — ticket:*
+
+```text
+As a user, I can archive a project.
+Archived projects no longer appear in the active-project list.
+```
+
+*Example — possible invariants:*
+
+```text
+A project cannot be both active and archived.
+
+Only authorized users may archive the project.
+
+Archiving the same project twice must not create an invalid transition.
+
+Archived projects remain retrievable from archive history.
+
+Active-project queries must consistently exclude archived projects.
+```
+
+```text
+Convert each acceptance criterion into:
+
+1. User-visible behavior
+2. Domain invariant
+3. State transition
+4. Authorization rule
+5. Failure behavior
+6. Test case
+7. Module responsible for guaranteeing it
+
+Identify acceptance criteria that do not currently define enough information to
+derive these items.
+```
+
+---
+
+## 5. Questions for investigating the existing codebase
+
+**What it does:** A question set to locate where a feature belongs before choosing a design. Use once the requirements are clear.
 
 ```text
 Where does similar behavior already exist?
@@ -426,7 +528,11 @@ Are there competing patterns for solving this problem?
 Which implementation is current, and which is legacy?
 ```
 
-A useful focused prompt is:
+---
+
+## 6. Find the three closest existing features
+
+**What it does:** Locates the 3 nearest existing features and extracts reusable decisions — while explicitly separating good patterns from cargo-culted repetition.
 
 ```text
 Find the three closest existing features to this Jira ticket.
@@ -443,74 +549,11 @@ For each one, explain:
 Do not assume that repeated code represents a good pattern.
 ```
 
-## Turn acceptance criteria into invariants
+---
 
-Acceptance criteria describe visible behavior. Invariants describe what the system must continuously guarantee.
+## 7. Design the feature around responsibilities
 
-Example ticket:
-
-```text
-As a user, I can archive a project.
-Archived projects no longer appear in the active-project list.
-```
-
-Possible invariants:
-
-```text
-A project cannot be both active and archived.
-
-Only authorized users may archive the project.
-
-Archiving the same project twice must not create an invalid transition.
-
-Archived projects remain retrievable from archive history.
-
-Active-project queries must consistently exclude archived projects.
-```
-
-Prompt:
-
-```text
-Convert each acceptance criterion into:
-
-1. User-visible behavior
-2. Domain invariant
-3. State transition
-4. Authorization rule
-5. Failure behavior
-6. Test case
-7. Module responsible for guaranteeing it
-
-Identify acceptance criteria that do not currently define enough information to
-derive these items.
-```
-
-## Design the feature around responsibilities
-
-Avoid planning exclusively around technical layers:
-
-```text
-Frontend task
-Backend task
-Database task
-```
-
-That can scatter a single business decision across several tickets or pull requests.
-
-Instead, identify responsibilities:
-
-```text
-Archive eligibility
-Archive transition
-Persistence
-Active-project filtering
-Error translation
-User feedback
-```
-
-Then determine where each responsibility belongs.
-
-Prompt:
+**What it does:** Plans the feature by *decision* and *owner* rather than by technical layer (frontend / backend / database), so a single business rule doesn't get scattered across several tickets or pull requests.
 
 ```text
 Map this feature by design decisions rather than files or framework layers.
@@ -525,9 +568,11 @@ For every decision, answer:
 - Where could the knowledge accidentally be duplicated?
 ```
 
-## Ask for two designs
+---
 
-APOSD recommends considering multiple designs rather than accepting the first workable structure.
+## 8. Ask for two designs
+
+**What it does:** Forces a real alternative — A extends the existing architecture, B optimizes ownership and information hiding — then compares them on the APOSD axes and recommends one.
 
 ```text
 Design this feature in two substantially different ways.
@@ -551,11 +596,11 @@ For each design, compare:
 Recommend one, but explain what evidence could change the recommendation.
 ```
 
-## Detect overengineering before coding
+---
 
-AI coding agents often create unnecessary abstractions during feature planning.
+## 9. Detect overengineering before coding
 
-Use:
+**What it does:** Reviews a proposed plan for speculative abstractions (single-impl interfaces, pass-through services, config for hypotheticals) and rules each keep / simplify / merge / defer. AI coding agents often create unnecessary abstractions during feature planning.
 
 ```text
 Review this proposed plan for speculative design.
@@ -580,9 +625,11 @@ For each abstraction, state:
 - Whether it should be kept, simplified, merged, or deferred
 ```
 
-## Probe the design with future changes
+---
 
-Before implementation, ask:
+## 10. Probe the design with future changes
+
+**What it does:** Stress-tests module boundaries against likely future changes. These are *design probes*, not requirements — you are not trying to support all these changes immediately; they reveal weak boundaries and leaked knowledge before you commit.
 
 ```text
 Assume the following changes arrive after this feature ships:
@@ -605,13 +652,13 @@ For each scenario:
 Use the results to identify weak module boundaries.
 ```
 
-You are not trying to support all these changes immediately. They are **design probes**, not requirements.
+---
 
-## Convert the plan into vertical slices
+## 11. Convert the plan into vertical slices
 
-A good implementation sequence produces working behavior incrementally.
+**What it does:** Turns the chosen design into an ordered set of small, independently testable slices — sequenced to reduce uncertainty early, not split by layer.
 
-For example:
+*Example slice sequence:*
 
 ```text
 Slice 1: Domain transition and invariant tests
@@ -625,8 +672,7 @@ Slice 4: UI entry point and user feedback
 Slice 5: Observability, analytics, and rollout controls
 ```
 
-Use this prompt:
-
+```text
 Convert the recommended feature design into an implementation plan.
 
 Break the work into small vertical slices that can be reviewed and tested independently.
@@ -659,36 +705,13 @@ Finish with:
 * Acceptance-criteria-to-test matrix
 * Remaining product questions
 * Remaining technical questions
-
-## Compact daily prompt
-
-For quicker ticket planning:
-
-```text
-Plan this Jira feature using APOSD principles. Do not write code yet.
-
-1. Extract confirmed requirements, assumptions, ambiguities, and exclusions.
-2. Rewrite the acceptance criteria as testable behavior.
-3. Identify domain concepts, state transitions, and invariants.
-4. Find the existing modules and patterns involved.
-5. Trace the likely end-to-end execution and data flow.
-6. Assign each business and technical decision to an owning module.
-7. Identify what each module should hide.
-8. Propose two designs and compare their trade-offs.
-9. Check for shallow modules, duplicated knowledge, temporal coupling, and
-   multiple sources of truth.
-10. Probe the design with likely future changes.
-11. Recommend one design.
-12. Break it into independently testable vertical slices.
-13. Map acceptance criteria and invariants to tests.
-14. List open questions, risks, rollout concerns, and definition of done.
-
-Separate codebase evidence, ticket requirements, assumptions, and recommendations.
 ```
 
-## The most useful planning questions
+---
 
-Keep these as your mental checklist:
+## Planning questions — mental checklist
+
+Not a prompt. Keep these in your head while reviewing any plan:
 
 ```text
 What exactly must the user be able to do?
@@ -716,7 +739,9 @@ Are we creating an abstraction for a real boundary or a hypothetical future?
 Can the feature be delivered in small end-to-end slices?
 ```
 
-The full workflow becomes:
+---
+
+## Workflow summary
 
 ```text
 Jira tells you what to build.
