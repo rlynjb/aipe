@@ -70,9 +70,10 @@ different documented convention, follow that convention instead.
 
 ## Lens policy
 
-Use DDIA, Fundamentals of Data Engineering, and AI Agents in Action as optional
-learning lenses. Apply a lens only where the scanned codebase and the planned
-task make the lens genuinely useful.
+Use DDIA, Fundamentals of Data Engineering, AI Agents in Action, A Philosophy
+of Software Design, and Head First Design Patterns as optional learning lenses.
+Apply a lens only where the scanned codebase and the planned task make the lens
+genuinely useful.
 
 - **DDIA lens:** Use for data models, system of record, transactions,
   idempotence, retries, ordering, consistency, derived data, schema evolution,
@@ -85,16 +86,25 @@ task make the lens genuinely useful.
   deterministic orchestration, bounded specialists, prompt/instruction stacks,
   structured outputs, retrieval, memory, tracing, evaluation, feedback loops,
   human-in-the-loop control, and multi-agent coordination.
+- **A Philosophy of Software Design lens:** Use for module depth, information
+  hiding, interface design, complexity, change amplification, temporal coupling,
+  shallow modules, error abstraction, and keeping design knowledge in one place.
+- **Head First Design Patterns lens:** Use for concrete pattern vocabulary when
+  it clarifies the plan, such as Strategy, Adapter, Facade, Command, Observer,
+  State, Template Method, Decorator, Factory Method, Abstract Factory, Proxy, or
+  Chain of Responsibility.
 
 Rules for lens notes:
 
-- A task can have all three lenses, one lens, or no lens.
+- A task can have all five lenses, a subset of lenses, one lens, or no lens.
 - A section can have multiple lens notes, one note, or none.
 - Place lens notes beside the task, decision, interface, or flow they clarify.
 - Do not collect lens notes into a detached glossary.
 - Do not force a data lens onto UI-only work.
 - Do not force an agent lens onto deterministic code unless an agent boundary,
   tool contract, prompt, evaluation, or human approval decision is involved.
+- Do not force a design-pattern lens where a plain function, type, or module is
+  clearer than naming a pattern.
 - Every lens note must explain the concept in plain language and say exactly how
   this plan uses it.
 
@@ -187,6 +197,14 @@ Example:
 > **AI Agents in Action lens - bounded agent context:** Agent modules receive
 > only validated, scoped context and cannot access credentials or provider
 > payloads.
+
+> **A Philosophy of Software Design lens - information hiding:** The shared
+> module exposes a small interface while keeping routing, validation, and
+> persistence details behind the boundary.
+
+> **Head First Design Patterns lens - Strategy:** Separate policy modules let
+> the workflow select the one behavior that varies without scattering
+> conditionals through the engine.
 
 ## End-to-End Execution/Data Flow
 
@@ -304,6 +322,10 @@ omit the subsection entirely.
 - **FODE lens - <concept>:** Define the concept in plain language and say how
   this task uses it.
 - **AIAIA lens - <concept>:** Define the concept in plain language and say how
+  this task uses it.
+- **APOSD lens - <concept>:** Define the concept in plain language and say how
+  this task uses it.
+- **HFDP lens - <concept>:** Define the concept in plain language and say how
   this task uses it.
 
 **Files:**
