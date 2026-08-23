@@ -1,809 +1,467 @@
 ─────────────────────────────────────────────────
-me.md — reader profile and thinking style
+me.md — reader profile and prompt calibration
 ─────────────────────────────────────────────────
 
-A reference document the other specs (study-system-design.md,
-study-ai-engineering.md, study-prompt-engineering.md,
-rehearse-interview-defense.md, and any future specs in
-this family) can consult when they need to calibrate
-to Rein specifically — voice, examples, format,
-anchoring, and what to avoid.
+Reference document for specs that need to calibrate to
+Rein: voice, examples, format, prompt shape, and what to
+avoid.
 
-This file is not a generator. It produces no
-artifact of its own. It is *referenced* by other
-specs as a source of truth for who the reader is,
-how she thinks, what she's already built (and
-therefore what makes a credible example), and what
-register the writing should land in.
+This file does not generate artifacts. It is a contract
+that other specs consult when they need to answer:
 
-When a spec needs to know "what kind of example
-will Rein recognize," "what voice should I write
-in," or "what's the right entry point for this
-concept," it consults this file rather than
-inventing each time.
+- What examples will Rein recognize?
+- What does she already know?
+- What gaps should not be overclaimed?
+- What voice and format should the output use?
+- How should prompts be shaped for reliable agent work?
 
 ═════════════════════════════════════════════════
-WHO YOU ARE — the spine
+WHO YOU ARE
 ═════════════════════════════════════════════════
 
-You are Rein, a Software Engineer 3, based in
-Seattle. Seven-plus years of professional frontend
-experience — primarily Vue and React, shipped to
-customers including FedEx, Amazon, and CoreWeave.
-You're credited with ~$700K in client cost savings
-across that span.
+Rein is a Software Engineer 3 based in Seattle, with
+7+ years of professional frontend experience in Vue
+and React for customers including FedEx, Amazon, and
+CoreWeave. She is credited with about $700K in client
+cost savings.
 
-You are now pivoting deliberately into AI
-engineering. Not abandoning frontend — composing it
-with a new layer. You're working through Interview
-Kickstart's frontend program in parallel with
-building AI-native projects of your own.
+She is pivoting deliberately into AI engineering without
+abandoning frontend. The frontend experience is the
+load-bearing layer; AI engineering is the additive layer.
 
 ```
-THE ARC
-
-  past 7+ years            now              next
-  ─────────────────        ─────────        ────────────────
-  frontend specialist      pivot point      AI engineer
-  (Vue / React)            (this is         (AI product /
-  enterprise customers     where you are)   AI-native apps)
-  ($700K cost savings)
-       │                        │                  ▲
-       │                        │                  │
-       └────── carries ────────►┼─────── builds ───┘
-                                │
-                         frontend instincts +
-                         systems thinking +
-                         AI-first product sense
+past 7+ years            now                    next
+─────────────────        ─────────────          ─────────────────
+frontend engineer        pivot point            AI engineer /
+Vue + React              frontend + AI          AI product engineer
+enterprise clients       IK + projects          AI-native apps
+$700K cost savings
 ```
 
-You are not starting over. The 7 years of frontend
-work is the load-bearing layer — what you carry
-forward, not what you replace. The pivot is
-additive.
+Roles that fit this arc:
 
-You're open to senior frontend roles, senior AI
-engineering roles, or product engineering roles
-that compose the two. The portfolio (reincodes,
-plus the five featured projects) is the case for
-that combination.
+- Senior frontend engineer
+- Senior AI engineer
+- Product engineer combining frontend, systems, and AI
+
+The portfolio case is: frontend instincts + systems
+thinking + AI-first product sense.
 
 ═════════════════════════════════════════════════
-HOW YOU THINK — the cognitive shape
+HOW YOU THINK
 ═════════════════════════════════════════════════
 
 ```
-THE LEARNING LOOP — how knowledge becomes real for you
-
-   idea arrives          you can see the shape
-   as a picture          before you can articulate
-        │                the mechanism
-        ▼                       │
-   ┌─────────────┐               │
-   │ shape       │◄──────────────┘
-   │ (visual)    │
-   └──────┬──────┘
-          │  takes time —
-          │  the picture is fast,
-          │  the mechanism is slow
-          ▼
-   ┌─────────────┐
-   │ mechanism   │  you walk the layers,
-   │ (logic)     │  but you don't trust
-   └──────┬──────┘  the logic until...
-          │
-          ▼
-   ┌─────────────┐
-   │ hands-on    │  ...you build it.
-   │ (code)      │  the visualizer
-   └──────┬──────┘  swapping bars in front
-          │         of you is when the sort
-          │         becomes real.
-          ▼
-    understanding
-    that transfers
+idea
+  |
+  v
+visual shape
+  |
+  v
+mechanism
+  |
+  v
+hands-on build
+  |
+  v
+transferable understanding
 ```
 
-Four observations about this loop, each with a
-direct consequence for how to write *for* you:
+Core calibration:
 
-  ## 1. You think visually first
+- You think visually first. Diagrams are not
+  decoration; they are the primary medium.
+- You get the shape quickly. Skip long on-ramps and
+  spend the time on mechanism.
+- You value language-agnostic patterns. The concept
+  matters more than the framework or vendor.
+- You trust fundamentals after building with them.
+  The durable teaching path is:
 
-  Ideas arrive as pictures. You see the shape of a
-  solution before you can articulate its parts.
-  This is direct in your code — you built
-  visualizers for every algorithm because you
-  cannot fully trust the algorithm until you see it
-  execute in front of you. Bubble sort isn't real
-  until the bars swap on screen. The grid graph
-  isn't real until BFS lights up the cells.
+```text
+concept -> mechanism -> code in your own repo
+```
 
-  **Consequence for explanations:** diagrams are
-  not decoration. They are the primary medium. A
-  concept that lands as a diagram lands; a concept
-  that lands as a paragraph has not landed yet,
-  even if you can recite it. Specs writing for you
-  should lead with a diagram and let prose fill in
-  what the diagram can't show — not the other way
-  around. This is consistent with the shared `format.md` rule:
-  diagrams are primary; prose fills in what diagrams
-  cannot show.
-
-  ## 2. Ideas come fast, details take time
-
-  You arrive at the *what* of a problem quickly and
-  spend longer arriving at the *how* and *why*.
-  This is not a defect — it's a thinking pattern.
-  The fast arrival means you don't need to be
-  walked into the concept slowly. The slow descent
-  into details means you need the details *worked
-  through carefully*, not glossed.
-
-  **Consequence for explanations:** skip the
-  on-ramp. Don't spend three paragraphs setting up
-  what RAG is before showing how it works. You
-  already see RAG as a shape (retrieve → augment →
-  generate). What you need is the layered
-  walkthrough of *each* part with the mechanism
-  named precisely. Move 1 of How it works (mental
-  model + diagram) can be tight. Move 2 (layered
-  walkthrough) is where the writing has to slow
-  down.
-
-  ## 3. You value language-agnostic patterns
-
-  You've moved from Vue to React. You translate
-  Python to TypeScript routinely (Graph2.py →
-  Graph2.ts, BinaryHeap.py → BinaryHeap.ts). When
-  you say "I implemented a priority queue" you mean
-  the concept, not the syntax — the same priority
-  queue could be Python, TypeScript, Rust, or
-  pseudocode and you'd recognize it.
-
-  This is the deeper pattern: **the concept is the
-  signal; the syntax is incidental.** Frameworks
-  rotate (Vue → React → Next.js → whatever's next),
-  but `useState`-shaped reactivity is the same
-  primitive in all of them. Vector stores rotate
-  (Pinecone → pgvector → Weaviate → Qdrant), but
-  the pattern of *embedding + ANN + retrieval* is
-  the same shape. Specs writing for you should
-  reach for the pattern, name the canonical example
-  once, and not anchor entire explanations to a
-  single vendor or framework.
-
-  **Consequence for explanations:** banned as the
-  *primary* anchor: vendor-specific framing
-  ("Pinecone does this," "Next.js does this"). The
-  primary anchor is the pattern. Vendor specifics
-  show up under "how this codebase handles it" or
-  inside the Elaborate block, where they belong.
-
-  ## 4. Fundamentals matter more than surface — and
-  hands-on is how fundamentals become real
-
-  Both halves of this are load-bearing. You value
-  fundamentals: you implemented BinaryHeap and
-  PriorityQueue from scratch even though
-  npm has libraries that do this in three lines.
-  You're working through IK's curriculum methodically.
-  You're not chasing the surface of every new tool;
-  you're going back to the substrate.
-
-  *And* you don't trust the fundamentals until
-  you've built with them. The PriorityQueue isn't
-  real until Dijkstra's animation uses it to find a
-  path through your grid. The Graph class isn't
-  real until BFS lights up the river-crossing
-  puzzle. The RAG pattern isn't real until you
-  shipped AdvntrCue.
-
-  **Consequence for explanations:** the structure
-  that lands for you is *concept → mechanism →
-  code in your own repo*. The concept names the
-  fundamental. The mechanism walks the layers. The
-  code anchors the abstract to something you can
-  open and read. This is the spine of how the
-  concept files in `format.md` are structured (Zoom
-  out → How it works, which now carries the code from
-  your codebase inline alongside the pattern teaching).
-  The combination of foundation + hands-on is the
-  whole point — neither alone is enough.
+Do not over-explain the "what." Spend effort on the
+"how," "why," tradeoffs, and concrete code path.
 
 ═════════════════════════════════════════════════
-WHAT YOU'VE BUILT — DSA portfolio
+PROMPT PRINCIPLES FOR AGENT WORK
 ═════════════════════════════════════════════════
 
-This section is for specs that need a credible
-example anchored to Rein's lived work. When a spec
-needs to say "you've already built X — here's how
-that maps to Y," it can pull from this.
+When a spec creates prompts for agents, follow the
+practical agent-design principles from *AI Agents in
+Action*: prompts are not essays; they are operating
+contracts.
 
-```
-DSA portfolio — what's in the reincodes repo
+Write prompts as an API contract:
 
-  ┌─────────────────────────┬──────────────────────────────┐
-  │ implementation          │ where it lives in your code  │
-  ├─────────────────────────┼──────────────────────────────┤
-  │ Graph (adj list)        │ Graph.ts                     │
-  │   BFS + DFS             │ + bfs_traversal              │
-  │   Eulerian cycle/path   │ + dfs_traversal              │
-  │   valid-tree check      │ + isGraphValidTree           │
-  │   connected components  │ + numberOfConnectedComponents│
-  ├─────────────────────────┼──────────────────────────────┤
-  │ Graph2 (node+edge)      │ Graph2.ts                    │
-  │   weighted edges        │ supports Dijkstra            │
-  │   directed/undirected   │ + obstacle marking for grid  │
-  ├─────────────────────────┼──────────────────────────────┤
-  │ Binary Search Tree      │ BinarySearchTree.ts          │
-  │   insert / search /     │ all three traversals         │
-  │   delete (rec + iter)   │ successor / predecessor      │
-  ├─────────────────────────┼──────────────────────────────┤
-  │ Binary Heap             │ BinaryHeap.ts                │
-  │   MinHeap + MaxHeap     │ heapifyUp / heapifyDown      │
-  │   from scratch          │ insert / getMin / getMax     │
-  ├─────────────────────────┼──────────────────────────────┤
-  │ Priority Queue          │ PriorityQueue.ts             │
-  │   heap-backed           │ enqueue / dequeue            │
-  │   with updatePriority   │ value→index lookup           │
-  │                         │ (used by Dijkstra animation) │
-  ├─────────────────────────┼──────────────────────────────┤
-  │ Tree (general n-ary)    │ Tree.ts                      │
-  │   pre/post traversal    │ used in recursion call-stack │
-  │   (generators)          │ visualizers                  │
-  ├─────────────────────────┼──────────────────────────────┤
-  │ Sorting (5)             │ utils/notes/Sorting/         │
-  │   selection / bubble /  │ + interactive React          │
-  │   insertion / merge /   │   visualizers for all 5      │
-  │   quick / heap          │   (animated bar swaps)       │
-  ├─────────────────────────┼──────────────────────────────┤
-  │ State-space search      │ PG.ts                        │
-  │   (river-crossing       │ BFS over state graph         │
-  │   puzzle)               │ implicit graph from rules    │
-  └─────────────────────────┴──────────────────────────────┘
-```
+- State the agent role clearly.
+- State the task boundary.
+- State what context to inspect.
+- State what output shape is required.
+- State what evidence must support claims.
+- State what the agent must not do.
+- Include an "unknown / not enough evidence" off-ramp.
 
-Strong on: graph algorithms (BFS, DFS, shortest
-path via Dijkstra), heaps and priority queues, BSTs
-with all traversals, recursion with call-stack
-visualization, sorting fundamentals. Comfortable
-implementing from scratch — not just using library
-versions.
+Front-load the controlling instructions:
 
-Less depth on: tries, union-find, segment trees,
-suffix arrays, dynamic programming beyond the
-classic recursion-with-memoization patterns. These
-haven't shown up in your projects yet, so an
-explanation that anchors to "you've already built
-X" can't reach for them.
+- Put role, objective, constraints, and output format
+  before supporting explanation.
+- Use delimiters for source text, examples, and user
+  inputs.
+- Remove ambiguity and contradictions.
+- Prefer positive instructions:
+  "cite file paths for claims" instead of only
+  "do not hallucinate."
 
-The IK curriculum framing matters here. You're not
-self-taught from internet tutorials. The DSA
-foundation is structured, with comments
-referencing IK lessons by date ("@note 3/8/25").
-Specs that explain DSA can assume the IK
-vocabulary is familiar (adjacency list, captured
-set, fringe edge, etc.) without needing to
-introduce it.
+Keep scope narrow:
 
-═════════════════════════════════════════════════
-WHAT YOU'VE BUILT — system design portfolio
-═════════════════════════════════════════════════
+- One prompt should do one job.
+- Split exploration, diagnosis, implementation, and
+  review when they require different behavior.
+- Do not pack tool instructions, persona, rubric,
+  examples, and unrelated policy into one large block
+  unless the agent truly needs all of it.
 
-You have not built one system five times. You have
-built five different system shapes, each with a
-distinct architecture, each shipped end-to-end.
-This is the system-design hands-on layer.
+Prefer structured outputs:
 
-```
-SYSTEM DESIGN — five shapes you've shipped
+- Use headings, tables, checklists, or JSON-like shapes
+  when downstream consumers depend on structure.
+- For multi-agent or tool pipelines, prefer typed or
+  schema-shaped outputs over free prose.
+- Make severity, confidence, evidence, and next action
+  explicit when the result guides work.
 
-  ┌──────────────────┬─────────────────────────────────────┐
-  │ project          │ what it exercises                   │
-  ├──────────────────┼─────────────────────────────────────┤
-  │ dryrun           │ local-first mobile + cloud sync     │
-  │ Android, Kotlin  │ on-device AI (Gemini Nano)          │
-  │                  │ + API fallback                      │
-  │                  │ GitHub-as-backend (no SQL server)   │
-  │                  │ spaced-repetition scheduling        │
-  ├──────────────────┼─────────────────────────────────────┤
-  │ buffr            │ canonical-local + opt-in mirror     │
-  │ React Native,    │ SQLite primary, Supabase secondary  │
-  │ Expo, ffmpeg     │ multi-source compose pipeline       │
-  │                  │ (prose + clips → vlog)              │
-  │                  │ AI-assisted compose, local-first    │
-  ├──────────────────┼─────────────────────────────────────┤
-  │ contrl           │ real-time on-device ML pipeline     │
-  │ RN + MediaPipe   │ frame-rate latency budget           │
-  │ + Vision Camera  │ no network in the hot path          │
-  │ + Worklets-core  │ pose-landmark → rep counter         │
-  │                  │ on-device, low power                │
-  ├──────────────────┼─────────────────────────────────────┤
-  │ aipe             │ markdown-as-source-of-truth         │
-  │ meta-tooling     │ prompt templates as code            │
-  │ (this system)    │ slash commands as the interface     │
-  │                  │ describe → diagnose → act layering  │
-  ├──────────────────┼─────────────────────────────────────┤
-  │ AdvntrCue        │ classic RAG, serverless web         │
-  │ Next.js +        │ vector + relational data colocated  │
-  │ pgvector +       │   (one Postgres instance)           │
-  │ GPT-4 +          │ serverless API + streaming response │
-  │ Drizzle +        │ tool-calling + session memory       │
-  │ Netlify Fns      │   (MemoRAG)                         │
-  └──────────────────┴─────────────────────────────────────┘
-```
+Use examples deliberately:
 
-The five shapes are deliberately distinct. They are
-not "five Next.js apps." They span:
+- Include few-shot examples when format or judgment is
+  non-obvious.
+- Keep examples short and representative.
+- Use Rein's actual portfolio when it clarifies a
+  concept.
+- Do not let examples become the prompt.
 
-  → **Local-first vs cloud-first.** dryrun and
-     buffr are local-first; AdvntrCue is
-     cloud-first. contrl is fully local (no cloud
-     in the hot path at all).
+Design for evaluation and feedback:
 
-  → **Native mobile vs web.** dryrun is native
-     Android. buffr and contrl are React Native.
-     AdvntrCue is web. The frontend layer
-     vocabulary changes; the system-design
-     concerns stay similar.
+- Tell the agent what would count as a good answer.
+- Require evidence-vs-inference separation.
+- Require verification steps for codebase claims.
+- Ask for open questions when evidence is missing.
+- For benchmarkable prompts, include pass/fail rubrics.
 
-  → **On-device AI vs cloud AI.** dryrun runs
-     Gemini Nano on-device with API fallback.
-     contrl runs MediaPipe on-device, no cloud.
-     AdvntrCue runs GPT-4 in the cloud,
-     streaming back. buffr runs Anthropic with
-     local SQLite as the canonical store.
+Keep tool guidance out of prompts when a tool schema can
+carry it:
 
-  → **Storage layering.** Each project has a
-     different storage story — GitHub-as-store
-     (dryrun), SQLite+Supabase (buffr), pgvector
-     in Postgres (AdvntrCue), filesystem (aipe).
-     This is the system-design substrate.
+- Good tool names and docstrings beat long prompt
+  patches.
+- Use prompts for role, boundaries, reasoning discipline,
+  and output contract.
+- Use tool schemas for parameters, capabilities, and
+  operational details.
 
-When a spec needs an architectural example anchored
-to your work, the right move is to pull from one of
-these five and walk it as a worked example. You've
-shipped the architecture; the spec can refer to it
-without inventing.
+Avoid prompt smells:
 
-What you have not built yet: distributed systems at
-horizontal scale, hot-path queue infrastructure
-(Kafka, Redis Streams), multi-region replication,
-or anything that involves real load balancing
-under sustained traffic. These are the parts of
-"system design" that come from large-company work
-at scale, and they're not in your portfolio yet.
-Specs explaining these patterns should be honest
-about that gap — they can still teach them, but
-they can't anchor to your code.
+- Vague persona with no task boundary
+- Contradictory instructions
+- Variable output shape
+- Over-complex prompts that hide the real task
+- Vendor-first framing where a pattern-level prompt would
+  transfer better
+- Claims without evidence requirements
+- No failure path or "I don't know" path
 
 ═════════════════════════════════════════════════
-HOW TO WRITE FOR YOU — voice and format
+WHAT YOU'VE BUILT — DSA PORTFOLIO
 ═════════════════════════════════════════════════
 
-When other specs need to produce content you will
-read, these are the rules that apply *on top of*
-whatever the spec's own rules already say. They
-hold across every spec in the family.
+Use these as concrete examples when teaching DSA,
+runtime behavior, state, traversal, or algorithmic
+tradeoffs.
 
-  ## What works
+```
+implementation                repo anchor
+──────────────────────────    ─────────────────────────────
+Graph adjacency list          Graph.ts
+  BFS / DFS                   bfs_traversal, dfs_traversal
+  Euler path/cycle            graph traversal fundamentals
+  valid tree                  isGraphValidTree
+  connected components        numberOfConnectedComponents
 
-  → **Diagram first, then prose.** Lead with the
-     visual anchor. Use ASCII (box-drawing
-     characters: ┌ ┐ └ ┘ ─ │ ═ ║ ◄ ► ▼). Diagram
-     wrapped in one sentence of prose before and
-     one after. This is non-negotiable; everything
-     downstream depends on it.
+Graph2 node+edge graph        Graph2.ts
+  weighted edges              supports Dijkstra
+  directed/undirected         grid obstacle marking
 
-  → **Pattern as the primary anchor.** Name the
-     pattern. Name the canonical example once.
-     Don't anchor entire explanations to a vendor
-     or framework. RAG is the pattern; pgvector is
-     the implementation you happen to have in
-     AdvntrCue. The pattern survives if you swap
-     the vector store.
+Binary Search Tree            BinarySearchTree.ts
+  insert/search/delete        recursive + iterative
+  traversals                  in/pre/post order
+  successor/predecessor       ordered tree mechanics
 
-  → **Concept → mechanism → code in your own repo.**
-     The three-step structure that lands for you.
-     Concept names the fundamental, mechanism
-     walks the layers, code points at a file in
-     one of your projects. The fundamental becomes
-     real when you can open the file.
+Binary Heap                   BinaryHeap.ts
+  MinHeap / MaxHeap           heapifyUp / heapifyDown
+  from scratch                insert / getMin / getMax
 
-  → **Code references with file paths.** Real
-     paths (`src/utils/data_structures/PriorityQueue.ts`,
-     `migrations/0003_chunks.sql`). Not "some
-     file in the codebase." The specificity is
-     the load-bearing part.
+Priority Queue                PriorityQueue.ts
+  heap-backed                 enqueue / dequeue
+  updatePriority              value-to-index lookup
+  Dijkstra use                shortest-path visualizer
 
-  → **Direct, opinionated.** No hedging language
-     ("might," "could potentially," "tends to").
-     If something is a tradeoff, name it. If
-     something in your code is suboptimal, say
-     so, then explain why it was the right call
-     at the time.
+Tree                          Tree.ts
+  n-ary tree                  pre/post traversal
+  generators                  recursion visualizers
 
-  → **Frontend primitives as the universal
-     example.** When a spec needs a substrate-level
-     anchor, reach for things you build with daily:
-     a list rendering, a `.map()` with a `key`, a
-     form input, a `fetch()` and its loading
-     states, a DB table with rows and columns,
-     a primary key. Universal across frontend
-     engineers; assumes no specific product.
+Sorting                       utils/notes/Sorting/
+  selection/bubble/insertion  animated React visualizers
+  merge/quick/heap            bar swaps and comparisons
 
-  ## What doesn't
+State-space search            PG.ts
+  river-crossing puzzle       BFS over implicit state graph
+```
 
-  → **Long abstract definitions before the
-     concrete.** Don't open with "X is a mechanism
-     that..." Open with a picture or a scenario.
-     The definition can come after.
+Strong anchors:
 
-  → **Analogy doing the load-bearing work or
-     replacing the engineering explanation.**
-     Locked doors, coat checks, librarians, post
-     offices, kitchens, factories — banned when
-     they stand in *for* the engineering walkthrough
-     or arrive *before* it. The reader has built
-     apps; reach for app-building knowledge first,
-     and an analogy may land or clinch the move
-     after the mechanism is on the table. (This
-     rule is already in `teacher.md` / `format.md`;
-     restating here so other specs that don't
-     inherit either still get it.)
+- Graphs: BFS, DFS, connected components, shortest path
+- Heaps and priority queues
+- BST operations and traversals
+- Recursion and call-stack visualization
+- Sorting fundamentals
+- Implementing primitives from scratch
 
-  → **Whole-product anchors when a primitive
-     works.** "Linear does X," "Gmail does Y."
-     Use these only when no lower-level primitive
-     captures the concept. Most of the time, a
-     todo list or a DB table is the better
-     anchor.
+Do not overclaim depth in:
 
-  → **Marketing language.** Banned: "scalable
-     solution," "robust architecture,"
-     "cutting-edge," "industry-leading,"
-     "leveraging best practices." These signal
-     surface knowledge. The spec teaches by
-     example — specs writing for you never use
-     these phrases.
+- Tries
+- Union-find
+- Segment trees
+- Suffix arrays
+- Advanced dynamic programming beyond classic recursion
+  with memoization
 
-  → **Walking you slowly into the concept.** You
-     arrive at the *what* quickly. The on-ramp
-     is wasted on you. Don't spend three
-     paragraphs setting up RAG before showing
-     how it works. The mental model lands fast;
-     the slow part is the mechanism walkthrough.
+IK curriculum vocabulary is fair game: adjacency list,
+captured set, fringe edge, traversal, heap, recursion,
+and related DSA terms.
 
 ═════════════════════════════════════════════════
-AUDIT-STYLE GENERATORS — the two-pass shape
+WHAT YOU'VE BUILT — SYSTEM DESIGN PORTFOLIO
 ═════════════════════════════════════════════════
 
-This section applies to **audit-style generators**
-specifically — the ones that read a real codebase
-and produce a per-repo study guide describing what's
-there. In the current family that's
-`study-system-design`, `study-software-design`,
-`study-security`, `study-testing`,
-`study-debugging-observability`, and
-`study-performance-engineering`. Curriculum-style
-generators (`study-runtime-systems`, `study-networking`,
-`study-database-systems`, `study-dsa-foundations`) do
-not use this shape — they teach concepts that apply
-broadly, not patterns specific to one repo.
-
-The discipline below replaces any "fixed file list"
-behavior an older audit-style spec might define. When
-a spec contradicts this section, **this section
-wins.**
-
-  ## Why this exists
-
-  Earlier versions of the audit-style generators
-  produced a *fixed* file list — same 8 files in every
-  repo, named after the audit lens ("system-map-and-
-  boundaries.md", "caching-and-invalidation.md"). The
-  output read as generic because it was: every repo
-  got the same files with different content.
-
-  The fix is a two-pass shape. Pass 1 is the audit:
-  one file, one shape, every repo. Pass 2 is the
-  discovered-pattern files: variable list, named after
-  the patterns the repo actually exercises, different
-  for every codebase. **The file list itself becomes a
-  learning artifact** — a reader scanning the directory
-  sees what's interesting about the repo before opening
-  anything.
-
-  ## The two passes
+Use these projects as worked examples when teaching
+system design, AI engineering, mobile architecture,
+local-first systems, or data flow.
 
 ```
-  AUDIT-STYLE OUTPUT — two passes, two artifacts
+project       system shape
+──────────    ─────────────────────────────────────────────
+dryrun        native Android, Kotlin
+              local-first mobile + cloud sync
+              on-device AI with Gemini Nano
+              API fallback
+              GitHub-as-backend
+              spaced-repetition scheduling
 
-  Pass 1: THE AUDIT (fixed, every repo)
-  ─────────────────────────────────────
-  one file: audit.md
-  N sections — one per topic lens
-  "was every lens checked?"
-  emits `not yet exercised` honestly
-  same shape across repos
+buffr         React Native + Expo + SQLite + Supabase
+              canonical local store with opt-in mirror
+              ffmpeg media pipeline
+              AI-assisted compose workflow
 
+contrl        React Native + MediaPipe + Vision Camera
+              real-time on-device ML
+              pose-landmark to rep counter
+              no network in the hot path
+              frame-rate latency budget
 
-  Pass 2: DISCOVERED PATTERNS (variable)
-  ──────────────────────────────────────
-  one file per significant pattern
-  named after the pattern, not the lens
-  "what's interesting in this repo?"
-  3-8 files for a typical repo
-  different repos → different file lists
+aipe          markdown-as-source-of-truth meta-tooling
+              prompt templates as code
+              slash commands as interface
+              describe -> diagnose -> act layering
+
+AdvntrCue     Next.js + pgvector + Postgres + GPT-4
+              classic RAG
+              vector + relational data colocated
+              serverless API
+              streaming response
+              tool-calling + session memory
 ```
 
-  ## Pass 1 — the audit (every repo gets this)
+The five shapes cover:
 
-  Walk the codebase against the topic's lens
-  inventory (each audit-style spec defines its own
-  lenses — system-design has 8, security has its
-  own, etc.). For each lens: name what the codebase
-  actually does (with `file:line` grounding) or emit
-  `not yet exercised` honestly. The audit lives in
-  one file: `audit.md`. One `##` section per lens,
-  each as long as the finding warrants — lenses
-  that find nothing get one line.
+- Local-first vs cloud-first
+- Native mobile vs React Native vs web
+- On-device AI vs cloud AI
+- SQLite, Supabase, GitHub-as-store, Postgres/pgvector,
+  and filesystem-backed source of truth
+- Hot-path latency constraints
+- RAG and tool-calling product behavior
 
-  When a finding is significant enough to have a
-  dedicated pattern file, the audit cross-links to
-  it (e.g. `→ see 03-provider-abstraction.md for the
-  deep walk`) rather than restating the pattern.
+Do not overclaim depth in:
 
-  ## Pass 2 — discovered patterns (repo-specific)
+- Multi-region distributed systems
+- Kafka / Redis Streams / sustained queue infrastructure
+- Load balancing under sustained production traffic
+- Horizontal scale beyond portfolio-level usage
 
-  Discover the architectural patterns the repo
-  actually exercises and write one concept file per
-  pattern. File names match the patterns. Each file
-  uses the full `format.md` template.
-
-  ### What earns its own pattern file
-
-    → **Has a name.** 1-3 kebab-case words. "the
-       API layer" is not a pattern; "streaming-
-       ndjson" is. "the caching" is not a pattern;
-       "caching-and-rate-limiting" is.
-
-    → **Passes the load-bearing test.** Ask: *"if I
-       stripped this pattern out, what specifically
-       would the system lose?"* If you can name a
-       real capability lost (sub-second response,
-       OAuth identity propagation, fan-out
-       parallelism), it's a pattern. If you can
-       only say "it would be harder to maintain,"
-       it isn't.
-
-    → **Passes the recognition test.** A senior
-       engineer skimming the file list should
-       recognize each file name as a real
-       architectural pattern. File names should
-       *carry signal*: a reader who has never opened
-       the repo should learn what the repo does from
-       the file list alone.
-
-  ### What does NOT earn its own file
-
-    → Generic discussions of "the API layer" or
-       "the storage layer" — those are lens findings;
-       they live in the audit.
-
-    → Audit observations with no named pattern
-       behind them.
-
-    → Patterns from a foundation topic (specific data
-       structures, protocols, database engine choices)
-       — those belong to the foundation generators.
-
-  ### Calibration
-
-  **3-8 pattern files for a typical repo.** Fewer
-  than 3 means discovery was too conservative; more
-  than 8 means the bar was too low. When in doubt,
-  push down to the audit. A pattern file you can't
-  fill the Interview defense block for with
-  confidence is a signal the pattern isn't load-
-  bearing — drop it back into the audit.
-
-  ## File layout
-
-```
-  .aipe/study-<topic>/
-    README.md                              ← reading order + cross-links
-    00-overview.md                         ← one-page orientation
-    audit.md                               ← Pass 1: the lens audit
-    01-<discovered-pattern>.md             ← Pass 2: pattern files,
-    02-<discovered-pattern>.md                       one per significant
-    03-<discovered-pattern>.md                       pattern in this repo
-    ...
-```
-
-  All files flat at the root of the topic folder.
-  No nested sub-directories.
-
-  ## Worked example — what good looks like
-
-  For a repo that is a Next.js + OAuth + streaming
-  LLM app with a multi-agent backend (the
-  blooming_insights shape) under `study-system-design`:
-
-```
-  .aipe/study-system-design/
-    README.md
-    00-overview.md
-    audit.md
-    01-request-flow.md
-    02-oauth-boundary.md
-    03-provider-abstraction.md
-    04-caching-and-rate-limiting.md
-    05-streaming-ndjson.md
-    06-multi-agent-orchestration.md
-    07-client-stream-handoff.md
-    08-schema-gated-coverage.md
-```
-
-  For a repo that is a local-first mobile app with
-  no LLM features (the contrl shape) under
-  `study-system-design`:
-
-```
-  .aipe/study-system-design/
-    README.md
-    00-overview.md
-    audit.md
-    01-local-first-sync.md
-    02-on-device-ml-pipeline.md
-    03-real-time-frame-budget.md
-    04-canonical-local-with-cloud-mirror.md
-```
-
-  **Different repos, different file lists.** The
-  `audit.md` exists in both and walks the same lenses
-  (with `not yet exercised` honestly named for the
-  lenses that don't apply to a given repo). The
-  pattern files name what's actually worth learning.
-  The file list itself is a teaching artifact.
-
-  ## On UPDATE
-
-  - Add new pattern files when the codebase grows a
-    new pattern.
-  - Update existing pattern files when the
-    implementation changes.
-  - Remove pattern files only when the pattern is
-    genuinely gone from the codebase (not just
-    refactored).
-  - Regenerate `audit.md` against current evidence —
-    all lenses re-walked, cross-links to pattern
-    files refreshed.
-
-  ## How audit-style specs reference this section
-
-  An audit-style topic spec defines its own lens
-  inventory (the topics specific to its domain) and
-  references this section for the two-pass shape:
-
-    "This generator is audit-style. See
-     `me.md` → AUDIT-STYLE GENERATORS for the two-pass
-     output discipline (audit.md + discovered pattern
-     files). The lens inventory below is specific to
-     this topic; the discovery rules and file-layout
-     rules come from me.md."
-
-  Topic specs do not restate the two-pass discipline.
-  They cite this section and add only what's specific
-  to their topic — their own lens inventory and
-  worked examples in their domain.
+When explaining those gaps, teach them directly and
+honestly instead of pretending they are already present
+in the portfolio.
 
 ═════════════════════════════════════════════════
-HOW OTHER SPECS REFERENCE THIS FILE
+HOW TO WRITE FOR YOU
 ═════════════════════════════════════════════════
 
-This file is referenced, not regenerated. The
-expected pattern: when a spec in this family
-(study-system-design.md, study-ai-engineering.md,
-study-prompt-engineering.md,
-rehearse-interview-defense.md, or future specs)
-needs to calibrate to Rein, it cites `me.md` and
-treats the contents as a contract.
+What works:
 
-`me.md` is paired with `teacher.md`, which
-defines the *writer* persona (the staff engineer
-who teaches across the family). Together they
-specify the conversation: `teacher.md` says who
-is writing; `me.md` says who is reading. Each
-generator spec reads both. They compose:
-`teacher.md` sets the voice register;
-`me.md` sets which examples land, what's already
-known, and what's a gap.
+- Diagram first, then prose.
+- Pattern first, vendor second.
+- Concept -> mechanism -> code in your repo.
+- Concrete file paths and symbols.
+- Direct, opinionated language.
+- Frontend primitives as universal anchors:
+  list rendering, keys, forms, fetch/loading/error
+  states, DB rows, columns, primary keys.
+- Evidence-vs-inference separation.
+- Short examples that prove the format or judgment.
 
-Three common reference patterns:
+What does not work:
 
-  ## When the spec needs to know "what voice"
+- Long abstract definitions before the concrete.
+- Analogy as the load-bearing explanation.
+- Whole-product anchors when a primitive works.
+- Marketing language:
+  "scalable solution," "robust architecture,"
+  "cutting-edge," "industry-leading,"
+  "leveraging best practices."
+- Vendor-first framing:
+  "Pinecone does this," "Next.js does this."
+- Slow conceptual on-ramps.
+- Flattery or inflated claims about what the portfolio
+  proves.
 
-  Reference: the "HOW TO WRITE FOR YOU" section.
-  The voice is consistent across the family —
-  direct, opinionated, diagram-first, anchored to
-  code. This file is the canonical source of
-  those rules.
+Preferred explanation shape:
 
-  ## When the spec needs an example anchored to
-  Rein's work
+```text
+1. Diagram or concrete scenario
+2. Pattern name
+3. Mechanism walkthrough
+4. Repo anchor
+5. Tradeoff
+6. What breaks or changes at scale
+7. Self-test question or small exercise
+```
 
-  Reference: the DSA portfolio or system design
-  portfolio tables. Pick one of the five system
-  shapes (dryrun, buffr, contrl, aipe, AdvntrCue)
-  or one of the DSA implementations. Walk it as
-  a worked example. Don't invent examples when
-  the portfolio already exercises the pattern.
+═════════════════════════════════════════════════
+AUDIT-STYLE GENERATORS
+═════════════════════════════════════════════════
 
-  ## When the spec needs to know "what does she
-  already know"
+This section applies to audit-style generators:
 
-  Reference: the "WHAT YOU'VE BUILT" sections and
-  the cognitive-style observations. The honest
-  framing is: strong on frontend (7+ years), DSA
-  fundamentals (IK curriculum), the five system
-  shapes she's shipped. Less depth on distributed
-  systems at scale, competitive-programming DSA
-  beyond the IK set, and ML beyond what contrl
-  exercises. Specs explaining patterns outside the
-  portfolio should be honest about the gap rather
-  than overclaim.
+- study-system-design
+- study-software-design
+- study-security
+- study-testing
+- study-debugging-observability
+- study-performance-engineering
 
-  ## When an audit-style spec needs the two-pass shape
+Curriculum-style generators teach broadly applicable
+concepts and do not use this artifact shape.
 
-  Reference: the "AUDIT-STYLE GENERATORS — the
-  two-pass shape" section. Audit-style topic specs
-  (`study-system-design`, `study-software-design`,
-  `study-security`, `study-testing`,
-  `study-debugging-observability`,
-  `study-performance-engineering`) define their own
-  lens inventory in their own spec, but the two-pass
-  discipline (audit.md + discovered pattern files,
-  pattern-discovery rules, file layout, worked
-  examples) lives here. Topic specs cite this section
-  rather than restating it.
+Audit-style output has two passes:
+
+```text
+Pass 1: audit.md
+  fixed file
+  one section per topic lens
+  evidence-grounded
+  says "not yet exercised" honestly
+
+Pass 2: discovered pattern files
+  variable file list
+  one file per significant repo-specific pattern
+  named after the pattern, not the audit lens
+  uses the full format.md concept-file template
+```
+
+What earns a pattern file:
+
+- It has a clear 1-3 word kebab-case name.
+- It is load-bearing: removing it would remove a real
+  capability, not merely make code less tidy.
+- A senior engineer can recognize the file name as a
+  real architectural pattern.
+- The pattern can support an interview-defense block
+  with confidence.
+
+What stays in `audit.md`:
+
+- Generic API/storage/UI layer observations
+- Findings with no named pattern behind them
+- One-off implementation details
+- Foundation topics that belong in curriculum-style
+  generators
+
+Typical output size:
+
+- 3-8 discovered pattern files for a normal repo
+- Fewer than 3 usually means discovery was too timid
+- More than 8 usually means the bar was too low
+
+File layout:
+
+```text
+.aipe/study-<topic>/
+  README.md
+  00-overview.md
+  audit.md
+  01-<discovered-pattern>.md
+  02-<discovered-pattern>.md
+  03-<discovered-pattern>.md
+```
+
+All files stay flat at the topic root. No nested
+subdirectories.
+
+On update:
+
+- Add a pattern file when the repo grows a new
+  load-bearing pattern.
+- Update a pattern file when the implementation changes.
+- Remove a pattern file only when the pattern is gone.
+- Regenerate `audit.md` against current evidence.
+
+If an older audit-style spec contradicts this two-pass
+shape, this file wins.
+
+═════════════════════════════════════════════════
+HOW OTHER SPECS USE THIS FILE
+═════════════════════════════════════════════════
+
+Use this file as calibration, not source content to copy.
+
+Reference:
+
+- `WHO YOU ARE` for role/career framing.
+- `HOW YOU THINK` for learning sequence.
+- `PROMPT PRINCIPLES FOR AGENT WORK` when creating
+  prompts, agents, or instruction artifacts.
+- `WHAT YOU'VE BUILT` for real examples.
+- `HOW TO WRITE FOR YOU` for voice and format.
+- `AUDIT-STYLE GENERATORS` for audit output shape.
+
+This file pairs with `teacher.md`:
+
+- `teacher.md` defines the writer persona.
+- `me.md` defines the reader and prompt-calibration
+  contract.
 
 ═════════════════════════════════════════════════
 WHAT THIS FILE DOES NOT DO
 ═════════════════════════════════════════════════
 
-  → Does not generate any artifact. No output
-    folder. No command. It is a reference
-    document.
+- It does not generate artifacts.
+- It does not override topic-specific spec rules, except
+  for the audit-style two-pass shape above.
+- It does not replace `format.md` or `teacher.md`.
+- It does not lock the reader profile forever.
+- It does not flatter or overclaim.
 
-  → Does not override individual spec rules. If
-    `format.md` defines the Zoom-out block or the
-    How it works moves, this file does not change
-    that. It adds layer-on-top calibration — voice,
-    examples, anchoring — to whatever the
-    consuming spec already defines.
-
-  → **One exception: the two-pass shape for audit-
-    style generators.** That discipline is defined
-    in this file (AUDIT-STYLE GENERATORS section)
-    and DOES override any conflicting "fixed file
-    list" behavior in an older audit-style spec.
-    When a topic spec contradicts the two-pass
-    shape, this file wins. The shape is a
-    cross-cutting rule about how audit artifacts
-    are produced, and it lives here so updates
-    propagate to every audit-style generator
-    automatically.
-
-  → Does not lock the reader profile. As Rein
-    builds new projects or shifts focus, this
-    file updates. The system-design portfolio
-    will grow. The DSA portfolio will grow. The
-    career arc will move. The file is meant to
-    stay current.
-
-  → Does not flatter. The strengths and the gaps
-    are both named. The honest framing is what
-    makes the file useful to other specs — they
-    can calibrate accurately rather than
-    overclaim what the reader knows.
+The useful version of this file is current, specific,
+and honest: strengths named, gaps named, examples real,
+and prompts shaped as contracts agents can follow.
