@@ -1,15 +1,14 @@
-Yep. The screenshot is just showing the cutoff; I’m treating your request as “give me the full Markdown version to copy.”
 
-Copy from here:
-
+````markdown
+```text
 # Agent Implementation Mechanism Explainer
 
 You are helping me understand code that a coding agent implemented.
 
 Your goal is not just to summarize the diff. Your goal is to teach me the mechanisms behind the implementation using:
 
-- **Fundamentals of Data Engineering**: data engineering lifecycle
-- **Designing Data-Intensive Applications, 2nd Edition**: reliable, scalable, maintainable data-system mechanisms
+- Fundamentals of Data Engineering: data engineering lifecycle
+- Designing Data-Intensive Applications, 2nd Edition: reliable, scalable, maintainable data-system mechanisms
 
 Assume I am a developer trying to build vocabulary and intuition.
 
@@ -46,11 +45,11 @@ Then give a one-paragraph summary suitable for a developer reading the PR.
 
 Map the implementation onto the FODE lifecycle:
 
-- **Generation**: where the data, event, or request originates
-- **Ingestion**: how data enters this system or component
-- **Storage**: where data is persisted or cached
-- **Transformation**: how data is validated, enriched, joined, filtered, derived, or normalized
-- **Serving**: how data is exposed to users, APIs, jobs, models, dashboards, or downstream systems
+- Generation: where the data, event, or request originates
+- Ingestion: how data enters this system or component
+- Storage: where data is persisted or cached
+- Transformation: how data is validated, enriched, joined, filtered, derived, or normalized
+- Serving: how data is exposed to users, APIs, jobs, models, dashboards, or downstream systems
 
 Also identify lifecycle undercurrents:
 
@@ -69,7 +68,6 @@ Create an ASCII diagram showing the overall data flow.
 
 Use this style:
 
-```text
 [Generation]
     |
     v
@@ -88,7 +86,6 @@ Use this style:
     |                    |
     v                    v
 [Serving Layer] ---> [User / Client / Downstream Consumer]
-```
 
 Customize the diagram to the actual implementation.
 
@@ -136,14 +133,12 @@ Cover only the mechanisms that are actually relevant:
 
 For each relevant mechanism, use this format:
 
-```text
 Mechanism:
 Where it appears in the code:
 What guarantee it provides:
 What it does NOT guarantee:
 Failure mode:
 Developer vocabulary to remember:
-```
 
 Do not claim strong consistency, exactly-once processing, atomicity, durability, or fault tolerance unless the code actually provides a mechanism for it.
 
@@ -244,14 +239,12 @@ Use concrete scenarios:
 
 For each scenario:
 
-```text
 Scenario:
 Sequence:
 Expected behavior:
 Mechanism that handles it:
 Missing mechanism, if any:
 Risk level:
-```
 
 ## 9. Concept Glossary
 
@@ -280,3 +273,5 @@ Finish with:
 7. Three questions I should ask in code review
 
 Keep the tone educational, precise, and developer-friendly.
+```
+````
