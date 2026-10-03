@@ -1,12 +1,17 @@
 # Repo-to-Career Learning Map: Full-Stack, System Design, Cloud & AI Concepts
 
+**What it does:** Reviews a repository as a learning exercise and maps the codebase to the full-stack, system design, cloud, distributed-systems, and AI concepts I am building toward.
+
+## 0. Master repo-learning prompt
+
+```text
 Review this repository as a learning exercise for me as a full-stack software engineer.
 
 My goal is to understand the system end-to-end and identify which software-engineering concepts I am already touching in this codebase, especially the concepts relevant to my career direction: frontend, backend, full-stack, APIs, databases, cloud, system design, distributed systems, data flow, orchestration, reliability, and AI systems if applicable.
 
 Please analyze the repository and produce a structured learning guide with the following sections:
 
-## 1. System Overview
+1. System Overview
 
 Explain in plain English:
 - What this application/system does
@@ -17,11 +22,11 @@ Explain in plain English:
 
 Give me a simple architecture diagram such as:
 
-`User → Frontend → API → Backend → Database → External Services`
+User → Frontend → API → Backend → Database → External Services
 
 Expand it based on what actually exists in the repository.
 
-## 2. Frontend
+2. Frontend
 
 If frontend code exists, identify:
 - Entry points
@@ -36,7 +41,7 @@ If frontend code exists, identify:
 
 For each item, point me to representative files/directories and explain what they do in beginner-friendly terms.
 
-## 3. Backend
+3. Backend
 
 If backend code exists, identify:
 - Application/server entry points
@@ -55,11 +60,11 @@ Show me a typical request flow through the codebase from incoming request to res
 
 Example:
 
-`Frontend → API route → controller → service → repository/database → response`
+Frontend → API route → controller → service → repository/database → response
 
 Use the actual files/functions/classes from this repository.
 
-## 4. Data Layer
+4. Data Layer
 
 Explain:
 - Which databases/storage systems are used
@@ -74,7 +79,7 @@ Do not assume these concepts exist. Clearly distinguish between:
 - Likely handled by infrastructure/external services
 - Not visible/not used
 
-## 5. Cloud / Infrastructure
+5. Cloud / Infrastructure
 
 Look for things such as:
 - Docker
@@ -92,7 +97,7 @@ Look for things such as:
 
 Explain which of these concepts I am actually touching and where.
 
-## 6. Distributed-System Concepts
+6. Distributed-System Concepts
 
 Check whether this system demonstrates any of the following:
 - Service-to-service communication
@@ -111,15 +116,15 @@ Check whether this system demonstrates any of the following:
 
 For each concept, label it:
 
-`DIRECTLY PRESENT`
+DIRECTLY PRESENT
 
-`INDIRECTLY PRESENT / MANAGED BY PLATFORM`
+INDIRECTLY PRESENT / MANAGED BY PLATFORM
 
-`NOT FOUND`
+NOT FOUND
 
 Then explain why and point to evidence in the repository.
 
-## 7. System Design Concepts I Am Touching
+7. System Design Concepts I Am Touching
 
 Create a table with:
 
@@ -148,12 +153,12 @@ Include at least:
 
 Use these depth labels:
 
-`AWARENESS` — used indirectly, little implementation exposure  
-`WORKING WITH` — I regularly interact with it in application code  
-`IMPLEMENTING` — I am directly building/configuring it  
-`ARCHITECTING` — I am making design/tradeoff decisions around it
+AWARENESS — used indirectly, little implementation exposure
+WORKING WITH — I regularly interact with it in application code
+IMPLEMENTING — I am directly building/configuring it
+ARCHITECTING — I am making design/tradeoff decisions around it
 
-## 8. AI / Agentic Concepts
+8. AI / Agentic Concepts
 
 Only if AI-related code exists, identify:
 - Model/API calls
@@ -172,7 +177,7 @@ Only if AI-related code exists, identify:
 
 Again, point to actual code and do not infer features that are not present.
 
-## 9. Map the Repository to My Career Vocabulary
+9. Map the Repository to My Career Vocabulary
 
 For each term below, tell me whether this repository gives me practical exposure to it:
 - Frontend engineering
@@ -192,12 +197,12 @@ For each, explain:
 - Which files/components I should study
 - Whether my exposure is beginner, intermediate, or advanced
 
-## 10. Map to My Books
+10. Map to My Books
 
 Connect things you find in the repository to concepts from:
-- *A Common-Sense Guide to Data Structures and Algorithms*
-- *System Design Interview — Alex Xu*
-- *Designing Data-Intensive Applications, 2nd Edition*
+- A Common-Sense Guide to Data Structures and Algorithms
+- System Design Interview — Alex Xu
+- Designing Data-Intensive Applications, 2nd Edition
 
 For DDIA 2e specifically, map relevant code/system behavior to:
 - Ch. 1 — Trade-Offs in Data Systems Architecture
@@ -213,19 +218,19 @@ For DDIA 2e specifically, map relevant code/system behavior to:
 
 Only map chapters where there is a real connection.
 
-## 11. Trace 3 Real Flows
+11. Trace 3 Real Flows
 
 Choose three meaningful workflows from this repository and trace them end-to-end.
 
 For each flow, show:
 
-`Trigger → Frontend → API → Backend → Data/External System → Result`
+Trigger → Frontend → API → Backend → Data/External System → Result
 
 Include filenames, functions/classes, and important data transformations.
 
 Prefer flows that teach me different parts of the stack.
 
-## 12. What I Should Study Next
+12. What I Should Study Next
 
 Based only on this repository, identify:
 - Concepts I already work with but probably need to understand more deeply
@@ -234,13 +239,11 @@ Based only on this repository, identify:
 
 Rank them:
 
-`HIGH PRIORITY`
+HIGH PRIORITY
+MEDIUM PRIORITY
+LATER
 
-`MEDIUM PRIORITY`
-
-`LATER`
-
-## 13. Hands-On Learning Tasks
+13. Hands-On Learning Tasks
 
 Give me 5–10 concrete exercises I can do inside this repository without making unnecessary production changes.
 
@@ -255,20 +258,22 @@ Examples:
 
 Make the exercises specific to this repository.
 
-## Important Rules
-
+Important rules:
 - Do not guess.
 - Cite actual file paths, functions, classes, configs, and code when making claims.
 - Clearly say when something cannot be determined from the repository.
 - Explain concepts in plain English before using advanced terminology.
 - Treat this as a learning guide, not just a code review.
-- Focus on helping me understand **why the system is designed this way**, not only what each file does.
+- Focus on helping me understand why the system is designed this way, not only what each file does.
 - When you find an architectural choice, explain at least one tradeoff or alternative.
 - Prioritize understanding of the code I am most likely to encounter as a full-stack engineer.
+```
 
-## Suggested Follow-Up Prompt
+## 1. Follow-up progress-tracker prompt
 
-After completing the analysis, turn it into a personal progress checklist with columns for:
+```text
+Now turn this analysis into a personal progress checklist with columns for:
 
 | Concept | Where I Touch It | My Current Depth | What I Need to Learn | Hands-On Exercise | Status |
 |---|---|---|---|---|---|
+```
